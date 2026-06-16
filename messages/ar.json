@@ -1,0 +1,956 @@
+{
+  "Metadata": {
+    "site": {
+      "brand": "GoldHelwah GmbH",
+      "title": "GoldHelwah GmbH",
+      "description": "تقدّم GoldHelwah GmbH مجوهرات ذهبية مختارة بعناية مع صور حقيقية واستشارة شخصية وعرض واضح في ساربروكن.",
+      "keywords": [
+        "GoldHelwah GmbH",
+        "مجوهرات ذهبية",
+        "مجوهرات فاخرة",
+        "كتالوج مجوهرات",
+        "صالة عرض",
+        "دبل زفاف"
+      ]
+    },
+    "pages": {
+      "home": {
+        "title": "صالة عرض فاخرة للمجوهرات الذهبية",
+        "description": "اكتشف مجوهرات ذهبية بحضور واضح مع صور حقيقية واستشارة شخصية لدى GoldHelwah GmbH."
+      },
+      "shop": {
+        "title": "المجموعة",
+        "description": "تعرّف على قطع مختارة، تصنيفات واضحة، وتفاصيل المنتجات في مجموعة GoldHelwah GmbH."
+      },
+      "contact": {
+        "title": "اتصل بنا",
+        "description": "تواصل مع GoldHelwah GmbH للاستشارة، طلبات المنتجات، أو زيارة المعرض في ساربروكن."
+      },
+      "impressum": {
+        "title": "البيانات القانونية",
+        "description": "البيانات القانونية ووسائل التواصل الخاصة بـ GoldHelwah GmbH في صفحة واحدة."
+      },
+      "privacy": {
+        "title": "الخصوصية",
+        "description": "معلومات الخصوصية الخاصة بزيارة الموقع، اختيار اللغة، وطلبات التواصل لدى GoldHelwah GmbH."
+      }
+    }
+  },
+  "Nav": {
+    "tagline": "مجوهرات ذهبية فاخرة",
+    "language": "تغيير اللغة",
+    "currentLanguage": "الحالية",
+    "openMenu": "افتح القائمة",
+    "closeMenu": "أغلق القائمة",
+    "links": {
+      "home": "الرئيسية",
+      "shop": "المتجر",
+      "contact": "تواصل معنا",
+      "impressum": "البيانات القانونية",
+      "privacy": "الخصوصية"
+    }
+  },
+  "Footer": {
+    "description": "GoldHelwah GmbH تقدم مجوهرات ذهبية مختارة بعناية، مع استشارة شخصية وتجربة واضحة في ساربروكن.",
+    "navigationTitle": "الصفحات",
+    "contactTitle": "التواصل",
+    "socialTitle": "تابعنا",
+    "emailPlaceholder": "info@goldhelwah.de",
+    "legalNote": "زورونا في ساربروكن أو تواصلوا معنا للحصول على استشارة شخصية.",
+    "rights": "GoldHelwah GmbH. جميع الحقوق محفوظة.",
+    "socials": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "Home": {
+    "hero": {
+      "eyebrow": "GoldHelwah GmbH",
+      "title": "ذهب يلفت الأنظار.",
+      "subtitle": "صور حقيقية، استشارة شخصية، وقطع مختارة للحظات تستحق الفخامة.",
+      "primaryCta": "استكشف المنتجات",
+      "secondaryCta": "اطلب استشارة",
+      "backgroundAlt": "تكوين Hero من GoldHelwah GmbH",
+      "stats": [
+        {
+          "value": "17",
+          "label": "فئة"
+        },
+        {
+          "value": "5",
+          "label": "لغات"
+        },
+        {
+          "value": "Saarbrücken",
+          "label": "الصالة"
+        }
+      ]
+    },
+    "categories": {
+      "eyebrow": "فئات مختارة",
+      "title": "مجموعات ذهبية بحضور واضح.",
+      "description": "اختر من التشكيلات، الأطقم، والقطع المميزة."
+    },
+    "products": {
+      "eyebrow": "منتجات مختارة",
+      "title": "صور حقيقية. اختيار واضح. ذهب بطابع خاص.",
+      "description": "قطع مختارة من تصنيفات مختلفة بعناية.",
+      "sectionCta": "استعرض المجموعة",
+      "cardCta": "عرض التفاصيل"
+    },
+    "aboutGold": {
+      "eyebrow": "عن الذهب",
+      "title": "ذهب يبقى.",
+      "description": "الذهب قيمة وذكرى وحضور. في GoldHelwah GmbH نعرض قطعاً مختارة تجمع بين الفخامة والمعنى الشخصي.",
+      "imageAlt": "تفصيل من مجوهرات GoldHelwah GmbH الذهبية",
+      "points": [
+        "قيمة تدوم",
+        "معنى شخصي",
+        "جودة واضحة"
+      ]
+    },
+    "aboutCompany": {
+      "eyebrow": "من نحن",
+      "title": "من نحن",
+      "description": "في ساربروكن، تجمع GoldHelwah GmbH بين المجوهرات الذهبية المختارة والاستشارة الشخصية وتجربة عرض واضحة وموثوقة.",
+      "teamLabel": "أسلوبنا",
+      "story": "نقدّم صوراً حقيقية ومنتجات مختارة بعناية، مع استشارة هادئة تساعد العميل على الوصول إلى القطعة المناسبة بثقة.",
+      "locationLabel": "في المتجر"
+    },
+    "trust": {
+      "eyebrow": "لماذا GoldHelwah GmbH",
+      "title": "استشارة شخصية. عرض واضح. اختيار له قيمة.",
+      "items": [
+        {
+          "title": "استشارة شخصية",
+          "description": "توجيه مباشر ومناسب لك."
+        },
+        {
+          "title": "صور منتجات حقيقية",
+          "description": "الاختيار يعرض قطعاً حقيقية."
+        },
+        {
+          "title": "ذهب حسب الطلب",
+          "description": "الطلبات الخاصة ممكنة."
+        },
+        {
+          "title": "الاستلام في ساربروكن",
+          "description": "إمكانية الحضور والاستلام شخصياً."
+        }
+      ]
+    },
+    "cta": {
+      "badge": "خدمة GoldHelwah GmbH",
+      "title": "هل تبحث عن هدية أو قطعة خاصة؟",
+      "description": "يسعدنا مساعدتك في الاختيار، الطلبات الخاصة، والاستشارة الشخصية.",
+      "primaryCta": "عرض المتجر",
+      "secondaryCta": "اتصل"
+    }
+  },
+  "Shop": {
+    "hero": {
+      "eyebrow": "GoldHelwah GmbH",
+      "title": "المجموعة",
+      "subtitle": "اكتشف قطعاً ذهبية مختارة مع صور حقيقية وتنظيم واضح واستشارة شخصية.",
+      "primaryCta": "اطلب استشارة",
+      "secondaryCta": "اتصل بنا",
+      "stats": {
+        "categories": "فئات",
+        "featured": "مختارات",
+        "checkout": "استشارة"
+      },
+      "visualBadge": "لقطة مختارة",
+      "visualAlt": "صالة عرض مجوهرات GoldHelwah GmbH",
+      "cards": {
+        "oneLabel": "تركيز بصري",
+        "oneText": "بطاقات واسعة بصور حقيقية ونصوص مختصرة.",
+        "twoLabel": "بنية الكتالوج",
+        "twoText": "التصنيفات والتفاصيل وطلبات الاستشارة معروضة بصورة واضحة وسهلة."
+      }
+    },
+    "grid": {
+      "eyebrow": "المجموعة",
+      "title": "اكتشف حسب الفئة.",
+      "all": "الكل",
+      "resultsSuffix": "قطعة",
+      "emptyBadge": "عند الطلب",
+      "emptyTitle": "يسعدنا إرشادك إلى القطعة المناسبة لهذه الفئة.",
+      "emptyText": "راسلنا إذا كنت تبحث عن مجموعة أو موديل محدد."
+    },
+    "card": {
+      "cta": "التفاصيل"
+    },
+    "modal": {
+      "close": "إغلاق",
+      "fallbackCategory": "المجموعة",
+      "categoryLabel": "الفئة",
+      "galleryLabel": "المعرض",
+      "galleryCountSuffix": "صور",
+      "tagsLabel": "التفاصيل",
+      "requestCta": "أرسل طلباً",
+      "backCta": "عودة"
+    }
+  },
+  "Contact": {
+    "hero": {
+      "eyebrow": "التواصل",
+      "title": "الاستشارة الشخصية تبدأ بتواصل واضح.",
+      "subtitle": "لطلبات المنتجات، المواعيد، ورسائل واتساب ستجد هنا أسرع الطرق للوصول إلى GoldHelwah GmbH.",
+      "primaryCta": "عرض المجموعة",
+      "secondaryCta": "اقرأ الخصوصية"
+    },
+    "cards": {
+      "consultationTitle": "الاستشارة",
+      "consultationValue": "شخصية ومنسقة",
+      "consultationText": "تتم مناقشة المجموعات وأفكار الهدايا والطلبات الخاصة بشكل فردي.",
+      "phoneTitle": "الهاتف",
+      "phoneText": "تواصل مباشر للأسئلة السريعة أو تنسيق المواعيد.",
+      "phoneCta": "اتصل الآن",
+      "whatsappTitle": "واتساب",
+      "whatsappText": "مناسب للأسئلة السريعة ومشاركة الصور من صالة العرض.",
+      "whatsappCta": "ابدأ المحادثة"
+    },
+    "form": {
+      "eyebrow": "تواصل معنا",
+      "title": "تواصل معنا",
+      "description": "اكتب لنا لطلبات المنتجات أو الاستشارة أو التصاميم الخاصة.",
+      "highlights": "تواصل",
+      "fields": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "message": "الرسالة"
+      },
+      "placeholders": {
+        "name": "اسمك",
+        "email": "بريدك الإلكتروني",
+        "phone": "رقم هاتفك",
+        "message": "ما موضوع طلبك؟"
+      },
+      "submit": "إرسال الرسالة",
+      "submitPending": "جارٍ الإرسال",
+      "success": "شكراً لك. تم تسجيل طلبك بنجاح.",
+      "error": "يرجى التحقق من بياناتك والمحاولة مرة أخرى.",
+      "validation": {
+        "name": "يرجى إدخال الاسم.",
+        "email": "يرجى إدخال بريد إلكتروني صالح.",
+        "phone": "يرجى إدخال رقم هاتف صالح.",
+        "message": "يرجى كتابة رسالة قصيرة."
+      }
+    },
+    "location": {
+      "eyebrow": "الموقع",
+      "title": "زوروا GoldHelwah GmbH في Saarbrücken.",
+      "description": "العنوان والهاتف والطريق في نظرة سريعة.",
+      "addressLabel": "العنوان",
+      "phoneLabel": "الهاتف",
+      "routeCta": "خطط الطريق",
+      "callCta": "اتصل",
+      "mapTitle": "موقع GoldHelwah GmbH على Google Maps"
+    }
+  },
+  "Impressum": {
+    "eyebrow": "قانوني",
+    "title": "البيانات القانونية",
+    "description": "البيانات القانونية ووسائل التواصل الخاصة بـ GoldHelwah GmbH في صفحة واحدة.",
+    "complianceNoticeTitle": "ملاحظة مهمة",
+    "complianceNoticeDescription": "تشير الحقول التالية عمداً إلى معلومات لا ينبغي اختراعها. قبل النشر يجب استكمال الشكل القانوني والتمثيل والبيانات الضريبية بمعلومات موثقة.",
+    "sections": [
+      {
+        "title": "بيانات المزود",
+        "lines": [
+          "GoldHelwah GmbH",
+          "Breite Straße 9, 66115 Saarbrücken",
+          "[أضف الشكل القانوني]",
+          "[أضف الممثل المخول]"
+        ]
+      },
+      {
+        "title": "التواصل",
+        "lines": [
+          "+49 173 5371225",
+          "[أضف عنوان البريد الإلكتروني]",
+          "Showroom: Breite Straße 9, 66115 Saarbrücken"
+        ]
+      },
+      {
+        "title": "السجل والضرائب",
+        "lines": [
+          "[أضف السجل التجاري والجهة المختصة]",
+          "[أضف رقم الضريبة أو ضريبة القيمة المضافة]"
+        ]
+      },
+      {
+        "title": "المسؤول عن المحتوى",
+        "lines": "[أضف الشخص المسؤول وفق القانون المعمول به]"
+      },
+      {
+        "title": "ملاحظة حول الموقع",
+        "lines": [
+          "يعرض الموقع المجموعات، الصور الحقيقية، ووسائل التواصل الخاصة بـ GoldHelwah GmbH.",
+          "الاستشارة الشخصية وطلبات المنتجات هي محور التجربة."
+        ]
+      }
+    ],
+    "disclaimerTitle": "التحديث والمراجعة",
+    "disclaimerText": "يُرجى مراجعة هذه البيانات وتحديثها بانتظام بما يوافق الوضع القانوني الحالي للشركة."
+  },
+  "Privacy": {
+    "eyebrow": "الخصوصية",
+    "title": "معلومات الخصوصية",
+    "description": "توضح هذه الصفحة كيفية معالجة البيانات عند زيارة الموقع أو إرسال طلب تواصل.",
+    "intro": "نستخدم البيانات فقط بالقدر اللازم لعرض الموقع، حفظ تفضيل اللغة، ومعالجة الطلبات والاستفسارات.",
+    "sections": [
+      {
+        "title": "1. الجهة المسؤولة",
+        "paragraphs": [
+          "الجهة المسؤولة هي GoldHelwah GmbH، Breite Straße 9, 66115 Saarbrücken، هاتف +49 173 5371225. يجب إضافة عنوان بريد إلكتروني نهائي قبل الإطلاق الفعلي.",
+          "بعد توفر البيانات النهائية، ينبغي تنسيق صفحتي البيانات القانونية والخصوصية معاً."
+        ]
+      },
+      {
+        "title": "2. بيانات الاتصال التقنية",
+        "paragraphs": [
+          "عند زيارة الموقع قد تتم معالجة بيانات تقنية ضرورية مثل عنوان IP والوقت ونوع المتصفح والمحتوى المطلوب.",
+          "يهدف ذلك إلى توفير الموقع بشكل آمن ومستقر."
+        ]
+      },
+      {
+        "title": "3. طلبات التواصل",
+        "paragraphs": [
+          "إذا استخدمت نموذج التواصل أو تواصلت هاتفياً، فسيتم استخدام بياناتك فقط لمعالجة طلبك.",
+          "نوع البيانات المطلوبة يعتمد على المناسبة واهتمامك بالمنتج."
+        ]
+      },
+      {
+        "title": "4. اللغة وملفات الارتباط",
+        "paragraphs": [
+          "يدعم الموقع عدة لغات، وقد يتم حفظ تفضيل اللغة لأسباب تقنية.",
+          "يستخدم ذلك فقط لعرض الموقع باللغة المختارة في الزيارات اللاحقة."
+        ]
+      },
+      {
+        "title": "5. الاستفسارات والتواصل",
+        "paragraphs": [
+          "يمكن إرسال استفسارات المنتجات وطلبات الاستشارة إلى GoldHelwah GmbH عبر الموقع أو وسائل التواصل المعروضة.",
+          "إذا تغيّرت وسائل التواصل أو الخدمات المرتبطة بالموقع، فينبغي تحديث هذه الصفحة وفقاً لذلك."
+        ]
+      }
+    ],
+    "noticeTitle": "واجب التحديث",
+    "noticeText": "يجب تحديث هذه المعلومات كلما تغيّرت وسائل التواصل أو الخدمات أو آليات المعالجة."
+  },
+  "Admin": {
+    "meta": {
+      "title": "الادارة",
+      "description": "لوحة GoldHelwah GmbH لادارة الكتالوج والطلبات والورش."
+    },
+    "header": {
+      "adminArea": "منطقة الادارة",
+      "demoMode": "الدور النشط",
+      "activeUser": "المستخدم النشط",
+      "roleFoundation": "أساس الصلاحيات",
+      "roleHint": "يتم عرض الصلاحيات والواجهات الداخلية بصورة واضحة لكل مستخدم.",
+      "welcome": "أهلاً، {name}",
+      "toWebsite": "عرض الموقع"
+    },
+    "roles": {
+      "super_admin": "مدير عام",
+      "admin": "مدير ورشة",
+      "employee": "موظف"
+    },
+    "nav": {
+      "overview": "لوحة التحكم",
+      "products": "المنتجات",
+      "categories": "التصنيفات",
+      "gallery": "معرض الأدمن",
+      "options": "الخيارات",
+      "orders": "الطلبات",
+      "workshops": "الورش",
+      "employees": "الموظفون",
+      "attendance": "أوقات العمل",
+      "reports": "التقارير",
+      "archive": "الأرشيف",
+      "settings": "الإعدادات"
+    },
+    "buttons": {
+      "openMenu": "القائمة",
+      "close": "إلغاء",
+      "demoLogin": "تبديل المستخدم",
+      "addProduct": "إضافة منتج",
+      "createOrder": "انشاء طلب",
+      "viewDetails": "تفاصيل",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "newCategory": "إضافة فئة",
+      "bulkEnable": "تفعيل",
+      "bulkDisable": "تعطيل",
+      "assignOptions": "تعيين الخيارات",
+      "saveDraft": "حفظ المسودة",
+      "submitOrder": "ارسال الطلب الى الورشة",
+      "createCustomOption": "خيار مخصص",
+      "addOption": "إضافة",
+      "addWorkshop": "إضافة ورشة",
+      "addEmployee": "إضافة موظف",
+      "addAbsence": "إضافة غياب",
+      "markReady": "تحديد كجاهز",
+      "updateStatus": "تغيير الحالة",
+      "assignEmployee": "تعيين موظف",
+      "addNote": "إضافة ملاحظة",
+      "archive": "أرشفة",
+      "restore": "استعادة",
+      "backToOrders": "العودة إلى الطلبات",
+      "duplicate": "نسخ",
+      "deactivate": "تعطيل",
+      "activate": "تفعيل",
+      "options": "الخيارات",
+      "createOptionGroup": "إضافة",
+      "viewOrders": "عرض الطلبات",
+      "preview": "معاينة",
+      "reset": "اعادة ضبط",
+      "save": "حفظ",
+      "next": "التالي",
+      "previous": "السابق",
+      "notifyCustomer": "إبلاغ العميل",
+      "copyTrackingLink": "نسخ رابط التتبع",
+      "saveStatus": "حفظ الحالة"
+    },
+    "common": {
+      "noAccessTitle": "الوصول محدود",
+      "noAccessText": "هذه الصفحة غير متاحة للحساب الحالي.",
+      "catalogOnly": "صالة عرض",
+      "curated": "مختار",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "optional": "اختياري",
+      "required": "إلزامي",
+      "all": "الكل",
+      "search": "بحث",
+      "selectPlaceholder": "يرجى الاختيار",
+      "unassigned": "غير معيّن",
+      "noCustomer": "بدون بيانات عميل",
+      "mockSubmit": "تم حفظ الإجراء.",
+      "selected": "محدد",
+      "internalOnly": "للاستخدام الداخلي فقط",
+      "visibility": "الظهور",
+      "visible": "ظاهر",
+      "hidden": "مخفي",
+      "yes": "نعم",
+      "no": "لا",
+      "enabled": "مفعّل",
+      "disabled": "معطّل",
+      "status": "الحالة",
+      "category": "التصنيف",
+      "actions": "الإجراءات"
+    },
+    "filters": {
+      "category": "الفئة",
+      "status": "الحالة",
+      "featured": "مميز",
+      "priority": "الأولوية",
+      "workshop": "الورشة",
+      "employee": "الموظف",
+      "role": "الدور"
+    },
+    "status": {
+      "draft": "مسودة",
+      "sent_to_workshop": "أرسل إلى الورشة",
+      "accepted": "مقبول",
+      "assigned": "مُعيّن",
+      "in_production": "قيد الإنتاج",
+      "quality_check": "فحص الجودة",
+      "ready": "جاهز",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغي",
+      "archived": "مؤرشف",
+      "present": "حاضر",
+      "absent": "غائب",
+      "vacation": "إجازة",
+      "sick": "مرض",
+      "late": "متأخر"
+    },
+    "priority": {
+      "normal": "عادي",
+      "urgent": "عاجل",
+      "express": "سريع"
+    },
+    "overview": {
+      "eyebrow": "لوحة التحكم",
+      "title": "نظرة عامة",
+      "description": "الكتالوج، الطلبات، والورش في نظرة واحدة.",
+      "stats": {
+        "totalProducts": "إجمالي المنتجات",
+        "totalProductsHint": "بيانات حقيقية من الكتالوج الحالي",
+        "activeCategories": "الفئات النشطة",
+        "activeCategoriesHint": "منظمة بوضوح",
+        "newOrders": "طلبات الورش الجديدة",
+        "newOrdersHint": "مسودات وطلبات مرسلة حديثاً",
+        "inProduction": "قيد الإنتاج",
+        "inProductionHint": "طلبات يجري تنفيذها الآن",
+        "readyOrders": "طلبات جاهزة",
+        "readyOrdersHint": "مهيأة للتسليم أو الاستلام",
+        "employees": "الموظفون",
+        "employeesHint": "تظهر وفق الصلاحية الحالية"
+      },
+      "recentOrdersTitle": "أحدث الطلبات",
+      "recentOrdersDescription": "احدث الطلبات والحالات.",
+      "quickActionsTitle": "إجراءات سريعة",
+      "quickActionsDescription": "المهام المتكررة في متناول اليد.",
+      "actions": {
+        "addProduct": "إضافة منتج",
+        "createOrder": "إنشاء طلب",
+        "manageOptions": "إدارة الخيارات",
+        "addEmployee": "إضافة موظف"
+      },
+      "workshopLoadTitle": "حمولة الورش",
+      "workshopLoadDescription": "الحمولة الحالية لكل ورشة."
+    },
+    "login": {
+      "title": "دخول الإدارة لـ GoldHelwah GmbH",
+      "description": "دخول داخلي لإدارة الكتالوج، الطلبات، والورش.",
+      "cards": {
+        "securityTitle": "فصل واضح",
+        "securityText": "تجمع هذه الواجهة أهم أدوات الكتالوج والورش والطلبات في مكان واضح وسريع.",
+        "rolesTitle": "جاهز للأدوار",
+        "rolesText": "لكل دور عرض مناسب يركّز على المهام والمنتجات ومسار الورشة.",
+        "catalogTitle": "الكتالوج أولاً",
+        "catalogText": "التركيز هنا على إدارة المنتجات والطلبات وسير العمل الداخلي بشكل منظم."
+      },
+      "formTitle": "تسجيل الدخول",
+      "formDescription": "اختر حساب المستخدم المناسب للمنطقة الداخلية.",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "demoHint": "الدور النشط: {role}.",
+      "demoUsersTitle": "الحسابات المتاحة"
+    },
+    "products": {
+      "eyebrow": "إدارة المنتجات",
+      "title": "إدارة المنتجات",
+      "description": "تحرير الصور، الفئات، وحالة الظهور.",
+      "filtersTitle": "الفلاتر والبحث",
+      "filtersDescription": "ابحث حسب المنتج او الفئة او الحالة.",
+      "searchPlaceholder": "ابحث عن منتج",
+      "featuredOnly": "مميز",
+      "regularOnly": "غير مميز",
+      "viewCards": "بطاقات",
+      "viewTable": "جدول",
+      "resultCount": "{count} منتجات",
+      "optionsCount": "{count} خيارات",
+      "empty": "لا توجد منتجات مطابقة للاختيار الحالي.",
+      "table": {
+        "product": "المنتج",
+        "sku": "SKU",
+        "category": "التصنيف",
+        "status": "الحالة",
+        "options": "الخيارات",
+        "actions": "الإجراءات",
+        "sortOrder": "الترتيب"
+      }
+    },
+    "categories": {
+      "eyebrow": "الفئات",
+      "title": "إدارة الفئات",
+      "description": "تنظيم المجموعات، الربط، وحالة الظهور.",
+      "bulkTitle": "التحديد",
+      "bulkDescription": "تحديث عدة فئات معا.",
+      "searchPlaceholder": "ابحث عن فئة",
+      "selectedCount": "تم تحديد {count}",
+      "empty": "لا توجد فئات مطابقة للبحث الحالي.",
+      "table": {
+        "category": "الفئة",
+        "slug": "Slug",
+        "sortOrder": "الترتيب",
+        "status": "الحالة",
+        "options": "الخيارات",
+        "actions": "الإجراءات",
+        "products": "المنتجات"
+      }
+    },
+    "gallery": {
+      "eyebrow": "المعرض",
+      "title": "المعرض",
+      "description": "اختر المنتجات وابدأ طلبات الورشة مباشرة من الكتالوج.",
+      "filtersTitle": "تصفية المعرض",
+      "filtersDescription": "ابحث حسب المنتج او الفئة.",
+      "searchPlaceholder": "ابحث عن منتج",
+      "internalOnly": "داخلي فقط",
+      "createWorkshopOrder": "إنشاء طلب ورشة",
+      "emptyTitle": "لم يتم العثور على منتجات",
+      "emptyDescription": "عدّل البحث او الفئة."
+    },
+    "newOrder": {
+      "eyebrow": "طلب ورشة جديد",
+      "title": "انشاء طلب",
+      "description": "اختر المنتج، فعّل الخيارات المناسبة، ثم جهّز طلب الورشة للإرسال.",
+      "productSelectionTitle": "المنتج والمراجع",
+      "productSelectionDescription": "يوفّر المعرض الداخلي المنتج والصور والبيانات الأساسية للطلب.",
+      "summaryTitle": "ملخص سريع",
+      "summaryDescription": "أهم المعلومات الأساسية تبقى ظاهرة أثناء تعبئة النموذج.",
+      "basicDescription": "ابدأ ببيانات الطلب والعميل والورشة.",
+      "optionEngineDescription": "تجمع هذه الأقسام بين الخيارات الأساسية وتفاصيل الطلب الحرة ضمن مسار واضح.",
+      "success": "تم إرسال الطلب إلى الورشة.",
+      "sections": {
+        "basic": "الأساسيات",
+        "gold": "الذهب",
+        "measurements": "المقاسات",
+        "name": "تخصيص الاسم",
+        "stones": "الاحجار",
+        "notes": "الملاحظات",
+        "product": "المنتج",
+        "order": "الطلب",
+        "personalization": "التخصيص",
+        "workshop": "الورشة",
+        "review": "المراجعة",
+        "tracking": "إشعارات العميل والتتبع"
+      },
+      "fields": {
+        "product": "المنتج من المعرض",
+        "orderNumber": "رقم الطلب الداخلي",
+        "quantity": "الكمية",
+        "priority": "الأولوية",
+        "workshop": "الورشة",
+        "productName": "اسم المنتج",
+        "category": "الفئة",
+        "dueDate": "تاريخ الاستحقاق",
+        "customerName": "اسم العميل",
+        "customerPhone": "هاتف العميل",
+        "customerReference": "مرجع العميل",
+        "targetWeight": "الوزن المستهدف",
+        "weightTolerance": "سماحية الوزن",
+        "pendantSize": "مقاس التعليقة",
+        "width": "العرض",
+        "height": "الارتفاع",
+        "customMeasurements": "مقاسات خاصة",
+        "hasNameCustomization": "تفعيل تخصيص الاسم",
+        "previewRequired": "المعاينة مطلوبة",
+        "nameLanguage": "لغة الاسم",
+        "fontStyle": "نمط الخط",
+        "namePlacement": "موضع الاسم",
+        "engravingPlacement": "موضع النقش",
+        "engravingNotes": "ملاحظات النقش",
+        "hasStones": "إضافة أحجار",
+        "stoneShape": "شكل الحجر",
+        "stoneSize": "مقاس الحجر",
+        "stoneQuantity": "عدد الأحجار",
+        "stoneSetting": "نوع التثبيت",
+        "customerNotes": "ملاحظات العميل",
+        "adminNotes": "ملاحظات الإدارة",
+        "qualityRequirements": "متطلبات الجودة",
+        "attachmentNotes": "ملاحظات المرفقات",
+        "assignedAdmin": "المدير المسؤول",
+        "assignedEmployee": "الموظف المسؤول",
+        "goldKarat": "عيار الذهب",
+        "goldColor": "لون الذهب",
+        "ringSize": "مقاس الخاتم",
+        "braceletSize": "مقاس السوار",
+        "chainLength": "طول السلسلة",
+        "workshopNotes": "ملاحظات الورشة",
+        "deliveryNotes": "ملاحظات التسليم",
+        "engravingText": "نص النقش",
+        "estimatedWeight": "الوزن المتوقع",
+        "internalNotes": "ملاحظات داخلية",
+        "language": "اللغة",
+        "nameCustomizationEnabled": "تخصيص الاسم مفعل",
+        "nameText": "الاسم / النص",
+        "packagingNotes": "ملاحظات التغليف",
+        "placement": "الموضع",
+        "stoneColor": "لون الحجر",
+        "stoneCount": "العدد",
+        "stonesEnabled": "الاحجار مفعلة",
+        "stoneType": "نوع الحجر",
+        "surface": "السطح",
+        "customerEmail": "بريد العميل الإلكتروني",
+        "emailUpdatesEnabled": "تفعيل تحديثات البريد الإلكتروني",
+        "trackingNumber": "رقم التتبع",
+        "trackingStatus": "حالة التتبع"
+      },
+      "productDescription": "حدد المنتج والفئة.",
+      "orderDescription": "اضف بيانات العميل والطلب.",
+      "goldDescription": "جهز تفاصيل الذهب للانتاج.",
+      "measurementsDescription": "ادخل المقاسات والقياسات الخاصة.",
+      "personalizationDescription": "حدد الاسم والنقش والمكان.",
+      "stonesDescription": "حدد الاحجار والتركيب.",
+      "workshopDescription": "اختر الورشة والموظف والاولوية.",
+      "reviewDescription": "راجع كل البيانات قبل الارسال.",
+      "additionalOptionsTitle": "حقول اضافية",
+      "additionalOptionsDescription": "فقط الخيارات المناسبة لهذا المنتج.",
+      "draftSaved": "تم حفظ المسودة.",
+      "reviewChecklistTitle": "قائمة مراجعة",
+      "reviewChecklistProduct": "تأكيد المنتج والكمية.",
+      "reviewChecklistGold": "مراجعة الذهب والمقاسات والتخصيص.",
+      "reviewChecklistWorkshop": "مراجعة الورشة والمسؤول والموعد.",
+      "stepCount": "الخطوة {step} من {total}",
+      "steps": {
+        "product": "المنتج",
+        "gold": "الذهب",
+        "measurements": "المقاسات",
+        "personalization": "التخصيص",
+        "stones": "الاحجار",
+        "workshop": "الورشة",
+        "review": "المراجعة والإرسال",
+        "productOptions": "المنتج والخيارات",
+        "customerWorkshop": "العميل والورشة"
+      },
+      "values": {
+        "yellowGold": "ذهب اصفر",
+        "whiteGold": "ذهب ابيض",
+        "roseGold": "ذهب وردي",
+        "polished": "مصقول",
+        "matte": "مطفي",
+        "brushed": "ممشط",
+        "classic": "كلاسيكي",
+        "modern": "حديث",
+        "script": "خط"
+      },
+      "trackingDescription": "جهّز البريد والهاتف ورقم التتبع للعميل قبل الإرسال.",
+      "successWithNotifications": "تم إنشاء الطلب، ويمكن الآن إرسال التحديثات للعميل.",
+      "personalizationDisabled": "تخصيص الاسم غير مفعّل لهذا المنتج."
+    },
+    "options": {
+      "eyebrow": "محرك الخيارات",
+      "title": "الخيارات",
+      "description": "التحكم في حقول الذهب، المقاسات، النقش، وخيارات الورشة.",
+      "groupsTitle": "مجموعات الخيارات",
+      "groupsDescription": "راجع مجموعات الخيارات بسرعة.",
+      "searchPlaceholder": "ابحث عن خيار أو key",
+      "productsScope": "منتجات",
+      "categoriesScope": "فئات",
+      "workshopOverrides": "تخصيصات ورش",
+      "noOverrides": "لا توجد تخصيصات ورش لهذه الخاصية حتى الآن.",
+      "empty": "لا توجد خيارات مطابقة للاختيار الحالي.",
+      "table": {
+        "option": "الخيار",
+        "type": "النوع",
+        "scope": "النطاق",
+        "status": "الحالة",
+        "assignments": "الربط",
+        "actions": "الإجراءات",
+        "group": "المجموعة"
+      },
+      "filtersTitle": "تصفية الخيارات",
+      "filtersDescription": "ابحث حسب المجموعة والحالة والالزام.",
+      "groupCount": "{count} مجموعات"
+    },
+    "orders": {
+      "eyebrow": "الطلبات",
+      "title": "الطلبات",
+      "description": "متابعة طلبات الورشة وتحديث حالتها.",
+      "filtersTitle": "تصفية الطلبات",
+      "filtersDescription": "ابحث حسب الطلب او المنتج او العميل او الورشة.",
+      "searchPlaceholder": "ابحث عن طلب او منتج او عميل",
+      "empty": "لا توجد طلبات مطابقة للاختيار الحالي.",
+      "detailEyebrow": "تفاصيل الطلب",
+      "detailDescription": "الطلب والعميل والانتاج في عرض واضح.",
+      "summaryTitle": "ملخص الطلب",
+      "summaryDescription": "المنتج والورشة والموعد بنظرة سريعة.",
+      "timelineTitle": "سجل التتبع",
+      "timelineDescription": "أحدث خطوات الحالة الخاصة بهذا الطلب.",
+      "goldDetailsTitle": "تفاصيل الذهب",
+      "measurementsTitle": "المقاسات",
+      "notesTitle": "الملاحظات والتعليمات",
+      "itemQuantity": "{count} قطعة في هذا الطلب",
+      "table": {
+        "order": "الطلب",
+        "customer": "العميل",
+        "workshop": "الورشة",
+        "status": "الحالة",
+        "employee": "الموظف",
+        "dueDate": "الاستحقاق",
+        "action": "الإجراءات",
+        "product": "المنتج",
+        "trackingNumber": "رقم التتبع",
+        "email": "البريد الإلكتروني",
+        "trackingStatus": "حالة التتبع"
+      },
+      "customerTitle": "العميل",
+      "customerDescription": "بيانات التواصل والمرجع.",
+      "personalizationTitle": "التخصيص",
+      "stonesTitle": "الاحجار",
+      "deliveryTitle": "التسليم",
+      "sidebarActionsTitle": "الاجراءات",
+      "trackingTitle": "التتبع",
+      "trackingDescription": "حالة الطلب وبيانات العميل وآخر التحديثات في بطاقة واحدة.",
+      "trackingNumberLabel": "رقم التتبع",
+      "trackingStatusLabel": "حالة التتبع",
+      "customerEmailLabel": "بريد العميل الإلكتروني",
+      "emailUpdatesLabel": "تحديثات البريد الإلكتروني",
+      "updatePanelTitle": "تحديث الحالة",
+      "updatePanelDescription": "حدّث حالة التتبع وأضف ملاحظة واضحة لمسار العميل.",
+      "updateNoteLabel": "ملاحظة",
+      "updateNotePlaceholder": "ملاحظة قصيرة حول التحديث",
+      "notifyByEmail": "إبلاغ العميل عبر البريد الإلكتروني",
+      "noCustomerEmail": "لا يوجد بريد إلكتروني محفوظ للعميل.",
+      "copySuccess": "تم نسخ رابط التتبع.",
+      "customerNotified": "تم إبلاغ العميل.",
+      "notifyError": "تعذّر تجهيز الإشعار الآن.",
+      "notifyDefaultMessage": "هناك تحديث جديد بخصوص طلبك.",
+      "statusSavedDescription": "تم تحديث حالة التتبع.",
+      "statusSavedAndNotified": "تم حفظ الحالة وإبلاغ العميل.",
+      "statusSaved": "تم حفظ حالة التتبع.",
+      "noStatusChanges": "يرجى تغيير الحالة أو إضافة ملاحظة."
+    },
+    "workshops": {
+      "eyebrow": "الورش",
+      "title": "الورش",
+      "description": "ادارة الورش وجهات الاتصال والحمولة.",
+      "cards": {
+        "contact": "التواصل",
+        "activeOrders": "طلبات نشطة",
+        "completed": "منجز هذا الشهر",
+        "performance": "الالتزام بالمواعيد",
+        "email": "البريد الالكتروني"
+      }
+    },
+    "employees": {
+      "eyebrow": "الموظفون",
+      "title": "الموظفون",
+      "description": "ادارة الفريق والادوار والمهام الحالية.",
+      "filtersTitle": "تصفية الموظفين",
+      "filtersDescription": "ابحث حسب الاسم او الدور او الورشة.",
+      "searchPlaceholder": "ابحث عن موظف",
+      "empty": "لا يوجد موظفون مطابقون للاختيار الحالي.",
+      "table": {
+        "employee": "الموظف",
+        "role": "الدور",
+        "workshop": "الورشة",
+        "workload": "الضغط",
+        "status": "الحالة",
+        "activeTasks": "المهام النشطة",
+        "attendance": "الحضور",
+        "actions": "الاجراءات"
+      }
+    },
+    "attendance": {
+      "eyebrow": "الدوام",
+      "title": "الدوام",
+      "description": "متابعة الورديات والحالات والغياب.",
+      "filtersTitle": "تصفية حسب الحالة",
+      "filtersDescription": "صف حسب الحالة والورشة.",
+      "empty": "لا توجد بيانات دوام لهذه التصفية.",
+      "table": {
+        "employee": "الموظف",
+        "date": "التاريخ",
+        "shift": "الشفت",
+        "status": "الحالة",
+        "note": "ملاحظة",
+        "workshop": "الورشة"
+      }
+    },
+    "reports": {
+      "eyebrow": "التقارير",
+      "title": "التقارير",
+      "description": "ملخص KPI للانتاج والطلبات والورش.",
+      "cards": {
+        "productionTime": "متوسط زمن الإنتاج",
+        "ready": "طلبات جاهزة",
+        "delivered": "طلبات تم تسليمها",
+        "activeWorkshops": "الورش النشطة"
+      },
+      "tabs": {
+        "status": "الحالات",
+        "workshops": "الورش",
+        "options": "الخيارات",
+        "workload": "الضغط"
+      },
+      "statusTitle": "الطلبات حسب الحالة",
+      "statusDescription": "نظرة سريعة على توزيع الإنتاج الحالي.",
+      "workshopsTitle": "الطلبات حسب الورشة",
+      "workshopsDescription": "أي ورشة تتحمل الضغط الأكبر حالياً.",
+      "optionsTitle": "استخدام الخيارات",
+      "optionsDescription": "أكثر حقول الخيارات استخداماً في الوقت الحالي.",
+      "workloadTitle": "ضغط الموظفين",
+      "workloadDescription": "الطلبات النشطة ونسبة الإنجاز التقريبية لكل شخص.",
+      "activeOrdersCount": "{count} طلبات نشطة"
+    },
+    "archive": {
+      "eyebrow": "الأرشيف",
+      "title": "الارشيف",
+      "description": "استعراض الطلبات والمنتجات المؤرشفة.",
+      "ordersTitle": "الطلبات المؤرشفة",
+      "ordersDescription": "عمليات إنتاج مكتملة أو مؤرشفة.",
+      "productsTitle": "المنتجات المؤرشفة",
+      "productsDescription": "بطاقات منتجات غير نشطة أو مخفية مؤقتاً.",
+      "deleteDisabled": "الحذف معطل",
+      "filtersTitle": "تصفية الارشيف",
+      "filtersDescription": "ابحث حسب العنصر او النوع او الحالة.",
+      "searchPlaceholder": "ابحث في الارشيف",
+      "empty": "لا توجد عناصر مؤرشفة.",
+      "typeOrder": "طلب",
+      "typeProduct": "منتج",
+      "table": {
+        "item": "العنصر",
+        "type": "النوع",
+        "status": "الحالة",
+        "context": "السياق",
+        "actions": "الإجراءات"
+      }
+    },
+    "settings": {
+      "eyebrow": "الإعدادات",
+      "title": "الاعدادات",
+      "description": "إدارة بيانات الشركة، معلومات التواصل، وإعدادات لوحة التحكم.",
+      "contactTitle": "بيانات التواصل",
+      "contactDescription": "البيانات الأساسية للشركة داخل المنطقة الداخلية.",
+      "preferencesTitle": "تفضيلات اللوحة",
+      "preferencesDescription": "اضبط اللغة والمظهر داخل لوحة الإدارة.",
+      "fields": {
+        "companyName": "اسم الشركة",
+        "address": "العنوان",
+        "phone": "الهاتف",
+        "defaultLanguage": "اللغة الافتراضية",
+        "dashboardTheme": "مظهر اللوحة",
+        "contactFormStatus": "نموذج التواصل",
+        "demoRole": "الدور النشط",
+        "density": "الكثافة",
+        "email": "البريد الالكتروني",
+        "legalNotice": "الاشعار القانوني",
+        "privacyPolicy": "سياسة الخصوصية",
+        "sidebarMode": "وضع الشريط الجانبي"
+      },
+      "values": {
+        "luxuryDark": "داكن فاخر",
+        "softGold": "ذهبي هادئ",
+        "comfortable": "مريح",
+        "compact": "مضغوط",
+        "compactDensity": "مضغوط",
+        "expanded": "موسع"
+      },
+      "companyTitle": "بيانات الشركة",
+      "companyDescription": "البيانات الاساسية لمنطقة الادارة.",
+      "websiteTitle": "الموقع",
+      "websiteDescription": "اللغة والثيم ونموذج التواصل.",
+      "dashboardTitle": "لوحة التحكم",
+      "dashboardDescription": "التحكم في عرض الصلاحيات، الشريط الجانبي، وكثافة العمل.",
+      "legalTitle": "قانوني",
+      "legalDescription": "مراجعة بيانات الإشعار القانوني والخصوصية داخل اللوحة.",
+      "previewMessage": "تم تحديث المعاينة.",
+      "resetMessage": "تمت اعادة ضبط الاعدادات.",
+      "saveMessage": "تم حفظ الإعدادات."
+    },
+    "trackingStatus": {
+      "created": "تم إنشاء الطلب",
+      "sent_to_workshop": "تم الإرسال إلى الورشة",
+      "accepted_by_workshop": "تم قبوله في الورشة",
+      "in_production": "قيد الإنتاج",
+      "quality_check": "فحص الجودة",
+      "ready_for_pickup": "جاهز للاستلام",
+      "on_the_way": "في الطريق",
+      "delivered_to_store": "وصل إلى المتجر",
+      "picked_up": "تم الاستلام",
+      "completed": "مكتمل",
+      "cancelled": "ملغي"
+    }
+  },
+  "Tracking": {
+    "title": "حالة الطلب",
+    "description": "تابع الحالة الحالية لطلبك لدى GoldHelwah GmbH.",
+    "currentStatus": "الحالة الحالية",
+    "timelineTitle": "التسلسل",
+    "timelineDescription": "آخر التحديثات الخاصة بطلبك.",
+    "contact": "التواصل",
+    "phone": "اتصال",
+    "backToWebsite": "العودة إلى الموقع"
+  }
+}

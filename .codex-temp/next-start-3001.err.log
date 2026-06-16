@@ -1,0 +1,18 @@
+⨯ TypeError: a.lines.map is not a function
+    at <unknown> (C:\Users\AHMAD\gold-manufaktur\.next\server\chunks\ssr\[root-of-the-server]__0vhz_2g._.js:1:1749)
+    at Array.map (<anonymous>)
+    at <unknown> (C:\Users\AHMAD\gold-manufaktur\.next\server\chunks\ssr\[root-of-the-server]__0vhz_2g._.js:1:1481) {
+  digest: '1071293099'
+}
+⨯ TypeError: a.lines.map is not a function
+    at <unknown> (C:\Users\AHMAD\gold-manufaktur\.next\server\chunks\ssr\[root-of-the-server]__0vhz_2g._.js:1:1749)
+    at Array.map (<anonymous>)
+    at <unknown> (C:\Users\AHMAD\gold-manufaktur\.next\server\chunks\ssr\[root-of-the-server]__0vhz_2g._.js:1:1481) {
+  digest: '1071293099'
+}
+⨯ TypeError: a.lines.map is not a function
+    at <unknown> (C:\Users\AHMAD\gold-manufaktur\.next\server\chunks\ssr\[root-of-the-server]__0vhz_2g._.js:1:1749)
+    at Array.map (<anonymous>)
+    at <unknown> (C:\Users\AHMAD\gold-manufaktur\.next\server\chunks\ssr\[root-of-the-server]__0vhz_2g._.js:1:1481) {
+  digest: '1071293099'
+}

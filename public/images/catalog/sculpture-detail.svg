@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" fill="none">
+  <rect width="900" height="1100" fill="#070707"/>
+  <defs>
+    <linearGradient id="sculpture" x1="171" y1="167" x2="718" y2="936" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C987"/>
+      <stop offset=".49" stop-color="#C49A52"/>
+      <stop offset="1" stop-color="#66441C"/>
+    </linearGradient>
+  </defs>
+  <path d="M241 858C377 617 468 486 514 466C575 439 649 471 681 533C713 596 684 669 620 710C574 739 451 787 252 854" stroke="url(#sculpture)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="644" cy="551" r="38" fill="#E8C987"/>
+  <circle cx="644" cy="551" r="86" stroke="url(#sculpture)" stroke-opacity=".35" stroke-width="3"/>
+</svg>

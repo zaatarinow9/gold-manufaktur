@@ -1,0 +1,950 @@
+{
+  "Metadata": {
+    "site": {
+      "brand": "GoldHelwah GmbH",
+      "title": "GoldHelwah GmbH",
+      "description": "GoldHelwah GmbH présente des bijoux en or sélectionnés avec visuels réels, conseil personnalisé et présentation claire à Sarrebruck.",
+      "keywords": [
+        "GoldHelwah GmbH",
+        "bijoux en or",
+        "bijoux de luxe",
+        "catalogue de bijoux",
+        "showroom",
+        "alliances"
+      ]
+    },
+    "pages": {
+      "home": {
+        "title": "Showroom de bijoux en or de luxe",
+        "description": "Découvrez des bijoux en or de caractère, des visuels réels et un conseil personnalisé chez GoldHelwah GmbH."
+      },
+      "shop": {
+        "title": "Collection",
+        "description": "Explorez des pièces sélectionnées, des catégories claires et les détails de la collection GoldHelwah GmbH."
+      },
+      "contact": {
+        "title": "Contact",
+        "description": "Contactez GoldHelwah GmbH pour un conseil, une demande produit ou votre visite du showroom à Sarrebruck."
+      },
+      "impressum": {
+        "title": "Mentions légales",
+        "description": "Mentions légales et coordonnées de GoldHelwah GmbH en un coup d'oeil."
+      },
+      "privacy": {
+        "title": "Confidentialité",
+        "description": "Informations sur la confidentialité liées à la visite du site, au choix de langue et aux demandes de contact chez GoldHelwah GmbH."
+      }
+    }
+  },
+  "Nav": {
+    "tagline": "Bijoux en or de luxe",
+    "language": "Changer de langue",
+    "currentLanguage": "Actuel",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "links": {
+      "home": "Accueil",
+      "shop": "Shop",
+      "contact": "Contact",
+      "impressum": "Mentions légales",
+      "privacy": "Confidentialité"
+    }
+  },
+  "Footer": {
+    "description": "GoldHelwah GmbH propose des bijoux en or sélectionnés avec soin, un conseil personnalisé et une présentation claire à Sarrebruck.",
+    "navigationTitle": "Pages",
+    "contactTitle": "Contact",
+    "socialTitle": "Suivez-nous",
+    "emailPlaceholder": "info@goldhelwah.de",
+    "legalNote": "Rendez-nous visite à Sarrebruck ou contactez-nous pour un conseil personnalisé.",
+    "rights": "GoldHelwah GmbH. Tous droits réservés.",
+    "socials": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "Home": {
+    "hero": {
+      "eyebrow": "GoldHelwah GmbH",
+      "title": "Des bijoux en or qui attirent le regard.",
+      "subtitle": "Visuels réels, conseil personnalisé et pièces choisies pour les moments importants.",
+      "primaryCta": "Découvrir les produits",
+      "secondaryCta": "Demander un conseil",
+      "backgroundAlt": "Composition hero GoldHelwah GmbH",
+      "stats": [
+        {
+          "value": "17",
+          "label": "Catégories"
+        },
+        {
+          "value": "5",
+          "label": "Langues"
+        },
+        {
+          "value": "Saarbrücken",
+          "label": "Showroom"
+        }
+      ]
+    },
+    "categories": {
+      "eyebrow": "Catégories sélectionnées",
+      "title": "Des collections qui attirent immédiatement le regard.",
+      "description": "Choisissez parmi des lignes, des ensembles et des pièces en or marquantes."
+    },
+    "products": {
+      "eyebrow": "Produits sélectionnés",
+      "title": "Visuels réels. Choix clair. Or de caractère.",
+      "description": "Des pièces sélectionnées dans différentes catégories.",
+      "sectionCta": "Voir le showroom",
+      "cardCta": "Voir les détails"
+    },
+    "aboutGold": {
+      "eyebrow": "À propos de l'or",
+      "title": "L'or qui reste.",
+      "description": "L'or est plus qu'un bijou. Il représente la valeur, le souvenir et les moments précieux. Chez GoldHelwah GmbH, nous sélectionnons des pièces à la présence visible et au sens personnel.",
+      "imageAlt": "Détail de bijou en or de GoldHelwah GmbH",
+      "points": [
+        "Valeur durable",
+        "Sens personnel",
+        "Savoir-faire visible"
+      ]
+    },
+    "aboutCompany": {
+      "eyebrow": "À propos de nous",
+      "title": "À propos de GoldHelwah GmbH",
+      "description": "GoldHelwah GmbH propose des bijoux en or sélectionnés, un conseil personnalisé et une présentation claire des produits à Saarbrücken. Notre objectif est d'offrir une sélection calme, fiable et haut de gamme.",
+      "teamLabel": "Notre approche",
+      "story": "L'équipe de GoldHelwah GmbH et la direction privilégient l'échange personnel, une sélection claire et des pièces adaptées au moment comme au style.",
+      "locationLabel": "Sur place"
+    },
+    "trust": {
+      "eyebrow": "Pourquoi GoldHelwah GmbH",
+      "title": "Clair, personnel et proche du produit.",
+      "items": [
+        {
+          "title": "Conseil personnalisé",
+          "description": "Un accompagnement direct et individuel."
+        },
+        {
+          "title": "Vraies photos produits",
+          "description": "La sélection montre de vraies pièces."
+        },
+        {
+          "title": "Bijoux sur mesure",
+          "description": "Les demandes spéciales restent possibles."
+        },
+        {
+          "title": "Retrait à Saarbruecken",
+          "description": "Disponible sur place en personne."
+        }
+      ]
+    },
+    "cta": {
+      "badge": "Service GoldHelwah GmbH",
+      "title": "Vous cherchez un cadeau ou une création sur mesure ?",
+      "description": "Nous vous conseillons volontiers sur le choix, les demandes spéciales et le retrait.",
+      "primaryCta": "Voir le shop",
+      "secondaryCta": "Appeler"
+    }
+  },
+  "Shop": {
+    "hero": {
+      "eyebrow": "GoldHelwah GmbH",
+      "title": "Collection",
+      "subtitle": "Vraies images produits, sélection claire et conseil personnalisé.",
+      "primaryCta": "Envoyer une demande",
+      "secondaryCta": "Contact",
+      "stats": {
+        "categories": "Catégories",
+        "featured": "Sélection",
+        "checkout": "Conseil"
+      },
+      "visualBadge": "Aperçu éditorial",
+      "visualAlt": "Showroom de bijoux GoldHelwah GmbH",
+      "cards": {
+        "oneLabel": "Accent visuel",
+        "oneText": "De grandes cartes produits avec de vraies images et peu de texte.",
+        "twoLabel": "Structure catalogue",
+        "twoText": "Catégories, détails produits et demandes restent clairs et faciles à parcourir."
+      }
+    },
+    "grid": {
+      "eyebrow": "Collection",
+      "title": "Découvrir par catégorie.",
+      "all": "Tout",
+      "resultsSuffix": "modèles",
+      "emptyBadge": "Sur demande",
+      "emptyTitle": "Nous vous guidons volontiers vers la pièce adaptée à cette sélection.",
+      "emptyText": "Écrivez-nous si vous recherchez une ligne ou un modèle précis."
+    },
+    "card": {
+      "cta": "Détails"
+    },
+    "modal": {
+      "close": "Fermer",
+      "fallbackCategory": "Collection",
+      "categoryLabel": "Catégorie",
+      "galleryLabel": "Galerie",
+      "galleryCountSuffix": "images",
+      "tagsLabel": "Détails",
+      "requestCta": "Envoyer une demande",
+      "backCta": "Retour"
+    }
+  },
+  "Contact": {
+    "hero": {
+      "eyebrow": "Contact",
+      "title": "Contactez GoldHelwah GmbH sans détour.",
+      "subtitle": "Pour les demandes produit, les conseils, les messages WhatsApp et l’itinéraire vers le showroom, tout l’essentiel est réuni ici.",
+      "primaryCta": "Voir la collection",
+      "secondaryCta": "Lire la confidentialité"
+    },
+    "cards": {
+      "consultationTitle": "Conseil",
+      "consultationValue": "Personnel et curaté",
+      "consultationText": "Collections, idées cadeaux et demandes spéciales sont étudiées individuellement.",
+      "phoneTitle": "Téléphone",
+      "phoneText": "Contact direct pour les questions rapides ou la prise de rendez-vous.",
+      "phoneCta": "Appeler",
+      "whatsappTitle": "WhatsApp",
+      "whatsappText": "Idéal pour les questions rapides et les échanges de photos du showroom.",
+      "whatsappCta": "Ouvrir le chat"
+    },
+    "form": {
+      "eyebrow": "Prendre contact",
+      "title": "Prendre contact",
+      "description": "Écrivez-nous pour une demande produit, un conseil ou une création sur mesure.",
+      "highlights": "Contact",
+      "fields": {
+        "name": "Nom",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "message": "Message"
+      },
+      "placeholders": {
+        "name": "Votre nom",
+        "email": "Votre adresse e-mail",
+        "phone": "Votre numéro de téléphone",
+        "message": "Quel est le sujet de votre demande ?"
+      },
+      "submit": "Envoyer le message",
+      "submitPending": "Envoi en cours",
+      "success": "Merci. Votre demande a bien été enregistrée.",
+      "error": "Veuillez vérifier vos informations et réessayer.",
+      "validation": {
+        "name": "Veuillez indiquer votre nom.",
+        "email": "Veuillez saisir une adresse e-mail valide.",
+        "phone": "Veuillez saisir un numéro de téléphone valide.",
+        "message": "Veuillez écrire un court message."
+      }
+    },
+    "location": {
+      "eyebrow": "Adresse",
+      "title": "Rendez visite à GoldHelwah GmbH à Saarbrücken.",
+      "description": "Adresse, téléphone et itinéraire en un coup d’œil.",
+      "addressLabel": "Adresse",
+      "phoneLabel": "Téléphone",
+      "routeCta": "Planifier l’itinéraire",
+      "callCta": "Appeler",
+      "mapTitle": "Emplacement de GoldHelwah GmbH sur Google Maps"
+    }
+  },
+  "Impressum": {
+    "eyebrow": "Juridique",
+    "title": "Mentions légales",
+    "description": "Mentions légales et coordonnées de GoldHelwah GmbH en un seul endroit.",
+    "complianceNoticeTitle": "Note importante",
+    "complianceNoticeDescription": "Les champs suivants désignent volontairement des informations qui ne doivent pas être inventées. Avant publication, la forme juridique, la représentation et les données fiscales doivent être complétées.",
+    "sections": [
+      {
+        "title": "Identification du fournisseur",
+        "lines": [
+          "GoldHelwah GmbH",
+          "Breite Straße 9, 66115 Saarbrücken",
+          "[Ajouter la forme juridique]",
+          "[Ajouter le représentant autorisé]"
+        ]
+      },
+      {
+        "title": "Contact",
+        "lines": [
+          "+49 173 5371225",
+          "[Ajouter l’adresse e-mail]",
+          "Showroom : Breite Straße 9, 66115 Saarbrücken"
+        ]
+      },
+      {
+        "title": "Registre et fiscalité",
+        "lines": [
+          "[Ajouter le registre du commerce et le tribunal compétent]",
+          "[Ajouter le numéro de TVA ou fiscal]"
+        ]
+      },
+      {
+        "title": "Responsable du contenu",
+        "lines": "[Ajouter la personne responsable selon le droit applicable]"
+      },
+      {
+        "title": "Note sur le site",
+        "lines": [
+          "Le site présente les collections, des visuels réels et les moyens de contact de GoldHelwah GmbH.",
+          "Le conseil personnalisé et les demandes produit restent au coeur de l'expérience."
+        ]
+      }
+    ],
+    "disclaimerTitle": "Entretien et mise à jour",
+    "disclaimerText": "Dès que d’autres services, formulaires ou données réelles de l’entreprise seront intégrés, cette page devra être revue et mise à jour."
+  },
+  "Privacy": {
+    "eyebrow": "Confidentialité",
+    "title": "Informations de confidentialité",
+    "description": "Ces informations couvrent le fonctionnement actuel du showroom.",
+    "intro": "Comme aucun compte, aucune commande ou aucun paiement n’est intégré, le traitement des données reste volontairement limité. Avant le lancement, tous les services finaux devront être revus.",
+    "sections": [
+      {
+        "title": "1. Responsable",
+        "paragraphs": [
+          "Le responsable est GoldHelwah GmbH, Breite Straße 9, 66115 Saarbrücken, téléphone +49 173 5371225, e-mail info@goldhelwah.de.",
+          "Une fois les informations finales disponibles, les mentions légales et la confidentialité devront être harmonisées."
+        ]
+      },
+      {
+        "title": "2. Données techniques de connexion",
+        "paragraphs": [
+          "Lors de la visite du site, des données techniquement nécessaires comme l’adresse IP, l’heure, le type de navigateur et les contenus demandés peuvent être traitées.",
+          "Ce traitement sert à garantir une mise à disposition sûre et stable du site."
+        ]
+      },
+      {
+        "title": "3. Demandes de contact",
+        "paragraphs": [
+          "Si vous utilisez le formulaire de contact ou nous appelez, vos données seront utilisées uniquement pour traiter votre demande.",
+          "Les informations réellement nécessaires dépendent du contexte et de votre intérêt produit."
+        ]
+      },
+      {
+        "title": "4. Langue et cookies",
+        "paragraphs": [
+          "Le site prend en charge plusieurs langues. Une préférence de langue peut être enregistrée pour des raisons techniques.",
+          "Cela sert uniquement à afficher le site dans la langue choisie lors des visites ultérieures."
+        ]
+      },
+      {
+        "title": "5. Demandes et communication",
+        "paragraphs": [
+          "Le site permet d'envoyer à GoldHelwah GmbH des demandes produit et des souhaits de conseil.",
+          "Si les canaux de communication ou les services liés au site évoluent, cette page doit être mise à jour en conséquence."
+        ]
+      }
+    ],
+    "noticeTitle": "Obligation de mise à jour",
+    "noticeText": "Toute future intégration d’outils, de services ou de nouveaux processus de contact devra déclencher une nouvelle mise à jour de la confidentialité."
+  },
+  "Admin": {
+    "meta": {
+      "title": "Admin",
+      "description": "Admin GoldHelwah GmbH pour le catalogue, les commandes et les ateliers."
+    },
+    "header": {
+      "adminArea": "Espace admin",
+      "demoMode": "Rôle actif",
+      "activeUser": "Utilisateur actif",
+      "roleFoundation": "Base des rôles",
+      "roleHint": "Les rôles et les vues internes restent clairement attribués.",
+      "welcome": "Bienvenue, {name}",
+      "toWebsite": "Voir le site"
+    },
+    "roles": {
+      "super_admin": "Super Admin",
+      "admin": "Admin",
+      "employee": "Employé"
+    },
+    "nav": {
+      "overview": "Vue d'ensemble",
+      "products": "Produits",
+      "categories": "Catégories",
+      "gallery": "Galerie admin",
+      "options": "Options",
+      "orders": "Commandes",
+      "workshops": "Ateliers",
+      "employees": "Employés",
+      "attendance": "Presences",
+      "reports": "Rapports",
+      "archive": "Archive",
+      "settings": "Paramètres"
+    },
+    "buttons": {
+      "openMenu": "Menu",
+      "close": "Fermer",
+      "demoLogin": "Changer d'utilisateur",
+      "addProduct": "Ajouter un produit",
+      "createOrder": "Creer une commande",
+      "viewDetails": "Details",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "newCategory": "Nouvelle catégorie",
+      "bulkEnable": "Activer",
+      "bulkDisable": "Desactiver",
+      "assignOptions": "Assigner les options",
+      "saveDraft": "Enregistrer le brouillon",
+      "submitOrder": "Envoyer a l'atelier",
+      "createCustomOption": "Option personnalisée",
+      "addOption": "Ajouter une option",
+      "addWorkshop": "Ajouter un atelier",
+      "addEmployee": "Ajouter un employé",
+      "addAbsence": "Ajouter une absence",
+      "markReady": "Marquer prêt",
+      "updateStatus": "Changer le statut",
+      "assignEmployee": "Assigner un employé",
+      "addNote": "Ajouter une note",
+      "archive": "Archiver",
+      "restore": "Restaurer",
+      "backToOrders": "Retour aux commandes",
+      "duplicate": "Dupliquer",
+      "deactivate": "Desactiver",
+      "activate": "Activer",
+      "options": "Options",
+      "createOptionGroup": "Creer un groupe",
+      "viewOrders": "Voir les commandes",
+      "preview": "Apercu",
+      "reset": "Reinitialiser",
+      "save": "Enregistrer",
+      "next": "Suivant",
+      "previous": "Precedent",
+      "notifyCustomer": "Informer le client",
+      "copyTrackingLink": "Copier le lien",
+      "saveStatus": "Enregistrer le statut"
+    },
+    "common": {
+      "noAccessTitle": "Accès limité",
+      "noAccessText": "Cette vue n'est pas disponible pour le compte actuel.",
+      "catalogOnly": "Showroom",
+      "curated": "Sélectionné",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "optional": "Optionnel",
+      "required": "Obligatoire",
+      "all": "Tout",
+      "search": "Recherche",
+      "selectPlaceholder": "Veuillez choisir",
+      "unassigned": "Non assigné",
+      "noCustomer": "Sans données client",
+      "mockSubmit": "Action enregistrée.",
+      "selected": "Selection",
+      "internalOnly": "Interne uniquement",
+      "visibility": "Visibilite",
+      "visible": "Visible",
+      "hidden": "Masque",
+      "yes": "Oui",
+      "no": "Non",
+      "enabled": "Active",
+      "disabled": "Desactive"
+    },
+    "filters": {
+      "category": "Catégorie",
+      "status": "Statut",
+      "featured": "Mis en avant",
+      "priority": "Priorité",
+      "workshop": "Atelier",
+      "employee": "Employé",
+      "role": "Rôle"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "sent_to_workshop": "Envoyé à l'atelier",
+      "accepted": "Accepté",
+      "assigned": "Assigné",
+      "in_production": "En production",
+      "quality_check": "Contrôle qualité",
+      "ready": "Prêt",
+      "delivered": "Livré",
+      "cancelled": "Annulé",
+      "archived": "Archivé",
+      "present": "Présent",
+      "absent": "Absent",
+      "vacation": "Congé",
+      "sick": "Malade",
+      "late": "En retard"
+    },
+    "priority": {
+      "normal": "Normal",
+      "urgent": "Urgent",
+      "express": "Express"
+    },
+    "overview": {
+      "eyebrow": "Dashboard",
+      "title": "Tableau de bord",
+      "description": "Vue d'ensemble du catalogue, des commandes et des ateliers.",
+      "stats": {
+        "totalProducts": "Produits totaux",
+        "totalProductsHint": "Données réelles du catalogue showroom",
+        "activeCategories": "Catégories actives",
+        "activeCategoriesHint": "Claires et structurées",
+        "newOrders": "Nouvelles commandes atelier",
+        "newOrdersHint": "Brouillons et envois récents",
+        "inProduction": "En production",
+        "inProductionHint": "Travail en cours",
+        "readyOrders": "Commandes prêtes",
+        "readyOrdersHint": "Prêtes pour remise ou retrait",
+        "employees": "Employés",
+        "employeesHint": "Visibles selon le rôle actif"
+      },
+      "recentOrdersTitle": "Commandes récentes",
+      "recentOrdersDescription": "Dernieres commandes et statuts.",
+      "quickActionsTitle": "Actions rapides",
+      "quickActionsDescription": "Acces rapide aux taches frequentes.",
+      "actions": {
+        "addProduct": "Ajouter un produit",
+        "createOrder": "Créer une commande",
+        "manageOptions": "Gérer les options",
+        "addEmployee": "Ajouter un employé"
+      },
+      "workshopLoadTitle": "Charge des ateliers",
+      "workshopLoadDescription": "Charge actuelle par atelier."
+    },
+    "login": {
+      "title": "Accès admin GoldHelwah GmbH",
+      "description": "Accès interne pour le catalogue, les commandes et les ateliers.",
+      "cards": {
+        "securityTitle": "Séparation propre",
+        "securityText": "Cet accès réunit catalogue, ateliers et commandes dans une interface claire.",
+        "rolesTitle": "Prêt pour les rôles",
+        "rolesText": "Chaque rôle dispose d’une vue ciblée sur les produits, les tâches et le suivi atelier.",
+        "catalogTitle": "Catalogue d'abord",
+        "catalogText": "Le focus porte sur les produits, les commandes et un flux interne bien organisé."
+      },
+      "formTitle": "Connexion",
+      "formDescription": "Choisissez un compte utilisateur pour l'espace interne.",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "demoHint": "Rôle actif : {role}.",
+      "demoUsersTitle": "Utilisateurs disponibles"
+    },
+    "products": {
+      "eyebrow": "Gestion des produits",
+      "title": "Gérer les produits",
+      "description": "Modifier les visuels, les catégories et la visibilité.",
+      "filtersTitle": "Filtres & recherche",
+      "filtersDescription": "Rechercher par produit, categorie et statut.",
+      "searchPlaceholder": "Rechercher un produit",
+      "featuredOnly": "Mis en avant",
+      "regularOnly": "Non mis en avant",
+      "viewCards": "Cartes",
+      "viewTable": "Tableau",
+      "resultCount": "{count} produits",
+      "optionsCount": "{count} options",
+      "empty": "Aucun produit ne correspond à la sélection.",
+      "table": {
+        "product": "Produit",
+        "sku": "SKU",
+        "category": "Catégorie",
+        "status": "Statut",
+        "options": "Options",
+        "actions": "Actions",
+        "sortOrder": "Ordre"
+      }
+    },
+    "categories": {
+      "eyebrow": "Catégories",
+      "title": "Categories",
+      "description": "Gerer les categories et la visibilite.",
+      "bulkTitle": "Selection",
+      "bulkDescription": "Modifier plusieurs categories ensemble.",
+      "searchPlaceholder": "Rechercher une categorie",
+      "selectedCount": "{count} selectionnes",
+      "empty": "Aucune catégorie trouvée pour cette recherche.",
+      "table": {
+        "category": "Catégorie",
+        "slug": "Slug",
+        "sortOrder": "Ordre",
+        "status": "Statut",
+        "options": "Options",
+        "actions": "Actions",
+        "products": "Produits"
+      }
+    },
+    "gallery": {
+      "eyebrow": "Galerie interne",
+      "title": "Galerie admin",
+      "description": "Choisir un produit et lancer une commande.",
+      "filtersTitle": "Filtrer la galerie",
+      "filtersDescription": "Rechercher par produit ou categorie.",
+      "searchPlaceholder": "Rechercher un produit",
+      "internalOnly": "Interne uniquement",
+      "createWorkshopOrder": "Créer une commande atelier",
+      "emptyTitle": "Aucun produit trouve",
+      "emptyDescription": "Ajustez la recherche ou la categorie."
+    },
+    "newOrder": {
+      "eyebrow": "Nouvelle commande atelier",
+      "title": "Creer une commande",
+      "description": "Choisir un produit, preparer le suivi et envoyer a l atelier.",
+      "productSelectionTitle": "Produit et références",
+      "productSelectionDescription": "La galerie interne fournit le produit, les images et les données de base.",
+      "summaryTitle": "Résumé",
+      "summaryDescription": "Les informations clés restent visibles pendant toute la saisie.",
+      "basicDescription": "Commencez par les bases de la commande, du client et de l'atelier.",
+      "optionEngineDescription": "Ces sections regroupent les options standard et les détails libres de la commande dans un flux clair.",
+      "success": "La commande a été envoyée à l'atelier.",
+      "sections": {
+        "basic": "Base",
+        "gold": "Or",
+        "measurements": "Mesures",
+        "name": "Personnalisation du nom",
+        "stones": "Pierres",
+        "notes": "Notes",
+        "product": "Produit",
+        "order": "Commande",
+        "personalization": "Personnalisation",
+        "workshop": "Atelier",
+        "review": "Verification",
+        "tracking": "Notification client & suivi"
+      },
+      "fields": {
+        "product": "Produit de la galerie",
+        "orderNumber": "Numéro interne",
+        "quantity": "Quantité",
+        "priority": "Priorité",
+        "workshop": "Atelier",
+        "productName": "Nom du produit",
+        "category": "Catégorie",
+        "dueDate": "Date d'échéance",
+        "customerName": "Nom du client",
+        "customerPhone": "Téléphone du client",
+        "customerReference": "Référence client",
+        "targetWeight": "Poids cible",
+        "weightTolerance": "Tolérance de poids",
+        "pendantSize": "Taille du pendentif",
+        "width": "Largeur",
+        "height": "Hauteur",
+        "customMeasurements": "Mesures spéciales",
+        "hasNameCustomization": "Activer la personnalisation du nom",
+        "previewRequired": "Aperçu requis",
+        "nameLanguage": "Langue du nom",
+        "fontStyle": "Style de police",
+        "namePlacement": "Placement du nom",
+        "engravingPlacement": "Placement de la gravure",
+        "engravingNotes": "Notes de gravure",
+        "hasStones": "Ajouter des pierres",
+        "stoneShape": "Forme de la pierre",
+        "stoneSize": "Taille de la pierre",
+        "stoneQuantity": "Quantité de pierres",
+        "stoneSetting": "Sertissage",
+        "customerNotes": "Notes client",
+        "adminNotes": "Notes admin",
+        "qualityRequirements": "Exigences qualité",
+        "attachmentNotes": "Notes de pièces jointes",
+        "assignedAdmin": "Admin assigné",
+        "assignedEmployee": "Employé assigné",
+        "goldKarat": "Carat d'or",
+        "goldColor": "Couleur d'or",
+        "ringSize": "Taille de bague",
+        "braceletSize": "Taille du bracelet",
+        "chainLength": "Longueur de chaîne",
+        "workshopNotes": "Notes atelier",
+        "deliveryNotes": "Notes de livraison",
+        "engravingText": "Texte de gravure",
+        "estimatedWeight": "Poids estime",
+        "internalNotes": "Notes internes",
+        "language": "Langue",
+        "nameCustomizationEnabled": "Personnalisation du nom active",
+        "nameText": "Nom / Texte",
+        "packagingNotes": "Emballage",
+        "placement": "Emplacement",
+        "stoneColor": "Couleur de pierre",
+        "stoneCount": "Quantite",
+        "stonesEnabled": "Pierres actives",
+        "stoneType": "Type de pierre",
+        "surface": "Surface",
+        "customerEmail": "E-mail client",
+        "emailUpdatesEnabled": "Activer les e-mails",
+        "trackingNumber": "Numero de suivi",
+        "trackingStatus": "Statut de suivi"
+      },
+      "productDescription": "Choisir le produit et la categorie.",
+      "orderDescription": "Ajouter les details client et commande.",
+      "goldDescription": "Preparer les details d'or pour la production.",
+      "measurementsDescription": "Saisir les tailles et mesures speciales.",
+      "personalizationDescription": "Definir le nom, la gravure et l'emplacement.",
+      "stonesDescription": "Definir les pierres et le sertissage.",
+      "workshopDescription": "Attribuer l'atelier, l'employe et la priorite.",
+      "reviewDescription": "Verifier toutes les informations avant l'envoi.",
+      "additionalOptionsTitle": "Champs supplementaires",
+      "additionalOptionsDescription": "Uniquement les options utiles pour ce produit.",
+      "draftSaved": "Brouillon enregistré.",
+      "reviewChecklistTitle": "Checklist",
+      "reviewChecklistProduct": "Confirmer le produit et la quantite.",
+      "reviewChecklistGold": "Verifier l'or, les tailles et la personnalisation.",
+      "reviewChecklistWorkshop": "Verifier l'atelier, le responsable et l'echeance.",
+      "stepCount": "Etape {step} sur {total}",
+      "steps": {
+        "product": "Produit",
+        "gold": "Or",
+        "measurements": "Mesures",
+        "personalization": "Personnalisation",
+        "stones": "Pierres",
+        "workshop": "Atelier",
+        "review": "Verifier et envoyer"
+      },
+      "values": {
+        "yellowGold": "Or jaune",
+        "whiteGold": "Or blanc",
+        "roseGold": "Or rose",
+        "polished": "Poli",
+        "matte": "Mat",
+        "brushed": "Brosse",
+        "classic": "Classique",
+        "modern": "Moderne",
+        "script": "Script"
+      },
+      "trackingDescription": "Preparer l e-mail, le telephone et le suivi client.",
+      "successWithNotifications": "Commande créée. Les notifications peuvent maintenant être envoyées."
+    },
+    "options": {
+      "eyebrow": "Moteur d'options",
+      "title": "Options",
+      "description": "Champs pour l'or, les mesures, la gravure et les ordres atelier.",
+      "groupsTitle": "Groupes d'options",
+      "groupsDescription": "Voir rapidement les groupes d'options.",
+      "searchPlaceholder": "Rechercher une option ou une clé",
+      "productsScope": "produits",
+      "categoriesScope": "catégories",
+      "workshopOverrides": "overrides atelier",
+      "noOverrides": "Aucun override atelier pour cette option pour le moment.",
+      "empty": "Aucune option trouvée pour la sélection actuelle.",
+      "table": {
+        "option": "Option",
+        "type": "Type",
+        "scope": "Périmètre",
+        "status": "Statut",
+        "assignments": "Affectations",
+        "actions": "Actions",
+        "group": "Groupe"
+      },
+      "filtersTitle": "Filtrer les options",
+      "filtersDescription": "Rechercher par groupe, statut et obligation.",
+      "groupCount": "{count} groupes"
+    },
+    "orders": {
+      "eyebrow": "Commandes",
+      "title": "Commandes",
+      "description": "Suivre et mettre à jour les commandes atelier.",
+      "filtersTitle": "Filtrer les commandes",
+      "filtersDescription": "Rechercher par commande, produit, client ou atelier.",
+      "searchPlaceholder": "Rechercher commande, produit ou client",
+      "empty": "Aucune commande trouvée pour cette sélection.",
+      "detailEyebrow": "Details commande",
+      "detailDescription": "Commande, client et production dans une vue claire.",
+      "summaryTitle": "Résumé de commande",
+      "summaryDescription": "Produit, atelier et echeance en un coup d'oeil.",
+      "timelineTitle": "Timeline de suivi",
+      "timelineDescription": "Dernieres etapes de cette commande.",
+      "goldDetailsTitle": "Détails de l'or",
+      "measurementsTitle": "Mesures",
+      "notesTitle": "Notes & consignes",
+      "itemQuantity": "{count} pièce(s) dans cette commande",
+      "table": {
+        "order": "Commande",
+        "customer": "Client",
+        "workshop": "Atelier",
+        "status": "Statut",
+        "employee": "Employé",
+        "dueDate": "Échéance",
+        "action": "Action",
+        "product": "Produit",
+        "trackingNumber": "No. suivi",
+        "email": "E-mail",
+        "trackingStatus": "Statut de suivi"
+      },
+      "customerTitle": "Client",
+      "customerDescription": "Coordonnees et reference.",
+      "personalizationTitle": "Personnalisation",
+      "stonesTitle": "Pierres",
+      "deliveryTitle": "Livraison",
+      "sidebarActionsTitle": "Actions",
+      "trackingTitle": "Suivi",
+      "trackingDescription": "Statut, infos client et dernieres etapes en un coup d oeil.",
+      "trackingNumberLabel": "Numero de suivi",
+      "trackingStatusLabel": "Statut de suivi",
+      "customerEmailLabel": "E-mail client",
+      "emailUpdatesLabel": "Mises a jour e-mail",
+      "updatePanelTitle": "Mettre a jour le statut",
+      "updatePanelDescription": "Gerer le statut de suivi et une note pour le client.",
+      "updateNoteLabel": "Note",
+      "updateNotePlaceholder": "Courte note sur cette mise a jour",
+      "notifyByEmail": "Informer le client par e-mail",
+      "noCustomerEmail": "Aucun e-mail client enregistre.",
+      "copySuccess": "Lien de suivi copie.",
+      "customerNotified": "Client informe.",
+      "notifyError": "La notification ne peut pas etre preparee maintenant.",
+      "notifyDefaultMessage": "Il y a une nouvelle mise a jour pour votre commande.",
+      "statusSavedDescription": "Le statut de suivi a ete mis a jour.",
+      "statusSavedAndNotified": "Statut enregistre et client informe.",
+      "statusSaved": "Statut de suivi enregistre.",
+      "noStatusChanges": "Modifiez le statut ou ajoutez une note."
+    },
+    "workshops": {
+      "eyebrow": "Ateliers",
+      "title": "Ateliers",
+      "description": "Gerer les ateliers, contacts et charge de travail.",
+      "cards": {
+        "contact": "Contact",
+        "activeOrders": "Commandes actives",
+        "completed": "Terminées ce mois",
+        "performance": "Respect des délais",
+        "email": "E-mail"
+      }
+    },
+    "employees": {
+      "eyebrow": "Employés",
+      "title": "Employes",
+      "description": "Gerer l'equipe, les roles et les taches en cours.",
+      "filtersTitle": "Filtrer les employés",
+      "filtersDescription": "Rechercher par nom, role ou atelier.",
+      "searchPlaceholder": "Rechercher un employe",
+      "empty": "Aucun employé trouvé pour cette sélection.",
+      "table": {
+        "employee": "Employé",
+        "role": "Rôle",
+        "workshop": "Atelier",
+        "workload": "Charge",
+        "status": "Statut",
+        "activeTasks": "Taches actives",
+        "attendance": "Presence",
+        "actions": "Actions"
+      }
+    },
+    "attendance": {
+      "eyebrow": "Présence",
+      "title": "Presences",
+      "description": "Suivre les shifts, statuts et absences.",
+      "filtersTitle": "Filtrer par statut",
+      "filtersDescription": "Filtrer par statut et atelier.",
+      "empty": "Aucune donnée de présence trouvée pour cette sélection.",
+      "table": {
+        "employee": "Employé",
+        "date": "Date",
+        "shift": "Shift",
+        "status": "Statut",
+        "note": "Note",
+        "workshop": "Atelier"
+      }
+    },
+    "reports": {
+      "eyebrow": "Rapports",
+      "title": "Rapports",
+      "description": "Vue KPI pour la production, les commandes et les ateliers.",
+      "cards": {
+        "productionTime": "Temps moyen de production",
+        "ready": "Commandes prêtes",
+        "delivered": "Commandes livrées",
+        "activeWorkshops": "Ateliers actifs"
+      },
+      "tabs": {
+        "status": "Statuts",
+        "workshops": "Ateliers",
+        "options": "Options",
+        "workload": "Charge"
+      },
+      "statusTitle": "Commandes par statut",
+      "statusDescription": "Lecture rapide de la répartition actuelle de production.",
+      "workshopsTitle": "Commandes par atelier",
+      "workshopsDescription": "Quel atelier porte la charge la plus forte.",
+      "optionsTitle": "Usage des options",
+      "optionsDescription": "Les champs d’option les plus utilisés actuellement.",
+      "workloadTitle": "Charge par employé",
+      "workloadDescription": "Commandes actives et taux d'achèvement approximatif par personne.",
+      "activeOrdersCount": "{count} commandes actives"
+    },
+    "archive": {
+      "eyebrow": "Archive",
+      "title": "Archive",
+      "description": "Parcourir les commandes et produits archives.",
+      "ordersTitle": "Commandes archivées",
+      "ordersDescription": "Flux de production terminés ou archivés.",
+      "productsTitle": "Produits archivés",
+      "productsDescription": "Produits inactifs ou temporairement masqués.",
+      "deleteDisabled": "Suppression désactivée",
+      "filtersTitle": "Filtrer l'archive",
+      "filtersDescription": "Rechercher par element, type ou statut.",
+      "searchPlaceholder": "Rechercher dans l'archive",
+      "empty": "Aucun element archive trouve.",
+      "typeOrder": "Commande",
+      "typeProduct": "Produit",
+      "table": {
+        "item": "Element",
+        "type": "Type",
+        "status": "Statut",
+        "context": "Contexte",
+        "actions": "Actions"
+      }
+    },
+    "settings": {
+      "eyebrow": "Paramètres",
+      "title": "Parametres",
+      "description": "Configurer l'entreprise, le site et le tableau de bord.",
+      "contactTitle": "Informations de contact",
+      "contactDescription": "Les données principales de l'entreprise pour l'espace interne.",
+      "preferencesTitle": "Préférences du dashboard",
+      "preferencesDescription": "Régler la langue et l’apparence de l’espace admin.",
+      "fields": {
+        "companyName": "Nom de l'entreprise",
+        "address": "Adresse",
+        "phone": "Téléphone",
+        "defaultLanguage": "Langue par défaut",
+        "dashboardTheme": "Thème du dashboard",
+        "contactFormStatus": "Formulaire de contact",
+        "demoRole": "Rôle actif",
+        "density": "Densite",
+        "email": "E-mail",
+        "legalNotice": "Mentions legales",
+        "privacyPolicy": "Confidentialite",
+        "sidebarMode": "Mode barre laterale"
+      },
+      "values": {
+        "luxuryDark": "Luxury Dark",
+        "softGold": "Soft Gold",
+        "comfortable": "Confortable",
+        "compact": "Compact",
+        "compactDensity": "Compact",
+        "expanded": "Etendu"
+      },
+      "companyTitle": "Informations entreprise",
+      "companyDescription": "Donnees principales pour l'espace admin.",
+      "websiteTitle": "Site web",
+      "websiteDescription": "Langue, theme et formulaire de contact.",
+      "dashboardTitle": "Tableau de bord",
+      "dashboardDescription": "Contrôler les vues par rôle, la barre latérale et la densité d’affichage.",
+      "legalTitle": "Mentions legales",
+      "legalDescription": "Espaces reserves pour mentions legales et confidentialite.",
+      "previewMessage": "Aperçu mis à jour.",
+      "resetMessage": "Parametres reinitialises.",
+      "saveMessage": "Paramètres enregistrés."
+    },
+    "trackingStatus": {
+      "created": "Cree",
+      "sent_to_workshop": "Envoye a l atelier",
+      "accepted_by_workshop": "Accepte par l atelier",
+      "in_production": "En production",
+      "quality_check": "Controle qualite",
+      "ready_for_pickup": "Pret au retrait",
+      "on_the_way": "En route",
+      "delivered_to_store": "Livre au magasin",
+      "picked_up": "Recupere",
+      "completed": "Termine",
+      "cancelled": "Annule"
+    }
+  },
+  "Tracking": {
+    "title": "Statut de commande",
+    "description": "Suivi de votre commande GoldHelwah GmbH.",
+    "currentStatus": "Statut actuel",
+    "timelineTitle": "Historique",
+    "timelineDescription": "Dernieres mises a jour de votre commande.",
+    "contact": "Contact",
+    "phone": "Appeler",
+    "backToWebsite": "Retour au site"
+  }
+}

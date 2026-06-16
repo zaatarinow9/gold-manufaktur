@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" fill="none">
+  <rect width="900" height="1100" fill="#060606"/>
+  <defs>
+    <linearGradient id="necklace" x1="109" y1="187" x2="782" y2="838" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C987"/>
+      <stop offset=".56" stop-color="#C49A52"/>
+      <stop offset="1" stop-color="#6B4A21"/>
+    </linearGradient>
+  </defs>
+  <path d="M122 346C248 227 359 168 456 168C553 168 664 227 790 346" stroke="url(#necklace)" stroke-width="15" stroke-linecap="round"/>
+  <path d="M211 425C299 333 381 288 456 288C531 288 613 333 701 425" stroke="url(#necklace)" stroke-opacity=".36" stroke-width="4" stroke-linecap="round"/>
+  <path d="M450 288V636" stroke="url(#necklace)" stroke-width="10" stroke-linecap="round"/>
+  <rect x="385" y="636" width="130" height="210" rx="65" stroke="url(#necklace)" stroke-width="14"/>
+</svg>

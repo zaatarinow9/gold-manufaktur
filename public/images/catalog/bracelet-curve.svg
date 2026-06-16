@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" fill="none">
+  <rect width="900" height="1100" fill="#060606"/>
+  <defs>
+    <linearGradient id="bracelet" x1="171" y1="261" x2="709" y2="839" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C987"/>
+      <stop offset=".55" stop-color="#C49A52"/>
+      <stop offset="1" stop-color="#704D23"/>
+    </linearGradient>
+  </defs>
+  <path d="M181 643C181 456 334 303 521 303C634 303 732 368 789 468" stroke="url(#bracelet)" stroke-width="20" stroke-linecap="round"/>
+  <path d="M711 457C680 390 612 344 531 344C420 344 330 434 330 545C330 656 420 746 531 746C612 746 680 700 711 633" stroke="url(#bracelet)" stroke-opacity=".42" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="741" cy="548" r="58" stroke="url(#bracelet)" stroke-width="14"/>
+</svg>

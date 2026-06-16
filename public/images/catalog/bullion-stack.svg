@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" fill="none">
+  <rect width="900" height="1100" fill="#060606"/>
+  <defs>
+    <linearGradient id="bullion" x1="219" y1="337" x2="689" y2="817" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EED18A"/>
+      <stop offset=".52" stop-color="#C49A52"/>
+      <stop offset="1" stop-color="#65431B"/>
+    </linearGradient>
+  </defs>
+  <path d="M219 677H581L681 547H319L219 677Z" fill="#140F09" stroke="url(#bullion)" stroke-width="10"/>
+  <path d="M329 546H691L781 426H419L329 546Z" fill="#110D08" stroke="url(#bullion)" stroke-width="10"/>
+  <path d="M299 798H659L739 698H379L299 798Z" fill="#100B06" stroke="url(#bullion)" stroke-width="10"/>
+</svg>
