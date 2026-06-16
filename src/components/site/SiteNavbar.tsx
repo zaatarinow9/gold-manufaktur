@@ -71,7 +71,7 @@ export function SiteNavbar() {
           </div>
 
           <div className="site-navbar-mobile-bar flex items-center justify-between gap-3 py-4 lg:hidden">
-            <div className="flex items-center gap-2">
+            <div className="rtl-inline-row flex items-center gap-2">
               <LanguageSwitcher
                 key={`mobile-${languageSwitcherKey}`}
                 onNavigate={closeMenu}

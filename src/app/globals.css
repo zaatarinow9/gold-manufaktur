@@ -29,6 +29,7 @@
   --font-body: var(--font-inter);
   --font-sans: var(--font-inter);
   --font-display: var(--font-cormorant);
+  --font-serif: var(--font-cormorant);
 }
 
 * {
@@ -268,6 +269,10 @@ button {
   font-family: var(--font-body), sans-serif;
 }
 
+.font-serif {
+  font-family: var(--font-serif), serif;
+}
+
 .section-copy {
   color: var(--muted);
   line-height: 1.85;
@@ -394,7 +399,10 @@ button {
 }
 
 html[lang="ar"],
-html[lang="ar"] body {
+html[lang="ar"] body,
+html[lang="ar"] .locale-root,
+html[lang="ar"] .site-shell,
+html[lang="ar"] .admin-shell {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
@@ -402,10 +410,7 @@ html[lang="ar"] {
   --font-body: var(--font-thmanyah);
   --font-sans: var(--font-thmanyah);
   --font-display: var(--font-thmanyah);
-}
-
-html[lang="ar"] body {
-  direction: rtl;
+  --font-serif: var(--font-thmanyah);
 }
 
 html[lang="ar"] button,
@@ -415,8 +420,39 @@ html[lang="ar"] select {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
-html[lang="ar"] * {
-  font-family: inherit;
+html[lang="ar"] .font-display,
+html[lang="ar"] .font-body,
+html[lang="ar"] .font-serif,
+html[lang="ar"] .heading,
+html[lang="ar"] .site-heading,
+html[lang="ar"] .hero-heading,
+html[lang="ar"] .section-heading,
+html[lang="ar"] .section-title,
+html[lang="ar"] .card-title,
+html[lang="ar"] .admin-heading {
+  font-family: var(--font-thmanyah), system-ui, sans-serif;
+}
+
+html[lang="ar"] h1,
+html[lang="ar"] h2,
+html[lang="ar"] h3,
+html[lang="ar"] h4,
+html[lang="ar"] h5,
+html[lang="ar"] h6 {
+  font-family: var(--font-thmanyah), system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+html[lang="ar"] p,
+html[lang="ar"] span,
+html[lang="ar"] a,
+html[lang="ar"] li,
+html[lang="ar"] label,
+html[lang="ar"] td,
+html[lang="ar"] th {
+  font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
 html[lang="ar"] .section-title,
@@ -424,20 +460,7 @@ html[lang="ar"] .card-title,
 html[lang="ar"] .site-heading,
 html[lang="ar"] .hero-heading,
 html[lang="ar"] .section-heading,
-html[lang="ar"] .font-display,
-html[lang="ar"] .font-body,
-html[lang="ar"] .admin-shell,
-html[lang="ar"] .site-shell,
-html[lang="ar"] .locale-root {
-  font-family: var(--font-thmanyah), system-ui, sans-serif;
-}
-
-html[lang="ar"] .hero-heading,
-html[lang="ar"] .section-heading,
-html[lang="ar"] .section-title,
-html[lang="ar"] .card-title,
 html[lang="ar"] .admin-heading {
-  font-weight: 700;
   line-height: 1.24;
   letter-spacing: 0;
 }
@@ -458,9 +481,12 @@ html[lang="ar"] .admin-page-kicker {
   font-weight: 600;
 }
 
+html[dir="rtl"] {
+  text-align: start;
+}
+
 html[dir="rtl"] body {
   direction: rtl;
-  text-align: start;
 }
 
 html[dir="rtl"] .hero-heading,

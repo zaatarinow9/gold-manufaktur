@@ -6,7 +6,6 @@ import { LocaleChrome } from "@/components/site/LocaleChrome";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNavbar } from "@/components/site/SiteNavbar";
 import { routing } from "@/i18n/routing";
-import { thmanyah } from "@/lib/fonts";
 import { createSiteMetadata } from "@/lib/metadata";
 import { getDirection, resolveLocale } from "@/lib/site";
 
@@ -34,10 +33,9 @@ export default async function LocaleLayout({
 }: LocaleLayoutProps) {
   const locale = await resolveLocale(params);
   const direction = getDirection(locale);
-  const localeClassName =
-    locale === "ar"
-      ? `${thmanyah.className} locale-root is-arabic`
-      : "locale-root";
+  const localeClassName = ["locale-root", locale === "ar" && "is-arabic"]
+    .filter(Boolean)
+    .join(" ");
 
   setRequestLocale(locale);
 

@@ -9,8 +9,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getLocale();
-  const direction = locale === "ar" ? "rtl" : "ltr";
-  const bodyFontClassName = locale === "ar" ? thmanyah.className : "";
+  const isArabic = locale === "ar";
+  const direction = isArabic ? "rtl" : "ltr";
+  const htmlClassName = [inter.variable, cormorant.variable, thmanyah.variable, isArabic && "is-arabic"]
+    .filter(Boolean)
+    .join(" ");
+  const bodyClassName = [
+    "relative bg-background text-foreground antialiased",
+    isArabic && thmanyah.className,
+    isArabic && "is-arabic",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <html
@@ -19,13 +29,9 @@ export default async function RootLayout({
       data-locale={locale}
       data-dir={direction}
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${cormorant.variable} ${thmanyah.variable}${locale === "ar" ? " is-arabic" : ""}`}
+      className={htmlClassName}
     >
-      <body
-        className={`relative bg-background text-foreground antialiased ${bodyFontClassName}`}
-      >
-        {children}
-      </body>
+      <body className={bodyClassName}>{children}</body>
     </html>
   );
 }
