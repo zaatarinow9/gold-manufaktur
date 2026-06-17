@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
+import type { AppLocale } from "@/i18n/routing";
+import { updateOrderTrackingAction } from "@/app/[locale]/admin/orders/actions";
 import { getTrackingLinkPath } from "@/lib/admin/tracking";
 import type { OrderTrackingEvent, TrackingStatus } from "@/types/admin";
 import { trackingStatusValues } from "@/types/admin";
@@ -41,7 +43,7 @@ export function OrderTrackingCard({
   orderId,
   trackingNumber,
 }: OrderTrackingCardProps) {
-  const locale = useLocale();
+  const locale = useLocale() as AppLocale;
   const t = useTranslations("Admin");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,36 +57,6 @@ export function OrderTrackingCard({
   const trackingPath = getTrackingLinkPath(locale, trackingNumber);
   const canNotifyCustomer = Boolean(customerEmail);
   const updatePanelId = `${orderId}-tracking-panel`;
-
-  const sendCustomerNotification = async (
-    status: TrackingStatus,
-    message: string
-  ) => {
-    if (!customerEmail) {
-      return false;
-    }
-
-    const trackingLink =
-      typeof window === "undefined"
-        ? trackingPath
-        : new URL(trackingPath, window.location.origin).toString();
-    const response = await fetch(`/api/admin/orders/${orderId}/notify`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        customerEmail,
-        message,
-        orderId,
-        trackingLink,
-        trackingNumber,
-        trackingStatus: status,
-      }),
-    });
-
-    return response.ok;
-  };
 
   const handleCopyTrackingLink = async () => {
     const trackingLink =
@@ -110,8 +82,29 @@ export function OrderTrackingCard({
 
     try {
       const message = note || t("orders.notifyDefaultMessage");
-      const success = await sendCustomerNotification(trackingStatus, message);
-      setFeedback(success ? t("orders.customerNotified") : t("orders.notifyError"));
+      const result = await updateOrderTrackingAction(locale, {
+        message,
+        notifyCustomer: true,
+        orderId,
+        status: trackingStatus,
+      });
+
+      setFeedback(result.message);
+
+      if (result.ok) {
+        setEvents((current) => [
+          ...current,
+          {
+            createdAt: formatTimestamp(locale),
+            createdBy: actorName,
+            description: message,
+            id: `${orderId}-${Date.now()}`,
+            notifyCustomer: true,
+            status: trackingStatus,
+            title: t(`trackingStatus.${trackingStatus}`),
+          },
+        ]);
+      }
     } catch {
       setFeedback(t("orders.notifyError"));
     } finally {
@@ -138,24 +131,20 @@ export function OrderTrackingCard({
     };
 
     try {
-      if (notifyCustomer && canNotifyCustomer) {
-        const success = await sendCustomerNotification(nextStatus, nextEvent.description);
+      const result = await updateOrderTrackingAction(locale, {
+        message: nextEvent.description,
+        notifyCustomer: notifyCustomer && canNotifyCustomer,
+        orderId,
+        status: nextStatus,
+      });
 
-        if (!success) {
-          setFeedback(t("orders.notifyError"));
-          setIsSubmitting(false);
-          return;
-        }
+      setFeedback(result.message);
+
+      if (result.ok) {
+        setEvents((current) => [...current, nextEvent]);
+        setTrackingStatus(nextStatus);
+        setNote("");
       }
-
-      setEvents((current) => [...current, nextEvent]);
-      setTrackingStatus(nextStatus);
-      setNote("");
-      setFeedback(
-        notifyCustomer && canNotifyCustomer
-          ? t("orders.statusSavedAndNotified")
-          : t("orders.statusSaved")
-      );
     } catch {
       setFeedback(t("orders.notifyError"));
     } finally {

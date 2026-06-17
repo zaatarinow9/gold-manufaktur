@@ -102,38 +102,209 @@ export type Database = {
         };
         Relationships: [];
       };
+      admin_notifications: {
+        Row: {
+          created_at: string;
+          employee_id: string | null;
+          entity_id: string | null;
+          entity_type: string | null;
+          id: string;
+          is_read: boolean;
+          link_path: string | null;
+          message: string;
+          metadata_json: Json;
+          profile_id: string | null;
+          read_at: string | null;
+          title: string;
+          type: Database["public"]["Enums"]["admin_notification_type"];
+          workshop_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          employee_id?: string | null;
+          entity_id?: string | null;
+          entity_type?: string | null;
+          id?: string;
+          is_read?: boolean;
+          link_path?: string | null;
+          message: string;
+          metadata_json?: Json;
+          profile_id?: string | null;
+          read_at?: string | null;
+          title: string;
+          type?: Database["public"]["Enums"]["admin_notification_type"];
+          workshop_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          employee_id?: string | null;
+          entity_id?: string | null;
+          entity_type?: string | null;
+          id?: string;
+          is_read?: boolean;
+          link_path?: string | null;
+          message?: string;
+          metadata_json?: Json;
+          profile_id?: string | null;
+          read_at?: string | null;
+          title?: string;
+          type?: Database["public"]["Enums"]["admin_notification_type"];
+          workshop_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "admin_notifications_employee_id_fkey";
+            columns: ["employee_id"];
+            referencedRelation: "employees";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "admin_notifications_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "admin_notifications_workshop_id_fkey";
+            columns: ["workshop_id"];
+            referencedRelation: "workshops";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      email_logs: {
+        Row: {
+          body_html: string | null;
+          body_text: string | null;
+          created_at: string;
+          direction: string;
+          error_message: string | null;
+          id: string;
+          metadata_json: Json;
+          notification_id: string | null;
+          order_id: string | null;
+          provider: string;
+          recipient_email: string;
+          sent_at: string | null;
+          status: Database["public"]["Enums"]["email_log_status"];
+          subject: string;
+          support_ticket_id: string | null;
+        };
+        Insert: {
+          body_html?: string | null;
+          body_text?: string | null;
+          created_at?: string;
+          direction?: string;
+          error_message?: string | null;
+          id?: string;
+          metadata_json?: Json;
+          notification_id?: string | null;
+          order_id?: string | null;
+          provider?: string;
+          recipient_email: string;
+          sent_at?: string | null;
+          status?: Database["public"]["Enums"]["email_log_status"];
+          subject: string;
+          support_ticket_id?: string | null;
+        };
+        Update: {
+          body_html?: string | null;
+          body_text?: string | null;
+          created_at?: string;
+          direction?: string;
+          error_message?: string | null;
+          id?: string;
+          metadata_json?: Json;
+          notification_id?: string | null;
+          order_id?: string | null;
+          provider?: string;
+          recipient_email?: string;
+          sent_at?: string | null;
+          status?: Database["public"]["Enums"]["email_log_status"];
+          subject?: string;
+          support_ticket_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "email_logs_notification_id_fkey";
+            columns: ["notification_id"];
+            referencedRelation: "admin_notifications";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "email_logs_order_id_fkey";
+            columns: ["order_id"];
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "email_logs_support_ticket_id_fkey";
+            columns: ["support_ticket_id"];
+            referencedRelation: "support_tickets";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       employees: {
         Row: {
+          attendance_status: Database["public"]["Enums"]["attendance_status"];
           created_at: string;
           email: string | null;
           full_name: string;
           id: string;
           is_active: boolean;
+          notes: string | null;
           phone: string | null;
-          role: string | null;
+          profile_id: string | null;
+          role: Database["public"]["Enums"]["employee_role"];
+          shift_label: string | null;
           updated_at: string;
+          workshop_id: string | null;
         };
         Insert: {
+          attendance_status?: Database["public"]["Enums"]["attendance_status"];
           created_at?: string;
           email?: string | null;
           full_name: string;
           id?: string;
           is_active?: boolean;
+          notes?: string | null;
           phone?: string | null;
-          role?: string | null;
+          profile_id?: string | null;
+          role?: Database["public"]["Enums"]["employee_role"];
+          shift_label?: string | null;
           updated_at?: string;
+          workshop_id?: string | null;
         };
         Update: {
+          attendance_status?: Database["public"]["Enums"]["attendance_status"];
           created_at?: string;
           email?: string | null;
           full_name?: string;
           id?: string;
           is_active?: boolean;
+          notes?: string | null;
           phone?: string | null;
-          role?: string | null;
+          profile_id?: string | null;
+          role?: Database["public"]["Enums"]["employee_role"];
+          shift_label?: string | null;
           updated_at?: string;
+          workshop_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "employees_profile_id_fkey";
+            columns: ["profile_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "employees_workshop_id_fkey";
+            columns: ["workshop_id"];
+            referencedRelation: "workshops";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       option_groups: {
         Row: {
@@ -240,31 +411,52 @@ export type Database = {
       };
       order_items: {
         Row: {
+          category_name_snapshot: string | null;
+          category_slug_snapshot: string | null;
           created_at: string;
           id: string;
           notes: string | null;
           order_id: string;
+          product_image_snapshot: string | null;
           product_id: string | null;
           product_name_snapshot: string | null;
+          product_sku_snapshot: string | null;
+          product_slug_snapshot: string | null;
           quantity: number;
+          reference_images_json: Json;
+          selected_options_json: Json;
         };
         Insert: {
+          category_name_snapshot?: string | null;
+          category_slug_snapshot?: string | null;
           created_at?: string;
           id?: string;
           notes?: string | null;
           order_id: string;
+          product_image_snapshot?: string | null;
           product_id?: string | null;
           product_name_snapshot?: string | null;
+          product_sku_snapshot?: string | null;
+          product_slug_snapshot?: string | null;
           quantity?: number;
+          reference_images_json?: Json;
+          selected_options_json?: Json;
         };
         Update: {
+          category_name_snapshot?: string | null;
+          category_slug_snapshot?: string | null;
           created_at?: string;
           id?: string;
           notes?: string | null;
           order_id?: string;
+          product_image_snapshot?: string | null;
           product_id?: string | null;
           product_name_snapshot?: string | null;
+          product_sku_snapshot?: string | null;
+          product_slug_snapshot?: string | null;
           quantity?: number;
+          reference_images_json?: Json;
+          selected_options_json?: Json;
         };
         Relationships: [
           {
@@ -283,28 +475,43 @@ export type Database = {
       };
       order_status_events: {
         Row: {
+          actor_name: string | null;
           created_at: string;
           created_by: string | null;
+          description: string | null;
           id: string;
+          is_public: boolean;
           note: string | null;
+          notify_customer: boolean;
           order_id: string;
-          status: string;
+          status: Database["public"]["Enums"]["tracking_status"];
+          title: string | null;
         };
         Insert: {
+          actor_name?: string | null;
           created_at?: string;
           created_by?: string | null;
+          description?: string | null;
           id?: string;
+          is_public?: boolean;
           note?: string | null;
+          notify_customer?: boolean;
           order_id: string;
-          status: string;
+          status: Database["public"]["Enums"]["tracking_status"];
+          title?: string | null;
         };
         Update: {
+          actor_name?: string | null;
           created_at?: string;
           created_by?: string | null;
+          description?: string | null;
           id?: string;
+          is_public?: boolean;
           note?: string | null;
+          notify_customer?: boolean;
           order_id?: string;
-          status?: string;
+          status?: Database["public"]["Enums"]["tracking_status"];
+          title?: string | null;
         };
         Relationships: [
           {
@@ -323,45 +530,93 @@ export type Database = {
       };
       orders: {
         Row: {
+          archived_at: string | null;
+          assigned_admin_id: string | null;
+          attachments_json: Json;
           created_at: string;
+          customer_email: string | null;
           customer_name: string | null;
           customer_phone: string | null;
+          customer_reference: string | null;
           due_date: string | null;
           employee_id: string | null;
+          email_updates_enabled: boolean;
+          gold_details_json: Json;
           id: string;
+          internal_order_number: string | null;
+          measurements_json: Json;
           notes: string | null;
-          status: string;
+          notes_json: Json;
+          personalization_json: Json;
+          priority: Database["public"]["Enums"]["order_priority"];
+          status: Database["public"]["Enums"]["workshop_order_status"];
+          stones_json: Json;
+          tracking_status: Database["public"]["Enums"]["tracking_status"];
           tracking_number: string;
           updated_at: string;
           workshop_id: string | null;
         };
         Insert: {
+          archived_at?: string | null;
+          assigned_admin_id?: string | null;
+          attachments_json?: Json;
           created_at?: string;
+          customer_email?: string | null;
           customer_name?: string | null;
           customer_phone?: string | null;
+          customer_reference?: string | null;
           due_date?: string | null;
           employee_id?: string | null;
+          email_updates_enabled?: boolean;
+          gold_details_json?: Json;
           id?: string;
+          internal_order_number?: string | null;
+          measurements_json?: Json;
           notes?: string | null;
-          status: string;
+          notes_json?: Json;
+          personalization_json?: Json;
+          priority?: Database["public"]["Enums"]["order_priority"];
+          status: Database["public"]["Enums"]["workshop_order_status"];
+          stones_json?: Json;
+          tracking_status?: Database["public"]["Enums"]["tracking_status"];
           tracking_number: string;
           updated_at?: string;
           workshop_id?: string | null;
         };
         Update: {
+          archived_at?: string | null;
+          assigned_admin_id?: string | null;
+          attachments_json?: Json;
           created_at?: string;
+          customer_email?: string | null;
           customer_name?: string | null;
           customer_phone?: string | null;
+          customer_reference?: string | null;
           due_date?: string | null;
           employee_id?: string | null;
+          email_updates_enabled?: boolean;
+          gold_details_json?: Json;
           id?: string;
+          internal_order_number?: string | null;
+          measurements_json?: Json;
           notes?: string | null;
-          status?: string;
+          notes_json?: Json;
+          personalization_json?: Json;
+          priority?: Database["public"]["Enums"]["order_priority"];
+          status?: Database["public"]["Enums"]["workshop_order_status"];
+          stones_json?: Json;
+          tracking_status?: Database["public"]["Enums"]["tracking_status"];
           tracking_number?: string;
           updated_at?: string;
           workshop_id?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "orders_assigned_admin_id_fkey";
+            columns: ["assigned_admin_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "orders_employee_id_fkey";
             columns: ["employee_id"];
@@ -526,64 +781,168 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string;
+          employee_id: string | null;
           email: string | null;
           full_name: string | null;
           id: string;
           is_active: boolean;
           role: Database["public"]["Enums"]["profile_role"] | null;
           updated_at: string;
+          workshop_id: string | null;
         };
         Insert: {
           created_at?: string;
+          employee_id?: string | null;
           email?: string | null;
           full_name?: string | null;
           id: string;
           is_active?: boolean;
           role?: Database["public"]["Enums"]["profile_role"] | null;
           updated_at?: string;
+          workshop_id?: string | null;
         };
         Update: {
           created_at?: string;
+          employee_id?: string | null;
           email?: string | null;
           full_name?: string | null;
           id?: string;
           is_active?: boolean;
           role?: Database["public"]["Enums"]["profile_role"] | null;
           updated_at?: string;
+          workshop_id?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "profiles_employee_id_fkey";
+            columns: ["employee_id"];
+            referencedRelation: "employees";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "profiles_workshop_id_fkey";
+            columns: ["workshop_id"];
+            referencedRelation: "workshops";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      support_tickets: {
+        Row: {
+          admin_notes: string | null;
+          created_at: string;
+          created_by_profile_id: string | null;
+          customer_email: string | null;
+          customer_name: string | null;
+          customer_phone: string | null;
+          id: string;
+          message: string;
+          order_id: string;
+          resolved_at: string | null;
+          resolved_by: string | null;
+          source: string;
+          status: Database["public"]["Enums"]["support_ticket_status"];
+          subject: string;
+          tracking_number: string;
+          updated_at: string;
+        };
+        Insert: {
+          admin_notes?: string | null;
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          customer_email?: string | null;
+          customer_name?: string | null;
+          customer_phone?: string | null;
+          id?: string;
+          message: string;
+          order_id: string;
+          resolved_at?: string | null;
+          resolved_by?: string | null;
+          source?: string;
+          status?: Database["public"]["Enums"]["support_ticket_status"];
+          subject: string;
+          tracking_number: string;
+          updated_at?: string;
+        };
+        Update: {
+          admin_notes?: string | null;
+          created_at?: string;
+          created_by_profile_id?: string | null;
+          customer_email?: string | null;
+          customer_name?: string | null;
+          customer_phone?: string | null;
+          id?: string;
+          message?: string;
+          order_id?: string;
+          resolved_at?: string | null;
+          resolved_by?: string | null;
+          source?: string;
+          status?: Database["public"]["Enums"]["support_ticket_status"];
+          subject?: string;
+          tracking_number?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_created_by_profile_id_fkey";
+            columns: ["created_by_profile_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "support_tickets_order_id_fkey";
+            columns: ["order_id"];
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "support_tickets_resolved_by_fkey";
+            columns: ["resolved_by"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       workshops: {
         Row: {
           address: string | null;
+          code: string | null;
           contact_name: string | null;
           created_at: string;
           email: string | null;
           id: string;
           is_active: boolean;
+          location: string | null;
           name: string;
+          notes: string | null;
           phone: string | null;
           updated_at: string;
         };
         Insert: {
           address?: string | null;
+          code?: string | null;
           contact_name?: string | null;
           created_at?: string;
           email?: string | null;
           id?: string;
           is_active?: boolean;
+          location?: string | null;
           name: string;
+          notes?: string | null;
           phone?: string | null;
           updated_at?: string;
         };
         Update: {
           address?: string | null;
+          code?: string | null;
           contact_name?: string | null;
           created_at?: string;
           email?: string | null;
           id?: string;
           is_active?: boolean;
+          location?: string | null;
           name?: string;
+          notes?: string | null;
           phone?: string | null;
           updated_at?: string;
         };
@@ -593,6 +952,19 @@ export type Database = {
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {
+      admin_notification_type:
+        | "order_created"
+        | "order_updated"
+        | "ticket_created"
+        | "ticket_updated"
+        | "employee_created"
+        | "employee_updated"
+        | "workshop_created"
+        | "workshop_updated"
+        | "system";
+      attendance_status: "present" | "absent" | "vacation" | "sick" | "late";
+      email_log_status: "pending" | "sent" | "failed" | "skipped";
+      employee_role: "admin" | "employee";
       option_type:
         | "text"
         | "textarea"
@@ -603,7 +975,32 @@ export type Database = {
         | "date"
         | "image"
         | "file";
+      order_priority: "normal" | "urgent" | "express";
       profile_role: "super_admin" | "admin" | "employee";
+      support_ticket_status: "open" | "in_progress" | "resolved" | "closed";
+      tracking_status:
+        | "created"
+        | "sent_to_workshop"
+        | "accepted_by_workshop"
+        | "in_production"
+        | "quality_check"
+        | "ready_for_pickup"
+        | "on_the_way"
+        | "delivered_to_store"
+        | "picked_up"
+        | "completed"
+        | "cancelled";
+      workshop_order_status:
+        | "draft"
+        | "sent_to_workshop"
+        | "accepted"
+        | "assigned"
+        | "in_production"
+        | "quality_check"
+        | "ready"
+        | "delivered"
+        | "cancelled"
+        | "archived";
     };
     CompositeTypes: Record<string, never>;
   };

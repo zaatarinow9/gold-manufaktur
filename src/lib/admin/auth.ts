@@ -48,10 +48,12 @@ function getAvatarLabel(name: string, email: string) {
 function buildAdminUser(
   authUser: User,
   profile: {
+    employee_id?: string | null;
     email: string | null;
     full_name: string | null;
     is_active: boolean;
     role: AdminRole | null;
+    workshop_id?: string | null;
   }
 ): AdminUser {
   const email = profile.email ?? authUser.email ?? "";
@@ -71,6 +73,8 @@ function buildAdminUser(
     role: profile.role ?? "employee",
     avatarLabel: getAvatarLabel(name, email),
     isActive: profile.is_active,
+    linkedEmployeeId: profile.employee_id ?? undefined,
+    workshopId: profile.workshop_id ?? undefined,
   };
 }
 
@@ -90,7 +94,7 @@ export const getAdminSessionContext = cache(async (): Promise<AdminSessionContex
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("email, full_name, is_active, role")
+    .select("*")
     .eq("id", authUser.id)
     .maybeSingle();
 

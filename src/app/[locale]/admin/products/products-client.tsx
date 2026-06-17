@@ -30,6 +30,11 @@ import type {
   LocalizedText,
 } from "@/lib/db/adminCatalog";
 
+type ProductOptionSettingState = {
+  isRequired: boolean;
+  optionId: string;
+};
+
 type ProductFormState = {
   categoryId: string;
   description: LocalizedText;
@@ -38,7 +43,7 @@ type ProductFormState = {
   isActive: boolean;
   isFeatured: boolean;
   name: LocalizedText;
-  optionIds: string[];
+  optionSettings: ProductOptionSettingState[];
   sku: string;
   slug: string;
   sortOrder: number;
@@ -73,7 +78,7 @@ function createEmptyProductForm(
     isActive: true,
     isFeatured: false,
     name: createEmptyLocalizedText(),
-    optionIds: [],
+    optionSettings: [],
     sku: `GH-${String(products.length + 1).padStart(4, "0")}`,
     slug: "",
     sortOrder: products.length + 1,
@@ -90,7 +95,10 @@ function createEditProductForm(product: AdminProductRecord): ProductFormState {
     isActive: product.isActive,
     isFeatured: product.isFeatured,
     name: product.name,
-    optionIds: product.optionIds,
+    optionSettings: product.optionSettings.map((option) => ({
+      isRequired: option.isRequired,
+      optionId: option.id,
+    })),
     sku: product.sku,
     slug: product.slug,
     sortOrder: product.sortOrder,
@@ -121,6 +129,35 @@ function updateLocalizedText(
     ...current,
     [locale]: value,
   };
+}
+
+function getProductOptionSetting(
+  optionSettings: ProductOptionSettingState[],
+  optionId: string
+) {
+  return optionSettings.find((setting) => setting.optionId === optionId);
+}
+
+function setProductOptionVisibility(
+  optionSettings: ProductOptionSettingState[],
+  optionId: string,
+  visible: boolean,
+  isRequired: boolean
+) {
+  if (!visible) {
+    return optionSettings.filter((setting) => setting.optionId !== optionId);
+  }
+
+  const nextSetting = { isRequired, optionId };
+  const existing = getProductOptionSetting(optionSettings, optionId);
+
+  if (!existing) {
+    return [...optionSettings, nextSetting];
+  }
+
+  return optionSettings.map((setting) =>
+    setting.optionId === optionId ? nextSetting : setting
+  );
 }
 
 export function AdminProductsClient({
@@ -196,7 +233,7 @@ export function AdminProductsClient({
       isActive: formState.isActive,
       isFeatured: formState.isFeatured,
       name: formState.name,
-      optionIds: formState.optionIds,
+      optionSettings: formState.optionSettings,
       sku: formState.sku.trim(),
       slug: formState.slug.trim(),
       sortOrder: Number(formState.sortOrder),
@@ -358,9 +395,43 @@ export function AdminProductsClient({
     },
   ];
 
-  const optionChoices = options.slice().sort((left, right) =>
-    left.displayLabel.localeCompare(right.displayLabel, locale)
-  );
+  const optionGroups = useMemo(() => {
+    const groupedOptions = new Map<
+      string,
+      { groupName: string; options: AdminOptionRecord[] }
+    >();
+
+    options
+      .slice()
+      .sort((left, right) => {
+        const groupCompare = left.groupName.localeCompare(right.groupName, locale);
+
+        if (groupCompare !== 0) {
+          return groupCompare;
+        }
+
+        return left.displayLabel.localeCompare(right.displayLabel, locale);
+      })
+      .forEach((option) => {
+        const currentGroup = groupedOptions.get(option.groupKey);
+
+        if (!currentGroup) {
+          groupedOptions.set(option.groupKey, {
+            groupName: option.groupName,
+            options: [option],
+          });
+          return;
+        }
+
+        currentGroup.options.push(option);
+      });
+
+    return Array.from(groupedOptions.entries()).map(([groupKey, group]) => ({
+      groupKey,
+      groupName: group.groupName,
+      options: group.options,
+    }));
+  }, [locale, options]);
 
   return (
     <div className="space-y-6">
@@ -495,28 +566,103 @@ export function AdminProductsClient({
                 }))
               }
             />
-            <label className="block space-y-2">
-              <span className="admin-label">{t("products.table.options")}</span>
-              <select
-                multiple
-                className="admin-select min-h-52"
-                value={formState.optionIds}
-                onChange={(event) =>
-                  setFormState((current) => ({
-                    ...current,
-                    optionIds: Array.from(event.target.selectedOptions).map(
-                      (option) => option.value
-                    ),
-                  }))
-                }
-              >
-                {optionChoices.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.displayLabel}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="space-y-4 xl:col-span-2">
+              <div className="space-y-1">
+                <p className="admin-label">{t("products.table.options")}</p>
+                <p className="text-xs text-muted">
+                  Choose which options are visible on this product and which must
+                  be filled in when creating an order.
+                </p>
+              </div>
+              {optionGroups.length === 0 ? (
+                <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
+                  No product options have been created yet.
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {optionGroups.map((group) => (
+                    <div
+                      key={group.groupKey}
+                      className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
+                    >
+                      <div className="mb-4">
+                        <p className="font-semibold text-foreground">{group.groupName}</p>
+                        <p className="text-xs text-muted">
+                          {group.options.length} option
+                          {group.options.length === 1 ? "" : "s"}
+                        </p>
+                      </div>
+                      <div className="space-y-3">
+                        {group.options.map((option) => {
+                          const currentSetting = getProductOptionSetting(
+                            formState.optionSettings,
+                            option.id
+                          );
+                          const isVisible = Boolean(currentSetting);
+                          const isRequired = currentSetting?.isRequired ?? false;
+
+                          return (
+                            <div
+                              key={option.id}
+                              className="grid gap-3 rounded-[0.9rem] border border-white/8 bg-black/10 px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto_auto]"
+                            >
+                              <div>
+                                <p className="font-medium text-foreground">
+                                  {option.displayLabel}
+                                </p>
+                                <p className="text-xs text-muted">
+                                  {option.type.replace(/_/g, " ")}
+                                </p>
+                              </div>
+                              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                                <input
+                                  type="checkbox"
+                                  checked={isVisible}
+                                  onChange={(event) =>
+                                    setFormState((current) => ({
+                                      ...current,
+                                      optionSettings: setProductOptionVisibility(
+                                        current.optionSettings,
+                                        option.id,
+                                        event.target.checked,
+                                        currentSetting?.isRequired ??
+                                          option.isRequired
+                                      ),
+                                    }))
+                                  }
+                                  className="h-4 w-4 accent-[#c49a52]"
+                                />
+                                Visible
+                              </label>
+                              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                                <input
+                                  type="checkbox"
+                                  checked={isRequired}
+                                  disabled={!isVisible}
+                                  onChange={(event) =>
+                                    setFormState((current) => ({
+                                      ...current,
+                                      optionSettings: setProductOptionVisibility(
+                                        current.optionSettings,
+                                        option.id,
+                                        true,
+                                        event.target.checked
+                                      ),
+                                    }))
+                                  }
+                                  className="h-4 w-4 accent-[#c49a52]"
+                                />
+                                Required
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="flex flex-wrap gap-5 xl:col-span-2">
               <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
                 <input

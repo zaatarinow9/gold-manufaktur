@@ -1,12 +1,28 @@
-import { adminOrders } from "@/data/adminMock";
+import { getAdminSessionContext } from "@/lib/admin/auth";
 import { orderNotificationSchema } from "@/lib/admin/tracking";
+import { getScopedOrderDetail } from "@/lib/db/orders";
+import { sendTransactionalEmail } from "@/lib/email/service";
+
+type AdminOrderNotifyRouteContext = {
+  params: Promise<{ id: string }>;
+};
 
 export async function POST(
   request: Request,
-  context: RouteContext<"/api/admin/orders/[id]/notify">
+  context: AdminOrderNotifyRouteContext
 ) {
   const { id } = await context.params;
-  const order = adminOrders.find((entry) => entry.id === id);
+  const session = await getAdminSessionContext();
+
+  if (session.state === "anonymous") {
+    return Response.json({ error: "UNAUTHORIZED", success: false }, { status: 401 });
+  }
+
+  if (session.state !== "authenticated" || !session.user) {
+    return Response.json({ error: "FORBIDDEN", success: false }, { status: 403 });
+  }
+
+  const order = await getScopedOrderDetail(session.user, id);
 
   if (!order) {
     return Response.json({ error: "ORDER_NOT_FOUND", success: false }, { status: 404 });
@@ -37,12 +53,45 @@ export async function POST(
     return Response.json({ error: "MISMATCHED_ORDER", success: false }, { status: 400 });
   }
 
-  if (process.env.NODE_ENV !== "production") {
-    console.info("[admin-order-notify] Mock notification payload:", result.data);
+  if (order.customerEmail && result.data.customerEmail !== order.customerEmail) {
+    return Response.json({ error: "MISMATCHED_CUSTOMER", success: false }, { status: 400 });
   }
 
-  // Later integrate Resend/SMTP here.
-  // CONTACT_RECEIVER_EMAIL and provider env vars can be added here when email delivery is enabled.
+  const dispatchResult = await sendTransactionalEmail({
+    metadata: {
+      kind: "manual_order_notification",
+      trackingNumber: order.trackingNumber,
+      trackingStatus: result.data.trackingStatus,
+    },
+    orderId: order.id,
+    recipientEmail: result.data.customerEmail,
+    replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
+    subject: `Update for order ${order.trackingNumber}`,
+    text: [
+      `Hello${order.customerName ? ` ${order.customerName}` : ""},`,
+      "",
+      result.data.message,
+      "",
+      `Tracking status: ${result.data.trackingStatus}`,
+      `Tracking link: ${result.data.trackingLink}`,
+    ].join("\n"),
+  });
 
-  return Response.json({ success: true });
+  if (!dispatchResult.ok && !dispatchResult.fallback) {
+    return Response.json(
+      {
+        error: "EMAIL_DELIVERY_FAILED",
+        reason: dispatchResult.reason ?? "unknown_error",
+        success: false,
+      },
+      { status: 502 }
+    );
+  }
+
+  return Response.json({
+    delivered: dispatchResult.delivered,
+    fallback: dispatchResult.fallback,
+    status: dispatchResult.status,
+    success: true,
+  });
 }

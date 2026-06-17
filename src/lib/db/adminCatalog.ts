@@ -45,6 +45,16 @@ export type AdminProductRecord = {
   name: LocalizedText;
   optionCount: number;
   optionIds: string[];
+  optionSettings: Array<{
+    displayLabel: string;
+    groupKey: string;
+    groupName: string;
+    id: string;
+    isRequired: boolean;
+    key: string;
+    type: OptionType;
+    values: Array<{ label: string; value: string }>;
+  }>;
   sku: string;
   slug: string;
   sortOrder: number;
@@ -139,7 +149,14 @@ export const productInputSchema = z.object({
   isActive: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
   name: localizedRequiredSchema,
-  optionIds: z.array(z.string().uuid()).default([]),
+  optionSettings: z
+    .array(
+      z.object({
+        isRequired: z.boolean().default(false),
+        optionId: z.string().uuid(),
+      })
+    )
+    .default([]),
   sku: z.string().trim().min(1).max(120),
   slug: slugSchema,
   sortOrder: z.number().int().min(0).default(0),
@@ -501,16 +518,71 @@ export async function getAdminCategories(
 export async function getAdminProducts(
   locale: AppLocale = "de"
 ): Promise<AdminProductRecord[]> {
-  const [products, categories, images, productOptions] = await Promise.all([
-    loadProductRows(),
-    loadCategoryRows(),
-    loadProductImages(),
-    loadProductOptions(),
-  ]);
+  const [products, categories, images, productOptions, optionRows, optionGroupRows] =
+    await Promise.all([
+      loadProductRows(),
+      loadCategoryRows(),
+      loadProductImages(),
+      loadProductOptions(),
+      loadOptionRows(),
+      loadOptionGroupRows(),
+    ]);
 
   const categoryById = new Map(categories.map((category) => [category.id, category]));
   const galleryByProductId = new Map<string, string[]>();
-  const optionIdsByProduct = new Map<string, string[]>();
+  const optionSettingsByProduct = new Map<
+    string,
+    Array<{
+      displayLabel: string;
+      groupKey: string;
+      groupName: string;
+      id: string;
+      isRequired: boolean;
+      key: string;
+      type: OptionType;
+      values: Array<{ label: string; value: string }>;
+    }>
+  >();
+  const optionGroupById = new Map(
+    optionGroupRows.map((group) => [
+      group.id,
+      {
+        groupKey: group.key,
+        groupName: resolveLocalizedText(getLocalizedFields(group, "name"), locale),
+      },
+    ])
+  );
+  const optionById = new Map(
+    optionRows.map((option) => [
+      option.id,
+      {
+        displayLabel: resolveLocalizedText(getLocalizedFields(option, "label"), locale),
+        groupKey: optionGroupById.get(option.group_id)?.groupKey ?? option.group_id,
+        groupName: optionGroupById.get(option.group_id)?.groupName ?? "",
+        id: option.id,
+        key: option.key,
+        type: option.type,
+        values: Array.isArray(option.values_json)
+          ? option.values_json
+              .filter(
+                (
+                  value
+                ): value is { label: string; value: string } =>
+                  typeof value === "object" &&
+                  value !== null &&
+                  "label" in value &&
+                  "value" in value &&
+                  typeof value.label === "string" &&
+                  typeof value.value === "string"
+              )
+              .map((value) => ({
+                label: value.label,
+                value: value.value,
+              }))
+          : [],
+      },
+    ])
+  );
 
   images.forEach((image) => {
     const current = galleryByProductId.get(image.product_id) ?? [];
@@ -519,9 +591,18 @@ export async function getAdminProducts(
   });
 
   productOptions.forEach((assignment) => {
-    const current = optionIdsByProduct.get(assignment.product_id) ?? [];
-    current.push(assignment.option_id);
-    optionIdsByProduct.set(assignment.product_id, current);
+    const option = optionById.get(assignment.option_id);
+
+    if (!option) {
+      return;
+    }
+
+    const current = optionSettingsByProduct.get(assignment.product_id) ?? [];
+    current.push({
+      ...option,
+      isRequired: assignment.is_required,
+    });
+    optionSettingsByProduct.set(assignment.product_id, current);
   });
 
   return products.map((product) => {
@@ -533,7 +614,8 @@ export async function getAdminProducts(
       : "";
     const categorySlug = category?.slug ?? "";
     const gallery = galleryByProductId.get(product.id) ?? [];
-    const optionIds = optionIdsByProduct.get(product.id) ?? [];
+    const optionSettings = optionSettingsByProduct.get(product.id) ?? [];
+    const optionIds = optionSettings.map((option) => option.id);
 
     return {
       categoryId: product.category_id,
@@ -548,8 +630,9 @@ export async function getAdminProducts(
       isActive: product.is_active,
       isFeatured: product.is_featured,
       name,
-      optionCount: optionIds.length,
+      optionCount: optionSettings.length,
       optionIds,
+      optionSettings,
       sku: product.sku,
       slug: product.slug,
       sortOrder: product.sort_order,
@@ -742,10 +825,20 @@ async function replaceProductImages(
 
 export async function assignProductOptions(
   productId: string,
-  optionIds: string[]
+  optionSettings: Array<{ isRequired: boolean; optionId: string }>
 ) {
   const supabase = await createSupabaseServerClient();
-  const uniqueOptionIds = [...new Set(optionIds)];
+  const uniqueOptionSettings = Array.from(
+    new Map(
+      optionSettings.map((setting) => [
+        setting.optionId,
+        {
+          isRequired: setting.isRequired,
+          optionId: setting.optionId,
+        },
+      ])
+    ).values()
+  );
   const { error: deleteError } = await supabase
     .from("product_options")
     .delete()
@@ -755,27 +848,14 @@ export async function assignProductOptions(
     throw new Error(`Unable to update product options: ${deleteError.message}`);
   }
 
-  if (uniqueOptionIds.length === 0) {
+  if (uniqueOptionSettings.length === 0) {
     return;
   }
 
-  const { data: options, error: optionsError } = await supabase
-    .from("options")
-    .select("id, is_required")
-    .in("id", uniqueOptionIds);
-
-  if (optionsError) {
-    throw new Error(`Unable to load option defaults: ${optionsError.message}`);
-  }
-
-  const requiredById = new Map(
-    options.map((option) => [option.id, option.is_required])
-  );
-
   const { error: insertError } = await supabase.from("product_options").insert(
-    uniqueOptionIds.map((optionId) => ({
-      is_required: requiredById.get(optionId) ?? false,
-      option_id: optionId,
+    uniqueOptionSettings.map((setting) => ({
+      is_required: setting.isRequired,
+      option_id: setting.optionId,
       product_id: productId,
     }))
   );
@@ -800,7 +880,7 @@ export async function createProduct(input: ProductInput) {
   }
 
   await replaceProductImages(data.id, parsed.gallery, parsed.name.de);
-  await assignProductOptions(data.id, parsed.optionIds);
+  await assignProductOptions(data.id, parsed.optionSettings);
 
   return data;
 }
@@ -820,7 +900,7 @@ export async function updateProduct(input: ProductUpdateInput) {
   }
 
   await replaceProductImages(parsed.id, parsed.gallery, parsed.name.de);
-  await assignProductOptions(parsed.id, parsed.optionIds);
+  await assignProductOptions(parsed.id, parsed.optionSettings);
 
   return data;
 }
@@ -913,7 +993,10 @@ export async function duplicateProduct(productId: string) {
         .select("image_url, sort_order")
         .eq("product_id", productId)
         .order("sort_order", { ascending: true }),
-      supabase.from("product_options").select("option_id").eq("product_id", productId),
+      supabase
+        .from("product_options")
+        .select("option_id, is_required")
+        .eq("product_id", productId),
     ]);
 
   if (productError) {
@@ -935,7 +1018,10 @@ export async function duplicateProduct(productId: string) {
     isActive: product.is_active,
     isFeatured: false,
     name: getLocalizedFields(product, "name"),
-    optionIds: options.map((option) => option.option_id),
+    optionSettings: options.map((option) => ({
+      isRequired: option.is_required,
+      optionId: option.option_id,
+    })),
     sku: await generateNextSku(),
     slug: await generateDuplicateSlug(product.slug),
     sortOrder: product.sort_order + 1,

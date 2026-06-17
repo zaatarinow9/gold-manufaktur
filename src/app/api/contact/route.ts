@@ -1,4 +1,5 @@
 import { contactInquirySchema } from "@/lib/contact";
+import { sendTransactionalEmail } from "@/lib/email/service";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -25,35 +26,52 @@ export async function POST(request: Request) {
     );
   }
 
-  const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL;
-  const hasResend = Boolean(process.env.RESEND_API_KEY);
-  const hasSmtp = Boolean(
-    process.env.SMTP_HOST &&
-      process.env.SMTP_PORT &&
-      process.env.SMTP_USER &&
-      process.env.SMTP_PASS
-  );
+  const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL?.trim() ?? "";
 
-  if (!receiverEmail || (!hasResend && !hasSmtp)) {
+  if (!receiverEmail) {
     if (process.env.NODE_ENV !== "production") {
       console.info("[contact] Inquiry captured without email provider:", result.data);
     } else {
       console.warn(
-        "[contact] Contact inquiry accepted, but CONTACT_RECEIVER_EMAIL or provider credentials are missing."
+        "[contact] Contact inquiry accepted, but CONTACT_RECEIVER_EMAIL is missing."
       );
     }
 
     return Response.json({ success: true });
   }
 
-  // Future Resend/SMTP integration belongs here.
-  // Example:
-  // await sendInquiryEmail({ to: receiverEmail, ...result.data });
-  if (process.env.NODE_ENV !== "production") {
-    console.info(
-      `[contact] CONTACT_RECEIVER_EMAIL is configured for ${receiverEmail}, but email delivery is still a placeholder.`
+  const dispatchResult = await sendTransactionalEmail({
+    metadata: {
+      email: result.data.email,
+      kind: "contact_inquiry",
+      name: result.data.name,
+      phone: result.data.phone,
+    },
+    recipientEmail: receiverEmail,
+    replyTo: result.data.email,
+    subject: `Contact inquiry from ${result.data.name}`,
+    text: [
+      "A new contact inquiry was submitted.",
+      "",
+      `Name: ${result.data.name}`,
+      `Email: ${result.data.email}`,
+      `Phone: ${result.data.phone}`,
+      "",
+      result.data.message,
+    ].join("\n"),
+  });
+
+  if (!dispatchResult.ok && !dispatchResult.fallback) {
+    console.warn(
+      `[contact] Contact inquiry email could not be delivered: ${
+        dispatchResult.reason ?? "unknown_error"
+      }`
     );
   }
 
-  return Response.json({ success: true });
+  return Response.json({
+    delivered: dispatchResult.delivered,
+    fallback: dispatchResult.fallback,
+    success: true,
+  });
 }

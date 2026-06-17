@@ -4,9 +4,9 @@ import { getTranslations } from "next-intl/server";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { OrderTrackingTimeline } from "@/components/admin/OrderTrackingTimeline";
-import { adminOrders } from "@/data/adminMock";
+import { TrackingSupportForm } from "@/components/site/TrackingSupportForm";
 import { Link } from "@/i18n/navigation";
-import { findOrderByTrackingNumber } from "@/lib/admin/tracking";
+import { getPublicTrackingOrder } from "@/lib/db/orders";
 import { companyInfo, getBrandLogoAlt, resolveLocale, siteName } from "@/lib/site";
 
 type TrackingPageProps = {
@@ -18,7 +18,7 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
   const locale = await resolveLocale(Promise.resolve({ locale: localeParam }));
   const t = await getTranslations({ locale, namespace: "Tracking" });
   const tAdmin = await getTranslations({ locale, namespace: "Admin" });
-  const order = findOrderByTrackingNumber(adminOrders, trackingNumber);
+  const order = await getPublicTrackingOrder(trackingNumber);
   const brandLogoAlt = getBrandLogoAlt(locale);
 
   if (!order) {
@@ -75,8 +75,13 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
                 </div>
               </div>
 
-              <OrderTrackingTimeline events={order.trackingEvents} showActor={false} />
+              <OrderTrackingTimeline
+                events={order.trackingEvents}
+                showActor={false}
+              />
             </div>
+
+            <TrackingSupportForm trackingNumber={order.trackingNumber} />
           </div>
         </div>
       </div>
