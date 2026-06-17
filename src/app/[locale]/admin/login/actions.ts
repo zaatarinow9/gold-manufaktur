@@ -33,7 +33,7 @@ export async function loginAction(
 
   if (error) {
     return {
-      message: error.message,
+      message: t("common.noAccessText"),
     };
   }
 

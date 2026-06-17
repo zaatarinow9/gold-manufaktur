@@ -63,8 +63,7 @@ export async function POST(
 
     return Response.json(
       {
-        error:
-          error instanceof Error ? error.message : "SUPPORT_TICKET_ERROR",
+        error: "SUPPORT_TICKET_ERROR",
         success: false,
       },
       { status: 500 }

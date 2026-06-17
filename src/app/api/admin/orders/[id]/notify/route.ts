@@ -81,7 +81,6 @@ export async function POST(
     return Response.json(
       {
         error: "EMAIL_DELIVERY_FAILED",
-        reason: dispatchResult.reason ?? "unknown_error",
         success: false,
       },
       { status: 502 }

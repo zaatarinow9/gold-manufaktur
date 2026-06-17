@@ -3,13 +3,23 @@ import "server-only";
 import { z } from "zod";
 
 import type { AdminViewer } from "@/lib/db/adminScope";
-import { canAccessOrder, logAdminReadError } from "@/lib/db/adminScope";
+import {
+  canAccessOrder,
+  canAccessWorkshop,
+  logAdminReadError,
+} from "@/lib/db/adminScope";
+import {
+  normalizeOptionalDate,
+  normalizeOptionalText,
+  normalizeOptionalUuid,
+  shouldNotifyCustomerForStatus,
+} from "@/lib/admin/orderWorkflow";
 import { createAdminNotification } from "@/lib/db/notifications";
 import { sendTransactionalEmail } from "@/lib/email/service";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Json, TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
 import type { TrackingStatus, WorkshopOrderStatus } from "@/types/admin";
+import type { AppLocale } from "@/i18n/routing";
 
 const selectedOptionValueSchema = z.union([
   z.string(),
@@ -27,6 +37,12 @@ const selectedOptionSchema = z.object({
   value: selectedOptionValueSchema,
 });
 
+const localeSchema = z.enum(["de", "ar", "en", "fr", "tr"]);
+const optionalUuidSchema = z.preprocess(
+  normalizeOptionalUuid,
+  z.string().uuid().nullable()
+);
+
 const orderNotesSchema = z.object({
   adminNotes: z.string().trim().max(4000).optional().default(""),
   customerNotes: z.string().trim().max(4000).optional().default(""),
@@ -39,13 +55,14 @@ const orderNotesSchema = z.object({
 
 const orderCreateSchema = z.object({
   attachments: z.array(z.string().trim().min(1).max(500)).default([]),
-  customerEmail: z.email().optional().or(z.literal("")).default(""),
-  customerName: z.string().trim().max(160).optional().default(""),
+  customerEmail: z.string().trim().email().max(160),
+  customerLanguage: localeSchema.default("de"),
+  customerName: z.string().trim().min(1).max(160),
   customerPhone: z.string().trim().max(80).optional().default(""),
   customerReference: z.string().trim().max(255).optional().default(""),
-  dueDate: z.string().trim().optional().default(""),
+  dueDate: z.preprocess(normalizeOptionalDate, z.string().default("")),
   emailUpdatesEnabled: z.boolean().default(false),
-  employeeId: z.string().uuid().optional().or(z.literal("")).default(""),
+  employeeId: optionalUuidSchema.default(null),
   goldDetails: z.record(z.string(), z.string().trim()).default({}),
   measurements: z.record(z.string(), z.string().trim()).default({}),
   notes: orderNotesSchema,
@@ -62,13 +79,16 @@ const orderCreateSchema = z.object({
   referenceImages: z.array(z.string().trim().min(1).max(500)).default([]),
   selectedOptions: z.array(selectedOptionSchema).default([]),
   stones: z.record(z.string(), z.string().trim()).default({}),
-  workshopId: z.string().uuid(),
+  workshopId: optionalUuidSchema.default(null),
 });
 
-const orderTrackingUpdateSchema = z.object({
-  message: z.string().trim().max(4000).optional().default(""),
+const orderWorkflowUpdateSchema = z.object({
+  customerNote: z.string().trim().max(4000).optional().default(""),
+  employeeId: optionalUuidSchema.default(null),
+  internalNote: z.string().trim().max(4000).optional().default(""),
   notifyCustomer: z.boolean().default(false),
   orderId: z.string().uuid(),
+  workshopId: optionalUuidSchema.default(null),
   status: z.enum([
     "created",
     "sent_to_workshop",
@@ -92,8 +112,19 @@ export const supportTicketSchema = z.object({
 });
 
 export type OrderCreateInput = z.infer<typeof orderCreateSchema>;
-export type OrderTrackingUpdateInput = z.infer<typeof orderTrackingUpdateSchema>;
+export type OrderWorkflowUpdateInput = z.infer<typeof orderWorkflowUpdateSchema>;
 export type SupportTicketInput = z.infer<typeof supportTicketSchema>;
+export type OrderCreatePayload = Omit<OrderCreateInput, "employeeId" | "workshopId"> & {
+  employeeId?: string | null;
+  workshopId?: string | null;
+};
+export type OrderWorkflowUpdatePayload = Omit<
+  OrderWorkflowUpdateInput,
+  "employeeId" | "workshopId"
+> & {
+  employeeId?: string | null;
+  workshopId?: string | null;
+};
 
 export type OrderTrackingEventRecord = {
   createdAt: string;
@@ -174,6 +205,7 @@ export type OrderListRecord = {
 export type OrderDetailRecord = OrderListRecord & {
   attachments: string[];
   customerPhone: string;
+  customerLanguage: AppLocale;
   customerReference: string;
   emailLogs: EmailLogRecord[];
   goldDetails: Record<string, string>;
@@ -287,6 +319,11 @@ function normalizePriority(value?: string | null): "express" | "normal" | "urgen
   return "normal";
 }
 
+function normalizeLocale(value?: string | null): AppLocale {
+  const result = localeSchema.safeParse(value);
+  return result.success ? result.data : "de";
+}
+
 function fallbackTrackingTitle(status: TrackingStatus) {
   return status
     .split("_")
@@ -318,6 +355,36 @@ function trackingStatusToOrderStatus(status: TrackingStatus): WorkshopOrderStatu
   }
 }
 
+function buildTrackingLink(locale: AppLocale, trackingNumber: string) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() ?? "";
+
+  if (!siteUrl) {
+    return `/${locale}/tracking/${trackingNumber}`;
+  }
+
+  return `${siteUrl.replace(/\/$/, "")}/${locale}/tracking/${trackingNumber}`;
+}
+
+function buildOrderEmailText(input: {
+  customerName: string;
+  locale: AppLocale;
+  note: string;
+  status: TrackingStatus;
+  trackingNumber: string;
+}) {
+  return [
+    "GoldHelwah GmbH",
+    "",
+    `Hello${input.customerName ? ` ${input.customerName}` : ""},`,
+    "",
+    `Tracking number: ${input.trackingNumber}`,
+    `Current status: ${fallbackTrackingTitle(input.status)}`,
+    `Tracking link: ${buildTrackingLink(input.locale, input.trackingNumber)}`,
+    "",
+    input.note,
+  ].join("\n");
+}
+
 function fallbackInternalOrderNumber(
   order: Pick<TableRow<"orders">, "id" | "internal_order_number" | "tracking_number">
 ) {
@@ -333,6 +400,7 @@ function getScopedOrderRows(
 ) {
   return orders.filter((order) =>
     canAccessOrder(viewer, {
+      assignedAdminId: order.assigned_admin_id ?? null,
       employeeId: order.employee_id ?? null,
       workshopId: order.workshop_id ?? null,
     })
@@ -340,7 +408,7 @@ function getScopedOrderRows(
 }
 
 async function loadOrdersRaw() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("orders")
     .select("*")
@@ -359,7 +427,7 @@ async function loadOrderItemsRaw(orderIds: string[]) {
     return [];
   }
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("order_items")
     .select("*")
@@ -379,7 +447,7 @@ async function loadOrderEventsRaw(orderIds: string[]) {
     return [];
   }
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("order_status_events")
     .select("*")
@@ -399,7 +467,7 @@ async function loadSupportTicketsRaw(orderIds: string[]) {
     return [];
   }
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("support_tickets")
     .select("*")
@@ -419,7 +487,7 @@ async function loadEmailLogsRaw(orderIds: string[]) {
     return [];
   }
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("email_logs")
     .select("*")
@@ -435,7 +503,7 @@ async function loadEmailLogsRaw(orderIds: string[]) {
 }
 
 async function loadWorkshopsMap() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase.from("workshops").select("*");
 
   if (error) {
@@ -447,7 +515,7 @@ async function loadWorkshopsMap() {
 }
 
 async function loadEmployeesMap() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase.from("employees").select("*");
 
   if (error) {
@@ -620,11 +688,16 @@ export async function getScopedOrderDetail(
   const emailLogs = bundle.emailLogs
     .filter((log) => log.order_id === orderId)
     .map(mapEmailLog);
+  const orderNotes = getTextRecord(order.notes_json);
+  const displayNotes = Object.fromEntries(
+    Object.entries(orderNotes).filter((entry) => entry[0] !== "customerLanguage")
+  ) as Record<string, string>;
 
   return {
     attachments: getStringArray(order.attachments_json),
     createdAt: order.created_at,
     customerEmail: order.customer_email ?? "",
+    customerLanguage: normalizeLocale(orderNotes.customerLanguage),
     customerName: order.customer_name ?? "",
     customerPhone: order.customer_phone ?? "",
     customerReference: order.customer_reference ?? "",
@@ -640,7 +713,7 @@ export async function getScopedOrderDetail(
     items,
     measurements: getTextRecord(order.measurements_json),
     notes: {
-      ...getTextRecord(order.notes_json),
+      ...displayNotes,
       legacyNotes: order.notes ?? "",
     },
     personalization: getTextRecord(order.personalization_json),
@@ -703,33 +776,70 @@ async function generateInternalOrderNumber() {
 
 export async function createOrder(
   viewer: AdminViewer,
-  input: OrderCreateInput
+  input: OrderCreatePayload,
+  locale: AppLocale
 ) {
-  const parsed = orderCreateSchema.parse(input);
+  const parsed = orderCreateSchema.parse({
+    ...input,
+    customerLanguage: input.customerLanguage ?? locale,
+    customerPhone: normalizeOptionalText(input.customerPhone),
+    customerReference: normalizeOptionalText(input.customerReference),
+  });
 
-  if (!canAccessOrder(viewer, { workshopId: parsed.workshopId, employeeId: parsed.employeeId })) {
-    throw new Error("You do not have access to create orders for this workshop.");
+  if (viewer.role === "employee") {
+    throw new Error("ORDER_CREATE_FORBIDDEN");
   }
 
-  const supabase = await createSupabaseServerClient();
+  if (parsed.employeeId && !parsed.workshopId) {
+    throw new Error("WORKSHOP_REQUIRED_FOR_EMPLOYEE");
+  }
+
+  if (parsed.workshopId && !canAccessWorkshop(viewer, parsed.workshopId)) {
+    throw new Error("INVALID_WORKSHOP_SELECTION");
+  }
+
+  const supabase = createSupabaseAdminClient();
+
+  if (parsed.employeeId) {
+    const { data: employee, error: employeeError } = await supabase
+      .from("employees")
+      .select("id, workshop_id")
+      .eq("id", parsed.employeeId)
+      .maybeSingle();
+
+    if (employeeError || !employee) {
+      throw new Error("INVALID_EMPLOYEE_SELECTION");
+    }
+
+    if (employee.workshop_id !== parsed.workshopId) {
+      throw new Error("INVALID_EMPLOYEE_WORKSHOP");
+    }
+  }
+
   const trackingNumber = await generateTrackingNumber();
   const internalOrderNumber = await generateInternalOrderNumber();
-  const trackingStatus: TrackingStatus = "sent_to_workshop";
-  const status = trackingStatusToOrderStatus(trackingStatus);
+  const trackingStatus: TrackingStatus = "created";
+  const status: WorkshopOrderStatus = "draft";
+  const customerLocale = parsed.customerLanguage;
+  const notesJson = {
+    ...parsed.notes,
+    customerLanguage: customerLocale,
+  };
   const orderPayload = {
+    assigned_admin_id: viewer.id,
     attachments_json: parsed.attachments,
-    customer_email: parsed.customerEmail || null,
-    customer_name: parsed.customerName || null,
+    customer_email: parsed.customerEmail,
+    customer_name: parsed.customerName,
     customer_phone: parsed.customerPhone || null,
     customer_reference: parsed.customerReference || null,
     due_date: parsed.dueDate || null,
     email_updates_enabled: parsed.emailUpdatesEnabled,
-    employee_id: parsed.employeeId || null,
+    employee_id: parsed.employeeId,
     gold_details_json: parsed.goldDetails,
     internal_order_number: internalOrderNumber,
     measurements_json: parsed.measurements,
-    notes: parsed.notes.workshopNotes || null,
-    notes_json: parsed.notes,
+    notes: parsed.notes.adminNotes || parsed.notes.workshopNotes || null,
+    notes_json: notesJson,
     personalization_json: parsed.personalization,
     priority: parsed.priority,
     status,
@@ -769,12 +879,17 @@ export async function createOrder(
     throw new Error(`Unable to create order item: ${itemError.message}`);
   }
 
+  const customerFacingNote =
+    parsed.notes.customerNotes || "Your order has been created.";
   const eventPayload = {
     actor_name: viewer.name,
     created_by: viewer.id,
-    description: parsed.notes.workshopNotes || "Order sent to workshop.",
-    is_public: parsed.emailUpdatesEnabled && parsed.customerEmail.length > 0,
-    notify_customer: false,
+    description: customerFacingNote,
+    is_public: true,
+    notify_customer:
+      parsed.emailUpdatesEnabled &&
+      parsed.customerEmail.length > 0 &&
+      shouldNotifyCustomerForStatus(trackingStatus),
     order_id: order.id,
     status: trackingStatus,
     title: fallbackTrackingTitle(trackingStatus),
@@ -786,79 +901,17 @@ export async function createOrder(
     throw new Error(`Unable to create initial tracking event: ${eventError.message}`);
   }
 
-  await createAdminNotification({
-    employeeId: parsed.employeeId || null,
+  const notificationId = await createAdminNotification({
+    employeeId: parsed.employeeId,
     entityId: order.id,
     entityType: "order",
     linkPath: `/admin/orders/${order.id}`,
-    message: `${parsed.productName} is ready for workshop processing.`,
+    message: parsed.workshopId
+      ? `${parsed.productName} was created and assigned to a workshop.`
+      : `${parsed.productName} was created and is waiting for workshop assignment.`,
     title: `${internalOrderNumber} created`,
     type: "order_created",
     workshopId: parsed.workshopId,
-  });
-
-  return {
-    orderId: order.id,
-    trackingNumber,
-  };
-}
-
-export async function updateOrderTracking(
-  viewer: AdminViewer,
-  input: OrderTrackingUpdateInput
-) {
-  const parsed = orderTrackingUpdateSchema.parse(input);
-  const order = await getScopedOrderDetail(viewer, parsed.orderId);
-
-  if (!order) {
-    throw new Error("The requested order could not be found.");
-  }
-
-  const supabase = await createSupabaseServerClient();
-  const status = trackingStatusToOrderStatus(parsed.status);
-  const { error: orderError } = await supabase
-    .from("orders")
-    .update({
-      status,
-      tracking_status: parsed.status,
-    } satisfies TableUpdate<"orders">)
-    .eq("id", parsed.orderId);
-
-  if (orderError) {
-    throw new Error(`Unable to update order status: ${orderError.message}`);
-  }
-
-  const note = parsed.message || "Tracking status updated.";
-  const eventPayload = {
-    actor_name: viewer.name,
-    created_by: viewer.id,
-    description: note,
-    is_public: parsed.notifyCustomer,
-    notify_customer: parsed.notifyCustomer,
-    order_id: parsed.orderId,
-    status: parsed.status,
-    title: fallbackTrackingTitle(parsed.status),
-  } satisfies TableInsert<"order_status_events">;
-
-  const { data: eventRow, error: eventError } = await supabase
-    .from("order_status_events")
-    .insert(eventPayload)
-    .select("*")
-    .single();
-
-  if (eventError) {
-    throw new Error(`Unable to save tracking event: ${eventError.message}`);
-  }
-
-  await createAdminNotification({
-    employeeId: order.employeeId,
-    entityId: parsed.orderId,
-    entityType: "order",
-    linkPath: `/admin/orders/${parsed.orderId}`,
-    message: note,
-    title: `${order.internalOrderNumber} updated`,
-    type: "order_updated",
-    workshopId: order.workshopId,
   });
 
   let emailResult:
@@ -870,36 +923,255 @@ export async function updateOrderTracking(
       }
     | undefined;
 
-  if (parsed.notifyCustomer && order.customerEmail && order.emailUpdatesEnabled) {
-    const trackingLink =
-      typeof process.env.NEXT_PUBLIC_SITE_URL === "string" &&
-      process.env.NEXT_PUBLIC_SITE_URL.length > 0
-        ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")}/tracking/${order.trackingNumber}`
-        : `Tracking ${order.trackingNumber}`;
-
+  if (
+    parsed.emailUpdatesEnabled &&
+    parsed.customerEmail &&
+    shouldNotifyCustomerForStatus(trackingStatus)
+  ) {
     emailResult = await sendTransactionalEmail({
       metadata: {
-        kind: "order_tracking_update",
-        trackingStatus: parsed.status,
+        kind: "order_created",
+        locale: customerLocale,
+        trackingStatus,
       },
+      notificationId,
       orderId: order.id,
-      recipientEmail: order.customerEmail,
-      replyTo: process.env.CONTACT_RECEIVER_EMAIL,
-      subject: `Update for order ${order.trackingNumber}`,
-      text: [
-        `Hello${order.customerName ? ` ${order.customerName}` : ""},`,
-        "",
-        `Your order ${order.trackingNumber} has a new status: ${fallbackTrackingTitle(parsed.status)}.`,
-        note,
-        "",
-        `Tracking link: ${trackingLink}`,
-      ].join("\n"),
+      recipientEmail: parsed.customerEmail,
+      replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
+      subject: `GoldHelwah GmbH | Order ${trackingNumber}`,
+      text: buildOrderEmailText({
+        customerName: parsed.customerName,
+        locale: customerLocale,
+        note: customerFacingNote,
+        status: trackingStatus,
+        trackingNumber,
+      }),
     });
   }
 
   return {
     emailResult,
-    event: mapOrderTrackingEvent(eventRow),
+    orderId: order.id,
+    trackingNumber,
+  };
+}
+
+export async function updateOrderWorkflow(
+  viewer: AdminViewer,
+  input: OrderWorkflowUpdatePayload,
+  locale: AppLocale
+) {
+  const parsed = orderWorkflowUpdateSchema.parse({
+    ...input,
+    customerNote: normalizeOptionalText(input.customerNote),
+    internalNote: normalizeOptionalText(input.internalNote),
+  });
+  const order = await getScopedOrderDetail(viewer, parsed.orderId);
+
+  if (!order) {
+    throw new Error("ORDER_NOT_FOUND");
+  }
+
+  if (viewer.role === "employee" && (parsed.workshopId || parsed.employeeId)) {
+    throw new Error("ORDER_ASSIGNMENT_FORBIDDEN");
+  }
+
+  const nextWorkshopId = parsed.workshopId ?? order.workshopId ?? null;
+  const workshopChanged = nextWorkshopId !== order.workshopId;
+  const nextEmployeeId =
+    parsed.employeeId ??
+    (workshopChanged ? null : order.employeeId ?? null);
+
+  if (!nextWorkshopId && nextEmployeeId) {
+    throw new Error("WORKSHOP_REQUIRED_FOR_EMPLOYEE");
+  }
+
+  const supabase = createSupabaseAdminClient();
+  let assignedEmployeeName = order.employeeName;
+  let assignedWorkshopName = order.workshopName;
+
+  if (nextWorkshopId && !canAccessWorkshop(viewer, nextWorkshopId)) {
+    throw new Error("INVALID_WORKSHOP_SELECTION");
+  }
+
+  if (nextWorkshopId) {
+    const { data: workshop, error: workshopError } = await supabase
+      .from("workshops")
+      .select("id, name")
+      .eq("id", nextWorkshopId)
+      .maybeSingle();
+
+    if (workshopError || !workshop) {
+      throw new Error("INVALID_WORKSHOP_SELECTION");
+    }
+
+    assignedWorkshopName = workshop.name;
+  } else {
+    assignedWorkshopName = "";
+  }
+
+  if (nextEmployeeId) {
+    const { data: employee, error: employeeError } = await supabase
+      .from("employees")
+      .select("id, full_name, workshop_id")
+      .eq("id", nextEmployeeId)
+      .maybeSingle();
+
+    if (employeeError || !employee) {
+      throw new Error("INVALID_EMPLOYEE_SELECTION");
+    }
+
+    if (!nextWorkshopId || employee.workshop_id !== nextWorkshopId) {
+      throw new Error("INVALID_EMPLOYEE_WORKSHOP");
+    }
+
+    assignedEmployeeName = employee.full_name;
+  } else {
+    assignedEmployeeName = "";
+  }
+
+  const employeeChanged = nextEmployeeId !== order.employeeId;
+  const statusChanged = parsed.status !== order.trackingStatus;
+  const hasInternalNote = parsed.internalNote.length > 0;
+  const hasCustomerNote = parsed.customerNote.length > 0;
+
+  const { error: orderError } = await supabase
+    .from("orders")
+    .update({
+      assigned_admin_id: viewer.role === "employee" ? undefined : viewer.id,
+      employee_id: nextEmployeeId,
+      notes: hasInternalNote ? parsed.internalNote : undefined,
+      status: trackingStatusToOrderStatus(parsed.status),
+      tracking_status: parsed.status,
+      workshop_id: nextWorkshopId,
+    } satisfies TableUpdate<"orders">)
+    .eq("id", parsed.orderId);
+
+  if (orderError) {
+    throw new Error(`Unable to update order: ${orderError.message}`);
+  }
+
+  if (hasInternalNote || workshopChanged || employeeChanged) {
+    const internalSummary = [
+      parsed.internalNote,
+      workshopChanged
+        ? `Workshop assignment: ${assignedWorkshopName || "unassigned"}`
+        : "",
+      employeeChanged
+        ? `Employee assignment: ${assignedEmployeeName || "unassigned"}`
+        : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const { error: internalEventError } = await supabase
+      .from("order_status_events")
+      .insert({
+        actor_name: viewer.name,
+        created_by: viewer.id,
+        description: internalSummary || "Order assignment updated.",
+        is_public: false,
+        notify_customer: false,
+        order_id: parsed.orderId,
+        status: parsed.status,
+        title: fallbackTrackingTitle(parsed.status),
+      } satisfies TableInsert<"order_status_events">);
+
+    if (internalEventError) {
+      throw new Error(`Unable to save internal order note: ${internalEventError.message}`);
+    }
+  }
+
+  const shouldCreatePublicEvent =
+    hasCustomerNote ||
+    (statusChanged && shouldNotifyCustomerForStatus(parsed.status));
+  const shouldSendCustomerEmail =
+    parsed.notifyCustomer &&
+    order.customerEmail.length > 0 &&
+    order.emailUpdatesEnabled &&
+    shouldNotifyCustomerForStatus(parsed.status);
+  const publicDescription =
+    parsed.customerNote ||
+    (statusChanged
+      ? `Your order status is now ${fallbackTrackingTitle(parsed.status)}.`
+      : "");
+
+  if (shouldCreatePublicEvent) {
+    const { error: publicEventError } = await supabase
+      .from("order_status_events")
+      .insert({
+        actor_name: viewer.name,
+        created_by: viewer.id,
+        description: publicDescription,
+        is_public: true,
+        notify_customer: shouldSendCustomerEmail,
+        order_id: parsed.orderId,
+        status: parsed.status,
+        title: fallbackTrackingTitle(parsed.status),
+      } satisfies TableInsert<"order_status_events">);
+
+    if (publicEventError) {
+      throw new Error(`Unable to save customer-facing update: ${publicEventError.message}`);
+    }
+  }
+
+  const notificationParts = [
+    statusChanged ? `Status: ${fallbackTrackingTitle(parsed.status)}` : "",
+    workshopChanged
+      ? `Workshop: ${assignedWorkshopName || "unassigned"}`
+      : "",
+    employeeChanged
+      ? `Employee: ${assignedEmployeeName || "unassigned"}`
+      : "",
+    hasInternalNote ? parsed.internalNote : "",
+  ].filter(Boolean);
+
+  await createAdminNotification({
+    employeeId: nextEmployeeId,
+    entityId: parsed.orderId,
+    entityType: "order",
+    linkPath: `/admin/orders/${parsed.orderId}`,
+    message:
+      notificationParts.join(" | ") || "Order assignment and status updated.",
+    title: `${order.internalOrderNumber} updated`,
+    type: "order_updated",
+    workshopId: nextWorkshopId,
+  });
+
+  let emailResult:
+    | {
+        delivered: boolean;
+        fallback: boolean;
+        ok: boolean;
+        reason?: string;
+      }
+    | undefined;
+  const customerLocale = order.customerLanguage ?? locale;
+
+  if (shouldSendCustomerEmail) {
+    emailResult = await sendTransactionalEmail({
+      metadata: {
+        kind: "order_tracking_update",
+        locale: customerLocale,
+        trackingStatus: parsed.status,
+      },
+      orderId: order.id,
+      recipientEmail: order.customerEmail,
+      replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
+      subject: `GoldHelwah GmbH | Order ${order.trackingNumber}`,
+      text: buildOrderEmailText({
+        customerName: order.customerName,
+        locale: customerLocale,
+        note:
+          publicDescription || `Your order status is now ${fallbackTrackingTitle(parsed.status)}.`,
+        status: parsed.status,
+        trackingNumber: order.trackingNumber,
+      }),
+    });
+  }
+
+  return {
+    emailResult,
     trackingNumber: order.trackingNumber,
   };
 }

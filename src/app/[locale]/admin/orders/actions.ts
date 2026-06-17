@@ -2,27 +2,175 @@
 
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
+import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
+import {
+  getOrderWorkflowCopy,
+  getSafeActionErrorMessage,
+} from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
   createOrder,
-  updateOrderTracking,
-  type OrderCreateInput,
-  type OrderTrackingUpdateInput,
+  updateOrderWorkflow,
+  type OrderCreatePayload,
+  type OrderWorkflowUpdatePayload,
 } from "@/lib/db/orders";
 
 type OrderActionResult =
   | {
+      fieldErrors?: Record<string, string>;
       message: string;
       ok: false;
     }
   | {
+      fieldErrors?: Record<string, string>;
       message: string;
       ok: true;
       orderId?: string;
       trackingNumber?: string;
     };
+
+function getFieldErrorKey(path: ReadonlyArray<PropertyKey>) {
+  const [first, second] = path;
+
+  if (typeof first !== "string") {
+    return "";
+  }
+
+  if (first === "notes" && typeof second === "string") {
+    return `notes.${second}`;
+  }
+
+  return first;
+}
+
+function getOrderFieldErrors(locale: AppLocale, error: ZodError) {
+  const copy = getOrderWorkflowCopy(locale);
+  const fieldErrors: Record<string, string> = {};
+
+  error.issues.forEach((issue) => {
+    const key = getFieldErrorKey(issue.path);
+
+    if (!key || fieldErrors[key]) {
+      return;
+    }
+
+    switch (key) {
+      case "customerEmail":
+        fieldErrors.customerEmail = copy.customerEmailInvalid;
+        break;
+      case "customerName":
+        fieldErrors.customerName = issue.code === "too_small"
+          ? "customerNameRequired"
+          : copy.formErrorFallback;
+        break;
+      case "employeeId":
+        fieldErrors.employeeId = copy.invalidSelection;
+        break;
+      case "orderId":
+        fieldErrors.orderId = copy.invalidSelection;
+        break;
+      case "productId":
+        fieldErrors.productId = copy.productRequired;
+        break;
+      case "quantity":
+        fieldErrors.quantity = copy.quantityInvalid;
+        break;
+      case "status":
+        fieldErrors.status = copy.selectStatus;
+        break;
+      case "workshopId":
+        fieldErrors.workshopId = copy.invalidSelection;
+        break;
+      default:
+        fieldErrors[key] = copy.formErrorFallback;
+        break;
+    }
+  });
+
+  return fieldErrors;
+}
+
+async function getLocalizedFieldErrors(
+  locale: AppLocale,
+  error: ZodError
+) {
+  const fieldErrors = getOrderFieldErrors(locale, error);
+
+  if (fieldErrors.customerName === "customerNameRequired") {
+    fieldErrors.customerName = locale === "de"
+      ? "Bitte geben Sie den Kundennamen ein."
+      : locale === "ar"
+        ? "يرجى إدخال اسم العميل."
+        : "Please enter the customer name.";
+  }
+
+  return fieldErrors;
+}
+
+async function getOrderFailure(
+  locale: AppLocale,
+  error: unknown,
+  mode: "create" | "update"
+) {
+  const copy = getOrderWorkflowCopy(locale);
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const fallbackMessage =
+    mode === "create" ? copy.technicalCreateFallback : copy.technicalUpdateFallback;
+
+  if (error instanceof ZodError) {
+    const fieldErrors = await getLocalizedFieldErrors(locale, error);
+
+    return {
+      fieldErrors,
+      message: Object.values(fieldErrors)[0] ?? fallbackMessage,
+      ok: false as const,
+    };
+  }
+
+  if (error instanceof Error) {
+    switch (error.message) {
+      case "INVALID_EMPLOYEE_SELECTION":
+      case "INVALID_EMPLOYEE_WORKSHOP":
+        return {
+          fieldErrors: { employeeId: copy.invalidSelection },
+          message: copy.invalidSelection,
+          ok: false as const,
+        };
+      case "INVALID_WORKSHOP_SELECTION":
+        return {
+          fieldErrors: { workshopId: copy.invalidSelection },
+          message: copy.invalidSelection,
+          ok: false as const,
+        };
+      case "ORDER_ASSIGNMENT_FORBIDDEN":
+      case "ORDER_CREATE_FORBIDDEN":
+        return {
+          message: t("common.noAccessText"),
+          ok: false as const,
+        };
+      case "ORDER_NOT_FOUND":
+        return {
+          message: fallbackMessage,
+          ok: false as const,
+        };
+      case "WORKSHOP_REQUIRED_FOR_EMPLOYEE":
+        return {
+          fieldErrors: { workshopId: copy.employeeRequiresWorkshop },
+          message: copy.employeeRequiresWorkshop,
+          ok: false as const,
+        };
+      default:
+        break;
+    }
+  }
+
+  return {
+    message: getSafeActionErrorMessage(error, fallbackMessage),
+    ok: false as const,
+  };
+}
 
 function revalidateOrderViews(orderId?: string, trackingNumber?: string) {
   routing.locales.forEach((locale) => {
@@ -41,9 +189,10 @@ function revalidateOrderViews(orderId?: string, trackingNumber?: string) {
 
 export async function createOrderAction(
   locale: AppLocale,
-  input: OrderCreateInput
+  input: OrderCreatePayload
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated" || !access.user) {
@@ -54,29 +203,34 @@ export async function createOrderAction(
   }
 
   try {
-    const result = await createOrder(access.user, input);
+    const result = await createOrder(access.user, input, locale);
     revalidateOrderViews(result.orderId, result.trackingNumber);
 
+    let message = copy.orderCreatedSuccess;
+
+    if (result.emailResult?.fallback) {
+      message = copy.createdEmailFallback;
+    } else if (result.emailResult && !result.emailResult.ok) {
+      message = copy.createdEmailFailed;
+    }
+
     return {
-      message: t("newOrder.success"),
+      message,
       ok: true,
       orderId: result.orderId,
       trackingNumber: result.trackingNumber,
     };
   } catch (error) {
-    return {
-      message:
-        error instanceof Error ? error.message : t("common.noAccessText"),
-      ok: false,
-    };
+    return getOrderFailure(locale, error, "create");
   }
 }
 
-export async function updateOrderTrackingAction(
+export async function updateOrderWorkflowAction(
   locale: AppLocale,
-  input: OrderTrackingUpdateInput
+  input: OrderWorkflowUpdatePayload
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, [
     "super_admin",
     "admin",
@@ -91,18 +245,18 @@ export async function updateOrderTrackingAction(
   }
 
   try {
-    const result = await updateOrderTracking(access.user, input);
+    const result = await updateOrderWorkflow(access.user, input, locale);
     revalidateOrderViews(input.orderId, result.trackingNumber);
 
-    let message = t("orders.statusSaved");
+    let message = copy.assignmentSaved;
 
     if (input.notifyCustomer) {
       if (result.emailResult?.delivered) {
         message = t("orders.statusSavedAndNotified");
       } else if (result.emailResult?.fallback) {
-        message = "Tracking status saved. Email delivery is in log-only fallback mode.";
+        message = copy.statusEmailFallback;
       } else if (result.emailResult && !result.emailResult.ok) {
-        message = "Tracking status saved, but the customer email could not be delivered.";
+        message = copy.statusEmailFailed;
       }
     }
 
@@ -112,10 +266,6 @@ export async function updateOrderTrackingAction(
       trackingNumber: result.trackingNumber,
     };
   } catch (error) {
-    return {
-      message:
-        error instanceof Error ? error.message : t("orders.notifyError"),
-      ok: false,
-    };
+    return getOrderFailure(locale, error, "update");
   }
 }

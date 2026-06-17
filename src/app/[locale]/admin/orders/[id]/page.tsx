@@ -1,15 +1,18 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
+import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { Link } from "@/i18n/navigation";
+import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
+import { getScopedEmployees } from "@/lib/db/employees";
 import { getScopedOrderDetail } from "@/lib/db/orders";
+import { getScopedWorkshops } from "@/lib/db/workshops";
 import { resolveLocale } from "@/lib/site";
 
 type OrderDetailPageProps = {
@@ -47,7 +50,20 @@ function getLabel(t: Awaited<ReturnType<typeof getTranslations>>, key: string) {
   return translationKey ? t(translationKey) : humanizeKey(key);
 }
 
+function formatDetailValue(locale: string, key: string, value: string) {
+  if (key !== "customerLanguage") {
+    return value;
+  }
+
+  try {
+    return new Intl.DisplayNames([locale], { type: "language" }).of(value) ?? value;
+  } catch {
+    return value;
+  }
+}
+
 function renderKeyValueRows(
+  locale: string,
   t: Awaited<ReturnType<typeof getTranslations>>,
   values: Record<string, string>
 ) {
@@ -62,7 +78,9 @@ function renderKeyValueRows(
       {rows.map(([key, value]) => (
         <div key={key} className="flex items-start justify-between gap-4">
           <dt className="text-muted">{getLabel(t, key)}</dt>
-          <dd className="max-w-[60%] text-end text-foreground">{value}</dd>
+          <dd className="max-w-[60%] text-end text-foreground">
+            {formatDetailValue(locale, key, value)}
+          </dd>
         </div>
       ))}
     </dl>
@@ -75,6 +93,7 @@ export default async function AdminOrderDetailPage({
   const { id, locale: localeParam } = await params;
   const locale = await resolveLocale(Promise.resolve({ locale: localeParam }));
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, [
     "super_admin",
     "admin",
@@ -82,13 +101,27 @@ export default async function AdminOrderDetailPage({
   ]);
 
   if (access.state !== "authenticated" || !access.user) {
-    notFound();
+    return (
+      <AdminAccessDenied
+        title={t("common.noAccessTitle")}
+        description={t("common.noAccessText")}
+      />
+    );
   }
 
-  const order = await getScopedOrderDetail(access.user, id);
+  const [order, workshops, employees] = await Promise.all([
+    getScopedOrderDetail(access.user, id),
+    getScopedWorkshops(access.user),
+    getScopedEmployees(access.user),
+  ]);
 
   if (!order) {
-    notFound();
+    return (
+      <AdminAccessDenied
+        title={t("common.noAccessTitle")}
+        description={t("common.noAccessText")}
+      />
+    );
   }
 
   const item = order.items[0];
@@ -181,7 +214,7 @@ export default async function AdminOrderDetailPage({
           </AdminCard>
 
           {order.items.length > 1 ? (
-            <AdminCard title="Items">
+            <AdminCard title={copy.itemsTitle}>
               <div className="space-y-4">
                 {order.items.map((orderItem) => (
                   <div
@@ -207,23 +240,23 @@ export default async function AdminOrderDetailPage({
 
           <section className="grid gap-6 xl:grid-cols-2">
             <AdminCard title={t("orders.goldDetailsTitle")}>
-              {renderKeyValueRows(t, order.goldDetails)}
+              {renderKeyValueRows(locale, t, order.goldDetails)}
             </AdminCard>
 
             <AdminCard title={t("orders.measurementsTitle")}>
-              {renderKeyValueRows(t, order.measurements)}
+              {renderKeyValueRows(locale, t, order.measurements)}
             </AdminCard>
 
             <AdminCard title={t("orders.personalizationTitle")}>
-              {renderKeyValueRows(t, order.personalization)}
+              {renderKeyValueRows(locale, t, order.personalization)}
             </AdminCard>
 
             <AdminCard title={t("orders.stonesTitle")}>
-              {renderKeyValueRows(t, order.stones)}
+              {renderKeyValueRows(locale, t, order.stones)}
             </AdminCard>
 
             <AdminCard title={t("orders.notesTitle")}>
-              {renderKeyValueRows(t, order.notes)}
+              {renderKeyValueRows(locale, t, order.notes)}
             </AdminCard>
 
             <AdminCard title={t("orders.deliveryTitle")}>
@@ -233,7 +266,7 @@ export default async function AdminOrderDetailPage({
                   <p className="mt-1 text-foreground">{order.dueDate || "-"}</p>
                 </div>
                 <div>
-                  <p className="text-muted">Attachments</p>
+                  <p className="text-muted">{copy.attachmentsLabel}</p>
                   <p className="mt-1 text-foreground">
                     {order.attachments.length > 0
                       ? order.attachments.join(", ")
@@ -244,9 +277,9 @@ export default async function AdminOrderDetailPage({
             </AdminCard>
           </section>
 
-          <AdminCard title="Support Tickets">
+          <AdminCard title={copy.supportTicketsTitle}>
             {order.supportTickets.length === 0 ? (
-              <p className="text-sm text-muted">No support tickets have been submitted yet.</p>
+              <p className="text-sm text-muted">{copy.noSupportTickets}</p>
             ) : (
               <div className="space-y-4">
                 {order.supportTickets.map((ticket) => (
@@ -271,9 +304,9 @@ export default async function AdminOrderDetailPage({
             )}
           </AdminCard>
 
-          <AdminCard title="Email Log">
+          <AdminCard title={copy.emailLogTitle}>
             {order.emailLogs.length === 0 ? (
-              <p className="text-sm text-muted">No notification emails have been logged yet.</p>
+              <p className="text-sm text-muted">{copy.noEmailLogs}</p>
             ) : (
               <div className="space-y-4">
                 {order.emailLogs.map((log) => (
@@ -333,6 +366,12 @@ export default async function AdminOrderDetailPage({
                 <p className="mt-1 text-foreground">{order.customerReference || "-"}</p>
               </div>
               <div>
+                <p className="text-muted">{copy.customerLanguage}</p>
+                <p className="mt-1 text-foreground">
+                  {formatDetailValue(locale, "customerLanguage", order.customerLanguage)}
+                </p>
+              </div>
+              <div>
                 <p className="text-muted">{t("newOrder.fields.workshop")}</p>
                 <p className="mt-1 text-foreground">{order.workshopName || "-"}</p>
               </div>
@@ -340,13 +379,18 @@ export default async function AdminOrderDetailPage({
           </AdminCard>
 
           <OrderTrackingCard
-            actorName={access.user.name}
+            currentUserRole={access.user.role}
             customerEmail={order.customerEmail}
             emailUpdatesEnabled={order.emailUpdatesEnabled}
+            employees={employees}
+            initialEmployeeId={order.employeeId}
             initialEvents={order.trackingEvents}
             initialStatus={order.trackingStatus}
+            initialWorkshopId={order.workshopId}
+            locale={locale}
             orderId={order.id}
             trackingNumber={order.trackingNumber}
+            workshops={workshops}
           />
         </div>
       </section>

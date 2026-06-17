@@ -12,18 +12,31 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { Link } from "@/i18n/navigation";
+import type { AppLocale } from "@/i18n/routing";
+import type { EmployeeRecord } from "@/lib/db/employees";
 import type { OrderListRecord } from "@/lib/db/orders";
+import type { WorkshopRecord } from "@/lib/db/workshops";
+import type { AdminRole } from "@/types/admin";
 import { workshopOrderStatusValues } from "@/types/admin";
 
 type AdminOrdersClientProps = {
   canCreate: boolean;
+  currentUserRole: AdminRole;
+  employees: EmployeeRecord[];
+  locale: AppLocale;
   orders: OrderListRecord[];
+  workshops: WorkshopRecord[];
 };
 
 export function AdminOrdersClient({
   canCreate,
+  currentUserRole,
+  employees,
+  locale,
   orders,
+  workshops,
 }: AdminOrdersClientProps) {
   const t = useTranslations("Admin");
   const [search, setSearch] = useState("");
@@ -31,6 +44,7 @@ export function AdminOrdersClient({
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [workshopFilter, setWorkshopFilter] = useState("all");
   const [employeeFilter, setEmployeeFilter] = useState("all");
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   const filteredOrders = useMemo(() => {
     const normalizedSearch = search.toLowerCase();
@@ -64,20 +78,9 @@ export function AdminOrdersClient({
     });
   }, [employeeFilter, orders, priorityFilter, search, statusFilter, workshopFilter]);
 
-  const workshopChoices = Array.from(
-    new Map(
-      orders
-        .filter((order) => order.workshopId)
-        .map((order) => [order.workshopId!, order.workshopName])
-    ).entries()
-  );
-  const employeeChoices = Array.from(
-    new Map(
-      orders
-        .filter((order) => order.employeeId)
-        .map((order) => [order.employeeId!, order.employeeName])
-    ).entries()
-  );
+  const workshopChoices = workshops.map((workshop) => [workshop.id, workshop.name] as const);
+  const employeeChoices = employees.map((employee) => [employee.id, employee.fullName] as const);
+  const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? null;
 
   const columns: AdminTableColumn<OrderListRecord>[] = [
     {
@@ -145,12 +148,21 @@ export function AdminOrdersClient({
       align: "end",
       header: t("orders.table.action"),
       cell: (order) => (
-        <Link
-          href={`/admin/orders/${order.id}`}
-          className={getAdminButtonClassName({ size: "sm", variant: "secondary" })}
-        >
-          {t("buttons.viewDetails")}
-        </Link>
+        <div className="flex flex-wrap justify-end gap-2">
+          <button
+            type="button"
+            className={getAdminButtonClassName({ size: "sm", variant: "ghost" })}
+            onClick={() => setSelectedOrderId(order.id)}
+          >
+            {t("buttons.updateStatus")}
+          </button>
+          <Link
+            href={`/admin/orders/${order.id}`}
+            className={getAdminButtonClassName({ size: "sm", variant: "secondary" })}
+          >
+            {t("buttons.viewDetails")}
+          </Link>
+        </div>
       ),
     },
   ];
@@ -232,6 +244,24 @@ export function AdminOrdersClient({
           </AdminSelect>
         </AdminToolbar>
       </AdminCard>
+
+      {selectedOrder ? (
+        <OrderTrackingCard
+          key={selectedOrder.id}
+          currentUserRole={currentUserRole}
+          customerEmail={selectedOrder.customerEmail}
+          emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
+          employees={employees}
+          initialEmployeeId={selectedOrder.employeeId}
+          initialStatus={selectedOrder.trackingStatus}
+          initialWorkshopId={selectedOrder.workshopId}
+          locale={locale}
+          orderId={selectedOrder.id}
+          showTimeline={false}
+          trackingNumber={selectedOrder.trackingNumber}
+          workshops={workshops}
+        />
+      ) : null}
 
       <AdminCard>
         <AdminTable

@@ -23,6 +23,7 @@ import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable
 import { AdminTabs } from "@/components/admin/AdminTabs";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import type {
   AdminCategoryRecord,
   AdminOptionRecord,
@@ -167,6 +168,7 @@ export function AdminProductsClient({
   products,
 }: AdminProductsClientProps) {
   const t = useTranslations("Admin");
+  const copy = getOrderWorkflowCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
@@ -304,7 +306,7 @@ export function AdminProductsClient({
     {
       id: "options",
       header: t("products.table.options"),
-      cell: (product) => `${product.optionCount} ${t("products.optionsCount")}`,
+      cell: (product) => copy.optionsLabel(product.optionCount),
     },
     {
       id: "visibility",
@@ -570,13 +572,12 @@ export function AdminProductsClient({
               <div className="space-y-1">
                 <p className="admin-label">{t("products.table.options")}</p>
                 <p className="text-xs text-muted">
-                  Choose which options are visible on this product and which must
-                  be filled in when creating an order.
+                  {copy.optionVisibilityHelp}
                 </p>
               </div>
               {optionGroups.length === 0 ? (
                 <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
-                  No product options have been created yet.
+                  {copy.optionVisibilityEmpty}
                 </div>
               ) : (
                 <div className="grid gap-4">
@@ -588,8 +589,7 @@ export function AdminProductsClient({
                       <div className="mb-4">
                         <p className="font-semibold text-foreground">{group.groupName}</p>
                         <p className="text-xs text-muted">
-                          {group.options.length} option
-                          {group.options.length === 1 ? "" : "s"}
+                          {copy.optionsLabel(group.options.length)}
                         </p>
                       </div>
                       <div className="space-y-3">
@@ -632,7 +632,7 @@ export function AdminProductsClient({
                                   }
                                   className="h-4 w-4 accent-[#c49a52]"
                                 />
-                                Visible
+                                {t("common.visible")}
                               </label>
                               <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
                                 <input
@@ -652,7 +652,7 @@ export function AdminProductsClient({
                                   }
                                   className="h-4 w-4 accent-[#c49a52]"
                                 />
-                                Required
+                                {copy.requiredLabel}
                               </label>
                             </div>
                           );

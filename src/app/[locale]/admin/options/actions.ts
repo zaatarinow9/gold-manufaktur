@@ -5,6 +5,10 @@ import { revalidatePath } from "next/cache";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import { AdminActionResult } from "@/lib/admin/actionResult";
+import {
+  getOrderWorkflowCopy,
+  getSafeActionErrorMessage,
+} from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
   createOption,
@@ -28,6 +32,7 @@ export async function saveOptionGroupAction(
   input: OptionGroupInput
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -47,8 +52,7 @@ export async function saveOptionGroupAction(
     };
   } catch (error) {
     return {
-      message:
-        error instanceof Error ? error.message : t("common.noAccessText"),
+      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,
     };
   }
@@ -59,6 +63,7 @@ export async function saveOptionAction(
   input: OptionInput | OptionUpdateInput
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -83,8 +88,7 @@ export async function saveOptionAction(
     };
   } catch (error) {
     return {
-      message:
-        error instanceof Error ? error.message : t("common.noAccessText"),
+      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,
     };
   }
@@ -96,6 +100,7 @@ export async function toggleOptionActiveAction(
   isActive: boolean
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -115,8 +120,7 @@ export async function toggleOptionActiveAction(
     };
   } catch (error) {
     return {
-      message:
-        error instanceof Error ? error.message : t("common.noAccessText"),
+      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,
     };
   }

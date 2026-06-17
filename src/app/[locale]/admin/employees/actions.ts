@@ -4,6 +4,10 @@ import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
 import { routing, type AppLocale } from "@/i18n/routing";
+import {
+  getOrderWorkflowCopy,
+  getSafeActionErrorMessage,
+} from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
   createEmployee,
@@ -25,6 +29,7 @@ export async function saveEmployeeAction(
   input: EmployeeInput | EmployeeUpdateInput
 ) {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -49,8 +54,7 @@ export async function saveEmployeeAction(
     };
   } catch (error) {
     return {
-      message:
-        error instanceof Error ? error.message : t("common.noAccessText"),
+      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false as const,
     };
   }
@@ -62,6 +66,7 @@ export async function toggleEmployeeActiveAction(
   isActive: boolean
 ) {
   const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -81,8 +86,7 @@ export async function toggleEmployeeActiveAction(
     };
   } catch (error) {
     return {
-      message:
-        error instanceof Error ? error.message : t("common.noAccessText"),
+      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false as const,
     };
   }

@@ -15,6 +15,10 @@ type WithEmployeeId = {
   employeeId?: string | null;
 };
 
+type WithAssignedAdminId = {
+  assignedAdminId?: string | null;
+};
+
 export function logAdminReadError(scope: string, message: string) {
   console.error(`[admin-db] ${scope}: ${message}`);
 }
@@ -56,8 +60,20 @@ export function canAccessEmployee(
 
 export function canAccessOrder(
   viewer: AdminViewer,
-  order: WithWorkshopId & WithEmployeeId
+  order: WithWorkshopId & WithEmployeeId & WithAssignedAdminId
 ) {
+  if (viewer.role === "super_admin") {
+    return true;
+  }
+
+  if (
+    viewer.role === "admin" &&
+    order.assignedAdminId &&
+    order.assignedAdminId === viewer.id
+  ) {
+    return true;
+  }
+
   return canAccessEmployee(viewer, order.employeeId, order.workshopId);
 }
 
@@ -84,7 +100,9 @@ export function scopeEmployeesForViewer<
   );
 }
 
-export function scopeOrdersForViewer<T extends WithEmployeeId & WithWorkshopId>(
+export function scopeOrdersForViewer<
+  T extends WithEmployeeId & WithWorkshopId & WithAssignedAdminId,
+>(
   viewer: AdminViewer,
   orders: T[]
 ) {

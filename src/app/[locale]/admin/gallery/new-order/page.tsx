@@ -3,8 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import { getAdminProducts } from "@/lib/db/adminCatalog";
-import { getScopedEmployees } from "@/lib/db/employees";
-import { getScopedWorkshops } from "@/lib/db/workshops";
 import { resolveLocale } from "@/lib/site";
 
 import { NewOrderClient } from "./new-order-client";
@@ -31,21 +29,16 @@ export default async function NewOrderPage({
     );
   }
 
-  const [{ product: preselectedProductId }, products, workshops, employees] =
-    await Promise.all([
-      searchParams,
-      getAdminProducts(locale),
-      getScopedWorkshops(access.user),
-      getScopedEmployees(access.user),
-    ]);
+  const [{ product: preselectedProductId }, products] = await Promise.all([
+    searchParams,
+    getAdminProducts(locale),
+  ]);
 
   return (
     <NewOrderClient
-      employees={employees}
       locale={locale}
       preselectedProductId={preselectedProductId}
       products={products}
-      workshops={workshops}
     />
   );
 }

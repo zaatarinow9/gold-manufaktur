@@ -13,19 +13,17 @@ import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
+import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import type { AdminProductRecord } from "@/lib/db/adminCatalog";
-import type { EmployeeRecord } from "@/lib/db/employees";
-import type { WorkshopRecord } from "@/lib/db/workshops";
 
 type NewOrderClientProps = {
-  employees: EmployeeRecord[];
   locale: AppLocale;
   preselectedProductId?: string;
   products: AdminProductRecord[];
-  workshops: WorkshopRecord[];
 };
 
 type OptionValueMap = Record<string, string | string[] | boolean>;
+type FieldErrors = Record<string, string>;
 
 function getInitialProductId(
   products: AdminProductRecord[],
@@ -74,16 +72,16 @@ function getGroupRecord(
 }
 
 export function NewOrderClient({
-  employees,
   locale,
   preselectedProductId,
   products,
-  workshops,
 }: NewOrderClientProps) {
   const t = useTranslations("Admin");
+  const copy = getOrderWorkflowCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [productId, setProductId] = useState(() =>
     getInitialProductId(products, preselectedProductId)
   );
@@ -92,27 +90,32 @@ export function NewOrderClient({
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerReference, setCustomerReference] = useState("");
+  const [customerLanguage, setCustomerLanguage] = useState<AppLocale>(locale);
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<"express" | "normal" | "urgent">("normal");
-  const [workshopId, setWorkshopId] = useState(workshops[0]?.id ?? "");
-  const [employeeId, setEmployeeId] = useState("");
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
-  const [workshopNotes, setWorkshopNotes] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
-  const [deliveryNotes, setDeliveryNotes] = useState("");
-  const [packagingNotes, setPackagingNotes] = useState("");
-  const [qualityRequirements, setQualityRequirements] = useState("");
   const [optionValues, setOptionValues] = useState<OptionValueMap>({});
 
   const selectedProduct =
     products.find((product) => product.id === productId) ?? products[0];
-  const visibleEmployees = employees.filter(
-    (employee) => employee.workshopId === workshopId
-  );
   const productOptions = selectedProduct?.optionSettings ?? [];
 
+  const clearFieldError = (field: string) => {
+    setFieldErrors((current) => {
+      if (!(field in current)) {
+        return current;
+      }
+
+      const nextState = { ...current };
+      delete nextState[field];
+      return nextState;
+    });
+  };
+
   const updateOptionValue = (optionId: string, value: string | string[] | boolean) => {
+    clearFieldError(`option:${optionId}`);
     setOptionValues((current) => ({
       ...current,
       [optionId]: value,
@@ -121,9 +124,19 @@ export function NewOrderClient({
 
   const submitForm = () => {
     if (!selectedProduct) {
-      setFeedback("Please choose a product first.");
+      setFieldErrors({ productId: copy.productRequired });
+      setFeedback(copy.productRequired);
       return;
     }
+
+    if (!Number.isFinite(quantity) || quantity < 1) {
+      setFieldErrors({ quantity: copy.quantityInvalid });
+      setFeedback(copy.quantityInvalid);
+      return;
+    }
+
+    setFeedback(null);
+    setFieldErrors({});
 
     const selectedOptions = productOptions
       .map((option) => ({
@@ -157,22 +170,22 @@ export function NewOrderClient({
       const result = await createOrderAction(locale, {
         attachments: [],
         customerEmail,
+        customerLanguage,
         customerName,
         customerPhone,
         customerReference,
         dueDate,
         emailUpdatesEnabled,
-        employeeId,
         goldDetails,
         measurements,
         notes: {
           adminNotes,
           customerNotes,
-          deliveryNotes,
-          packagingNotes,
-          qualityRequirements,
           specialInstructions: "",
-          workshopNotes,
+          deliveryNotes: "",
+          packagingNotes: "",
+          qualityRequirements: "",
+          workshopNotes: "",
         },
         personalization,
         priority,
@@ -187,10 +200,10 @@ export function NewOrderClient({
         referenceImages: [],
         selectedOptions,
         stones,
-        workshopId,
       });
 
       setFeedback(result.message);
+      setFieldErrors(result.fieldErrors ?? {});
 
       if (result.ok && result.orderId) {
         router.push(`/${locale}/admin/orders/${result.orderId}`);
@@ -219,7 +232,12 @@ export function NewOrderClient({
               <AdminSelect
                 label={t("newOrder.fields.product")}
                 value={productId}
-                onChange={(event) => setProductId(event.target.value)}
+                helperText={fieldErrors.productId}
+                className={fieldErrors.productId ? "border-rose-400/30" : undefined}
+                onChange={(event) => {
+                  clearFieldError("productId");
+                  setProductId(event.target.value);
+                }}
               >
                 {products.map((product) => (
                   <option key={product.id} value={product.id}>
@@ -231,7 +249,12 @@ export function NewOrderClient({
                 label={t("newOrder.fields.quantity")}
                 type="number"
                 value={String(quantity)}
-                onChange={(event) => setQuantity(Number(event.target.value || 1))}
+                helperText={fieldErrors.quantity}
+                className={fieldErrors.quantity ? "border-rose-400/30" : undefined}
+                onChange={(event) => {
+                  clearFieldError("quantity");
+                  setQuantity(Number(event.target.value || 1));
+                }}
               />
             </div>
           </AdminCard>
@@ -241,12 +264,22 @@ export function NewOrderClient({
               <AdminInput
                 label={t("newOrder.fields.customerName")}
                 value={customerName}
-                onChange={(event) => setCustomerName(event.target.value)}
+                helperText={fieldErrors.customerName}
+                className={fieldErrors.customerName ? "border-rose-400/30" : undefined}
+                onChange={(event) => {
+                  clearFieldError("customerName");
+                  setCustomerName(event.target.value);
+                }}
               />
               <AdminInput
                 label={t("newOrder.fields.customerEmail")}
                 value={customerEmail}
-                onChange={(event) => setCustomerEmail(event.target.value)}
+                helperText={fieldErrors.customerEmail}
+                className={fieldErrors.customerEmail ? "border-rose-400/30" : undefined}
+                onChange={(event) => {
+                  clearFieldError("customerEmail");
+                  setCustomerEmail(event.target.value);
+                }}
               />
               <AdminInput
                 label={t("newOrder.fields.customerPhone")}
@@ -258,6 +291,23 @@ export function NewOrderClient({
                 value={customerReference}
                 onChange={(event) => setCustomerReference(event.target.value)}
               />
+              <AdminSelect
+                label={copy.customerLanguage}
+                value={customerLanguage}
+                onChange={(event) => setCustomerLanguage(event.target.value as AppLocale)}
+              >
+                {[
+                  { value: "de", label: "Deutsch" },
+                  { value: "ar", label: "العربية" },
+                  { value: "en", label: "English" },
+                  { value: "fr", label: "Français" },
+                  { value: "tr", label: "Türkçe" },
+                ].map((language) => (
+                  <option key={language.value} value={language.value}>
+                    {language.label}
+                  </option>
+                ))}
+              </AdminSelect>
               <AdminInput
                 label={t("newOrder.fields.dueDate")}
                 type="date"
@@ -274,37 +324,6 @@ export function NewOrderClient({
                 {["normal", "urgent", "express"].map((value) => (
                   <option key={value} value={value}>
                     {t(`priority.${value}`)}
-                  </option>
-                ))}
-              </AdminSelect>
-            </div>
-          </AdminCard>
-
-          <AdminCard title={t("newOrder.sections.workshop")} description={t("newOrder.workshopDescription")}>
-            <div className="grid gap-4 xl:grid-cols-2">
-              <AdminSelect
-                label={t("newOrder.fields.workshop")}
-                value={workshopId}
-                onChange={(event) => {
-                  setWorkshopId(event.target.value);
-                  setEmployeeId("");
-                }}
-              >
-                {workshops.map((workshop) => (
-                  <option key={workshop.id} value={workshop.id}>
-                    {workshop.name}
-                  </option>
-                ))}
-              </AdminSelect>
-              <AdminSelect
-                label={t("newOrder.fields.assignedEmployee")}
-                value={employeeId}
-                onChange={(event) => setEmployeeId(event.target.value)}
-              >
-                <option value="">{t("common.unassigned")}</option>
-                {visibleEmployees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
-                    {employee.fullName}
                   </option>
                 ))}
               </AdminSelect>
@@ -415,11 +434,6 @@ export function NewOrderClient({
           <AdminCard title={t("newOrder.sections.notes")} description={t("newOrder.reviewDescription")}>
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminTextarea
-                label={t("newOrder.fields.workshopNotes")}
-                value={workshopNotes}
-                onChange={(event) => setWorkshopNotes(event.target.value)}
-              />
-              <AdminTextarea
                 label={t("newOrder.fields.customerNotes")}
                 value={customerNotes}
                 onChange={(event) => setCustomerNotes(event.target.value)}
@@ -428,21 +442,6 @@ export function NewOrderClient({
                 label={t("newOrder.fields.internalNotes")}
                 value={adminNotes}
                 onChange={(event) => setAdminNotes(event.target.value)}
-              />
-              <AdminTextarea
-                label={t("newOrder.fields.deliveryNotes")}
-                value={deliveryNotes}
-                onChange={(event) => setDeliveryNotes(event.target.value)}
-              />
-              <AdminTextarea
-                label={t("newOrder.fields.packagingNotes")}
-                value={packagingNotes}
-                onChange={(event) => setPackagingNotes(event.target.value)}
-              />
-              <AdminTextarea
-                label={t("newOrder.fields.qualityRequirements")}
-                value={qualityRequirements}
-                onChange={(event) => setQualityRequirements(event.target.value)}
               />
             </div>
           </AdminCard>
@@ -478,16 +477,15 @@ export function NewOrderClient({
                     <span className="text-foreground">{t(`priority.${priority}`)}</span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{t("newOrder.fields.workshop")}</span>
+                    <span className="text-muted">{copy.customerLanguage}</span>
                     <span className="text-foreground">
-                      {workshops.find((workshop) => workshop.id === workshopId)?.name || "-"}
-                    </span>
-                  </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{t("newOrder.fields.assignedEmployee")}</span>
-                    <span className="text-foreground">
-                      {visibleEmployees.find((employee) => employee.id === employeeId)?.fullName ||
-                        t("common.unassigned")}
+                      {{
+                        ar: "العربية",
+                        de: "Deutsch",
+                        en: "English",
+                        fr: "Français",
+                        tr: "Türkçe",
+                      }[customerLanguage]}
                     </span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
@@ -505,6 +503,7 @@ export function NewOrderClient({
 
           <AdminCard title={t("newOrder.sections.tracking")} description={t("newOrder.trackingDescription")}>
             <div className="space-y-4">
+              <p className="text-sm text-muted">{copy.workshopAssignmentHint}</p>
               <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
                 <input
                   type="checkbox"
@@ -520,7 +519,7 @@ export function NewOrderClient({
                 onClick={submitForm}
                 disabled={isPending || !selectedProduct}
               >
-                {t("buttons.submitOrder")}
+                {t("buttons.createOrder")}
               </AdminButton>
             </div>
           </AdminCard>
