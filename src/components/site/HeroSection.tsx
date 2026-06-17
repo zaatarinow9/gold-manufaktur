@@ -4,10 +4,12 @@ import { useTranslations } from "next-intl";
 
 import { realProductImages } from "@/data/catalog";
 import { Link } from "@/i18n/navigation";
+import { trimDisplayHeading } from "@/lib/displayText";
 
 export function HeroSection() {
   const t = useTranslations("Home.hero");
   const heroImage = realProductImages[0];
+  const title = trimDisplayHeading(t("title"));
 
   return (
     <section className="full-bleed-section relative isolate min-h-[80svh] overflow-hidden">
@@ -27,15 +29,15 @@ export function HeroSection() {
 
       <div className="container-shell relative">
         <div className="content-shell flex min-h-[80svh] items-center justify-center py-24 sm:py-28 lg:py-32">
-          <div className="hero-copy relative mx-auto flex w-full max-w-[58rem] flex-col items-center text-center">
+          <div className="hero-copy relative mx-auto flex w-full max-w-[60rem] min-w-0 flex-col items-center text-center">
             <h1 className="hero-heading hero-title-reveal text-foreground">
-              {t("title")}
+              {title}
             </h1>
             <p className="hero-subtitle-reveal section-copy balanced-copy mt-6 max-w-3xl text-base sm:text-lg">
               {t("subtitle")}
             </p>
 
-            <div className="hero-actions hero-actions-reveal mt-8 flex flex-wrap justify-center gap-3 sm:mt-10">
+            <div className="hero-actions hero-actions-reveal rtl-inline-row mt-8 flex flex-wrap justify-center gap-3 sm:mt-10">
               <Link href="/shop" className="gold-button">
                 {t("primaryCta")}
                 <ArrowRight className="h-4 w-4" />

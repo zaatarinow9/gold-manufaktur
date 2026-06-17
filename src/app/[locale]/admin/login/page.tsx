@@ -10,6 +10,7 @@ import { AdminInput } from "@/components/admin/AdminInput";
 import { adminUsers } from "@/data/adminMock";
 import { Link } from "@/i18n/navigation";
 import { MOCK_ADMIN_ROLE, getCurrentAdminUser } from "@/lib/admin/currentUser";
+import { trimDisplayHeading } from "@/lib/displayText";
 import type { AppLocale } from "@/i18n/routing";
 import { getBrandLogoAlt } from "@/lib/site";
 
@@ -33,7 +34,7 @@ export default function AdminLoginPage() {
         <div className="space-y-6">
           <div className="space-y-4">
             <h1 className="admin-heading text-foreground">
-              {t("login.title")}
+              {trimDisplayHeading(t("login.title"))}
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted">
               {t("login.description")}
@@ -82,7 +83,7 @@ export default function AdminLoginPage() {
               {t("login.demoHint", { role: t(`roles.${MOCK_ADMIN_ROLE}`) })}
             </div>
             <Link href="/admin" className="admin-button-primary w-full">
-              {t("buttons.demoLogin")}
+              {t("buttons.next")}
             </Link>
           </div>
 

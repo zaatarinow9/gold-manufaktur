@@ -1,5 +1,7 @@
 import clsx from "clsx";
 
+import { trimDisplayHeading } from "@/lib/displayText";
+
 type SectionHeadingProps = {
   align?: "center" | "start";
   className?: string;
@@ -34,7 +36,7 @@ export function SectionHeading({
           titleClassName
         )}
       >
-        {title}
+        {trimDisplayHeading(title)}
       </h2>
       {description ? (
         <p

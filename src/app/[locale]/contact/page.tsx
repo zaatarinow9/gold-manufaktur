@@ -8,6 +8,7 @@ import { ContactForm } from "@/components/site/ContactForm";
 import { LocationMap } from "@/components/site/LocationMap";
 import { realProductImages } from "@/data/catalog";
 import { Link } from "@/i18n/navigation";
+import { trimDisplayHeading } from "@/lib/displayText";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
 
@@ -32,12 +33,14 @@ export default function ContactPage() {
           <div className="content-shell rtl-mirror-grid grid gap-6 xl:grid-cols-[0.82fr_1.18fr]">
             <div className="contact-hero-copy rtl-items-start luxury-panel px-6 py-8 sm:px-8 sm:py-10">
               <span className="eyebrow">{t("eyebrow")}</span>
-              <h1 className="section-title mt-6 text-foreground">{t("title")}</h1>
+              <h1 className="section-title mt-6 text-foreground">
+                {trimDisplayHeading(t("title"))}
+              </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg">
                 {t("subtitle")}
               </p>
 
-              <div className="rtl-justify-start mt-8 flex flex-wrap gap-3">
+              <div className="rtl-inline-row rtl-justify-start mt-8 flex flex-wrap gap-3">
                 <Link href="/shop" className="gold-button">
                   {t("primaryCta")}
                   <ArrowRight className="h-4 w-4" />

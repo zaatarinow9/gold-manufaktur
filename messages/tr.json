@@ -349,7 +349,7 @@
     },
     "header": {
       "adminArea": "Yonetim alani",
-      "demoMode": "Aktif rol",
+      "demoMode": "Erişim rolü",
       "activeUser": "Aktif kullanici",
       "roleFoundation": "Rol temeli",
       "roleHint": "Roller ve ic gorunumler acik bicimde ayrilir.",
@@ -378,7 +378,7 @@
     "buttons": {
       "openMenu": "Menu",
       "close": "Kapat",
-      "demoLogin": "Kullanici degistir",
+      "demoLogin": "Hesap değiştir",
       "addProduct": "Urun ekle",
       "createOrder": "Siparis olustur",
       "viewDetails": "Detaylar",
@@ -431,7 +431,7 @@
       "selectPlaceholder": "Lutfen secin",
       "unassigned": "Atanmamis",
       "noCustomer": "Musteri bilgisi yok",
-      "mockSubmit": "Islem kaydedildi.",
+      "mockSubmit": "Değişiklikler kaydedildi.",
       "selected": "Secili",
       "internalOnly": "Sadece dahili",
       "visibility": "Gorunurluk",
@@ -519,8 +519,8 @@
       "formDescription": "Dahili alan icin bir kullanici hesabi secin.",
       "email": "E-posta",
       "password": "Sifre",
-      "demoHint": "Aktif rol: {role}.",
-      "demoUsersTitle": "Kullanilabilir hesaplar"
+      "demoHint": "Geçerli erişim: {role}.",
+      "demoUsersTitle": "Ekip hesapları"
     },
     "products": {
       "eyebrow": "Urun yonetimi",
@@ -896,7 +896,7 @@
         "defaultLanguage": "Varsayilan dil",
         "dashboardTheme": "Panel temasi",
         "contactFormStatus": "Iletisim formu",
-        "demoRole": "Aktif rol",
+        "demoRole": "Erişim rolü",
         "density": "Yogunluk",
         "email": "E-posta",
         "legalNotice": "Kunye",

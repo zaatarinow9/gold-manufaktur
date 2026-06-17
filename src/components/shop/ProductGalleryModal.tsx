@@ -63,7 +63,7 @@ export function ProductGalleryModal({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/82 px-4 py-6 backdrop-blur-xl"
+      className="fixed inset-0 z-[70] flex items-start justify-center bg-black/82 px-4 py-4 backdrop-blur-xl sm:items-center sm:py-6"
       role="dialog"
       aria-modal="true"
       aria-label={product.name}
@@ -75,7 +75,7 @@ export function ProductGalleryModal({
         onClick={onClose}
       />
 
-      <div className="relative z-10 w-full max-w-7xl overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(20,16,12,0.96),rgba(8,8,8,0.98))] shadow-[0_38px_100px_rgba(0,0,0,0.46)]">
+      <div className="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-7xl flex-col overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(20,16,12,0.96),rgba(8,8,8,0.98))] shadow-[0_38px_100px_rgba(0,0,0,0.46)]">
         <button
           type="button"
           onClick={onClose}
@@ -85,9 +85,9 @@ export function ProductGalleryModal({
           <X className="h-5 w-5" />
         </button>
 
-        <div className="rtl-mirror-grid grid lg:grid-cols-[1.18fr_0.82fr]">
-          <div className="border-b border-white/8 lg:border-b-0 lg:border-e lg:border-white/8">
-            <div className="relative aspect-[4/5] bg-[radial-gradient(circle_at_30%_20%,rgba(232,201,135,0.18),transparent_40%),linear-gradient(180deg,#111,#050505)]">
+        <div className="rtl-mirror-grid grid min-h-0 overflow-y-auto overscroll-contain lg:grid-cols-[1.18fr_0.82fr]">
+          <div className="min-w-0 border-b border-white/8 lg:border-b-0 lg:border-e lg:border-white/8">
+            <div className="relative aspect-[4/4.5] bg-[radial-gradient(circle_at_30%_20%,rgba(232,201,135,0.18),transparent_40%),linear-gradient(180deg,#111,#050505)] sm:aspect-[4/5]">
               <Image
                 src={activeImage}
                 alt={product.name}
@@ -97,7 +97,7 @@ export function ProductGalleryModal({
               />
             </div>
 
-            <div className="flex gap-3 overflow-x-auto p-4 sm:p-5">
+            <div className="flex min-w-0 gap-3 overflow-x-auto p-4 sm:p-5">
               {images.map((image, index) => {
                 const isActive = image === activeImage;
 
@@ -127,14 +127,14 @@ export function ProductGalleryModal({
             </div>
           </div>
 
-          <div className="space-y-6 p-6 text-start sm:p-8">
-            <div className="space-y-4">
+          <div className="min-w-0 space-y-6 p-6 text-start sm:p-8">
+            <div className="min-w-0 space-y-4">
               <span className="gold-chip">{category?.name ?? t("fallbackCategory")}</span>
               <div>
-                <h3 className="text-3xl font-semibold text-foreground sm:text-4xl">
+                <h3 className="text-3xl font-semibold text-foreground [overflow-wrap:anywhere] sm:text-4xl">
                   {product.name}
                 </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-muted sm:text-base">
+                <p className="mt-4 max-w-xl text-sm leading-7 text-muted [overflow-wrap:anywhere] sm:text-base">
                   {product.shortDescription}
                 </p>
               </div>
@@ -142,7 +142,7 @@ export function ProductGalleryModal({
 
             <div className="rounded-[22px] border border-white/10 bg-black/28 p-5">
               <p className="muted-label">{t("categoryLabel")}</p>
-              <p className="mt-3 text-sm text-foreground sm:text-base">
+              <p className="mt-3 text-sm text-foreground [overflow-wrap:anywhere] sm:text-base">
                 {category?.name ?? t("fallbackCategory")}
               </p>
             </div>
@@ -153,7 +153,7 @@ export function ProductGalleryModal({
                 {product.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-white/10 bg-white/4 px-3 py-2 text-xs uppercase tracking-[0.18em] text-gold-soft"
+                    className="max-w-full rounded-full border border-white/10 bg-white/4 px-3 py-2 text-xs uppercase tracking-[0.18em] text-gold-soft [overflow-wrap:anywhere]"
                   >
                     {tag}
                   </span>
@@ -161,7 +161,7 @@ export function ProductGalleryModal({
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="rtl-inline-row flex flex-wrap gap-3">
               <Link href="/contact" className="gold-button">
                 {t("requestCta")}
               </Link>

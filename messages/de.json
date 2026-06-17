@@ -349,7 +349,7 @@
     },
     "header": {
       "adminArea": "Adminbereich",
-      "demoMode": "Aktive Rolle",
+      "demoMode": "Zugriffsrolle",
       "activeUser": "Aktiver Nutzer",
       "roleFoundation": "Rollenbasis",
       "roleHint": "Rollen und Ansichten werden im internen Bereich klar zugeordnet.",
@@ -378,7 +378,7 @@
     "buttons": {
       "openMenu": "Menü",
       "close": "Schließen",
-      "demoLogin": "Benutzer wechseln",
+      "demoLogin": "Konto wechseln",
       "addProduct": "Produkt hinzufügen",
       "createOrder": "Auftrag erstellen",
       "viewDetails": "Details",
@@ -431,7 +431,7 @@
       "selectPlaceholder": "Bitte wählen",
       "unassigned": "Nicht zugewiesen",
       "noCustomer": "Ohne Kundendaten",
-      "mockSubmit": "Aktion gespeichert.",
+      "mockSubmit": "Änderungen gespeichert.",
       "selected": "Ausgewählt",
       "internalOnly": "Nur intern",
       "visibility": "Sichtbarkeit",
@@ -519,8 +519,8 @@
       "formDescription": "Wählen Sie ein Benutzerkonto für den internen Bereich.",
       "email": "E-Mail",
       "password": "Passwort",
-      "demoHint": "Aktive Rolle: {role}.",
-      "demoUsersTitle": "Verfügbare Benutzer"
+      "demoHint": "Aktiver Zugriff: {role}.",
+      "demoUsersTitle": "Teamkonten"
     },
     "products": {
       "eyebrow": "Produktverwaltung",
@@ -899,7 +899,7 @@
         "defaultLanguage": "Standardsprache",
         "dashboardTheme": "Dashboard-Theme",
         "contactFormStatus": "Kontaktformular",
-        "demoRole": "Aktive Rolle",
+        "demoRole": "Zugriffsrolle",
         "density": "Dichte",
         "email": "E-Mail",
         "legalNotice": "Impressum",

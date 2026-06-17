@@ -48,17 +48,17 @@ export function AdminHeader({ currentUser, onOpenNav }: AdminHeaderProps) {
             <Menu className="h-5 w-5" />
           </button>
           <AdminBrand alt={brandLogoAlt} className="shrink-0" logoClassName="h-[2.35rem]" />
-            <div className="min-w-0 space-y-1">
-              <div className="rtl-inline-row flex flex-wrap items-center gap-2">
-                <AdminBadge
-                  variant="gold"
-                  className="px-2 py-0.5 text-[0.62rem] tracking-[0.08em]"
-                >
-                  {t(`roles.${currentUser.role}`)}
-                </AdminBadge>
-                <p className="truncate text-sm font-semibold text-foreground">
-                  {t(`nav.${currentItem.key}`)}
-                </p>
+          <div className="min-w-0 space-y-1">
+            <div className="rtl-inline-row flex flex-wrap items-center gap-2">
+              <AdminBadge
+                variant="gold"
+                className="px-2 py-0.5 text-[0.62rem] tracking-[0.08em]"
+              >
+                {t(`roles.${currentUser.role}`)}
+              </AdminBadge>
+              <p className="truncate text-sm font-semibold text-foreground">
+                {t(`nav.${currentItem.key}`)}
+              </p>
             </div>
             <div className="rtl-inline-row flex flex-wrap items-center gap-3 text-sm text-muted">
               <span>{currentUser.name}</span>
@@ -67,7 +67,7 @@ export function AdminHeader({ currentUser, onOpenNav }: AdminHeaderProps) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="rtl-inline-row flex flex-wrap items-center gap-2">
           <AdminLanguageSwitcher />
           <Link
             href="/"

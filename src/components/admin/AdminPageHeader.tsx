@@ -1,5 +1,7 @@
 import clsx from "clsx";
 
+import { trimDisplayHeading } from "@/lib/displayText";
+
 type AdminPageHeaderProps = {
   actions?: React.ReactNode;
   className?: string;
@@ -28,7 +30,7 @@ export function AdminPageHeader({
         {eyebrow ? <p className="admin-page-kicker">{eyebrow}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="admin-heading text-foreground">
-            {title}
+            {trimDisplayHeading(title)}
           </h1>
           {meta}
         </div>

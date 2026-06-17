@@ -37,12 +37,15 @@
 }
 
 html {
+  max-width: 100%;
+  overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
   scroll-behavior: smooth;
 }
 
 body {
+  max-width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
   font-family: var(--font-body), sans-serif;
@@ -61,6 +64,7 @@ a {
 
 img {
   display: block;
+  max-width: 100%;
 }
 
 iframe {
@@ -166,11 +170,13 @@ button {
 .content-shell {
   margin-inline: auto;
   width: 100%;
+  min-width: 0;
   max-width: 96rem;
 }
 
 .text-shell {
   width: 100%;
+  min-width: 0;
   max-width: 48rem;
 }
 
@@ -233,18 +239,18 @@ button {
 }
 
 .section-title {
-  font-size: clamp(2.75rem, 6vw, 5.5rem);
+  font-size: clamp(2.45rem, 5.4vw, 4.95rem);
   line-height: 1.08;
 }
 
 .hero-heading {
-  font-size: clamp(3rem, 7.4vw, 6.8rem);
-  line-height: 1.08;
-  max-inline-size: 18ch;
+  font-size: clamp(2.8rem, 6.1vw, 5.85rem);
+  line-height: 1.06;
+  max-inline-size: 15ch;
 }
 
 .section-heading {
-  font-size: clamp(2.35rem, 5vw, 4.6rem);
+  font-size: clamp(2.2rem, 4.6vw, 4.2rem);
   line-height: 1.1;
 }
 
@@ -276,6 +282,15 @@ button {
 .section-copy {
   color: var(--muted);
   line-height: 1.85;
+}
+
+.hero-heading,
+.site-heading,
+.section-heading,
+.section-title,
+.card-title,
+.admin-heading {
+  max-inline-size: 100%;
 }
 
 .gold-button {
@@ -461,7 +476,7 @@ html[lang="ar"] .site-heading,
 html[lang="ar"] .hero-heading,
 html[lang="ar"] .section-heading,
 html[lang="ar"] .admin-heading {
-  line-height: 1.24;
+  line-height: 1.22;
   letter-spacing: 0;
 }
 
@@ -1008,6 +1023,11 @@ html[dir="rtl"] .admin-select {
   background-position: 0.9rem center;
   padding-inline-end: 2.75rem;
   padding-inline-start: 0.95rem;
+}
+
+html[dir="rtl"] .admin-input-with-icon {
+  padding-inline-start: 1rem;
+  padding-inline-end: 2.9rem;
 }
 
 html[dir="rtl"] .tracking-timeline-header {

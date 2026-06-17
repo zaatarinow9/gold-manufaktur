@@ -49,7 +49,7 @@ export function LocationMap() {
               </div>
             </div>
 
-            <div className="mt-auto flex flex-wrap gap-3 pt-8">
+            <div className="rtl-inline-row mt-auto flex flex-wrap gap-3 pt-8">
               <a
                 href={companyDirectionsUrl}
                 target="_blank"

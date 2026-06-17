@@ -23,7 +23,7 @@ export function ProductCard({
     <button
       type="button"
       onClick={onOpen}
-      className="group block overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,15,11,0.92),rgba(8,8,8,0.98))] text-start transition hover:-translate-y-1 hover:border-gold/30"
+      className="group block w-full min-w-0 overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,15,11,0.92),rgba(8,8,8,0.98))] text-start transition hover:-translate-y-1 hover:border-gold/30"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
         <Image
@@ -43,11 +43,13 @@ export function ProductCard({
         </div>
       </div>
 
-      <div className="space-y-3 px-5 py-5">
-        <h3 className="text-lg font-semibold text-foreground sm:text-xl">
+      <div className="min-w-0 space-y-3 px-5 py-5">
+        <h3 className="text-lg font-semibold text-foreground [overflow-wrap:anywhere] sm:text-xl">
           {product.name}
         </h3>
-        <p className="text-sm leading-6 text-muted">{product.shortDescription}</p>
+        <p className="text-sm leading-6 text-muted [overflow-wrap:anywhere]">
+          {product.shortDescription}
+        </p>
         <span className="rtl-inline-row inline-flex items-center gap-2 text-sm font-medium text-gold-soft transition group-hover:text-foreground">
           {t("cta")}
           <ArrowUpRight className="h-4 w-4" />

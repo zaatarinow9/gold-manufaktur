@@ -349,7 +349,7 @@
     },
     "header": {
       "adminArea": "Espace admin",
-      "demoMode": "Rôle actif",
+      "demoMode": "Rôle d'accès",
       "activeUser": "Utilisateur actif",
       "roleFoundation": "Base des rôles",
       "roleHint": "Les rôles et les vues internes restent clairement attribués.",
@@ -378,7 +378,7 @@
     "buttons": {
       "openMenu": "Menu",
       "close": "Fermer",
-      "demoLogin": "Changer d'utilisateur",
+      "demoLogin": "Changer de compte",
       "addProduct": "Ajouter un produit",
       "createOrder": "Creer une commande",
       "viewDetails": "Details",
@@ -431,7 +431,7 @@
       "selectPlaceholder": "Veuillez choisir",
       "unassigned": "Non assigné",
       "noCustomer": "Sans données client",
-      "mockSubmit": "Action enregistrée.",
+      "mockSubmit": "Modifications enregistrées.",
       "selected": "Selection",
       "internalOnly": "Interne uniquement",
       "visibility": "Visibilite",
@@ -519,8 +519,8 @@
       "formDescription": "Choisissez un compte utilisateur pour l'espace interne.",
       "email": "E-mail",
       "password": "Mot de passe",
-      "demoHint": "Rôle actif : {role}.",
-      "demoUsersTitle": "Utilisateurs disponibles"
+      "demoHint": "Accès actuel : {role}.",
+      "demoUsersTitle": "Comptes d'équipe"
     },
     "products": {
       "eyebrow": "Gestion des produits",
@@ -896,7 +896,7 @@
         "defaultLanguage": "Langue par défaut",
         "dashboardTheme": "Thème du dashboard",
         "contactFormStatus": "Formulaire de contact",
-        "demoRole": "Rôle actif",
+        "demoRole": "Rôle d'accès",
         "density": "Densite",
         "email": "E-mail",
         "legalNotice": "Mentions legales",

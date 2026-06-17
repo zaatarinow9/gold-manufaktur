@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 
+import { trimDisplayHeading } from "@/lib/displayText";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
 
@@ -28,7 +29,9 @@ export default function ImpressumPage() {
       <div className="content-shell space-y-8 py-8 sm:py-10">
         <header className="luxury-panel px-6 py-8 sm:px-8 sm:py-10">
           <span className="eyebrow">{t("eyebrow")}</span>
-          <h1 className="section-title mt-6 text-foreground">{t("title")}</h1>
+          <h1 className="section-title mt-6 text-foreground">
+            {trimDisplayHeading(t("title"))}
+          </h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-muted sm:text-lg">
             {t("description")}
           </p>

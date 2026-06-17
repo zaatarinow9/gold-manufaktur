@@ -349,7 +349,7 @@
     },
     "header": {
       "adminArea": "Admin area",
-      "demoMode": "Active role",
+      "demoMode": "Access role",
       "activeUser": "Active user",
       "roleFoundation": "Role foundation",
       "roleHint": "Roles and views are clearly assigned across the internal workspace.",
@@ -378,7 +378,7 @@
     "buttons": {
       "openMenu": "Menu",
       "close": "Close",
-      "demoLogin": "Switch user",
+      "demoLogin": "Switch account",
       "addProduct": "Add product",
       "createOrder": "Create order",
       "viewDetails": "Details",
@@ -431,7 +431,7 @@
       "selectPlaceholder": "Please select",
       "unassigned": "Unassigned",
       "noCustomer": "No customer data",
-      "mockSubmit": "Action saved.",
+      "mockSubmit": "Changes saved.",
       "selected": "Selected",
       "internalOnly": "Internal only",
       "visibility": "Visibility",
@@ -519,8 +519,8 @@
       "formDescription": "Choose a user account for the internal area.",
       "email": "Email",
       "password": "Password",
-      "demoHint": "Active role: {role}.",
-      "demoUsersTitle": "Available users"
+      "demoHint": "Current access: {role}.",
+      "demoUsersTitle": "Team accounts"
     },
     "products": {
       "eyebrow": "Product management",
@@ -896,7 +896,7 @@
         "defaultLanguage": "Default language",
         "dashboardTheme": "Dashboard theme",
         "contactFormStatus": "Contact form",
-        "demoRole": "Active role",
+        "demoRole": "Access role",
         "density": "Density",
         "email": "Email",
         "legalNotice": "Imprint",
