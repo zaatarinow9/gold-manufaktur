@@ -11,6 +11,7 @@ import { AdminBrand } from "./AdminBrand";
 import { AdminBadge } from "./AdminBadge";
 import { getAdminButtonClassName } from "./AdminButton";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
+import { AdminLogoutButton } from "./AdminLogoutButton";
 import { adminNavItems } from "./AdminSidebar";
 
 type AdminHeaderProps = {
@@ -76,13 +77,15 @@ export function AdminHeader({ currentUser, onOpenNav }: AdminHeaderProps) {
             <ArrowUpRight className="h-4 w-4" />
             {t("header.toWebsite")}
           </Link>
-          <Link
-            href="/admin/login"
-            className={getAdminButtonClassName({ size: "sm", variant: "secondary" })}
+          <AdminLogoutButton
+            className={getAdminButtonClassName({
+              size: "sm",
+              variant: "secondary",
+            })}
           >
             <LogOut className="h-4 w-4" />
             {t("buttons.demoLogin")}
-          </Link>
+          </AdminLogoutButton>
         </div>
       </div>
     </header>

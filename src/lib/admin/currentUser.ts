@@ -18,6 +18,7 @@ import type {
 
 // Demo role switch for UI testing until Supabase Auth and policies are integrated.
 export const MOCK_ADMIN_ROLE: AdminRole = "super_admin";
+let currentAdminUserOverride: AdminUser | null = null;
 
 const rolePriority: Record<AdminRole, number> = {
   super_admin: 3,
@@ -26,11 +27,19 @@ const rolePriority: Record<AdminRole, number> = {
 };
 
 export function getCurrentAdminUser(role: AdminRole = MOCK_ADMIN_ROLE): AdminUser {
+  if (currentAdminUserOverride) {
+    return currentAdminUserOverride;
+  }
+
   return (
     adminUsers.find((user) => user.role === role) ??
     adminUsers.find((user) => user.role === "super_admin") ??
     adminUsers[0]
   );
+}
+
+export function setCurrentAdminUser(user: AdminUser | null) {
+  currentAdminUserOverride = user;
 }
 
 export function hasAdminRoleAccess(

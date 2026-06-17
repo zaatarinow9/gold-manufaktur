@@ -11,6 +11,7 @@ import type { AdminUser } from "@/types/admin";
 import { AdminBrand } from "./AdminBrand";
 import { getAdminButtonClassName } from "./AdminButton";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
+import { AdminLogoutButton } from "./AdminLogoutButton";
 import { getVisibleAdminNavItems } from "./AdminSidebar";
 
 type AdminMobileNavProps = {
@@ -108,14 +109,13 @@ export function AdminMobileNav({
               <ArrowUpRight className="h-4 w-4" />
               {t("header.toWebsite")}
             </Link>
-            <Link
-              href="/admin/login"
+            <AdminLogoutButton
               onClick={onClose}
               className={getAdminButtonClassName({ variant: "secondary" })}
             >
               <LogOut className="h-4 w-4" />
               {t("buttons.demoLogin")}
-            </Link>
+            </AdminLogoutButton>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AdminShell } from "@/components/admin/AdminShell";
-import { getCurrentAdminUser } from "@/lib/admin/currentUser";
+import { getAdminShellUser } from "@/lib/admin/auth";
 import { resolveLocale } from "@/lib/site";
 
 type AdminLayoutProps = {
@@ -27,10 +27,9 @@ export default async function AdminLayout({
   params,
 }: AdminLayoutProps) {
   const locale = await resolveLocale(params);
+  const currentUser = await getAdminShellUser();
 
   setRequestLocale(locale);
 
-  return (
-    <AdminShell currentUser={getCurrentAdminUser()}>{children}</AdminShell>
-  );
+  return <AdminShell currentUser={currentUser}>{children}</AdminShell>;
 }

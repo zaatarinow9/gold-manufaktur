@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import {
-  getCategoryBySlug,
   realProductImages,
   type CatalogCategory,
   type CatalogProduct,
@@ -32,6 +31,9 @@ export function ProductGrid({ categories, products }: ProductGridProps) {
     activeCategory === "all"
       ? products
       : products.filter((product) => product.categorySlug === activeCategory);
+  const categoryBySlug = new Map(
+    categories.map((category) => [category.slug, category])
+  );
 
   const filterItems = [
     { slug: "all", label: t("all") },
@@ -63,7 +65,7 @@ export function ProductGrid({ categories, products }: ProductGridProps) {
           {filteredProducts.length > 0 ? (
             <div className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {filteredProducts.map((product) => {
-                const category = getCategoryBySlug(product.categorySlug);
+                const category = categoryBySlug.get(product.categorySlug);
 
                 return (
                   <ProductCard
@@ -101,11 +103,7 @@ export function ProductGrid({ categories, products }: ProductGridProps) {
           )}
 
           <ProductGalleryModal
-            category={
-              selectedProduct
-                ? getCategoryBySlug(selectedProduct.categorySlug)
-                : undefined
-            }
+            category={selectedProduct ? categoryBySlug.get(selectedProduct.categorySlug) : undefined}
             onClose={() => setSelectedProduct(null)}
             product={selectedProduct}
           />

@@ -1,0 +1,57 @@
+"use client";
+
+import { useActionState } from "react";
+import { useTranslations } from "next-intl";
+
+import type { AppLocale } from "@/i18n/routing";
+import { loginAction } from "@/app/[locale]/admin/login/actions";
+
+import { AdminButton } from "./AdminButton";
+import { AdminInput } from "./AdminInput";
+
+type AdminLoginFormProps = {
+  locale: AppLocale;
+};
+
+const initialState = {
+  message: "",
+};
+
+export function AdminLoginForm({ locale }: AdminLoginFormProps) {
+  const t = useTranslations("Admin");
+  const [state, formAction, isPending] = useActionState(
+    loginAction.bind(null, locale),
+    initialState
+  );
+
+  return (
+    <form action={formAction} className="space-y-4">
+      <AdminInput
+        id="email"
+        name="email"
+        type="email"
+        label={t("login.email")}
+        autoComplete="email"
+        placeholder={t("login.email")}
+        required
+      />
+      <AdminInput
+        id="password"
+        name="password"
+        type="password"
+        label={t("login.password")}
+        autoComplete="current-password"
+        placeholder={t("login.password")}
+        required
+      />
+      {state.message ? (
+        <div className="rounded-[1.4rem] border border-rose-400/24 bg-rose-400/10 px-4 py-4 text-sm text-rose-100">
+          {state.message}
+        </div>
+      ) : null}
+      <AdminButton type="submit" variant="primary" block disabled={isPending}>
+        {t("buttons.next")}
+      </AdminButton>
+    </form>
+  );
+}

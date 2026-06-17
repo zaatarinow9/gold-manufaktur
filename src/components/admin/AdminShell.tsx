@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { usePathname } from "@/i18n/navigation";
+import { setCurrentAdminUser } from "@/lib/admin/currentUser";
 import type { AdminUser } from "@/types/admin";
 import { AdminHeader } from "./AdminHeader";
 import { AdminMobileNav } from "./AdminMobileNav";
@@ -17,6 +18,8 @@ export function AdminShell({ children, currentUser }: AdminShellProps) {
   const pathname = usePathname() ?? "/admin";
   const isLoginRoute = pathname === "/admin/login";
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  setCurrentAdminUser(currentUser);
 
   if (isLoginRoute) {
     return (

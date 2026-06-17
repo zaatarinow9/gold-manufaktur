@@ -1,0 +1,245 @@
+insert into public.categories (
+  id,
+  slug,
+  accent,
+  name_de,
+  name_ar,
+  name_en,
+  description_de,
+  description_ar,
+  image_url,
+  sort_order,
+  is_active
+)
+values
+  ('10000000-0000-4000-8000-000000000001', 'schmucksets', 'Royal', 'Schmucksets', 'أطقم المجوهرات', 'Jewelry Sets', 'Kuratierte Sets mit starkem Goldauftritt.', 'أطقم مختارة بعناية بحضور ذهبي قوي.', '/images/products/real/goldhelwah-product-02.jpg', 1, true),
+  ('10000000-0000-4000-8000-000000000002', 'ohrringe', 'Licht', 'Ohrringe', 'أقراط', 'Earrings', 'Feine Goldakzente für Abend und Alltag.', 'لمسات ذهبية ناعمة للمساء واليوميات.', '/images/products/real/goldhelwah-product-01.jpg', 2, true),
+  ('10000000-0000-4000-8000-000000000003', 'armbaender', 'Balance', 'Armbänder', 'أساور', 'Bracelets', 'Goldene Linien mit ruhiger Präsenz.', 'خطوط ذهبية بحضور هادئ.', '/images/products/real/goldhelwah-product-03.jpg', 3, true),
+  ('10000000-0000-4000-8000-000000000004', 'flex-armbaender', 'Soft', 'Flex-Armbänder', 'أساور مرنة', 'Flex Bracelets', 'Bewegliche Eleganz mit warmer Ausstrahlung.', 'أناقة مرنة بإشراقة دافئة.', '/images/products/real/goldhelwah-product-06.jpg', 4, true),
+  ('10000000-0000-4000-8000-000000000005', 'anhaenger', 'Statement', 'Anhänger', 'قلادات', 'Pendants', 'Markante Motive für Collier und Geschenk.', 'تصاميم لافتة للقلادات والهدايا.', '/images/products/real/goldhelwah-product-05.jpg', 5, true),
+  ('10000000-0000-4000-8000-000000000006', 'namensschmuck-nach-mass', 'Atelier', 'Namensschmuck nach Maß', 'مجوهرات أسماء حسب الطلب', 'Custom Name Jewelry', 'Persönliche Stücke mit individueller Note.', 'قطع شخصية بلمسة فردية خاصة.', '/images/products/real/goldhelwah-product-07.jpg', 6, true),
+  ('10000000-0000-4000-8000-000000000007', 'ringe', 'Signatur', 'Ringe', 'خواتم', 'Rings', 'Goldringe mit klarer Formensprache.', 'خواتم ذهبية بخطوط واضحة.', '/images/products/real/goldhelwah-product-04.jpg', 7, true),
+  ('10000000-0000-4000-8000-000000000008', 'eheringe-trauringe', 'Bindung', 'Eheringe / Trauringe', 'خواتم زفاف', 'Wedding Rings', 'Modelle für Verlobung und Zeremonie.', 'تصاميم للخطوبة وحفل الزواج.', '/images/products/real/goldhelwah-product-02.jpg', 8, true),
+  ('10000000-0000-4000-8000-000000000009', 'lange-halsketten-hijab-ketten', 'Länge', 'Lange Halsketten / Hijab-Ketten', 'سلاسل طويلة / سلاسل حجاب', 'Long Necklaces / Hijab Chains', 'Lange Silhouetten für Layering und Hijab-Looks.', 'تصاميم طويلة للتنسيق واطلالات الحجاب.', '/images/products/real/goldhelwah-product-07.jpg', 9, true),
+  ('10000000-0000-4000-8000-000000000010', 'fusskettchen', 'Leicht', 'Fusskettchen', 'خلاخيل', 'Anklets', 'Zarte Goldmomente mit feinem Glanz.', 'لمسات ذهبية خفيفة وبراقة.', '/images/products/real/goldhelwah-product-03.jpg', 10, true),
+  ('10000000-0000-4000-8000-000000000011', 'handketten', 'Form', 'Handketten', 'سلاسل يد', 'Hand Chains', 'Elegante Verbindungen zwischen Ring und Armband.', 'وصلات أنيقة بين الخاتم والسوار.', '/images/products/real/goldhelwah-product-05.jpg', 11, true),
+  ('10000000-0000-4000-8000-000000000012', 'piercings', 'Mini', 'Piercings', 'بيرسينغ', 'Piercings', 'Zurückhaltende Akzente mit edlem Finish.', 'تفاصيل هادئة بلمسة راقية.', '/images/products/real/goldhelwah-product-06.jpg', 12, true),
+  ('10000000-0000-4000-8000-000000000013', 'feine-halsketten', 'Daily Gold', 'Feine Halsketten', 'سلاسل ناعمة', 'Fine Necklaces', 'Zarte Ketten für feine Luxusmomente.', 'سلاسل رقيقة للحظات فاخرة هادئة.', '/images/products/real/goldhelwah-product-04.jpg', 13, true),
+  ('10000000-0000-4000-8000-000000000014', 'kinderohrringe', 'Sanft', 'Kinderohrringe', 'أقراط أطفال', 'Kids Earrings', 'Kindgerechte Formen mit feinem Goldcharakter.', 'تصاميم مناسبة للأطفال بلمسة ذهبية ناعمة.', '/images/products/real/goldhelwah-product-01.jpg', 14, true),
+  ('10000000-0000-4000-8000-000000000015', 'kinderarmbaender', 'Herz', 'Kinderarmbänder', 'أساور أطفال', 'Kids Bracelets', 'Familiengeschenke mit leichter Silhouette.', 'هدايا عائلية بخطوط خفيفة.', '/images/products/real/goldhelwah-product-03.jpg', 15, true),
+  ('10000000-0000-4000-8000-000000000016', 'kinderanhaenger', 'Erinnerung', 'Kinderanhänger', 'قلادات أطفال', 'Kids Pendants', 'Kleine Motive für besondere Momente.', 'تفاصيل صغيرة للحظات مميزة.', '/images/products/real/goldhelwah-product-05.jpg', 16, true),
+  ('10000000-0000-4000-8000-000000000017', 'goldunzen-goldbarren', 'Wert', 'Goldunzen & Goldbarren', 'أونصات وسبائك ذهب', 'Gold Ounces & Bars', 'Goldobjekte mit ruhiger Präsentation.', 'قطع ذهبية بحضور هادئ وواضح.', '/images/products/real/goldhelwah-product-07.jpg', 17, false)
+on conflict (id) do update
+set
+  slug = excluded.slug,
+  accent = excluded.accent,
+  name_de = excluded.name_de,
+  name_ar = excluded.name_ar,
+  name_en = excluded.name_en,
+  description_de = excluded.description_de,
+  description_ar = excluded.description_ar,
+  image_url = excluded.image_url,
+  sort_order = excluded.sort_order,
+  is_active = excluded.is_active;
+
+insert into public.products (
+  id,
+  slug,
+  sku,
+  category_id,
+  name_de,
+  name_ar,
+  name_en,
+  description_de,
+  description_ar,
+  cover_image_url,
+  tags,
+  is_active,
+  is_featured,
+  sort_order
+)
+values
+  ('20000000-0000-4000-8000-000000000001', 'helwah-signature-set', 'GH-0001', '10000000-0000-4000-8000-000000000001', 'Helwah Signature Set', 'طقم هيلواه المميز', 'Helwah Signature Set', 'Collier, Armband und Ohrringe in klarer Goldlinie.', 'عقد وسوار وأقراط بخط ذهبي واضح.', '/images/products/real/goldhelwah-product-01.jpg', array['21K', 'Set', 'Showroom'], true, true, 1),
+  ('20000000-0000-4000-8000-000000000002', 'noor-drops', 'GH-0002', '10000000-0000-4000-8000-000000000002', 'Noor Drops', 'أقراط نور', 'Noor Drops', 'Filigrane Ohrringe als Teil eines warmen Goldensembles.', 'أقراط ناعمة ضمن طقم ذهبي دافئ.', '/images/products/real/goldhelwah-product-02.jpg', array['Ohrringe', 'Gold', 'Elegant'], true, true, 2),
+  ('20000000-0000-4000-8000-000000000003', 'safa-armband', 'GH-0003', '10000000-0000-4000-8000-000000000003', 'Safa Armband', 'سوار صفا', 'Safa Bracelet', 'Markantes Goldarmband mit ruhiger Royal-Präsenz.', 'سوار ذهبي بارز بحضور ملكي هادئ.', '/images/products/real/goldhelwah-product-03.jpg', array['Armband', 'Classic', 'Gold'], true, true, 3),
+  ('20000000-0000-4000-8000-000000000004', 'layali-flex', 'GH-0004', '10000000-0000-4000-8000-000000000004', 'Layali Flex', 'سوار ليالي المرن', 'Layali Flex', 'Weiche Bewegung und goldene Balance für jeden Anlass.', 'حركة مرنة وتوازن ذهبي لكل مناسبة.', '/images/products/real/goldhelwah-product-04.jpg', array['Flex', 'Atelier', 'Light'], false, false, 4),
+  ('20000000-0000-4000-8000-000000000005', 'royal-medaillon', 'GH-0005', '10000000-0000-4000-8000-000000000005', 'Royal Medaillon', 'ميدالية رويال', 'Royal Medallion', 'Großzügiger Anhänger mit bildstarker Silhouette.', 'قلادة بارزة بحضور بصري قوي.', '/images/products/real/goldhelwah-product-05.jpg', array['Medaillon', 'Statement', 'Gift'], true, true, 5),
+  ('20000000-0000-4000-8000-000000000006', 'atelier-namenscollier', 'GH-0006', '10000000-0000-4000-8000-000000000006', 'Atelier Namenscollier', 'قلادة أسماء أتولييه', 'Atelier Name Necklace', 'Individuell gedacht und für persönliche Wünsche vorbereitet.', 'مصممة حسب الطلب ومهيأة للرغبات الشخصية.', '/images/products/real/goldhelwah-product-06.jpg', array['Custom', 'Atelier', 'Maß'], true, false, 6),
+  ('20000000-0000-4000-8000-000000000007', 'noura-signet', 'GH-0007', '10000000-0000-4000-8000-000000000007', 'Noura Signet', 'خاتم نورة', 'Noura Signet', 'Ringlinie mit klarer Form und warmem Goldcharakter.', 'خاتم بخط واضح وطابع ذهبي دافئ.', '/images/products/real/goldhelwah-product-07.jpg', array['Ring', 'Signatur', 'Gold'], true, false, 7),
+  ('20000000-0000-4000-8000-000000000008', 'ewiges-paar', 'GH-0008', '10000000-0000-4000-8000-000000000008', 'Ewiges Paar', 'الزوج الأبدي', 'Eternal Pair', 'Trauringe mit stiller Präsenz und klarer Symbolik.', 'خواتم زفاف بحضور هادئ ورمزية واضحة.', '/images/products/real/goldhelwah-product-01.jpg', array['Trauringe', 'Wedding', 'Couple'], true, true, 8),
+  ('20000000-0000-4000-8000-000000000009', 'royal-long-line', 'GH-0009', '10000000-0000-4000-8000-000000000009', 'Royal Long Line', 'قلادة رويال الطويلة', 'Royal Long Line', 'Langes Collier für Layering, Anlass und Hijab-Styling.', 'قلادة طويلة للتنسيق والمناسبات واطلالات الحجاب.', '/images/products/real/goldhelwah-product-04.jpg', array['Long', 'Layering', 'Hijab'], true, false, 9),
+  ('20000000-0000-4000-8000-000000000010', 'sahara-fusskette', 'GH-0010', '10000000-0000-4000-8000-000000000010', 'Sahara Fusskette', 'خلخال الصحراء', 'Sahara Anklet', 'Leichtes Goldstatement für sommerliche Looks.', 'خلخال ذهبي خفيف لإطلالات الصيف.', '/images/products/real/goldhelwah-product-03.jpg', array['Fusskette', 'Summer', 'Light'], true, false, 10),
+  ('20000000-0000-4000-8000-000000000011', 'amira-handkette', 'GH-0011', '10000000-0000-4000-8000-000000000011', 'Amira Handkette', 'سلسلة يد أميرة', 'Amira Hand Chain', 'Elegante Verbindung mit feiner Goldbewegung.', 'وصلة أنيقة بحركة ذهبية ناعمة.', '/images/products/real/goldhelwah-product-05.jpg', array['Handkette', 'Elegant', 'Showroom'], true, false, 11),
+  ('20000000-0000-4000-8000-000000000012', 'micro-piercing-light', 'GH-0012', '10000000-0000-4000-8000-000000000012', 'Micro Piercing Light', 'بيرسينغ مايكرو لايت', 'Micro Piercing Light', 'Minimaler Goldakzent mit feinem Finish.', 'لمسة ذهبية صغيرة بتشطيب أنيق.', '/images/products/real/goldhelwah-product-06.jpg', array['Piercing', 'Mini', 'Fine'], true, false, 12),
+  ('20000000-0000-4000-8000-000000000013', 'atelier-feinkette', 'GH-0013', '10000000-0000-4000-8000-000000000013', 'Atelier Feinkette', 'سلسلة أتولييه الناعمة', 'Atelier Fine Chain', 'Zarte Kette für tägliche Eleganz und Layering.', 'سلسلة ناعمة لأناقة يومية وتنسيق متعدد.', '/images/products/real/goldhelwah-product-04.jpg', array['Fein', 'Daily Gold', 'Layering'], true, true, 13),
+  ('20000000-0000-4000-8000-000000000014', 'mini-star-ears', 'GH-0014', '10000000-0000-4000-8000-000000000014', 'Mini Star Ears', 'أقراط النجمة الصغيرة', 'Mini Star Ears', 'Sanfte Formen für kleine besondere Geschenke.', 'تصاميم لطيفة لهدايا صغيرة ومميزة.', '/images/products/real/goldhelwah-product-02.jpg', array['Kids', 'Ohrringe', 'Gift'], true, false, 14),
+  ('20000000-0000-4000-8000-000000000015', 'soft-loop-mini', 'GH-0015', '10000000-0000-4000-8000-000000000015', 'Soft Loop Mini', 'سوفت لوب ميني', 'Soft Loop Mini', 'Leichtes Goldarmband für liebevolle Familienmomente.', 'سوار ذهبي خفيف للحظات عائلية دافئة.', '/images/products/real/goldhelwah-product-03.jpg', array['Kids', 'Armband', 'Soft'], true, false, 15),
+  ('20000000-0000-4000-8000-000000000016', 'little-medaillon', 'GH-0016', '10000000-0000-4000-8000-000000000016', 'Little Medaillon', 'الميدالية الصغيرة', 'Little Medallion', 'Kleiner Anhänger mit warmer Erinnerungskraft.', 'قلادة صغيرة تحمل ذكرى دافئة.', '/images/products/real/goldhelwah-product-05.jpg', array['Kids', 'Anhänger', 'Keepsake'], true, false, 16),
+  ('20000000-0000-4000-8000-000000000017', 'heritage-ounce', 'GH-0017', '10000000-0000-4000-8000-000000000017', 'Heritage Ounce', 'أونصة هيريتج', 'Heritage Ounce', 'Wertobjekte mit klarer, ruhiger Präsentation.', 'قطعة قيمة بحضور واضح وهادئ.', '/images/products/real/goldhelwah-product-07.jpg', array['Gold', 'Heritage', 'Value'], true, false, 17)
+on conflict (id) do update
+set
+  slug = excluded.slug,
+  sku = excluded.sku,
+  category_id = excluded.category_id,
+  name_de = excluded.name_de,
+  name_ar = excluded.name_ar,
+  name_en = excluded.name_en,
+  description_de = excluded.description_de,
+  description_ar = excluded.description_ar,
+  cover_image_url = excluded.cover_image_url,
+  tags = excluded.tags,
+  is_active = excluded.is_active,
+  is_featured = excluded.is_featured,
+  sort_order = excluded.sort_order;
+
+insert into public.product_images (product_id, image_url, alt_text, sort_order)
+values
+  ('20000000-0000-4000-8000-000000000001', '/images/products/real/goldhelwah-product-01.jpg', 'Helwah Signature Set', 1),
+  ('20000000-0000-4000-8000-000000000001', '/images/products/real/goldhelwah-product-02.jpg', 'Helwah Signature Set', 2),
+  ('20000000-0000-4000-8000-000000000001', '/images/products/real/goldhelwah-product-03.jpg', 'Helwah Signature Set', 3),
+  ('20000000-0000-4000-8000-000000000002', '/images/products/real/goldhelwah-product-02.jpg', 'Noor Drops', 1),
+  ('20000000-0000-4000-8000-000000000002', '/images/products/real/goldhelwah-product-01.jpg', 'Noor Drops', 2),
+  ('20000000-0000-4000-8000-000000000002', '/images/products/real/goldhelwah-product-06.jpg', 'Noor Drops', 3),
+  ('20000000-0000-4000-8000-000000000003', '/images/products/real/goldhelwah-product-03.jpg', 'Safa Armband', 1),
+  ('20000000-0000-4000-8000-000000000003', '/images/products/real/goldhelwah-product-01.jpg', 'Safa Armband', 2),
+  ('20000000-0000-4000-8000-000000000003', '/images/products/real/goldhelwah-product-04.jpg', 'Safa Armband', 3),
+  ('20000000-0000-4000-8000-000000000004', '/images/products/real/goldhelwah-product-04.jpg', 'Layali Flex', 1),
+  ('20000000-0000-4000-8000-000000000004', '/images/products/real/goldhelwah-product-05.jpg', 'Layali Flex', 2),
+  ('20000000-0000-4000-8000-000000000004', '/images/products/real/goldhelwah-product-07.jpg', 'Layali Flex', 3),
+  ('20000000-0000-4000-8000-000000000005', '/images/products/real/goldhelwah-product-05.jpg', 'Royal Medaillon', 1),
+  ('20000000-0000-4000-8000-000000000005', '/images/products/real/goldhelwah-product-04.jpg', 'Royal Medaillon', 2),
+  ('20000000-0000-4000-8000-000000000005', '/images/products/real/goldhelwah-product-07.jpg', 'Royal Medaillon', 3),
+  ('20000000-0000-4000-8000-000000000006', '/images/products/real/goldhelwah-product-06.jpg', 'Atelier Namenscollier', 1),
+  ('20000000-0000-4000-8000-000000000006', '/images/products/real/goldhelwah-product-04.jpg', 'Atelier Namenscollier', 2),
+  ('20000000-0000-4000-8000-000000000006', '/images/products/real/goldhelwah-product-02.jpg', 'Atelier Namenscollier', 3),
+  ('20000000-0000-4000-8000-000000000007', '/images/products/real/goldhelwah-product-07.jpg', 'Noura Signet', 1),
+  ('20000000-0000-4000-8000-000000000007', '/images/products/real/goldhelwah-product-06.jpg', 'Noura Signet', 2),
+  ('20000000-0000-4000-8000-000000000007', '/images/products/real/goldhelwah-product-03.jpg', 'Noura Signet', 3),
+  ('20000000-0000-4000-8000-000000000008', '/images/products/real/goldhelwah-product-01.jpg', 'Ewiges Paar', 1),
+  ('20000000-0000-4000-8000-000000000008', '/images/products/real/goldhelwah-product-02.jpg', 'Ewiges Paar', 2),
+  ('20000000-0000-4000-8000-000000000008', '/images/products/real/goldhelwah-product-07.jpg', 'Ewiges Paar', 3),
+  ('20000000-0000-4000-8000-000000000009', '/images/products/real/goldhelwah-product-04.jpg', 'Royal Long Line', 1),
+  ('20000000-0000-4000-8000-000000000009', '/images/products/real/goldhelwah-product-07.jpg', 'Royal Long Line', 2),
+  ('20000000-0000-4000-8000-000000000009', '/images/products/real/goldhelwah-product-05.jpg', 'Royal Long Line', 3),
+  ('20000000-0000-4000-8000-000000000010', '/images/products/real/goldhelwah-product-03.jpg', 'Sahara Fusskette', 1),
+  ('20000000-0000-4000-8000-000000000010', '/images/products/real/goldhelwah-product-05.jpg', 'Sahara Fusskette', 2),
+  ('20000000-0000-4000-8000-000000000010', '/images/products/real/goldhelwah-product-01.jpg', 'Sahara Fusskette', 3),
+  ('20000000-0000-4000-8000-000000000011', '/images/products/real/goldhelwah-product-05.jpg', 'Amira Handkette', 1),
+  ('20000000-0000-4000-8000-000000000011', '/images/products/real/goldhelwah-product-02.jpg', 'Amira Handkette', 2),
+  ('20000000-0000-4000-8000-000000000011', '/images/products/real/goldhelwah-product-03.jpg', 'Amira Handkette', 3),
+  ('20000000-0000-4000-8000-000000000012', '/images/products/real/goldhelwah-product-06.jpg', 'Micro Piercing Light', 1),
+  ('20000000-0000-4000-8000-000000000012', '/images/products/real/goldhelwah-product-02.jpg', 'Micro Piercing Light', 2),
+  ('20000000-0000-4000-8000-000000000012', '/images/products/real/goldhelwah-product-04.jpg', 'Micro Piercing Light', 3),
+  ('20000000-0000-4000-8000-000000000013', '/images/products/real/goldhelwah-product-04.jpg', 'Atelier Feinkette', 1),
+  ('20000000-0000-4000-8000-000000000013', '/images/products/real/goldhelwah-product-07.jpg', 'Atelier Feinkette', 2),
+  ('20000000-0000-4000-8000-000000000013', '/images/products/real/goldhelwah-product-01.jpg', 'Atelier Feinkette', 3),
+  ('20000000-0000-4000-8000-000000000014', '/images/products/real/goldhelwah-product-02.jpg', 'Mini Star Ears', 1),
+  ('20000000-0000-4000-8000-000000000014', '/images/products/real/goldhelwah-product-01.jpg', 'Mini Star Ears', 2),
+  ('20000000-0000-4000-8000-000000000014', '/images/products/real/goldhelwah-product-03.jpg', 'Mini Star Ears', 3),
+  ('20000000-0000-4000-8000-000000000015', '/images/products/real/goldhelwah-product-03.jpg', 'Soft Loop Mini', 1),
+  ('20000000-0000-4000-8000-000000000015', '/images/products/real/goldhelwah-product-01.jpg', 'Soft Loop Mini', 2),
+  ('20000000-0000-4000-8000-000000000015', '/images/products/real/goldhelwah-product-05.jpg', 'Soft Loop Mini', 3),
+  ('20000000-0000-4000-8000-000000000016', '/images/products/real/goldhelwah-product-05.jpg', 'Little Medaillon', 1),
+  ('20000000-0000-4000-8000-000000000016', '/images/products/real/goldhelwah-product-04.jpg', 'Little Medaillon', 2),
+  ('20000000-0000-4000-8000-000000000016', '/images/products/real/goldhelwah-product-07.jpg', 'Little Medaillon', 3),
+  ('20000000-0000-4000-8000-000000000017', '/images/products/real/goldhelwah-product-07.jpg', 'Heritage Ounce', 1),
+  ('20000000-0000-4000-8000-000000000017', '/images/products/real/goldhelwah-product-06.jpg', 'Heritage Ounce', 2),
+  ('20000000-0000-4000-8000-000000000017', '/images/products/real/goldhelwah-product-04.jpg', 'Heritage Ounce', 3)
+on conflict (product_id, sort_order) do update
+set
+  image_url = excluded.image_url,
+  alt_text = excluded.alt_text;
+
+insert into public.option_groups (
+  id,
+  key,
+  name_de,
+  name_ar,
+  name_en,
+  sort_order,
+  is_active
+)
+values
+  ('30000000-0000-4000-8000-000000000001', 'gold_details', 'Golddetails', 'تفاصيل الذهب', 'Gold Details', 1, true),
+  ('30000000-0000-4000-8000-000000000002', 'measurements', 'Maße', 'المقاسات', 'Measurements', 2, true),
+  ('30000000-0000-4000-8000-000000000003', 'name_personalization', 'Namenspersonalisierung', 'تخصيص الأسماء', 'Name Personalization', 3, true),
+  ('30000000-0000-4000-8000-000000000004', 'stones', 'Steine', 'الأحجار', 'Stones', 4, true),
+  ('30000000-0000-4000-8000-000000000005', 'workshop_notes', 'Werkstatthinweise', 'ملاحظات الورشة', 'Workshop Notes', 5, true)
+on conflict (id) do update
+set
+  key = excluded.key,
+  name_de = excluded.name_de,
+  name_ar = excluded.name_ar,
+  name_en = excluded.name_en,
+  sort_order = excluded.sort_order,
+  is_active = excluded.is_active;
+
+insert into public.options (
+  id,
+  group_id,
+  key,
+  type,
+  label_de,
+  label_ar,
+  label_en,
+  values_json,
+  is_required,
+  sort_order,
+  is_active
+)
+values
+  ('40000000-0000-4000-8000-000000000001', '30000000-0000-4000-8000-000000000001', 'gold_karat', 'select', 'Goldkarat', 'عيار الذهب', 'Gold Karat', '[{"label":"18K","value":"18K"},{"label":"21K","value":"21K"},{"label":"22K","value":"22K"},{"label":"24K","value":"24K"}]'::jsonb, true, 1, true),
+  ('40000000-0000-4000-8000-000000000002', '30000000-0000-4000-8000-000000000001', 'gold_color', 'select', 'Goldfarbe', 'لون الذهب', 'Gold Color', '[{"label":"Gelbgold","value":"yellow_gold"},{"label":"Weißgold","value":"white_gold"},{"label":"Roségold","value":"rose_gold"},{"label":"Mixed","value":"mixed"}]'::jsonb, true, 2, true),
+  ('40000000-0000-4000-8000-000000000003', '30000000-0000-4000-8000-000000000002', 'ring_size', 'select', 'Ringgröße', 'مقاس الخاتم', 'Ring Size', '[{"label":"50","value":"50"},{"label":"52","value":"52"},{"label":"54","value":"54"},{"label":"56","value":"56"},{"label":"58","value":"58"}]'::jsonb, false, 3, true),
+  ('40000000-0000-4000-8000-000000000004', '30000000-0000-4000-8000-000000000002', 'bracelet_size', 'select', 'Armbandgröße', 'مقاس السوار', 'Bracelet Size', '[{"label":"16 cm","value":"16"},{"label":"17 cm","value":"17"},{"label":"18 cm","value":"18"},{"label":"19 cm","value":"19"},{"label":"20 cm","value":"20"}]'::jsonb, false, 4, true),
+  ('40000000-0000-4000-8000-000000000005', '30000000-0000-4000-8000-000000000002', 'chain_length', 'select', 'Kettenlänge', 'طول السلسلة', 'Chain Length', '[{"label":"40 cm","value":"40"},{"label":"45 cm","value":"45"},{"label":"50 cm","value":"50"},{"label":"60 cm","value":"60"}]'::jsonb, false, 5, true),
+  ('40000000-0000-4000-8000-000000000006', '30000000-0000-4000-8000-000000000003', 'name_text', 'text', 'Namensfeld', 'حقل الاسم', 'Name Field', '[]'::jsonb, false, 6, true),
+  ('40000000-0000-4000-8000-000000000007', '30000000-0000-4000-8000-000000000003', 'engraving_text', 'textarea', 'Gravurtext', 'نص النقش', 'Engraving Text', '[]'::jsonb, false, 7, true),
+  ('40000000-0000-4000-8000-000000000008', '30000000-0000-4000-8000-000000000004', 'stone_type', 'select', 'Steinart', 'نوع الحجر', 'Stone Type', '[{"label":"Zirkonia","value":"zirconia"},{"label":"Diamant","value":"diamond"},{"label":"Smaragd","value":"emerald"},{"label":"Rubin","value":"ruby"}]'::jsonb, false, 8, true),
+  ('40000000-0000-4000-8000-000000000009', '30000000-0000-4000-8000-000000000004', 'stone_color', 'select', 'Steinfarbe', 'لون الحجر', 'Stone Color', '[{"label":"Klar","value":"clear"},{"label":"Grün","value":"green"},{"label":"Rot","value":"red"},{"label":"Champagner","value":"champagne"}]'::jsonb, false, 9, true),
+  ('40000000-0000-4000-8000-000000000010', '30000000-0000-4000-8000-000000000001', 'finish_type', 'select', 'Oberfläche', 'السطح', 'Surface Finish', '[{"label":"Poliert","value":"polished"},{"label":"Matt","value":"matte"},{"label":"Gebürstet","value":"brushed"},{"label":"Gehämmert","value":"hammered"},{"label":"Custom","value":"custom"}]'::jsonb, false, 10, true),
+  ('40000000-0000-4000-8000-000000000011', '30000000-0000-4000-8000-000000000001', 'estimated_weight', 'number', 'Geschätztes Gewicht', 'الوزن التقديري', 'Estimated Weight', '[]'::jsonb, false, 11, true),
+  ('40000000-0000-4000-8000-000000000012', '30000000-0000-4000-8000-000000000005', 'priority', 'select', 'Priorität', 'الأولوية', 'Priority', '[{"label":"Normal","value":"normal"},{"label":"Dringend","value":"urgent"},{"label":"Express","value":"express"}]'::jsonb, true, 12, true),
+  ('40000000-0000-4000-8000-000000000013', '30000000-0000-4000-8000-000000000005', 'due_date', 'date', 'Fälligkeitsdatum', 'تاريخ الاستحقاق', 'Due Date', '[]'::jsonb, true, 13, true),
+  ('40000000-0000-4000-8000-000000000014', '30000000-0000-4000-8000-000000000005', 'workshop_notes', 'textarea', 'Werkstatthinweise', 'ملاحظات الورشة', 'Workshop Notes', '[]'::jsonb, false, 14, true)
+on conflict (id) do update
+set
+  group_id = excluded.group_id,
+  key = excluded.key,
+  type = excluded.type,
+  label_de = excluded.label_de,
+  label_ar = excluded.label_ar,
+  label_en = excluded.label_en,
+  values_json = excluded.values_json,
+  is_required = excluded.is_required,
+  sort_order = excluded.sort_order,
+  is_active = excluded.is_active;
+
+insert into public.product_options (product_id, option_id, is_required)
+values
+  ('20000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', true),
+  ('20000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000002', true),
+  ('20000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000012', true),
+  ('20000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000013', true),
+  ('20000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000001', true),
+  ('20000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000002', true),
+  ('20000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000008', false),
+  ('20000000-0000-4000-8000-000000000003', '40000000-0000-4000-8000-000000000001', true),
+  ('20000000-0000-4000-8000-000000000003', '40000000-0000-4000-8000-000000000010', false),
+  ('20000000-0000-4000-8000-000000000003', '40000000-0000-4000-8000-000000000011', false),
+  ('20000000-0000-4000-8000-000000000004', '40000000-0000-4000-8000-000000000002', true),
+  ('20000000-0000-4000-8000-000000000004', '40000000-0000-4000-8000-000000000004', false),
+  ('20000000-0000-4000-8000-000000000004', '40000000-0000-4000-8000-000000000014', false),
+  ('20000000-0000-4000-8000-000000000005', '40000000-0000-4000-8000-000000000010', false),
+  ('20000000-0000-4000-8000-000000000005', '40000000-0000-4000-8000-000000000005', false),
+  ('20000000-0000-4000-8000-000000000005', '40000000-0000-4000-8000-000000000008', false),
+  ('20000000-0000-4000-8000-000000000006', '40000000-0000-4000-8000-000000000001', false),
+  ('20000000-0000-4000-8000-000000000006', '40000000-0000-4000-8000-000000000006', false),
+  ('20000000-0000-4000-8000-000000000006', '40000000-0000-4000-8000-000000000007', false),
+  ('20000000-0000-4000-8000-000000000006', '40000000-0000-4000-8000-000000000014', false),
+  ('20000000-0000-4000-8000-000000000007', '40000000-0000-4000-8000-000000000001', true),
+  ('20000000-0000-4000-8000-000000000007', '40000000-0000-4000-8000-000000000003', true),
+  ('20000000-0000-4000-8000-000000000007', '40000000-0000-4000-8000-000000000010', false),
+  ('20000000-0000-4000-8000-000000000007', '40000000-0000-4000-8000-000000000013', true)
+on conflict (product_id, option_id) do update
+set is_required = excluded.is_required;
