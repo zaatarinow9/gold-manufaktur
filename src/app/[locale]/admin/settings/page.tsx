@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
+import type { AppLocale } from "@/i18n/routing";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
@@ -41,8 +42,60 @@ const initialSettings: SettingsFormState = {
   sidebarMode: "expanded",
 };
 
+function getSettingsPreviewCopy(locale: AppLocale) {
+  if (locale === "de") {
+    return {
+      notice:
+        "Diese Einstellungsseite ist derzeit eine lokale Vorschau. Es werden noch keine Live-Daten gespeichert.",
+      previewMessage: "Die Vorschau wurde lokal aktualisiert.",
+      resetMessage: "Die lokale Vorschau wurde zurueckgesetzt.",
+      saveMessage: "Es wurden noch keine Live-Einstellungen gespeichert.",
+    };
+  }
+
+  if (locale === "ar") {
+    return {
+      notice:
+        "هذه الصفحة تعرض معاينة محلية فقط حالياً، ولا يتم حفظ أي إعدادات مباشرة على الموقع بعد.",
+      previewMessage: "تم تحديث المعاينة المحلية.",
+      resetMessage: "تمت إعادة ضبط المعاينة المحلية.",
+      saveMessage: "لم يتم حفظ إعدادات مباشرة على الموقع بعد.",
+    };
+  }
+
+  if (locale === "fr") {
+    return {
+      notice:
+        "Cette page de parametres fonctionne actuellement comme une previsualisation locale. Aucune donnee en ligne n'est encore enregistree.",
+      previewMessage: "La previsualisation locale a ete mise a jour.",
+      resetMessage: "La previsualisation locale a ete reinitialisee.",
+      saveMessage: "Aucun parametre en ligne n'a encore ete enregistre.",
+    };
+  }
+
+  if (locale === "tr") {
+    return {
+      notice:
+        "Bu ayarlar sayfasi su anda yalnizca yerel bir onizleme olarak calisiyor. Canli veriler henuz kaydedilmiyor.",
+      previewMessage: "Yerel onizleme guncellendi.",
+      resetMessage: "Yerel onizleme sifirlandi.",
+      saveMessage: "Henuz canli ayarlar kaydedilmedi.",
+    };
+  }
+
+  return {
+    notice:
+      "This settings screen currently works as a local preview only. It does not save live site settings yet.",
+    previewMessage: "The local preview was refreshed.",
+    resetMessage: "The local preview was reset.",
+    saveMessage: "No live settings were saved yet.",
+  };
+}
+
 export default function AdminSettingsPage() {
   const t = useTranslations("Admin");
+  const locale = useLocale() as AppLocale;
+  const previewCopy = getSettingsPreviewCopy(locale);
   const currentUser = getCurrentAdminUser();
   const [feedback, setFeedback] = useState<string | null>(null);
   const [settings, setSettings] = useState(initialSettings);
@@ -65,7 +118,7 @@ export default function AdminSettingsPage() {
       className="space-y-6"
       onSubmit={(event) => {
         event.preventDefault();
-        setFeedback(t("settings.saveMessage"));
+        setFeedback(previewCopy.saveMessage);
       }}
     >
       <AdminPageHeader
@@ -76,7 +129,7 @@ export default function AdminSettingsPage() {
           <>
             <AdminButton
               variant="ghost"
-              onClick={() => setFeedback(t("settings.previewMessage"))}
+              onClick={() => setFeedback(previewCopy.previewMessage)}
             >
               {t("buttons.preview")}
             </AdminButton>
@@ -84,7 +137,7 @@ export default function AdminSettingsPage() {
               variant="secondary"
               onClick={() => {
                 setSettings(initialSettings);
-                setFeedback(t("settings.resetMessage"));
+                setFeedback(previewCopy.resetMessage);
               }}
             >
               {t("buttons.reset")}
@@ -101,6 +154,10 @@ export default function AdminSettingsPage() {
           {feedback}
         </div>
       ) : null}
+
+      <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-3 text-sm text-muted">
+        {previewCopy.notice}
+      </div>
 
       <section className="grid gap-6 xl:grid-cols-2">
         <AdminCard title={t("settings.companyTitle")} description={t("settings.companyDescription")}>

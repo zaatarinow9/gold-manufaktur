@@ -1,6 +1,7 @@
 import { MessageCircle, Phone, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { PhoneInline } from "@/components/site/PhoneInline";
 import { companyInfo } from "@/lib/site";
 
 export function ContactCards() {
@@ -48,7 +49,11 @@ export function ContactCards() {
                   </div>
                   <p className="muted-label mt-5">{item.title}</p>
                   <p className="mt-3 text-2xl font-medium text-foreground">
-                    {item.value}
+                    {item.actionHref === companyInfo.phoneHref ? (
+                      <PhoneInline>{item.value}</PhoneInline>
+                    ) : (
+                      item.value
+                    )}
                   </p>
                   <p className="mt-3 text-sm leading-6 text-muted">
                     {item.description}

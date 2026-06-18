@@ -9,6 +9,7 @@ import {
   getNameCustomizationMode,
   resolveSupportsNameCustomization,
 } from "@/lib/catalog/nameCustomization";
+import { deleteProductImageObjects } from "@/lib/storage/productImages";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
@@ -953,6 +954,20 @@ async function replaceProductImages(
 ) {
   const supabase = await createSupabaseServerClient();
   const normalizedGallery = [...new Set(gallery.map((image) => image.trim()).filter(Boolean))];
+  const { data: existingImages, error: existingImagesError } = await supabase
+    .from("product_images")
+    .select("image_url")
+    .eq("product_id", productId);
+
+  if (existingImagesError) {
+    throw new Error(
+      `Unable to inspect existing product images: ${existingImagesError.message}`
+    );
+  }
+
+  const removedImages = (existingImages ?? [])
+    .map((image) => image.image_url?.trim() ?? "")
+    .filter((imageUrl) => imageUrl.length > 0 && !normalizedGallery.includes(imageUrl));
 
   const { error: deleteError } = await supabase
     .from("product_images")
@@ -964,6 +979,7 @@ async function replaceProductImages(
   }
 
   if (normalizedGallery.length === 0) {
+    await deleteProductImageObjects(removedImages);
     return;
   }
 
@@ -979,6 +995,8 @@ async function replaceProductImages(
   if (insertError) {
     throw new Error(`Unable to save product gallery: ${insertError.message}`);
   }
+
+  await deleteProductImageObjects(removedImages);
 }
 
 export async function assignProductOptions(
@@ -1123,6 +1141,17 @@ export async function setProductFeatured(productId: string, isFeatured: boolean)
 
 export async function deleteProduct(productId: string) {
   const supabase = await createSupabaseServerClient();
+  const { data: existingImages, error: existingImagesError } = await supabase
+    .from("product_images")
+    .select("image_url")
+    .eq("product_id", productId);
+
+  if (existingImagesError) {
+    throw new Error(
+      `Unable to inspect product images before deletion: ${existingImagesError.message}`
+    );
+  }
+
   const { count, error: orderUsageError } = await supabase
     .from("order_items")
     .select("id", { count: "exact", head: true })
@@ -1157,6 +1186,12 @@ export async function deleteProduct(productId: string) {
   if (error) {
     throw new Error(`Unable to delete product: ${error.message}`);
   }
+
+  await deleteProductImageObjects(
+    (existingImages ?? [])
+      .map((image) => image.image_url?.trim() ?? "")
+      .filter(Boolean)
+  );
 
   return { mode: "deleted" as const };
 }

@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { PhoneInline } from "@/components/site/PhoneInline";
 import { Link } from "@/i18n/navigation";
 import { companyInfo, getBrandLogoAlt, siteNavigation, siteName } from "@/lib/site";
 import type { AppLocale } from "@/i18n/routing";
@@ -90,7 +91,7 @@ export function SiteFooter() {
                     href={companyInfo.phoneHref}
                     className="leading-6 transition hover:text-foreground"
                   >
-                    {companyInfo.phoneDisplay}
+                    <PhoneInline>{companyInfo.phoneDisplay}</PhoneInline>
                   </a>
                 </div>
                 <div className="rtl-inline-row flex items-start gap-3">

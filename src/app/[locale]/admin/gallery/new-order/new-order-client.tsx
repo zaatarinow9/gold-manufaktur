@@ -306,7 +306,10 @@ export function NewOrderClient({
               />
               <AdminInput
                 label={t("newOrder.fields.customerPhone")}
+                type="tel"
                 value={customerPhone}
+                dir="ltr"
+                inputMode="tel"
                 onChange={(event) => setCustomerPhone(event.target.value)}
               />
               <AdminInput

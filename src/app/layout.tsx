@@ -11,16 +11,8 @@ export default async function RootLayout({
   const locale = await getLocale();
   const isArabic = locale === "ar";
   const direction = isArabic ? "rtl" : "ltr";
-  const htmlClassName = [inter.variable, cormorant.variable, thmanyah.variable, isArabic && "is-arabic"]
-    .filter(Boolean)
-    .join(" ");
-  const bodyClassName = [
-    "relative bg-background text-foreground antialiased",
-    isArabic && thmanyah.className,
-    isArabic && "is-arabic",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const htmlClassName = [inter.variable, cormorant.variable, thmanyah.variable].join(" ");
+  const bodyClassName = "relative bg-background text-foreground antialiased";
 
   return (
     <html

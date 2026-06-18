@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminBadge } from "@/components/admin/AdminBadge";
@@ -12,11 +12,25 @@ import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { attendanceRecords, employees, workshops } from "@/data/adminMock";
+import type { AppLocale } from "@/i18n/routing";
 import { getCurrentAdminUser, scopeAttendanceForUser } from "@/lib/admin/currentUser";
 import type { AttendanceRecord } from "@/types/admin";
 
+function getAttendancePreviewMessage(locale: AppLocale) {
+  if (locale === "de") {
+    return "Neue Abwesenheiten werden in dieser Ansicht noch nicht live gespeichert.";
+  }
+
+  if (locale === "ar") {
+    return "إضافة الغياب من هذه الصفحة ما زالت قيد التجهيز ولم تُربط بالحفظ المباشر بعد.";
+  }
+
+  return "Adding new attendance records from this screen is not connected yet.";
+}
+
 export default function AdminAttendancePage() {
   const t = useTranslations("Admin");
+  const locale = useLocale() as AppLocale;
   const currentUser = getCurrentAdminUser();
   const [statusFilter, setStatusFilter] = useState("all");
   const [workshopFilter, setWorkshopFilter] = useState("all");
@@ -80,7 +94,10 @@ export default function AdminAttendancePage() {
         title={t("attendance.title")}
         description={t("attendance.description")}
         actions={
-          <AdminButton variant="primary" onClick={() => setFeedback(t("common.mockSubmit"))}>
+          <AdminButton
+            variant="primary"
+            onClick={() => setFeedback(getAttendancePreviewMessage(locale))}
+          >
             {t("buttons.addAbsence")}
           </AdminButton>
         }

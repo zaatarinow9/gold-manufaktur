@@ -109,6 +109,9 @@ export function TrackingSupportForm({
             onChange={(event) => setPhone(event.target.value)}
             placeholder={formT("placeholders.phone")}
             autoComplete="tel"
+            dir="ltr"
+            inputMode="tel"
+            type="tel"
             required
           />
         </label>

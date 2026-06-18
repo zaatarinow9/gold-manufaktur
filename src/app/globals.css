@@ -123,6 +123,14 @@ button {
   text-align: start;
 }
 
+.phone-inline {
+  display: inline-block;
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+  white-space: nowrap;
+}
+
 .locale-root {
   min-height: 100%;
 }
@@ -413,149 +421,150 @@ button {
   animation: float-delay 9s ease-in-out infinite;
 }
 
-html[lang="ar"],
-html[lang="ar"] body,
-html[lang="ar"] .locale-root,
-html[lang="ar"] .site-shell,
-html[lang="ar"] .admin-shell {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]),
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .locale-root,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-shell,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-shell {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
-html[lang="ar"] {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) {
   --font-body: var(--font-thmanyah);
   --font-sans: var(--font-thmanyah);
   --font-display: var(--font-thmanyah);
   --font-serif: var(--font-thmanyah);
 }
 
-html[lang="ar"] button,
-html[lang="ar"] input,
-html[lang="ar"] textarea,
-html[lang="ar"] select {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) button,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) input,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) textarea,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) select {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
-html[lang="ar"] .font-display,
-html[lang="ar"] .font-body,
-html[lang="ar"] .font-serif,
-html[lang="ar"] .heading,
-html[lang="ar"] .site-heading,
-html[lang="ar"] .hero-heading,
-html[lang="ar"] .section-heading,
-html[lang="ar"] .section-title,
-html[lang="ar"] .card-title,
-html[lang="ar"] .admin-heading {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .font-display,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .font-body,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .font-serif,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .hero-heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-title,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .card-title,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-heading {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
-html[lang="ar"] h1,
-html[lang="ar"] h2,
-html[lang="ar"] h3,
-html[lang="ar"] h4,
-html[lang="ar"] h5,
-html[lang="ar"] h6 {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h1,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h2,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h3,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h4,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h5,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h6 {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: 0;
 }
 
-html[lang="ar"] p,
-html[lang="ar"] span,
-html[lang="ar"] a,
-html[lang="ar"] li,
-html[lang="ar"] label,
-html[lang="ar"] td,
-html[lang="ar"] th {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) p,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) span,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) a,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) li,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) label,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) td,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) th {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
-html[lang="ar"] .section-title,
-html[lang="ar"] .card-title,
-html[lang="ar"] .site-heading,
-html[lang="ar"] .hero-heading,
-html[lang="ar"] .section-heading,
-html[lang="ar"] .admin-heading {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-title,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .card-title,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .hero-heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-heading,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-heading {
   line-height: 1.22;
   letter-spacing: 0;
 }
 
-html[lang="ar"] .gold-button,
-html[lang="ar"] .ghost-button,
-html[lang="ar"] .site-nav-link,
-html[lang="ar"] .mobile-menu-link,
-html[lang="ar"] .language-switcher-trigger,
-html[lang="ar"] .admin-button,
-html[lang="ar"] .admin-button-primary,
-html[lang="ar"] .admin-button-secondary,
-html[lang="ar"] .admin-button-danger,
-html[lang="ar"] .admin-button-ghost,
-html[lang="ar"] .admin-nav-link,
-html[lang="ar"] .admin-language-switcher,
-html[lang="ar"] .admin-page-kicker {
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .gold-button,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .ghost-button,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-nav-link,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .mobile-menu-link,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .language-switcher-trigger,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-button,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-button-primary,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-button-secondary,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-button-danger,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-button-ghost,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-nav-link,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-language-switcher,
+:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .admin-page-kicker {
   font-weight: 600;
 }
 
-html[dir="rtl"] {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) {
   text-align: start;
 }
 
-html[dir="rtl"] body {
+html[dir="rtl"] body,
+body[data-dir="rtl"],
+.locale-root[data-dir="rtl"] {
   direction: rtl;
 }
 
-html[dir="rtl"] .hero-heading,
-html[dir="rtl"] .section-heading,
-html[dir="rtl"] .section-title,
-html[dir="rtl"] .card-title,
-html[dir="rtl"] .admin-heading {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .hero-heading,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .section-heading,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .section-title,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .card-title,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .admin-heading {
   letter-spacing: 0;
 }
 
-html[dir="rtl"] .rtl-mirror-grid {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-mirror-grid {
   direction: rtl;
 }
 
-html[dir="rtl"] .rtl-row-reverse {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-row-reverse {
   flex-direction: row-reverse;
 }
 
-html[dir="rtl"] .rtl-items-start {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-items-start {
   align-items: flex-start;
   text-align: start;
 }
 
-html[dir="rtl"] .rtl-justify-start {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-justify-start {
   justify-content: flex-start;
 }
 
-html[dir="rtl"] .eyebrow {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .eyebrow {
   letter-spacing: 0.18em;
 }
 
-html[dir="rtl"] .gold-button,
-html[dir="rtl"] .ghost-button,
-html[dir="rtl"] .gold-chip,
-html[dir="rtl"] .eyebrow,
-html[dir="rtl"] .brand-lockup {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-button,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .ghost-button,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-chip,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .eyebrow,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .brand-lockup {
   flex-direction: row-reverse;
 }
 
-html[dir="rtl"] .gold-button,
-html[dir="rtl"] .ghost-button,
-html[dir="rtl"] .gold-chip,
-html[dir="rtl"] .muted-label {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-button,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .ghost-button,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-chip,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .muted-label {
   letter-spacing: 0.04em;
 }
 
-html[dir="rtl"] .rtl-inline-row,
-html[dir="rtl"] .admin-nav-link,
-html[dir="rtl"] .admin-language-switcher,
-html[dir="rtl"] .admin-checkbox-row {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-inline-row,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .admin-nav-link,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .admin-language-switcher,
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .admin-checkbox-row {
   flex-direction: row-reverse;
 }
 
-html[dir="rtl"] .admin-brand {
+:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .admin-brand {
   align-items: flex-end;
   text-align: start;
 }

@@ -7,6 +7,7 @@ import { getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
+import { PhoneInline } from "@/components/site/PhoneInline";
 import { Link } from "@/i18n/navigation";
 import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
@@ -483,7 +484,13 @@ export default async function AdminOrderDetailPage({
               </div>
               <div>
                 <p className="text-muted">{t("newOrder.fields.customerPhone")}</p>
-                <p className="mt-1 text-foreground">{order.customerPhone || notProvided}</p>
+                <p className="mt-1 text-foreground">
+                  {order.customerPhone ? (
+                    <PhoneInline>{order.customerPhone}</PhoneInline>
+                  ) : (
+                    notProvided
+                  )}
+                </p>
               </div>
               <div>
                 <p className="text-muted">{t("newOrder.fields.customerReference")}</p>

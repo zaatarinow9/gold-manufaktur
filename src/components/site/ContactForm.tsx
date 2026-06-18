@@ -135,6 +135,9 @@ export function ContactForm() {
                   className={inputClassName}
                   placeholder={t("placeholders.phone")}
                   autoComplete="tel"
+                  dir="ltr"
+                  inputMode="tel"
+                  type="tel"
                   aria-invalid={Boolean(errors.phone)}
                 />
                 {getValidationMessage(errors.phone?.message) ? (

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { routing, type AppLocale } from "@/i18n/routing";
+import { getPhoneHref, getWhatsAppHref, normalizePhoneNumber } from "@/lib/phone";
 
 export const siteName = "GoldHelwah GmbH";
 export const brandLogoPath = "/brand/goldhelwah-logo.svg";
@@ -23,6 +24,7 @@ export const localeLabels: Record<AppLocale, string> = {
 };
 
 const rtlLocales = new Set<AppLocale>(["ar"]);
+const companyPhoneNumber = normalizePhoneNumber("+49 173 5371225");
 
 export const companyInfo = {
   name: "GoldHelwah GmbH",
@@ -30,11 +32,11 @@ export const companyInfo = {
   emailDisplay: "info@goldhelwah.de",
   emailHref: "mailto:info@goldhelwah.de",
   phoneDisplay: "+49 173 5371225",
-  phoneHref: "tel:+491735371225",
+  phoneHref: getPhoneHref(companyPhoneNumber),
   instagramHref: "https://instagram.com/goldhelwah",
   facebookHref: "https://facebook.com/goldhelwah",
   tiktokHref: "https://tiktok.com/@goldhelwah",
-  whatsappHref: "https://wa.me/491735371225",
+  whatsappHref: getWhatsAppHref(companyPhoneNumber),
 } as const;
 
 const mapQuery = encodeURIComponent(companyInfo.address);

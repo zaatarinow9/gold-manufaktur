@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { type ChangeEvent, useMemo, useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { LoaderCircle, Search, Upload, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
@@ -31,6 +31,11 @@ import type {
   AdminProductRecord,
   LocalizedText,
 } from "@/lib/db/adminCatalog";
+import {
+  PRODUCT_IMAGE_ALLOWED_MIME_TYPES,
+  PRODUCT_IMAGE_MAX_DIMENSION,
+  PRODUCT_IMAGE_UPLOAD_QUALITY,
+} from "@/lib/product-images";
 
 type ProductOptionSettingState = {
   isRequired: boolean;
@@ -125,6 +130,70 @@ function splitCommaList(value: string) {
     .filter(Boolean);
 }
 
+function appendGalleryUrls(value: string, imageUrls: string[]) {
+  return [...splitTextareaLines(value), ...imageUrls].join("\n");
+}
+
+function removeGalleryUrl(value: string, imageUrl: string) {
+  return splitTextareaLines(value)
+    .filter((currentUrl) => currentUrl !== imageUrl)
+    .join("\n");
+}
+
+function loadImageElement(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new window.Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("IMAGE_LOAD_FAILED"));
+    image.src = src;
+  });
+}
+
+async function compressProductImage(file: File) {
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    const image = await loadImageElement(objectUrl);
+    const width = image.naturalWidth || image.width;
+    const height = image.naturalHeight || image.height;
+    const scale = Math.min(1, PRODUCT_IMAGE_MAX_DIMENSION / Math.max(width, height));
+    const targetWidth = Math.max(1, Math.round(width * scale));
+    const targetHeight = Math.max(1, Math.round(height * scale));
+    const canvas = document.createElement("canvas");
+
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      throw new Error("CANVAS_UNAVAILABLE");
+    }
+
+    context.drawImage(image, 0, 0, targetWidth, targetHeight);
+
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (result) => {
+          if (!result) {
+            reject(new Error("COMPRESSION_FAILED"));
+            return;
+          }
+
+          resolve(result);
+        },
+        "image/webp",
+        PRODUCT_IMAGE_UPLOAD_QUALITY
+      );
+    });
+
+    const baseName = file.name.replace(/\.[^.]+$/u, "") || "product-image";
+    return new File([blob], `${baseName}.webp`, { type: "image/webp" });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 function updateLocalizedText(
   current: LocalizedText,
   locale: keyof LocalizedText,
@@ -208,6 +277,95 @@ function getProductUiCopy(locale: AppLocale) {
   };
 }
 
+function getProductEditorCopy(locale: AppLocale) {
+  if (locale === "ar") {
+    return {
+      galleryEmpty: "لم تتم إضافة صور لهذا المنتج بعد.",
+      galleryHelper: "يمكنك لصق رابط في كل سطر أو رفع صور مضغوطة مباشرة إلى التخزين.",
+      galleryLabel: "صور المعرض",
+      galleryPreview: "معاينة الصور",
+      galleryRemove: "إزالة",
+      tagsHelper: "افصل الكلمات المفتاحية بفواصل.",
+      uploadButton: "رفع صور",
+      uploadFailed: "تعذر رفع الصورة. يرجى المحاولة مرة أخرى.",
+      uploadHelper: "يتم ضغط الصور إلى WebP قبل الحفظ لتحسين السرعة.",
+      uploadInvalidType: "يرجى اختيار ملفات صور فقط.",
+      uploadPending: "جارٍ ضغط الصور ورفعها...",
+      uploadTooLarge: "حجم الصورة كبير جداً بعد الضغط. يرجى اختيار صورة أصغر.",
+    };
+  }
+
+  if (locale === "de") {
+    return {
+      galleryEmpty: "Fuer dieses Produkt wurden noch keine Bilder hinzugefuegt.",
+      galleryHelper:
+        "Sie koennen pro Zeile einen Bildlink einfuegen oder Bilder direkt komprimiert hochladen.",
+      galleryLabel: "Galeriebilder",
+      galleryPreview: "Bildvorschau",
+      galleryRemove: "Entfernen",
+      tagsHelper: "Tags mit Kommas trennen.",
+      uploadButton: "Bilder hochladen",
+      uploadFailed: "Das Bild konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
+      uploadHelper: "Bilder werden vor dem Speichern zu WebP komprimiert.",
+      uploadInvalidType: "Bitte waehlen Sie nur Bilddateien aus.",
+      uploadPending: "Bilder werden komprimiert und hochgeladen...",
+      uploadTooLarge: "Das Bild ist nach der Komprimierung noch zu gross. Bitte waehlen Sie eine kleinere Datei.",
+    };
+  }
+
+  if (locale === "fr") {
+    return {
+      galleryEmpty: "Aucune image n'a encore ete ajoutee a ce produit.",
+      galleryHelper:
+        "Ajoutez une URL par ligne ou televersez directement des images compressees.",
+      galleryLabel: "Images de la galerie",
+      galleryPreview: "Apercu des images",
+      galleryRemove: "Retirer",
+      tagsHelper: "Separez les tags par des virgules.",
+      uploadButton: "Televerser des images",
+      uploadFailed: "Impossible de televerser l'image pour le moment.",
+      uploadHelper: "Les images sont compressees en WebP avant l'enregistrement.",
+      uploadInvalidType: "Selectionnez uniquement des fichiers image.",
+      uploadPending: "Compression et televersement des images...",
+      uploadTooLarge: "L'image reste trop volumineuse apres compression. Choisissez un fichier plus petit.",
+    };
+  }
+
+  if (locale === "tr") {
+    return {
+      galleryEmpty: "Bu urun icin henuz gorsel eklenmedi.",
+      galleryHelper:
+        "Her satira bir gorsel baglantisi ekleyebilir veya gorselleri dogrudan yukleyebilirsiniz.",
+      galleryLabel: "Galeri gorselleri",
+      galleryPreview: "Gorsel onizleme",
+      galleryRemove: "Kaldir",
+      tagsHelper: "Etiketleri virgul ile ayirin.",
+      uploadButton: "Gorsel yukle",
+      uploadFailed: "Gorsel su anda yuklenemedi. Lutfen tekrar deneyin.",
+      uploadHelper: "Gorseller kaydedilmeden once WebP olarak sikistirilir.",
+      uploadInvalidType: "Lutfen yalnizca gorsel dosyalari secin.",
+      uploadPending: "Gorseller sikistiriliyor ve yukleniyor...",
+      uploadTooLarge: "Gorsel sikistirildiktan sonra bile fazla buyuk. Lutfen daha kucuk bir dosya secin.",
+    };
+  }
+
+  return {
+    galleryEmpty: "No images have been added for this product yet.",
+    galleryHelper:
+      "Add one image URL per line or upload compressed images directly to storage.",
+    galleryLabel: "Gallery images",
+    galleryPreview: "Image preview",
+    galleryRemove: "Remove",
+    tagsHelper: "Separate tags with commas.",
+    uploadButton: "Upload images",
+    uploadFailed: "The image could not be uploaded right now. Please try again.",
+    uploadHelper: "Images are compressed to WebP before they are saved.",
+    uploadInvalidType: "Please choose image files only.",
+    uploadPending: "Compressing and uploading images...",
+    uploadTooLarge: "The compressed image is still too large. Please choose a smaller file.",
+  };
+}
+
 function setProductOptionVisibility(
   optionSettings: ProductOptionSettingState[],
   optionId: string,
@@ -239,17 +397,24 @@ export function AdminProductsClient({
   const t = useTranslations("Admin");
   const copy = getOrderWorkflowCopy(locale);
   const uiCopy = getProductUiCopy(locale);
+  const editorCopy = getProductEditorCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isUploadingImages, startUploadTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [featuredFilter, setFeaturedFilter] = useState("all");
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [formState, setFormState] = useState<ProductFormState>(() =>
     createEmptyProductForm(categories, products)
+  );
+  const galleryUrls = useMemo(
+    () => splitTextareaLines(formState.galleryText),
+    [formState.galleryText]
   );
 
   const filteredProducts = useMemo(
@@ -294,6 +459,7 @@ export function AdminProductsClient({
 
   const resetForm = () => {
     setFormState(createEmptyProductForm(categories, products));
+    setUploadError(null);
     setEditorOpen(false);
   };
 
@@ -330,8 +496,80 @@ export function AdminProductsClient({
     });
   };
 
+  const uploadGalleryImages = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    event.target.value = "";
+
+    if (files.length === 0) {
+      return;
+    }
+
+    const hasInvalidFile = files.some(
+      (file) =>
+        !PRODUCT_IMAGE_ALLOWED_MIME_TYPES.includes(
+          file.type as (typeof PRODUCT_IMAGE_ALLOWED_MIME_TYPES)[number]
+        )
+    );
+
+    if (hasInvalidFile) {
+      setUploadError(editorCopy.uploadInvalidType);
+      return;
+    }
+
+    setUploadError(null);
+
+    startUploadTransition(async () => {
+      const uploadedUrls: string[] = [];
+
+      for (const file of files) {
+        try {
+          const compressedFile = await compressProductImage(file);
+          const body = new FormData();
+
+          body.set("file", compressedFile);
+          body.set("productSku", formState.sku.trim());
+          body.set("productSlug", formState.slug.trim());
+
+          const response = await fetch("/api/admin/product-images", {
+            body,
+            method: "POST",
+          });
+          const payload = (await response.json().catch(() => null)) as
+            | { error?: string; success?: boolean; url?: string }
+            | null;
+
+          if (!response.ok || !payload?.success || !payload.url) {
+            throw new Error(
+              payload?.error === "FILE_TOO_LARGE"
+                ? editorCopy.uploadTooLarge
+                : payload?.error === "INVALID_FILE_TYPE"
+                  ? editorCopy.uploadInvalidType
+                  : editorCopy.uploadFailed
+            );
+          }
+
+          uploadedUrls.push(payload.url);
+        } catch (error) {
+          setUploadError(
+            error instanceof Error && error.message.trim().length > 0
+              ? error.message
+              : editorCopy.uploadFailed
+          );
+        }
+      }
+
+      if (uploadedUrls.length > 0) {
+        setFormState((current) => ({
+          ...current,
+          galleryText: appendGalleryUrls(current.galleryText, uploadedUrls),
+        }));
+      }
+    });
+  };
+
   const openCreateForm = () => {
     setFeedback(null);
+    setUploadError(null);
     setFormState(createEmptyProductForm(categories, products));
     setEditorOpen(true);
   };
@@ -418,6 +656,7 @@ export function AdminProductsClient({
             variant="secondary"
             onClick={() => {
               setFeedback(null);
+              setUploadError(null);
               setFormState(createEditProductForm(product));
               setEditorOpen(true);
             }}
@@ -567,7 +806,11 @@ export function AdminProductsClient({
               <AdminButton variant="ghost" onClick={resetForm}>
                 {t("buttons.close")}
               </AdminButton>
-              <AdminButton variant="primary" onClick={submitForm} disabled={isPending}>
+              <AdminButton
+                variant="primary"
+                onClick={submitForm}
+                disabled={isPending || isUploadingImages}
+              >
                 {t("buttons.save")}
               </AdminButton>
             </div>
@@ -665,19 +908,8 @@ export function AdminProductsClient({
               />
             ))}
             <AdminTextarea
-              label="Gallery URLs"
-              helperText="One image path per line."
-              value={formState.galleryText}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  galleryText: event.target.value,
-                }))
-              }
-            />
-            <AdminTextarea
               label="Tags"
-              helperText="Separate tags with commas."
+              helperText={editorCopy.tagsHelper}
               value={formState.tagsText}
               onChange={(event) =>
                 setFormState((current) => ({
@@ -686,6 +918,105 @@ export function AdminProductsClient({
                 }))
               }
             />
+            <div className="space-y-4 xl:col-span-2">
+              <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+                <div className="space-y-4">
+                  <AdminTextarea
+                    label={editorCopy.galleryLabel}
+                    helperText={editorCopy.galleryHelper}
+                    value={formState.galleryText}
+                    onChange={(event) =>
+                      setFormState((current) => ({
+                        ...current,
+                        galleryText: event.target.value,
+                      }))
+                    }
+                  />
+                  <label className="block space-y-2">
+                    <span className="admin-label">{editorCopy.uploadButton}</span>
+                    <div className="rounded-[1rem] border border-dashed border-white/12 bg-white/4 px-4 py-4">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-4 py-2 text-sm font-medium text-gold-soft transition hover:border-gold/40 hover:text-foreground">
+                          {isUploadingImages ? (
+                            <LoaderCircle className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Upload className="h-4 w-4" />
+                          )}
+                          {editorCopy.uploadButton}
+                          <input
+                            type="file"
+                            accept={PRODUCT_IMAGE_ALLOWED_MIME_TYPES.join(",")}
+                            multiple
+                            className="hidden"
+                            onChange={uploadGalleryImages}
+                          />
+                        </label>
+                        <p className="text-sm text-muted">
+                          {isUploadingImages
+                            ? editorCopy.uploadPending
+                            : editorCopy.uploadHelper}
+                        </p>
+                      </div>
+                      {uploadError ? (
+                        <p className="mt-3 text-sm text-rose-300">{uploadError}</p>
+                      ) : null}
+                    </div>
+                  </label>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <p className="admin-label">{editorCopy.galleryPreview}</p>
+                    <p className="text-xs text-muted">{editorCopy.galleryHelper}</p>
+                  </div>
+                  {galleryUrls.length === 0 ? (
+                    <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
+                      {editorCopy.galleryEmpty}
+                    </div>
+                  ) : (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {galleryUrls.map((imageUrl) => (
+                        <div
+                          key={imageUrl}
+                          className="overflow-hidden rounded-[1rem] border border-white/8 bg-black/10"
+                        >
+                          <div className="relative aspect-[4/4.8] bg-black/30">
+                            <Image
+                              src={imageUrl}
+                              alt={formState.name.de || formState.sku || "Product image"}
+                              fill
+                              className="object-cover"
+                              sizes="(min-width: 1280px) 18vw, 40vw"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between gap-3 px-3 py-3">
+                            <p className="min-w-0 truncate text-xs text-muted">
+                              {imageUrl}
+                            </p>
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 text-xs font-medium text-gold-soft transition hover:text-foreground"
+                              onClick={() =>
+                                setFormState((current) => ({
+                                  ...current,
+                                  galleryText: removeGalleryUrl(
+                                    current.galleryText,
+                                    imageUrl
+                                  ),
+                                }))
+                              }
+                            >
+                              <X className="h-3.5 w-3.5" />
+                              {editorCopy.galleryRemove}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
             <div className="space-y-4 xl:col-span-2">
               <div className="space-y-1">
                 <p className="admin-label">{t("products.table.options")}</p>

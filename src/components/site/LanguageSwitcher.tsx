@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { ChevronDown, Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Link, usePathname } from "@/i18n/navigation";
@@ -23,9 +24,11 @@ export function LanguageSwitcher({
   const t = useTranslations("Nav");
   const locale = useLocale() as AppLocale;
   const pathname = usePathname() || "/";
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const isRtl = locale === "ar";
+  const query = Object.fromEntries(searchParams.entries());
 
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
@@ -86,7 +89,7 @@ export function LanguageSwitcher({
         {routing.locales.map((entry) => (
           <Link
             key={entry}
-            href={pathname}
+            href={{ pathname, query }}
             locale={entry}
             role="menuitem"
             onClick={() => {

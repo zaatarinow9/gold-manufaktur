@@ -35,6 +35,7 @@ import {
   getPublicTrackingStageFromStatus,
   resolvePublicTrackingStage,
 } from "@/lib/orderTracking/publicStages";
+import { normalizePhoneNumber } from "@/lib/phone";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Json, TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
 import type {
@@ -65,6 +66,16 @@ const optionalUuidSchema = z.preprocess(
   normalizeOptionalUuid,
   z.string().uuid().nullable()
 );
+const optionalPhoneSchema = z
+  .string()
+  .default("")
+  .transform((value) => normalizePhoneNumber(value))
+  .refine((value) => value.length === 0 || value.length >= 6, {
+    message: "Invalid phone number",
+  })
+  .refine((value) => value.length <= 80, {
+    message: "Invalid phone number",
+  });
 
 const orderNotesSchema = z.object({
   adminNotes: z.string().trim().max(4000).optional().default(""),
@@ -82,7 +93,7 @@ const orderCreateSchema = z.object({
   customerEmail: z.string().trim().email().max(160),
   customerLanguage: localeSchema.default("de"),
   customerName: z.string().trim().min(1).max(160),
-  customerPhone: z.string().trim().max(80).optional().default(""),
+  customerPhone: optionalPhoneSchema,
   customerReference: z.string().trim().max(255).optional().default(""),
   dueDate: z.preprocess(normalizeOptionalDate, z.string().default("")),
   emailUpdatesEnabled: z.boolean().default(false),
@@ -136,7 +147,7 @@ const orderWorkflowUpdateSchema = z.object({
 export const supportTicketSchema = z.object({
   customerEmail: z.email().optional().or(z.literal("")).default(""),
   customerName: z.string().trim().max(160).optional().default(""),
-  customerPhone: z.string().trim().max(80).optional().default(""),
+  customerPhone: optionalPhoneSchema,
   message: z.string().trim().min(10).max(2000),
 });
 
@@ -1241,7 +1252,7 @@ export async function createOrder(
   const parsed = orderCreateSchema.parse({
     ...input,
     customerLanguage: input.customerLanguage ?? locale,
-    customerPhone: normalizeOptionalText(input.customerPhone),
+    customerPhone: normalizePhoneNumber(input.customerPhone),
     customerReference: normalizeOptionalText(input.customerReference),
   });
 

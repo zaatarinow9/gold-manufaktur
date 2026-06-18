@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
+import { LocaleDocumentSync } from "@/components/site/LocaleDocumentSync";
 import { LocaleChrome } from "@/components/site/LocaleChrome";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNavbar } from "@/components/site/SiteNavbar";
@@ -33,16 +34,14 @@ export default async function LocaleLayout({
 }: LocaleLayoutProps) {
   const locale = await resolveLocale(params);
   const direction = getDirection(locale);
-  const localeClassName = ["locale-root", locale === "ar" && "is-arabic"]
-    .filter(Boolean)
-    .join(" ");
 
   setRequestLocale(locale);
 
   return (
     <NextIntlClientProvider>
+      <LocaleDocumentSync locale={locale} direction={direction} />
       <div
-        className={localeClassName}
+        className="locale-root"
         dir={direction}
         data-locale={locale}
         data-dir={direction}

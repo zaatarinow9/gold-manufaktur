@@ -21,6 +21,133 @@ import {
   type ProductUpdateInput,
 } from "@/lib/db/adminCatalog";
 
+function getProductActionMessage(
+  locale: AppLocale,
+  key:
+    | "activated"
+    | "created"
+    | "deactivated"
+    | "deleted"
+    | "duplicated"
+    | "featuredOff"
+    | "featuredOn"
+    | "softDeleted"
+    | "updated"
+) {
+  if (locale === "de") {
+    switch (key) {
+      case "activated":
+        return "Das Produkt ist jetzt sichtbar.";
+      case "created":
+        return "Das Produkt wurde erstellt.";
+      case "deactivated":
+        return "Das Produkt wurde ausgeblendet.";
+      case "deleted":
+        return "Das Produkt wurde geloescht.";
+      case "duplicated":
+        return "Das Produkt wurde dupliziert.";
+      case "featuredOff":
+        return "Das Produkt wurde aus der Auswahl entfernt.";
+      case "featuredOn":
+        return "Das Produkt wurde als Highlight markiert.";
+      case "softDeleted":
+        return "Das Produkt wird weiterhin in Auftraegen verwendet und wurde deshalb nur deaktiviert.";
+      case "updated":
+        return "Das Produkt wurde aktualisiert.";
+    }
+  }
+
+  if (locale === "ar") {
+    switch (key) {
+      case "activated":
+        return "أصبح المنتج مرئياً الآن.";
+      case "created":
+        return "تم إنشاء المنتج.";
+      case "deactivated":
+        return "تم إخفاء المنتج.";
+      case "deleted":
+        return "تم حذف المنتج.";
+      case "duplicated":
+        return "تم إنشاء نسخة من المنتج.";
+      case "featuredOff":
+        return "تمت إزالة المنتج من الاختيارات المميزة.";
+      case "featuredOn":
+        return "تم تمييز المنتج كخيار بارز.";
+      case "softDeleted":
+        return "المنتج مستخدم في طلبات حالية، لذلك تم تعطيله فقط.";
+      case "updated":
+        return "تم تحديث المنتج.";
+    }
+  }
+
+  if (locale === "fr") {
+    switch (key) {
+      case "activated":
+        return "Le produit est maintenant visible.";
+      case "created":
+        return "Le produit a ete cree.";
+      case "deactivated":
+        return "Le produit a ete masque.";
+      case "deleted":
+        return "Le produit a ete supprime.";
+      case "duplicated":
+        return "Le produit a ete duplique.";
+      case "featuredOff":
+        return "Le produit a ete retire de la selection mise en avant.";
+      case "featuredOn":
+        return "Le produit a ete marque comme piece mise en avant.";
+      case "softDeleted":
+        return "Ce produit est encore utilise dans des commandes et a seulement ete desactive.";
+      case "updated":
+        return "Le produit a ete mis a jour.";
+    }
+  }
+
+  if (locale === "tr") {
+    switch (key) {
+      case "activated":
+        return "Urun artik gorunur.";
+      case "created":
+        return "Urun olusturuldu.";
+      case "deactivated":
+        return "Urun gizlendi.";
+      case "deleted":
+        return "Urun silindi.";
+      case "duplicated":
+        return "Urun kopyalandi.";
+      case "featuredOff":
+        return "Urun one cikan secimden cikarildi.";
+      case "featuredOn":
+        return "Urun one cikan secim olarak isaretlendi.";
+      case "softDeleted":
+        return "Bu urun siparislerde kullanildigi icin yalnizca devre disi birakildi.";
+      case "updated":
+        return "Urun guncellendi.";
+    }
+  }
+
+  switch (key) {
+    case "activated":
+      return "The product is now visible.";
+    case "created":
+      return "Product created.";
+    case "deactivated":
+      return "The product was hidden.";
+    case "deleted":
+      return "The product was deleted.";
+    case "duplicated":
+      return "The product was duplicated.";
+    case "featuredOff":
+      return "The product was removed from the featured selection.";
+    case "featuredOn":
+      return "The product was marked as featured.";
+    case "softDeleted":
+      return "This product is still used in orders, so it was deactivated instead of fully deleted.";
+    case "updated":
+      return "Product updated.";
+  }
+}
+
 function revalidateProductViews() {
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}`);
@@ -48,7 +175,9 @@ export async function saveProductAction(
   }
 
   try {
-    if ("id" in input && typeof input.id === "string") {
+    const isUpdate = "id" in input && typeof input.id === "string";
+
+    if (isUpdate) {
       await updateProduct(input as ProductUpdateInput);
     } else {
       await createProduct(input as ProductInput);
@@ -57,7 +186,7 @@ export async function saveProductAction(
     revalidateProductViews();
 
     return {
-      message: t("common.mockSubmit"),
+      message: getProductActionMessage(locale, isUpdate ? "updated" : "created"),
       ok: true,
     };
   } catch (error) {
@@ -88,7 +217,7 @@ export async function duplicateProductAction(
     revalidateProductViews();
 
     return {
-      message: t("common.mockSubmit"),
+      message: getProductActionMessage(locale, "duplicated"),
       ok: true,
     };
   } catch (error) {
@@ -120,7 +249,7 @@ export async function toggleProductActiveAction(
     revalidateProductViews();
 
     return {
-      message: t("common.mockSubmit"),
+      message: getProductActionMessage(locale, isActive ? "activated" : "deactivated"),
       ok: true,
     };
   } catch (error) {
@@ -152,7 +281,7 @@ export async function toggleProductFeaturedAction(
     revalidateProductViews();
 
     return {
-      message: t("common.mockSubmit"),
+      message: getProductActionMessage(locale, isFeatured ? "featuredOn" : "featuredOff"),
       ok: true,
     };
   } catch (error) {
@@ -182,31 +311,11 @@ export async function deleteProductAction(
     const result = await deleteProduct(productId);
     revalidateProductViews();
 
-    if (result.mode === "soft_deleted_in_use") {
-      return {
-        message: locale === "de"
-          ? "Das Produkt wird weiterhin in Auftraegen verwendet und wurde deshalb nur deaktiviert."
-          : locale === "ar"
-            ? "المنتج مستخدم في طلبات حالية، لذلك تم تعطيله فقط."
-            : locale === "fr"
-              ? "Ce produit est encore utilise dans des commandes et a seulement ete desactive."
-              : locale === "tr"
-                ? "Bu urun siparislerde hala kullanildigi icin yalnizca devre disi birakildi."
-            : "This product is still used in orders, so it was deactivated instead of fully deleted.",
-        ok: true,
-      };
-    }
-
     return {
-      message: locale === "de"
-        ? "Das Produkt wurde geloescht."
-        : locale === "ar"
-          ? "تم حذف المنتج."
-          : locale === "fr"
-            ? "Le produit a ete supprime."
-            : locale === "tr"
-              ? "Urun silindi."
-          : "The product was deleted.",
+      message: getProductActionMessage(
+        locale,
+        result.mode === "soft_deleted_in_use" ? "softDeleted" : "deleted"
+      ),
       ok: true,
     };
   } catch (error) {

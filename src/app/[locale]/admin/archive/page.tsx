@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminBadge } from "@/components/admin/AdminBadge";
@@ -12,6 +12,7 @@ import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { adminOrders, managedProducts } from "@/data/adminMock";
+import type { AppLocale } from "@/i18n/routing";
 import { getCurrentAdminUser, hasAdminRoleAccess } from "@/lib/admin/currentUser";
 
 type ArchiveRow = {
@@ -23,8 +24,21 @@ type ArchiveRow = {
   type: "order" | "product";
 };
 
+function getArchiveRestoreMessage(locale: AppLocale) {
+  if (locale === "de") {
+    return "Die Wiederherstellung aus dem Archiv ist in dieser Ansicht noch nicht verbunden.";
+  }
+
+  if (locale === "ar") {
+    return "استعادة العناصر من الأرشيف من هذه الصفحة ما زالت قيد التجهيز.";
+  }
+
+  return "Restoring archived items from this screen is not connected yet.";
+}
+
 export default function AdminArchivePage() {
   const t = useTranslations("Admin");
+  const locale = useLocale() as AppLocale;
   const currentUser = getCurrentAdminUser();
   const archivedOrders = adminOrders.filter((order) => order.isArchived);
   const archivedProducts = managedProducts.filter((product) => !product.isActive);
@@ -109,7 +123,7 @@ export default function AdminArchivePage() {
         <AdminButton
           size="sm"
           variant="secondary"
-          onClick={() => setFeedback(t("common.mockSubmit"))}
+          onClick={() => setFeedback(getArchiveRestoreMessage(locale))}
         >
           {t("buttons.restore")}
         </AdminButton>

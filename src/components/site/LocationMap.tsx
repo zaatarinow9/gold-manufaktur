@@ -6,6 +6,7 @@ import {
   companyInfo,
   companyMapEmbedUrl,
 } from "@/lib/site";
+import { PhoneInline } from "./PhoneInline";
 import { SectionHeading } from "./SectionHeading";
 
 export function LocationMap() {
@@ -44,7 +45,7 @@ export function LocationMap() {
                   href={companyInfo.phoneHref}
                   className="mt-4 inline-flex text-base leading-7 text-foreground transition hover:text-gold-soft"
                 >
-                  {companyInfo.phoneDisplay}
+                  <PhoneInline>{companyInfo.phoneDisplay}</PhoneInline>
                 </a>
               </div>
             </div>
