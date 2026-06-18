@@ -92,14 +92,28 @@
     "categories": {
       "eyebrow": "Selected Categories",
       "title": "Collections that catch the eye immediately.",
-      "description": "Choose from lines, sets, and standout gold pieces."
+      "description": "Choose from lines, sets, and standout gold pieces.",
+      "emptyTitle": "No products are currently visible",
+      "emptyText": "As soon as new collections are activated in the dashboard, they will appear here automatically."
     },
     "products": {
       "eyebrow": "Selected Products",
       "title": "Real imagery. Clear selection. Gold with character.",
       "description": "Selected jewelry pieces across different categories.",
       "sectionCta": "Open showroom",
-      "cardCta": "View details"
+      "cardCta": "View details",
+      "emptyTitle": "No products are currently visible",
+      "emptyText": "Activate products in the dashboard or contact us for a personal selection."
+    },
+    "showcase": {
+      "eyebrow": "Fresh arrivals",
+      "title": "Recently added pieces from the collection.",
+      "description": "The latest active products from the admin catalog appear here without static placeholders.",
+      "sectionCta": "Browse the collection",
+      "leadCta": "Explore this category",
+      "cardCta": "View category",
+      "emptyTitle": "No products are currently visible",
+      "emptyText": "When new products are saved and activated, this section will update automatically."
     },
     "aboutGold": {
       "eyebrow": "About gold",

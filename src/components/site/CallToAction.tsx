@@ -1,24 +1,28 @@
-import Image from "next/image";
 import { ArrowRight, PhoneCall } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { realProductImages } from "@/data/catalog";
 import { Link } from "@/i18n/navigation";
 import { companyInfo } from "@/lib/site";
+import type { CatalogProduct } from "@/types/catalog";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
-export function CallToAction() {
+type CallToActionProps = {
+  visualProduct?: CatalogProduct | null;
+};
+
+export function CallToAction({
+  visualProduct,
+}: CallToActionProps) {
   const t = useTranslations("Home.cta");
-  const ctaImage = realProductImages[2];
 
   return (
     <section className="full-bleed-section relative overflow-hidden border-y border-white/8">
       <div className="absolute inset-0">
-        <Image
-          src={ctaImage.src}
-          alt={ctaImage.alt}
-          fill
-          className="object-cover opacity-20"
+        <LuxuryMedia
+          src={visualProduct?.imageUrl}
+          alt={visualProduct?.name || t("title")}
           sizes="100vw"
+          imageClassName="opacity-20"
         />
       </div>
       <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(5,5,5,0.96),rgba(5,5,5,0.8),rgba(5,5,5,0.88))]" />

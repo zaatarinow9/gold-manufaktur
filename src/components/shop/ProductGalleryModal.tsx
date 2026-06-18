@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
-import type { CatalogCategory, CatalogProduct } from "@/data/catalog";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
+import type { CatalogCategory, CatalogProduct } from "@/types/catalog";
 
 type ProductGalleryModalProps = {
   category: CatalogCategory | undefined;
@@ -56,11 +56,15 @@ export function ProductGalleryModal({
     return null;
   }
 
-  const images = product.gallery.length > 0 ? product.gallery : [product.imageUrl];
+  const images = product.gallery.length > 0
+    ? product.gallery
+    : product.imageUrl
+      ? [product.imageUrl]
+      : [];
   const activeImage =
     selectedImageState.productId === product.id && selectedImageState.image
       ? selectedImageState.image
-      : images[0];
+      : images[0] ?? "";
   const personalizationNote = locale === "ar"
     ? "يمكن تخصيص الاسم لهذا المنتج"
     : locale === "de"
@@ -98,43 +102,57 @@ export function ProductGalleryModal({
         <div className="rtl-mirror-grid grid min-h-0 overflow-y-auto overscroll-contain lg:grid-cols-[1.18fr_0.82fr]">
           <div className="min-w-0 border-b border-white/8 lg:border-b-0 lg:border-e lg:border-white/8">
             <div className="relative aspect-[4/4.5] bg-[radial-gradient(circle_at_30%_20%,rgba(232,201,135,0.18),transparent_40%),linear-gradient(180deg,#111,#050505)] sm:aspect-[4/5]">
-              <Image
+              <LuxuryMedia
                 src={activeImage}
                 alt={product.name}
-                fill
-                className="object-cover"
                 sizes="(max-width: 1023px) 100vw, 60vw"
+                fallbackContent={
+                  <div className="absolute inset-x-5 bottom-5">
+                    <span className="gold-chip">
+                      {category?.name ?? t("fallbackCategory")}
+                    </span>
+                  </div>
+                }
               />
             </div>
 
-            <div className="flex min-w-0 gap-3 overflow-x-auto p-4 sm:p-5">
-              {images.map((image, index) => {
-                const isActive = image === activeImage;
+            {images.length > 0 ? (
+              <div className="flex min-w-0 gap-3 overflow-x-auto p-4 sm:p-5">
+                {images.map((image, index) => {
+                  const isActive = image === activeImage;
 
-                return (
-                  <button
-                    key={`${product.id}-${image}-${index}`}
-                    type="button"
-                    onClick={() =>
-                      setSelectedImageState({ image, productId: product.id })
-                    }
-                    className={`relative h-24 w-20 shrink-0 overflow-hidden rounded-2xl border transition ${
-                      isActive
-                        ? "border-gold/50 shadow-[0_18px_35px_rgba(196,154,82,0.18)]"
-                        : "border-white/10 hover:border-gold/30"
-                    }`}
-                  >
-                    <Image
-                      src={image}
-                      alt={`${product.name} ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
-                    />
-                  </button>
-                );
-              })}
-            </div>
+                  return (
+                    <button
+                      key={`${product.id}-${image}-${index}`}
+                      type="button"
+                      onClick={() =>
+                        setSelectedImageState({ image, productId: product.id })
+                      }
+                      className={`relative h-24 w-20 shrink-0 overflow-hidden rounded-2xl border transition ${
+                        isActive
+                          ? "border-gold/50 shadow-[0_18px_35px_rgba(196,154,82,0.18)]"
+                          : "border-white/10 hover:border-gold/30"
+                      }`}
+                    >
+                      <LuxuryMedia
+                        src={image}
+                        alt={`${product.name} ${index + 1}`}
+                        sizes="80px"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-4 sm:p-5">
+                <div className="rounded-[24px] border border-white/10 bg-black/24 px-5 py-5 text-start">
+                  <span className="gold-chip">{category?.name ?? t("fallbackCategory")}</span>
+                  <p className="mt-4 text-sm leading-6 text-muted">
+                    {product.shortDescription}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="min-w-0 space-y-6 p-6 text-start sm:p-8">

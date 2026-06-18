@@ -1,15 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-import {
-  realProductImages,
-  type CatalogCategory,
-  type CatalogProduct,
-} from "@/data/catalog";
 import { trimDisplayHeading } from "@/lib/displayText";
+import type { CatalogCategory, CatalogProduct } from "@/types/catalog";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
 import { CategoryFilter } from "./CategoryFilter";
 import { ProductCard } from "./ProductCard";
@@ -17,12 +13,22 @@ import { ProductGalleryModal } from "./ProductGalleryModal";
 
 type ProductGridProps = {
   categories: CatalogCategory[];
+  initialCategory?: string;
   products: CatalogProduct[];
 };
 
-export function ProductGrid({ categories, products }: ProductGridProps) {
+export function ProductGrid({
+  categories,
+  initialCategory,
+  products,
+}: ProductGridProps) {
   const t = useTranslations("Shop.grid");
-  const [activeCategory, setActiveCategory] = useState("all");
+  const normalizedInitialCategory =
+    initialCategory === "all" ||
+    categories.some((category) => category.slug === initialCategory)
+      ? initialCategory ?? "all"
+      : "all";
+  const [activeCategory, setActiveCategory] = useState(normalizedInitialCategory);
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(
     null
   );
@@ -34,6 +40,12 @@ export function ProductGrid({ categories, products }: ProductGridProps) {
   const categoryBySlug = new Map(
     categories.map((category) => [category.slug, category])
   );
+  const emptyVisual =
+    (activeCategory !== "all"
+      ? categoryBySlug.get(activeCategory)?.imageUrl
+      : undefined) ??
+    categories.find((category) => category.imageUrl)?.imageUrl ??
+    "";
 
   const filterItems = [
     { slug: "all", label: t("all") },
@@ -80,12 +92,17 @@ export function ProductGrid({ categories, products }: ProductGridProps) {
           ) : (
             <div className="rtl-mirror-grid grid min-w-0 gap-6 overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(22,18,13,0.92),rgba(9,9,9,0.96))] lg:grid-cols-[0.78fr_1fr]">
               <div className="relative min-h-[22rem] overflow-hidden">
-                <Image
-                  src={realProductImages[6].src}
-                  alt={realProductImages[6].alt}
-                  fill
-                  className="object-cover"
+                <LuxuryMedia
+                  src={emptyVisual}
+                  alt={t("emptyTitle")}
                   sizes="(max-width: 1023px) 100vw, 34vw"
+                  fallbackContent={
+                    <div className="absolute inset-x-5 bottom-5">
+                      <span className="gold-chip">
+                        {categoryBySlug.get(activeCategory)?.name ?? t("emptyBadge")}
+                      </span>
+                    </div>
+                  }
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/24 to-transparent" />
               </div>

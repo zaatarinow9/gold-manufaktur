@@ -23,10 +23,12 @@ import {
 
 function revalidateProductViews() {
   routing.locales.forEach((locale) => {
+    revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/admin/gallery`);
     revalidatePath(`/${locale}/admin/gallery/new-order`);
     revalidatePath(`/${locale}/admin/products`);
     revalidatePath(`/${locale}/shop`);
+    revalidatePath(`/${locale}/tracking`);
   });
 }
 

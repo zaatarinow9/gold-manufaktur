@@ -92,14 +92,28 @@
     "categories": {
       "eyebrow": "Catégories sélectionnées",
       "title": "Des collections qui attirent immédiatement le regard.",
-      "description": "Choisissez parmi des lignes, des ensembles et des pièces en or marquantes."
+      "description": "Choisissez parmi des lignes, des ensembles et des pièces en or marquantes.",
+      "emptyTitle": "Aucun produit n'est visible pour le moment",
+      "emptyText": "Dès que de nouvelles collections sont activées dans le tableau de bord, elles apparaissent ici automatiquement."
     },
     "products": {
       "eyebrow": "Produits sélectionnés",
       "title": "Visuels réels. Choix clair. Or de caractère.",
       "description": "Des pièces sélectionnées dans différentes catégories.",
       "sectionCta": "Voir le showroom",
-      "cardCta": "Voir les détails"
+      "cardCta": "Voir les détails",
+      "emptyTitle": "Aucun produit n'est visible pour le moment",
+      "emptyText": "Activez des produits dans le tableau de bord ou contactez-nous pour une sélection personnalisée."
+    },
+    "showcase": {
+      "eyebrow": "Nouvelles pièces",
+      "title": "Les derniers ajouts de la collection.",
+      "description": "Les produits actifs les plus récents du catalogue admin apparaissent ici sans cartes statiques.",
+      "sectionCta": "Parcourir la collection",
+      "leadCta": "Explorer cette catégorie",
+      "cardCta": "Voir la catégorie",
+      "emptyTitle": "Aucun produit n'est visible pour le moment",
+      "emptyText": "Quand de nouveaux produits sont enregistrés et activés, cette section se met à jour automatiquement."
     },
     "aboutGold": {
       "eyebrow": "À propos de l'or",

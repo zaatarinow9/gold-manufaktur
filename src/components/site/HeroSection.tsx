@@ -1,26 +1,37 @@
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { realProductImages } from "@/data/catalog";
 import { Link } from "@/i18n/navigation";
 import { trimDisplayHeading } from "@/lib/displayText";
+import type { CatalogProduct } from "@/types/catalog";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
-export function HeroSection() {
+type HeroSectionProps = {
+  visualProduct?: CatalogProduct | null;
+};
+
+export function HeroSection({
+  visualProduct,
+}: HeroSectionProps) {
   const t = useTranslations("Home.hero");
-  const heroImage = realProductImages[0];
   const title = trimDisplayHeading(t("title"));
 
   return (
     <section className="full-bleed-section relative isolate min-h-[80svh] overflow-hidden">
       <div className="absolute inset-0">
-        <Image
-          src={heroImage.src}
+        <LuxuryMedia
+          src={visualProduct?.imageUrl}
           alt={t("backgroundAlt")}
-          fill
-          priority
-          className="hero-zoom object-cover"
           sizes="100vw"
+          priority
+          imageClassName="hero-zoom"
+          fallbackContent={
+            <div className="absolute inset-x-6 bottom-8 flex justify-center">
+              <span className="gold-chip">
+                {visualProduct?.categoryName || t("eyebrow")}
+              </span>
+            </div>
+          }
         />
       </div>
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,5,5,0.24),rgba(5,5,5,0.74),rgba(5,5,5,0.94))]" />

@@ -23,8 +23,11 @@ import {
 
 function revalidateOptionViews() {
   routing.locales.forEach((locale) => {
+    revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/admin/options`);
     revalidatePath(`/${locale}/admin/products`);
+    revalidatePath(`/${locale}/shop`);
+    revalidatePath(`/${locale}/tracking`);
   });
 }
 

@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 import { ContactCards } from "@/components/site/ContactCards";
 import { ContactForm } from "@/components/site/ContactForm";
 import { LocationMap } from "@/components/site/LocationMap";
-import { realProductImages } from "@/data/catalog";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 import { Link } from "@/i18n/navigation";
+import { pickVisualProducts } from "@/lib/catalog/publicVisuals";
+import { getFeaturedProducts, getLatestProducts } from "@/lib/db/catalog";
 import { trimDisplayHeading } from "@/lib/displayText";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
@@ -22,9 +23,19 @@ export async function generateMetadata({
   return createPageMetadata(await resolveLocale(params), "contact");
 }
 
-export default function ContactPage() {
-  const t = useTranslations("Contact.hero");
-  const visualImage = realProductImages[5];
+export default async function ContactPage({
+  params,
+}: PageProps) {
+  const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: "Contact.hero" });
+  const [featuredProducts, latestProducts] = await Promise.all([
+    getFeaturedProducts(locale, 1),
+    getLatestProducts(locale, 1),
+  ]);
+  const visualProduct = pickVisualProducts(
+    [...featuredProducts, ...latestProducts],
+    1
+  )[0] ?? null;
 
   return (
     <div className="space-y-2 pb-8">
@@ -52,12 +63,17 @@ export default function ContactPage() {
             </div>
 
             <div className="relative min-h-[22rem] overflow-hidden rounded-[32px] border border-white/10 bg-black/30">
-              <Image
-                src={visualImage.src}
-                alt={visualImage.alt}
-                fill
-                className="object-cover"
+              <LuxuryMedia
+                src={visualProduct?.imageUrl}
+                alt={visualProduct?.name || t("title")}
                 sizes="(max-width: 1279px) 100vw, 54vw"
+                fallbackContent={
+                  <div className="absolute inset-x-5 bottom-5">
+                    <span className="gold-chip">
+                      {visualProduct?.categoryName || "GoldHelwah GmbH"}
+                    </span>
+                  </div>
+                }
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.16),rgba(0,0,0,0.78))]" />
             </div>

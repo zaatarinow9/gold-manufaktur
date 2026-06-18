@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
-import type { CatalogProduct } from "@/data/catalog";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
+import type { CatalogProduct } from "@/types/catalog";
 
 type ProductCardProps = {
   categoryName: string;
@@ -36,12 +36,16 @@ export function ProductCard({
       className="group block w-full min-w-0 overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,15,11,0.92),rgba(8,8,8,0.98))] text-start transition hover:-translate-y-1 hover:border-gold/30"
     >
       <div className="relative aspect-[4/5] overflow-hidden">
-        <Image
+        <LuxuryMedia
           src={product.imageUrl}
           alt={product.name}
-          fill
-          className="object-cover transition duration-700 group-hover:scale-[1.04]"
           sizes="(max-width: 767px) 100vw, (max-width: 1535px) 50vw, 25vw"
+          imageClassName="transition duration-700 group-hover:scale-[1.04]"
+          fallbackContent={
+            <div className="absolute inset-x-4 bottom-4">
+              <span className="gold-chip !py-2">{categoryName}</span>
+            </div>
+          }
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.86))]" />
 

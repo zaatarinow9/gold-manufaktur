@@ -92,14 +92,28 @@
     "categories": {
       "eyebrow": "Ausgewählte Kategorien",
       "title": "Kollektionen, die sofort ins Auge fallen.",
-      "description": "Wählen Sie aus Linien, Sets und besonderen Goldstücken."
+      "description": "Wählen Sie aus Linien, Sets und besonderen Goldstücken.",
+      "emptyTitle": "Derzeit sind keine Produkte sichtbar",
+      "emptyText": "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch."
     },
     "products": {
       "eyebrow": "Ausgewählte Produkte",
       "title": "Echte Bilder. Klare Auswahl. Gold mit Charakter.",
       "description": "Ausgewählte Schmuckstücke aus verschiedenen Kategorien.",
       "sectionCta": "Kollektion ansehen",
-      "cardCta": "Details ansehen"
+      "cardCta": "Details ansehen",
+      "emptyTitle": "Derzeit sind keine Produkte sichtbar",
+      "emptyText": "Aktivieren Sie Produkte im Dashboard oder kontaktieren Sie uns fuer eine persoenliche Auswahl."
+    },
+    "showcase": {
+      "eyebrow": "Neu im Blick",
+      "title": "Aktuelle Stuecke aus der Kollektion.",
+      "description": "Die neuesten aktiven Produkte aus dem Admin-Katalog erscheinen hier ohne statische Platzhalter.",
+      "sectionCta": "Zur Kollektion",
+      "leadCta": "In dieser Kategorie entdecken",
+      "cardCta": "Kategorie ansehen",
+      "emptyTitle": "Derzeit sind keine Produkte sichtbar",
+      "emptyText": "Sobald neue Produkte gespeichert und aktiviert werden, zeigt diese Sektion sie automatisch an."
     },
     "aboutGold": {
       "eyebrow": "Über Gold",
