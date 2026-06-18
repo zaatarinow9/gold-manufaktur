@@ -14,7 +14,8 @@ type TrackingSupportFormProps = {
 export function TrackingSupportForm({
   trackingNumber,
 }: TrackingSupportFormProps) {
-  const t = useTranslations("Contact.form");
+  const t = useTranslations("Tracking.support");
+  const formT = useTranslations("Contact.form");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -75,24 +76,24 @@ export function TrackingSupportForm({
       <form className="space-y-5 text-start" noValidate onSubmit={handleSubmit}>
         <div className="grid gap-5 md:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm text-foreground">
-            <span>{t("fields.name")}</span>
+            <span>{formT("fields.name")}</span>
             <input
               className={inputClassName}
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder={t("placeholders.name")}
+              placeholder={formT("placeholders.name")}
               autoComplete="name"
               required
             />
           </label>
 
           <label className="flex flex-col gap-2 text-sm text-foreground">
-            <span>{t("fields.email")}</span>
+            <span>{formT("fields.email")}</span>
             <input
               className={inputClassName}
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder={t("placeholders.email")}
+              placeholder={formT("placeholders.email")}
               autoComplete="email"
               type="email"
               required
@@ -101,24 +102,24 @@ export function TrackingSupportForm({
         </div>
 
         <label className="flex flex-col gap-2 text-sm text-foreground">
-          <span>{t("fields.phone")}</span>
+          <span>{formT("fields.phone")}</span>
           <input
             className={inputClassName}
             value={phone}
             onChange={(event) => setPhone(event.target.value)}
-            placeholder={t("placeholders.phone")}
+            placeholder={formT("placeholders.phone")}
             autoComplete="tel"
             required
           />
         </label>
 
         <label className="flex flex-col gap-2 text-sm text-foreground">
-          <span>{t("fields.message")}</span>
+          <span>{formT("fields.message")}</span>
           <textarea
             className={clsx(inputClassName, "min-h-44 resize-y")}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder={t("placeholders.message")}
+            placeholder={formT("placeholders.message")}
             required
           />
         </label>
@@ -129,7 +130,7 @@ export function TrackingSupportForm({
           ) : (
             <Send className="h-4 w-4" />
           )}
-          {isSubmitting ? t("submitPending") : t("submit")}
+          {isSubmitting ? formT("submitPending") : formT("submit")}
         </button>
 
         {submissionState !== "idle" ? (

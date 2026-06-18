@@ -47,7 +47,8 @@
       "shop": "Shop",
       "contact": "Contact",
       "impressum": "Legal Notice",
-      "privacy": "Privacy"
+      "privacy": "Privacy",
+      "tracking": "Track Order"
     }
   },
   "Footer": {
@@ -440,7 +441,8 @@
       "yes": "Yes",
       "no": "No",
       "enabled": "Enabled",
-      "disabled": "Disabled"
+      "disabled": "Disabled",
+      "notProvided": "Not specified"
     },
     "filters": {
       "category": "Category",
@@ -661,7 +663,9 @@
         "customerEmail": "Customer email",
         "emailUpdatesEnabled": "Enable email updates",
         "trackingNumber": "Tracking number",
-        "trackingStatus": "Tracking status"
+        "trackingStatus": "Tracking status",
+        "totalAmount": "Total amount",
+        "currency": "Currency"
       },
       "productDescription": "Choose the product and category.",
       "orderDescription": "Add customer and order details.",
@@ -783,7 +787,18 @@
       "statusSavedDescription": "Tracking status was updated.",
       "statusSavedAndNotified": "Tracking status saved and customer notified.",
       "statusSaved": "Tracking status saved.",
-      "noStatusChanges": "Please change the status or add a note."
+      "noStatusChanges": "Please change the status or add a note.",
+      "publicStageLabel": "Public stage",
+      "internalStatusLabel": "Internal tracking status",
+      "publicStageHelp": "Only these three milestones are visible to customers and can trigger customer emails.",
+      "publicStageEmailNotice": "When this public stage changes, the customer email is sent automatically if email updates are enabled.",
+      "publicStageSavedAndNotified": "Public stage saved and customer notified.",
+      "noPublicStage": "Not published yet",
+      "notStageSpecific": "No public stage",
+      "emailTemplateLabel": "Template",
+      "emailLogDuplicateSkipped": "This email was skipped because the same customer template was already sent for this order.",
+      "emailLogSmtpNotice": "Email delivery was skipped because SMTP is not fully configured.",
+      "emailLogErrorFallback": "The email could not be delivered. Please review the SMTP configuration and logs."
     },
     "workshops": {
       "eyebrow": "Workshops",
@@ -935,6 +950,21 @@
       "picked_up": "Picked up",
       "completed": "Completed",
       "cancelled": "Cancelled"
+    },
+    "publicTrackingStage": {
+      "order_in_workshop": "Order in workshop",
+      "shipping": "Order is being shipped",
+      "ready_for_pickup": "Ready for pickup"
+    },
+    "emailLogStatus": {
+      "pending": "Pending",
+      "sent": "Email sent",
+      "skipped": "Email skipped",
+      "failed": "Email failed"
+    },
+    "emailTemplateType": {
+      "orderConfirmation": "Order confirmation",
+      "publicStageUpdate": "Public stage update"
     }
   },
   "Tracking": {
@@ -945,6 +975,49 @@
     "timelineDescription": "Latest updates for your order.",
     "contact": "Contact",
     "phone": "Call",
-    "backToWebsite": "Back to website"
+    "backToWebsite": "Back to website",
+    "trackingNumberLabel": "Tracking number",
+    "currentPublicStageLabel": "Current public stage",
+    "progressTitle": "Public progress",
+    "progressDescription": "We only publish three customer-facing milestones for your order.",
+    "trackAnotherOrder": "Track another order",
+    "contactSupport": "Contact support",
+    "notesTitle": "Customer updates",
+    "notesDescription": "Only customer-facing updates are shown here.",
+    "orderReceivedLabel": "Order received",
+    "instructionsTitle": "How to track your order",
+    "instructionsDescription": "Use your tracking number from the website menu instead of a direct tracking link.",
+    "instructionsStepOne": "Open the website homepage.",
+    "instructionsStepTwo": "Click \"Track Order\" in the menu.",
+    "instructionsStepThree": "Enter your tracking number.",
+    "receivedMessage": "We received your order and will update the public status soon.",
+    "receivedDescription": "Your order has been recorded and is waiting for its first public milestone.",
+    "currentStageDescription": "This is the current public milestone for your order.",
+    "completedStageDescription": "This stage has already been completed.",
+    "upcomingStageDescription": "This stage will appear once your order reaches it.",
+    "lookup": {
+      "eyebrow": "Track Order",
+      "title": "Look up your order",
+      "description": "Enter your tracking number to see the latest public updates for your GoldHelwah order.",
+      "helperTitle": "Need your number?",
+      "helperDescription": "You can find the tracking number in your order email and use it from the website menu.",
+      "formTitle": "Enter your tracking number",
+      "formDescription": "We will open the live order page for this tracking number.",
+      "label": "Tracking number",
+      "placeholder": "GH-20260618-0001",
+      "submit": "Track Order",
+      "emptyError": "Please enter your tracking number."
+    },
+    "support": {
+      "title": "Contact support",
+      "description": "Need help with this order? Send us a message and our team will follow up.",
+      "success": "Your message has been sent.",
+      "error": "We could not send your message right now."
+    },
+    "stages": {
+      "order_in_workshop": "Order in workshop",
+      "shipping": "Order is being shipped",
+      "ready_for_pickup": "Ready for pickup"
+    }
   }
 }

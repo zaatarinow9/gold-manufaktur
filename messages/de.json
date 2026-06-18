@@ -47,7 +47,8 @@
       "shop": "Shop",
       "contact": "Kontakt",
       "impressum": "Impressum",
-      "privacy": "Datenschutz"
+      "privacy": "Datenschutz",
+      "tracking": "Auftrag verfolgen"
     }
   },
   "Footer": {
@@ -440,7 +441,8 @@
       "yes": "Ja",
       "no": "Nein",
       "enabled": "Aktiviert",
-      "disabled": "Deaktiviert"
+      "disabled": "Deaktiviert",
+      "notProvided": "Nicht angegeben"
     },
     "filters": {
       "category": "Kategorie",
@@ -661,7 +663,9 @@
         "customerEmail": "Kunden-E-Mail",
         "emailUpdatesEnabled": "E-Mail-Updates aktivieren",
         "trackingNumber": "Tracking-Nummer",
-        "trackingStatus": "Tracking-Status"
+        "trackingStatus": "Tracking-Status",
+        "totalAmount": "Gesamtbetrag",
+        "currency": "W?hrung"
       },
       "productDescription": "Produkt und Kategorie festlegen.",
       "orderDescription": "Kundendaten und Grunddaten erfassen.",
@@ -786,7 +790,18 @@
       "statusSavedDescription": "Tracking-Status wurde aktualisiert.",
       "statusSavedAndNotified": "Tracking-Status gespeichert und Kunde benachrichtigt.",
       "statusSaved": "Tracking-Status gespeichert.",
-      "noStatusChanges": "Bitte Status oder Notiz ändern."
+      "noStatusChanges": "Bitte Status oder Notiz ändern.",
+      "publicStageLabel": "?ffentliche Phase",
+      "internalStatusLabel": "Interner Tracking-Status",
+      "publicStageHelp": "Nur diese drei Phasen sind f?r Kunden sichtbar und k?nnen Kunden-E-Mails ausl?sen.",
+      "publicStageEmailNotice": "Wenn sich diese ?ffentliche Phase ?ndert, wird die Kunden-E-Mail automatisch versendet, sofern E-Mail-Updates aktiv sind.",
+      "publicStageSavedAndNotified": "?ffentliche Phase gespeichert und Kunde benachrichtigt.",
+      "noPublicStage": "Noch nicht ver?ffentlicht",
+      "notStageSpecific": "Keine ?ffentliche Phase",
+      "emailTemplateLabel": "Vorlage",
+      "emailLogDuplicateSkipped": "Diese E-Mail wurde ?bersprungen, weil dieselbe Kundenvorlage f?r diesen Auftrag bereits gesendet wurde.",
+      "emailLogSmtpNotice": "Der Versand wurde ?bersprungen, weil SMTP noch nicht vollst?ndig konfiguriert ist.",
+      "emailLogErrorFallback": "Die E-Mail konnte nicht zugestellt werden. Bitte SMTP-Konfiguration und Protokolle pr?fen."
     },
     "workshops": {
       "eyebrow": "Werkstätten",
@@ -938,6 +953,21 @@
       "picked_up": "Abgeholt",
       "completed": "Abgeschlossen",
       "cancelled": "Storniert"
+    },
+    "publicTrackingStage": {
+      "order_in_workshop": "Auftrag in der Werkstatt",
+      "shipping": "Auftrag wird versendet",
+      "ready_for_pickup": "Bereit zur Abholung"
+    },
+    "emailLogStatus": {
+      "pending": "Ausstehend",
+      "sent": "Gesendet",
+      "skipped": "?bersprungen",
+      "failed": "Fehlgeschlagen"
+    },
+    "emailTemplateType": {
+      "orderConfirmation": "Auftragsbest?tigung",
+      "publicStageUpdate": "?ffentliches Statusupdate"
     }
   },
   "Tracking": {
@@ -948,6 +978,49 @@
     "timelineDescription": "Die letzten Schritte zu Ihrem Auftrag.",
     "contact": "Kontakt",
     "phone": "Anrufen",
-    "backToWebsite": "Zur Website"
+    "backToWebsite": "Zur Website",
+    "trackingNumberLabel": "Tracking-Nummer",
+    "currentPublicStageLabel": "Aktuelle ?ffentliche Phase",
+    "progressTitle": "?ffentlicher Fortschritt",
+    "progressDescription": "F?r Kunden werden nur drei sichtbare Meilensteine ver?ffentlicht.",
+    "trackAnotherOrder": "Anderen Auftrag verfolgen",
+    "contactSupport": "Support kontaktieren",
+    "notesTitle": "Kundenupdates",
+    "notesDescription": "Hier werden nur kundenrelevante Hinweise angezeigt.",
+    "orderReceivedLabel": "Auftrag erhalten",
+    "instructionsTitle": "So verfolgen Sie Ihren Auftrag",
+    "instructionsDescription": "Nutzen Sie Ihre Tracking-Nummer ?ber den Men?punkt der Website statt ?ber einen direkten Tracking-Link.",
+    "instructionsStepOne": "?ffnen Sie die Startseite der Website.",
+    "instructionsStepTwo": "Klicken Sie im Men? auf ?Auftrag verfolgen?.",
+    "instructionsStepThree": "Geben Sie Ihre Tracking-Nummer ein.",
+    "receivedMessage": "Ihr Auftrag wurde erhalten. Der Status wird bald aktualisiert.",
+    "receivedDescription": "Ihr Auftrag ist erfasst und wartet auf den ersten ?ffentlichen Meilenstein.",
+    "currentStageDescription": "Dies ist die aktuelle ?ffentliche Phase Ihres Auftrags.",
+    "completedStageDescription": "Diese Phase wurde bereits abgeschlossen.",
+    "upcomingStageDescription": "Diese Phase erscheint, sobald Ihr Auftrag sie erreicht.",
+    "lookup": {
+      "eyebrow": "Auftrag verfolgen",
+      "title": "Auftrag aufrufen",
+      "description": "Geben Sie Ihre Tracking-Nummer ein, um die letzten ?ffentlichen Updates zu Ihrem GoldHelwah Auftrag zu sehen.",
+      "helperTitle": "Tracking-Nummer zur Hand?",
+      "helperDescription": "Sie finden die Nummer in Ihrer Auftrags-E-Mail und nutzen sie ?ber den Men?punkt der Website.",
+      "formTitle": "Tracking-Nummer eingeben",
+      "formDescription": "Wir ?ffnen danach die Live-Ansicht zu diesem Auftrag.",
+      "label": "Tracking-Nummer",
+      "placeholder": "GH-20260618-0001",
+      "submit": "Auftrag verfolgen",
+      "emptyError": "Bitte geben Sie Ihre Tracking-Nummer ein."
+    },
+    "support": {
+      "title": "Support kontaktieren",
+      "description": "Brauchen Sie Hilfe zu diesem Auftrag? Schreiben Sie uns und unser Team meldet sich bei Ihnen.",
+      "success": "Ihre Nachricht wurde gesendet.",
+      "error": "Ihre Nachricht konnte gerade nicht gesendet werden."
+    },
+    "stages": {
+      "order_in_workshop": "Auftrag in der Werkstatt",
+      "shipping": "Auftrag wird versendet",
+      "ready_for_pickup": "Bereit zur Abholung"
+    }
   }
 }

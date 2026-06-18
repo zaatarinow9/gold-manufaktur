@@ -91,9 +91,11 @@ export function NewOrderClient({
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerReference, setCustomerReference] = useState("");
   const [customerLanguage, setCustomerLanguage] = useState<AppLocale>(locale);
+  const [currency, setCurrency] = useState("EUR");
   const [dueDate, setDueDate] = useState("");
   const [priority, setPriority] = useState<"express" | "normal" | "urgent">("normal");
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
+  const [totalAmount, setTotalAmount] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
   const [optionValues, setOptionValues] = useState<OptionValueMap>({});
@@ -137,6 +139,7 @@ export function NewOrderClient({
 
     setFeedback(null);
     setFieldErrors({});
+    const parsedTotalAmount = totalAmount.trim().length > 0 ? Number(totalAmount) : null;
 
     const selectedOptions = productOptions
       .map((option) => ({
@@ -169,6 +172,7 @@ export function NewOrderClient({
     startTransition(async () => {
       const result = await createOrderAction(locale, {
         attachments: [],
+        currency,
         customerEmail,
         customerLanguage,
         customerName,
@@ -200,6 +204,10 @@ export function NewOrderClient({
         referenceImages: [],
         selectedOptions,
         stones,
+        totalAmount:
+          parsedTotalAmount !== null && Number.isFinite(parsedTotalAmount)
+            ? parsedTotalAmount
+            : null,
       });
 
       setFeedback(result.message);
@@ -305,6 +313,25 @@ export function NewOrderClient({
                 ].map((language) => (
                   <option key={language.value} value={language.value}>
                     {language.label}
+                  </option>
+                ))}
+              </AdminSelect>
+              <AdminInput
+                label={t("newOrder.fields.totalAmount")}
+                type="number"
+                min="0"
+                step="0.01"
+                value={totalAmount}
+                onChange={(event) => setTotalAmount(event.target.value)}
+              />
+              <AdminSelect
+                label={t("newOrder.fields.currency")}
+                value={currency}
+                onChange={(event) => setCurrency(event.target.value)}
+              >
+                {["EUR", "USD", "TRY"].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
                   </option>
                 ))}
               </AdminSelect>
@@ -486,6 +513,14 @@ export function NewOrderClient({
                         fr: "Français",
                         tr: "Türkçe",
                       }[customerLanguage]}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-muted">{t("newOrder.fields.totalAmount")}</span>
+                    <span className="text-foreground">
+                      {totalAmount.trim().length > 0
+                        ? `${totalAmount} ${currency}`
+                        : t("common.notProvided")}
                     </span>
                   </div>
                   <div className="flex items-start justify-between gap-4">

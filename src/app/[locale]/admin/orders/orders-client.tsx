@@ -118,8 +118,13 @@ export function AdminOrdersClient({
       header: t("orders.table.status"),
       cell: (order) => (
         <div className="flex flex-wrap gap-2">
-          <AdminBadge variant="info">{t(`status.${order.status}`)}</AdminBadge>
           <AdminBadge variant="gold">
+            {order.publicTrackingStage
+              ? t(`publicTrackingStage.${order.publicTrackingStage}`)
+              : t("orders.noPublicStage")}
+          </AdminBadge>
+          <AdminBadge variant="info">{t(`status.${order.status}`)}</AdminBadge>
+          <AdminBadge variant="neutral">
             {t(`trackingStatus.${order.trackingStatus}`)}
           </AdminBadge>
         </div>
@@ -253,6 +258,7 @@ export function AdminOrdersClient({
           emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
           employees={employees}
           initialEmployeeId={selectedOrder.employeeId}
+          initialPublicStage={selectedOrder.publicTrackingStage}
           initialStatus={selectedOrder.trackingStatus}
           initialWorkshopId={selectedOrder.workshopId}
           locale={locale}

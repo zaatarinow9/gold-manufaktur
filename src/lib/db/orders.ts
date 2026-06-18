@@ -12,13 +12,28 @@ import {
   normalizeOptionalDate,
   normalizeOptionalText,
   normalizeOptionalUuid,
-  shouldNotifyCustomerForStatus,
 } from "@/lib/admin/orderWorkflow";
 import { createAdminNotification } from "@/lib/db/notifications";
+import {
+  buildCustomerOrderEmail,
+  getEmailPublicStageFromMetadata,
+  getEmailTemplateTypeFromMetadata,
+  type CustomerEmailTemplateType,
+  type CustomerEmailItem,
+} from "@/lib/email/customerOrderEmails";
 import { sendTransactionalEmail } from "@/lib/email/service";
+import {
+  getCanonicalTrackingStatusForPublicStage,
+  getPublicTrackingStageFromStatus,
+  resolvePublicTrackingStage,
+} from "@/lib/orderTracking/publicStages";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Json, TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
-import type { TrackingStatus, WorkshopOrderStatus } from "@/types/admin";
+import type {
+  PublicTrackingStage,
+  TrackingStatus,
+  WorkshopOrderStatus,
+} from "@/types/admin";
 import type { AppLocale } from "@/i18n/routing";
 
 const selectedOptionValueSchema = z.union([
@@ -55,6 +70,7 @@ const orderNotesSchema = z.object({
 
 const orderCreateSchema = z.object({
   attachments: z.array(z.string().trim().min(1).max(500)).default([]),
+  currency: z.string().trim().max(12).default("EUR"),
   customerEmail: z.string().trim().email().max(160),
   customerLanguage: localeSchema.default("de"),
   customerName: z.string().trim().min(1).max(160),
@@ -79,6 +95,7 @@ const orderCreateSchema = z.object({
   referenceImages: z.array(z.string().trim().min(1).max(500)).default([]),
   selectedOptions: z.array(selectedOptionSchema).default([]),
   stones: z.record(z.string(), z.string().trim()).default({}),
+  totalAmount: z.number().finite().nonnegative().nullable().default(null),
   workshopId: optionalUuidSchema.default(null),
 });
 
@@ -86,8 +103,11 @@ const orderWorkflowUpdateSchema = z.object({
   customerNote: z.string().trim().max(4000).optional().default(""),
   employeeId: optionalUuidSchema.default(null),
   internalNote: z.string().trim().max(4000).optional().default(""),
-  notifyCustomer: z.boolean().default(false),
   orderId: z.string().uuid(),
+  publicStage: z
+    .enum(["order_in_workshop", "shipping", "ready_for_pickup"])
+    .nullable()
+    .default(null),
   workshopId: optionalUuidSchema.default(null),
   status: z.enum([
     "created",
@@ -133,6 +153,7 @@ export type OrderTrackingEventRecord = {
   id: string;
   isPublic: boolean;
   notifyCustomer: boolean;
+  publicStage: PublicTrackingStage | null;
   status: TrackingStatus;
   title: string;
 };
@@ -174,14 +195,17 @@ export type EmailLogRecord = {
   errorMessage: string;
   id: string;
   provider: string;
+  publicStage: PublicTrackingStage | null;
   recipientEmail: string;
   sentAt: string;
   status: "failed" | "pending" | "sent" | "skipped";
   subject: string;
+  templateType: CustomerEmailTemplateType | null;
 };
 
 export type OrderListRecord = {
   createdAt: string;
+  currency: string;
   customerEmail: string;
   customerName: string;
   dueDate: string;
@@ -193,8 +217,10 @@ export type OrderListRecord = {
   itemCount: number;
   previewProductName: string;
   priority: "express" | "normal" | "urgent";
+  publicTrackingStage: PublicTrackingStage | null;
   status: WorkshopOrderStatus;
   supportTicketCount: number;
+  totalAmount: number | null;
   trackingNumber: string;
   trackingStatus: TrackingStatus;
   updatedAt: string;
@@ -220,6 +246,8 @@ export type OrderDetailRecord = OrderListRecord & {
 
 export type PublicTrackingOrderRecord = {
   customerName: string;
+  latestCustomerNote: string;
+  publicTrackingStage: PublicTrackingStage | null;
   supportTickets: SupportTicketRecord[];
   trackingEvents: OrderTrackingEventRecord[];
   trackingNumber: string;
@@ -324,6 +352,24 @@ function normalizeLocale(value?: string | null): AppLocale {
   return result.success ? result.data : "de";
 }
 
+function normalizeCurrency(value?: string | null) {
+  const normalized = value?.trim().toUpperCase() ?? "";
+  return normalized || "EUR";
+}
+
+function normalizeAmount(value: unknown) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === "string" && value.trim().length > 0) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
 function fallbackTrackingTitle(status: TrackingStatus) {
   return status
     .split("_")
@@ -355,34 +401,240 @@ function trackingStatusToOrderStatus(status: TrackingStatus): WorkshopOrderStatu
   }
 }
 
-function buildTrackingLink(locale: AppLocale, trackingNumber: string) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() ?? "";
-
-  if (!siteUrl) {
-    return `/${locale}/tracking/${trackingNumber}`;
+function formatSelectedOptionValue(value: Json) {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item): item is string => typeof item === "string")
+      .join(", ");
   }
 
-  return `${siteUrl.replace(/\/$/, "")}/${locale}/tracking/${trackingNumber}`;
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function buildOrderEmailText(input: {
-  customerName: string;
-  locale: AppLocale;
-  note: string;
-  status: TrackingStatus;
-  trackingNumber: string;
+function getFirstDefinedValue(record: Record<string, string>, keys: string[]) {
+  for (const key of keys) {
+    const value = record[key]?.trim();
+
+    if (value) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function getSizeSummary(measurements: Record<string, string>) {
+  return getFirstDefinedValue(measurements, [
+    "ringSize",
+    "braceletSize",
+    "chainLength",
+    "pendantSize",
+    "customMeasurements",
+    "width",
+    "height",
+    "length",
+  ]);
+}
+
+function getWeightSummary(goldDetails: Record<string, string>) {
+  return getFirstDefinedValue(goldDetails, [
+    "estimatedWeight",
+    "targetWeight",
+    "weightTolerance",
+  ]);
+}
+
+function getEngravingSummary(personalization: Record<string, string>) {
+  return getFirstDefinedValue(personalization, [
+    "engravingText",
+    "nameText",
+  ]);
+}
+
+function findSelectedOptionMatch(
+  item: OrderItemRecord,
+  pattern: RegExp
+) {
+  for (const option of item.selectedOptions) {
+    const haystack = `${option.groupKey} ${option.key} ${option.label}`;
+
+    if (pattern.test(haystack)) {
+      const value = formatSelectedOptionValue(option.value);
+
+      if (value) {
+        return value;
+      }
+    }
+  }
+
+  return null;
+}
+
+function buildCustomerEmailItems(input: {
+  goldDetails: Record<string, string>;
+  items: OrderItemRecord[];
+  measurements: Record<string, string>;
+  personalization: Record<string, string>;
+  totalAmount: number | null;
 }) {
-  return [
-    "GoldHelwah GmbH",
-    "",
-    `Hello${input.customerName ? ` ${input.customerName}` : ""},`,
-    "",
-    `Tracking number: ${input.trackingNumber}`,
-    `Current status: ${fallbackTrackingTitle(input.status)}`,
-    `Tracking link: ${buildTrackingLink(input.locale, input.trackingNumber)}`,
-    "",
-    input.note,
-  ].join("\n");
+  const hasSingleItem = input.items.length === 1;
+
+  return input.items.map((item) => {
+    const quantity = item.quantity > 0 ? item.quantity : 1;
+    const itemTotalPrice =
+      hasSingleItem && typeof input.totalAmount === "number" ? input.totalAmount : null;
+    const unitPrice =
+      itemTotalPrice !== null ? itemTotalPrice / quantity : null;
+    const karat =
+      getFirstDefinedValue(input.goldDetails, ["goldKarat"]) ??
+      findSelectedOptionMatch(item, /karat|carat|ayar|عيار/i);
+    const weight =
+      getWeightSummary(input.goldDetails) ??
+      findSelectedOptionMatch(item, /weight|gram|وزن/i);
+    const size =
+      getSizeSummary(input.measurements) ??
+      findSelectedOptionMatch(item, /size|ring|bracelet|chain|length|width|height|مقاس/i);
+    const engraving =
+      getEngravingSummary(input.personalization) ??
+      findSelectedOptionMatch(item, /engraving|name|text|نقش|اسم/i);
+
+    return {
+      engraving,
+      karat,
+      name: item.productName || item.productSku || item.id,
+      options: item.selectedOptions
+        .map((option) => {
+          const value = formatSelectedOptionValue(option.value);
+          return value ? `${option.label}: ${value}` : "";
+        })
+        .filter(Boolean),
+      quantity,
+      size,
+      totalPrice: itemTotalPrice,
+      unitPrice,
+      weight,
+    } satisfies CustomerEmailItem;
+  });
+}
+
+function getTrackingStatusNote(
+  locale: AppLocale,
+  publicStage: PublicTrackingStage | null
+) {
+  if (!publicStage) {
+    if (locale === "ar") {
+      return "تم استلام طلبك وسيتم تحديث الحالة العامة قريبًا.";
+    }
+
+    if (locale === "de") {
+      return "Ihr Auftrag wurde erhalten. Der Status wird bald aktualisiert.";
+    }
+
+    if (locale === "fr") {
+      return "Votre commande a bien ete recue. Le statut sera bientot mis a jour.";
+    }
+
+    if (locale === "tr") {
+      return "Siparisiniz alindi. Durum yakinda guncellenecek.";
+    }
+
+    return "We received your order. The status will be updated soon.";
+  }
+
+  switch (publicStage) {
+    case "order_in_workshop":
+      if (locale === "ar") {
+        return "طلبك أصبح الآن في الورشة ويتم العمل عليه.";
+      }
+
+      if (locale === "de") {
+        return "Ihr Auftrag befindet sich jetzt in der Werkstatt.";
+      }
+
+      if (locale === "fr") {
+        return "Votre commande est maintenant en atelier.";
+      }
+
+      if (locale === "tr") {
+        return "Siparisiniz su anda atolyede.";
+      }
+
+      return "Your order is now in the workshop.";
+    case "shipping":
+      if (locale === "ar") {
+        return "طلبك قيد الشحن الآن.";
+      }
+
+      if (locale === "de") {
+        return "Ihr Auftrag wird jetzt versendet.";
+      }
+
+      if (locale === "fr") {
+        return "Votre commande est en cours d expedition.";
+      }
+
+      if (locale === "tr") {
+        return "Siparisiniz su anda kargoya veriliyor.";
+      }
+
+      return "Your order is being shipped.";
+    case "ready_for_pickup":
+      if (locale === "ar") {
+        return "طلبك جاهز للاستلام.";
+      }
+
+      if (locale === "de") {
+        return "Ihr Auftrag ist jetzt zur Abholung bereit.";
+      }
+
+      if (locale === "fr") {
+        return "Votre commande est prete au retrait.";
+      }
+
+      if (locale === "tr") {
+        return "Siparisiniz teslim almaya hazir.";
+      }
+
+      return "Your order is ready for pickup.";
+  }
+}
+
+async function hasSentCustomerEmail(input: {
+  orderId: string;
+  publicStage?: PublicTrackingStage | null;
+  templateType: CustomerEmailTemplateType;
+}) {
+  const supabase = createSupabaseAdminClient();
+  const metadataFilter: Record<string, string> = {
+    templateType: input.templateType,
+  };
+
+  if (input.publicStage) {
+    metadataFilter.publicStage = input.publicStage;
+  }
+
+  const { data, error } = await supabase
+    .from("email_logs")
+    .select("id")
+    .eq("order_id", input.orderId)
+    .eq("status", "sent")
+    .contains("metadata_json", metadataFilter)
+    .limit(1);
+
+  if (error) {
+    logAdminReadError("customer email dedupe", error.message);
+    return false;
+  }
+
+  return (data?.length ?? 0) > 0;
 }
 
 function fallbackInternalOrderNumber(
@@ -538,6 +790,8 @@ function mapOrderTrackingEvent(event: {
   title?: string | null;
 }) {
   const status = normalizeTrackingStatus(event.status ?? "created");
+  const publicStage =
+    event.is_public === false ? null : getPublicTrackingStageFromStatus(status);
 
   return {
     createdAt: event.created_at,
@@ -546,6 +800,7 @@ function mapOrderTrackingEvent(event: {
     id: event.id,
     isPublic: event.is_public ?? true,
     notifyCustomer: event.notify_customer ?? false,
+    publicStage,
     status,
     title: event.title ?? fallbackTrackingTitle(status),
   } satisfies OrderTrackingEventRecord;
@@ -587,10 +842,12 @@ function mapEmailLog(log: TableRow<"email_logs">) {
     errorMessage: log.error_message ?? "",
     id: log.id,
     provider: log.provider ?? "log_only",
+    publicStage: getEmailPublicStageFromMetadata(log.metadata_json),
     recipientEmail: log.recipient_email,
     sentAt: log.sent_at ?? "",
     status: log.status,
     subject: log.subject,
+    templateType: getEmailTemplateTypeFromMetadata(log.metadata_json),
   } satisfies EmailLogRecord;
 }
 
@@ -643,6 +900,7 @@ export async function getScopedOrders(
 
     return {
       createdAt: order.created_at,
+      currency: normalizeCurrency(order.currency),
       customerEmail: order.customer_email ?? "",
       customerName: order.customer_name ?? "",
       dueDate: order.due_date ?? "",
@@ -654,8 +912,13 @@ export async function getScopedOrders(
       itemCount: orderItems.length,
       previewProductName: orderItems[0]?.productName ?? "",
       priority: normalizePriority(order.priority),
+      publicTrackingStage: resolvePublicTrackingStage({
+        publicTrackingStage: order.public_tracking_stage,
+        trackingStatus: normalizeTrackingStatus(order.tracking_status),
+      }),
       status: normalizeOrderStatus(order.status),
       supportTicketCount: ticketsByOrderId.get(order.id)?.length ?? 0,
+      totalAmount: normalizeAmount(order.total_amount),
       trackingNumber: order.tracking_number,
       trackingStatus: normalizeTrackingStatus(order.tracking_status),
       updatedAt: order.updated_at,
@@ -696,6 +959,7 @@ export async function getScopedOrderDetail(
   return {
     attachments: getStringArray(order.attachments_json),
     createdAt: order.created_at,
+    currency: normalizeCurrency(order.currency),
     customerEmail: order.customer_email ?? "",
     customerLanguage: normalizeLocale(orderNotes.customerLanguage),
     customerName: order.customer_name ?? "",
@@ -719,10 +983,15 @@ export async function getScopedOrderDetail(
     personalization: getTextRecord(order.personalization_json),
     previewProductName: items[0]?.productName ?? "",
     priority: normalizePriority(order.priority),
+    publicTrackingStage: resolvePublicTrackingStage({
+      publicTrackingStage: order.public_tracking_stage,
+      trackingStatus: normalizeTrackingStatus(order.tracking_status),
+    }),
     status: normalizeOrderStatus(order.status),
     stones: getTextRecord(order.stones_json),
     supportTicketCount: supportTickets.length,
     supportTickets,
+    totalAmount: normalizeAmount(order.total_amount),
     trackingEvents,
     trackingNumber: order.tracking_number,
     trackingStatus: normalizeTrackingStatus(order.tracking_status),
@@ -774,6 +1043,68 @@ async function generateInternalOrderNumber() {
   return `ORD-${datePart}-${String(sequence).padStart(4, "0")}`;
 }
 
+async function dispatchCustomerOrderEmail(input: {
+  currency: string;
+  customerEmail: string;
+  customerName: string;
+  customerNote?: string;
+  goldDetails: Record<string, string>;
+  items: OrderItemRecord[];
+  locale: AppLocale;
+  measurements: Record<string, string>;
+  notificationId?: string | null;
+  orderId: string;
+  personalization: Record<string, string>;
+  publicStage?: PublicTrackingStage | null;
+  totalAmount: number | null;
+  trackingNumber: string;
+  type: CustomerEmailTemplateType;
+}) {
+  const email = buildCustomerOrderEmail({
+    currency: input.currency,
+    customerName: input.customerName,
+    customerNote: input.customerNote,
+    items: buildCustomerEmailItems({
+      goldDetails: input.goldDetails,
+      items: input.items,
+      measurements: input.measurements,
+      personalization: input.personalization,
+      totalAmount: input.totalAmount,
+    }),
+    locale: input.locale,
+    publicStage: input.publicStage,
+    totalAmount: input.totalAmount,
+    trackingNumber: input.trackingNumber,
+    type: input.type,
+  });
+  const alreadySent = await hasSentCustomerEmail({
+    orderId: input.orderId,
+    publicStage: input.publicStage ?? null,
+    templateType: input.type,
+  });
+
+  return sendTransactionalEmail({
+    html: email.html,
+    metadata: {
+      kind:
+        input.type === "order_confirmation"
+          ? "customer_order_confirmation"
+          : "customer_public_stage_update",
+      locale: input.locale,
+      publicStage: input.publicStage ?? null,
+      templateType: input.type,
+      trackingNumber: input.trackingNumber,
+    },
+    notificationId: input.notificationId ?? null,
+    orderId: input.orderId,
+    recipientEmail: input.customerEmail,
+    replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
+    skipDeliveryReason: alreadySent ? "duplicate_customer_email" : undefined,
+    subject: email.subject,
+    text: email.text,
+  });
+}
+
 export async function createOrder(
   viewer: AdminViewer,
   input: OrderCreatePayload,
@@ -821,6 +1152,7 @@ export async function createOrder(
   const trackingStatus: TrackingStatus = "created";
   const status: WorkshopOrderStatus = "draft";
   const customerLocale = parsed.customerLanguage;
+  const currency = normalizeCurrency(parsed.currency);
   const notesJson = {
     ...parsed.notes,
     customerLanguage: customerLocale,
@@ -828,6 +1160,7 @@ export async function createOrder(
   const orderPayload = {
     assigned_admin_id: viewer.id,
     attachments_json: parsed.attachments,
+    currency,
     customer_email: parsed.customerEmail,
     customer_name: parsed.customerName,
     customer_phone: parsed.customerPhone || null,
@@ -842,8 +1175,10 @@ export async function createOrder(
     notes_json: notesJson,
     personalization_json: parsed.personalization,
     priority: parsed.priority,
+    public_tracking_stage: null,
     status,
     stones_json: parsed.stones,
+    total_amount: parsed.totalAmount,
     tracking_number: trackingNumber,
     tracking_status: trackingStatus,
     workshop_id: parsed.workshopId,
@@ -880,16 +1215,13 @@ export async function createOrder(
   }
 
   const customerFacingNote =
-    parsed.notes.customerNotes || "Your order has been created.";
+    parsed.notes.customerNotes || getTrackingStatusNote(customerLocale, null);
   const eventPayload = {
     actor_name: viewer.name,
     created_by: viewer.id,
     description: customerFacingNote,
     is_public: true,
-    notify_customer:
-      parsed.emailUpdatesEnabled &&
-      parsed.customerEmail.length > 0 &&
-      shouldNotifyCustomerForStatus(trackingStatus),
+    notify_customer: false,
     order_id: order.id,
     status: trackingStatus,
     title: fallbackTrackingTitle(trackingStatus),
@@ -922,30 +1254,39 @@ export async function createOrder(
         reason?: string;
       }
     | undefined;
+  const orderItemsForEmail = [
+    {
+      categoryName: parsed.productCategoryName,
+      categorySlug: parsed.productCategorySlug,
+      id: order.id,
+      notes: parsed.notes.customerNotes,
+      productId: parsed.productId,
+      productImage: parsed.productImage,
+      productName: parsed.productName,
+      productSku: parsed.productSku,
+      productSlug: parsed.productSlug,
+      quantity: parsed.quantity,
+      referenceImages: parsed.referenceImages,
+      selectedOptions: parsed.selectedOptions,
+    } satisfies OrderItemRecord,
+  ];
 
-  if (
-    parsed.emailUpdatesEnabled &&
-    parsed.customerEmail &&
-    shouldNotifyCustomerForStatus(trackingStatus)
-  ) {
-    emailResult = await sendTransactionalEmail({
-      metadata: {
-        kind: "order_created",
-        locale: customerLocale,
-        trackingStatus,
-      },
+  if (parsed.emailUpdatesEnabled && parsed.customerEmail) {
+    emailResult = await dispatchCustomerOrderEmail({
+      currency,
+      customerEmail: parsed.customerEmail,
+      customerName: parsed.customerName,
+      customerNote: customerFacingNote,
+      goldDetails: parsed.goldDetails,
+      items: orderItemsForEmail,
+      locale: customerLocale,
+      measurements: parsed.measurements,
       notificationId,
       orderId: order.id,
-      recipientEmail: parsed.customerEmail,
-      replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
-      subject: `GoldHelwah GmbH | Order ${trackingNumber}`,
-      text: buildOrderEmailText({
-        customerName: parsed.customerName,
-        locale: customerLocale,
-        note: customerFacingNote,
-        status: trackingStatus,
-        trackingNumber,
-      }),
+      personalization: parsed.personalization,
+      totalAmount: parsed.totalAmount,
+      trackingNumber,
+      type: "order_confirmation",
     });
   }
 
@@ -1031,9 +1372,21 @@ export async function updateOrderWorkflow(
   }
 
   const employeeChanged = nextEmployeeId !== order.employeeId;
+  const customerLocale = order.customerLanguage ?? locale;
+  const currentPublicStage = order.publicTrackingStage;
+  const publicStageChanged = parsed.publicStage !== currentPublicStage;
   const statusChanged = parsed.status !== order.trackingStatus;
   const hasInternalNote = parsed.internalNote.length > 0;
   const hasCustomerNote = parsed.customerNote.length > 0;
+  const publicEventStage = publicStageChanged
+    ? parsed.publicStage
+    : currentPublicStage;
+  const publicEventStatus = publicEventStage
+    ? getCanonicalTrackingStatusForPublicStage(publicEventStage)
+    : parsed.status;
+  const publicDescription = hasCustomerNote
+    ? parsed.customerNote
+    : getTrackingStatusNote(customerLocale, publicEventStage);
 
   const { error: orderError } = await supabase
     .from("orders")
@@ -1041,6 +1394,7 @@ export async function updateOrderWorkflow(
       assigned_admin_id: viewer.role === "employee" ? undefined : viewer.id,
       employee_id: nextEmployeeId,
       notes: hasInternalNote ? parsed.internalNote : undefined,
+      public_tracking_stage: publicStageChanged ? parsed.publicStage : undefined,
       status: trackingStatusToOrderStatus(parsed.status),
       tracking_status: parsed.status,
       workshop_id: nextWorkshopId,
@@ -1082,19 +1436,12 @@ export async function updateOrderWorkflow(
     }
   }
 
-  const shouldCreatePublicEvent =
-    hasCustomerNote ||
-    (statusChanged && shouldNotifyCustomerForStatus(parsed.status));
+  const shouldCreatePublicEvent = hasCustomerNote || publicStageChanged;
   const shouldSendCustomerEmail =
-    parsed.notifyCustomer &&
+    publicStageChanged &&
+    Boolean(parsed.publicStage) &&
     order.customerEmail.length > 0 &&
-    order.emailUpdatesEnabled &&
-    shouldNotifyCustomerForStatus(parsed.status);
-  const publicDescription =
-    parsed.customerNote ||
-    (statusChanged
-      ? `Your order status is now ${fallbackTrackingTitle(parsed.status)}.`
-      : "");
+    order.emailUpdatesEnabled;
 
   if (shouldCreatePublicEvent) {
     const { error: publicEventError } = await supabase
@@ -1106,8 +1453,8 @@ export async function updateOrderWorkflow(
         is_public: true,
         notify_customer: shouldSendCustomerEmail,
         order_id: parsed.orderId,
-        status: parsed.status,
-        title: fallbackTrackingTitle(parsed.status),
+        status: publicEventStatus,
+        title: fallbackTrackingTitle(publicEventStatus),
       } satisfies TableInsert<"order_status_events">);
 
     if (publicEventError) {
@@ -1117,6 +1464,9 @@ export async function updateOrderWorkflow(
 
   const notificationParts = [
     statusChanged ? `Status: ${fallbackTrackingTitle(parsed.status)}` : "",
+    publicStageChanged && parsed.publicStage
+      ? `Public stage: ${parsed.publicStage}`
+      : "",
     workshopChanged
       ? `Workshop: ${assignedWorkshopName || "unassigned"}`
       : "",
@@ -1146,27 +1496,23 @@ export async function updateOrderWorkflow(
         reason?: string;
       }
     | undefined;
-  const customerLocale = order.customerLanguage ?? locale;
 
   if (shouldSendCustomerEmail) {
-    emailResult = await sendTransactionalEmail({
-      metadata: {
-        kind: "order_tracking_update",
-        locale: customerLocale,
-        trackingStatus: parsed.status,
-      },
+    emailResult = await dispatchCustomerOrderEmail({
+      currency: order.currency,
+      customerEmail: order.customerEmail,
+      customerName: order.customerName,
+      customerNote: publicDescription,
+      goldDetails: order.goldDetails,
+      items: order.items,
+      locale: customerLocale,
+      measurements: order.measurements,
       orderId: order.id,
-      recipientEmail: order.customerEmail,
-      replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
-      subject: `GoldHelwah GmbH | Order ${order.trackingNumber}`,
-      text: buildOrderEmailText({
-        customerName: order.customerName,
-        locale: customerLocale,
-        note:
-          publicDescription || `Your order status is now ${fallbackTrackingTitle(parsed.status)}.`,
-        status: parsed.status,
-        trackingNumber: order.trackingNumber,
-      }),
+      personalization: order.personalization,
+      publicStage: parsed.publicStage,
+      totalAmount: order.totalAmount,
+      trackingNumber: order.trackingNumber,
+      type: "public_stage_update",
     });
   }
 
@@ -1218,32 +1564,44 @@ export async function getPublicTrackingOrder(
     logAdminReadError("public support tickets", ticketsError.message);
   }
 
+  const trackingStatus = normalizeTrackingStatus(order.tracking_status);
+  const customerLocale = normalizeLocale(
+    getTextRecord(order.notes_json).customerLanguage
+  );
+  const publicTrackingStage = resolvePublicTrackingStage({
+    publicTrackingStage: order.public_tracking_stage,
+    trackingStatus,
+  });
   const visibleEvents = (events ?? [])
     .map(mapOrderTrackingEvent)
     .filter((event) => event.isPublic);
+  const fallbackNote = getTrackingStatusNote(customerLocale, publicTrackingStage);
+  const trackingEvents =
+    visibleEvents.length > 0
+      ? visibleEvents
+      : [
+          {
+            createdAt: order.updated_at,
+            createdBy: "GoldHelwah Team",
+            description: fallbackNote,
+            id: `${order.id}-public-status`,
+            isPublic: true,
+            notifyCustomer: false,
+            publicStage: publicTrackingStage,
+            status: trackingStatus,
+            title: fallbackTrackingTitle(trackingStatus),
+          } satisfies OrderTrackingEventRecord,
+        ];
 
   return {
     customerName: order.customer_name ?? "",
+    latestCustomerNote:
+      trackingEvents[trackingEvents.length - 1]?.description ?? fallbackNote,
+    publicTrackingStage,
     supportTickets: (tickets ?? []).map(mapSupportTicket),
-    trackingEvents:
-      visibleEvents.length > 0
-        ? visibleEvents
-        : [
-            {
-              createdAt: order.updated_at,
-              createdBy: "GoldHelwah Team",
-              description: "Your order status was updated.",
-              id: `${order.id}-public-status`,
-              isPublic: true,
-              notifyCustomer: false,
-              status: normalizeTrackingStatus(order.tracking_status),
-              title: fallbackTrackingTitle(
-                normalizeTrackingStatus(order.tracking_status)
-              ),
-            },
-          ],
+    trackingEvents,
     trackingNumber: order.tracking_number,
-    trackingStatus: normalizeTrackingStatus(order.tracking_status),
+    trackingStatus,
   };
 }
 

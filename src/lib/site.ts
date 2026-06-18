@@ -8,6 +8,7 @@ export const brandLogoPath = "/brand/goldhelwah-logo.svg";
 export const siteNavigation = [
   { href: "/", key: "home" },
   { href: "/shop", key: "shop" },
+  { href: "/tracking", key: "tracking" },
   { href: "/contact", key: "contact" },
   { href: "/impressum", key: "impressum" },
   { href: "/datenschutz", key: "privacy" },

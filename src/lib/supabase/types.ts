@@ -533,6 +533,7 @@ export type Database = {
           archived_at: string | null;
           assigned_admin_id: string | null;
           attachments_json: Json;
+          currency: string;
           created_at: string;
           customer_email: string | null;
           customer_name: string | null;
@@ -549,8 +550,10 @@ export type Database = {
           notes_json: Json;
           personalization_json: Json;
           priority: Database["public"]["Enums"]["order_priority"];
+          public_tracking_stage: string | null;
           status: Database["public"]["Enums"]["workshop_order_status"];
           stones_json: Json;
+          total_amount: number | null;
           tracking_status: Database["public"]["Enums"]["tracking_status"];
           tracking_number: string;
           updated_at: string;
@@ -560,6 +563,7 @@ export type Database = {
           archived_at?: string | null;
           assigned_admin_id?: string | null;
           attachments_json?: Json;
+          currency?: string;
           created_at?: string;
           customer_email?: string | null;
           customer_name?: string | null;
@@ -576,8 +580,10 @@ export type Database = {
           notes_json?: Json;
           personalization_json?: Json;
           priority?: Database["public"]["Enums"]["order_priority"];
+          public_tracking_stage?: string | null;
           status: Database["public"]["Enums"]["workshop_order_status"];
           stones_json?: Json;
+          total_amount?: number | null;
           tracking_status?: Database["public"]["Enums"]["tracking_status"];
           tracking_number: string;
           updated_at?: string;
@@ -587,6 +593,7 @@ export type Database = {
           archived_at?: string | null;
           assigned_admin_id?: string | null;
           attachments_json?: Json;
+          currency?: string;
           created_at?: string;
           customer_email?: string | null;
           customer_name?: string | null;
@@ -603,8 +610,10 @@ export type Database = {
           notes_json?: Json;
           personalization_json?: Json;
           priority?: Database["public"]["Enums"]["order_priority"];
+          public_tracking_stage?: string | null;
           status?: Database["public"]["Enums"]["workshop_order_status"];
           stones_json?: Json;
+          total_amount?: number | null;
           tracking_status?: Database["public"]["Enums"]["tracking_status"];
           tracking_number?: string;
           updated_at?: string;

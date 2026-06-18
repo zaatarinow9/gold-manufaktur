@@ -62,15 +62,71 @@ function formatDetailValue(locale: string, key: string, value: string) {
   }
 }
 
+function getEmailLogVariant(status: "failed" | "pending" | "sent" | "skipped") {
+  if (status === "sent") {
+    return "success" as const;
+  }
+
+  if (status === "failed") {
+    return "danger" as const;
+  }
+
+  if (status === "skipped") {
+    return "warning" as const;
+  }
+
+  return "neutral" as const;
+}
+
+function getEmailLogErrorMessage(
+  t: Awaited<ReturnType<typeof getTranslations>>,
+  errorMessage: string
+) {
+  const normalized = errorMessage.trim();
+
+  if (!normalized) {
+    return "";
+  }
+
+  switch (normalized) {
+    case "duplicate_customer_email":
+      return t("orders.emailLogDuplicateSkipped");
+    case "smtp_invalid_port":
+    case "smtp_missing_password":
+    case "smtp_not_configured":
+      return t("orders.emailLogSmtpNotice");
+    default:
+      return /^[A-Z0-9_]+$/i.test(normalized)
+        ? t("orders.emailLogErrorFallback")
+        : normalized;
+  }
+}
+
+function getEmailTemplateLabel(
+  t: Awaited<ReturnType<typeof getTranslations>>,
+  templateType: "order_confirmation" | "public_stage_update" | null
+) {
+  if (templateType === "order_confirmation") {
+    return t("emailTemplateType.orderConfirmation");
+  }
+
+  if (templateType === "public_stage_update") {
+    return t("emailTemplateType.publicStageUpdate");
+  }
+
+  return t("common.notProvided");
+}
+
 function renderKeyValueRows(
   locale: string,
   t: Awaited<ReturnType<typeof getTranslations>>,
-  values: Record<string, string>
+  values: Record<string, string>,
+  fallbackValue: string
 ) {
   const rows = Object.entries(values).filter((entry) => entry[1].trim().length > 0);
 
   if (rows.length === 0) {
-    return <p className="text-sm text-muted">-</p>;
+    return <p className="text-sm text-muted">{fallbackValue}</p>;
   }
 
   return (
@@ -125,6 +181,7 @@ export default async function AdminOrderDetailPage({
   }
 
   const item = order.items[0];
+  const notProvided = t("common.notProvided");
 
   return (
     <div className="space-y-6">
@@ -134,8 +191,13 @@ export default async function AdminOrderDetailPage({
         description={t("orders.detailDescription")}
         meta={
           <>
-            <AdminBadge variant="info">{t(`status.${order.status}`)}</AdminBadge>
             <AdminBadge variant="gold">
+              {order.publicTrackingStage
+                ? t(`publicTrackingStage.${order.publicTrackingStage}`)
+                : t("orders.noPublicStage")}
+            </AdminBadge>
+            <AdminBadge variant="info">{t(`status.${order.status}`)}</AdminBadge>
+            <AdminBadge variant="neutral">
               {t(`trackingStatus.${order.trackingStatus}`)}
             </AdminBadge>
             <AdminBadge variant="info">{t(`priority.${order.priority}`)}</AdminBadge>
@@ -166,15 +228,15 @@ export default async function AdminOrderDetailPage({
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-white/4 text-sm text-muted">
-                    {item?.productName || order.previewProductName || "-"}
+                    {item?.productName || order.previewProductName || notProvided}
                   </div>
                 )}
               </div>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-gold-soft">{item?.categoryName || "-"}</p>
+                  <p className="text-sm text-gold-soft">{item?.categoryName || notProvided}</p>
                   <h2 className="text-2xl font-semibold text-foreground">
-                    {item?.productName || order.previewProductName || "-"}
+                    {item?.productName || order.previewProductName || notProvided}
                   </h2>
                   <p className="mt-1 text-sm text-muted">
                     {t("orders.itemQuantity", {
@@ -184,12 +246,12 @@ export default async function AdminOrderDetailPage({
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {[
-                    { label: t("orders.table.product"), value: item?.productName || "-" },
+                    { label: t("orders.table.product"), value: item?.productName || notProvided },
                     {
                       label: t("orders.trackingNumberLabel"),
                       value: order.trackingNumber,
                     },
-                    { label: t("orders.table.workshop"), value: order.workshopName || "-" },
+                    { label: t("orders.table.workshop"), value: order.workshopName || notProvided },
                     {
                       label: t("orders.table.customer"),
                       value: order.customerName || t("common.noCustomer"),
@@ -198,7 +260,13 @@ export default async function AdminOrderDetailPage({
                       label: t("orders.table.employee"),
                       value: order.employeeName || t("common.unassigned"),
                     },
-                    { label: t("newOrder.fields.dueDate"), value: order.dueDate || "-" },
+                    {
+                      label: t("newOrder.fields.totalAmount"),
+                      value: order.totalAmount !== null
+                        ? `${order.totalAmount} ${order.currency}`
+                        : notProvided,
+                    },
+                    { label: t("newOrder.fields.dueDate"), value: order.dueDate || notProvided },
                   ].map((detail) => (
                     <div
                       key={detail.label}
@@ -240,37 +308,37 @@ export default async function AdminOrderDetailPage({
 
           <section className="grid gap-6 xl:grid-cols-2">
             <AdminCard title={t("orders.goldDetailsTitle")}>
-              {renderKeyValueRows(locale, t, order.goldDetails)}
+              {renderKeyValueRows(locale, t, order.goldDetails, notProvided)}
             </AdminCard>
 
             <AdminCard title={t("orders.measurementsTitle")}>
-              {renderKeyValueRows(locale, t, order.measurements)}
+              {renderKeyValueRows(locale, t, order.measurements, notProvided)}
             </AdminCard>
 
             <AdminCard title={t("orders.personalizationTitle")}>
-              {renderKeyValueRows(locale, t, order.personalization)}
+              {renderKeyValueRows(locale, t, order.personalization, notProvided)}
             </AdminCard>
 
             <AdminCard title={t("orders.stonesTitle")}>
-              {renderKeyValueRows(locale, t, order.stones)}
+              {renderKeyValueRows(locale, t, order.stones, notProvided)}
             </AdminCard>
 
             <AdminCard title={t("orders.notesTitle")}>
-              {renderKeyValueRows(locale, t, order.notes)}
+              {renderKeyValueRows(locale, t, order.notes, notProvided)}
             </AdminCard>
 
             <AdminCard title={t("orders.deliveryTitle")}>
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="text-muted">{t("newOrder.fields.dueDate")}</p>
-                  <p className="mt-1 text-foreground">{order.dueDate || "-"}</p>
+                  <p className="mt-1 text-foreground">{order.dueDate || notProvided}</p>
                 </div>
                 <div>
                   <p className="text-muted">{copy.attachmentsLabel}</p>
                   <p className="mt-1 text-foreground">
                     {order.attachments.length > 0
                       ? order.attachments.join(", ")
-                      : "-"}
+                      : notProvided}
                   </p>
                 </div>
               </div>
@@ -291,7 +359,7 @@ export default async function AdminOrderDetailPage({
                       <div>
                         <p className="font-semibold text-foreground">{ticket.subject}</p>
                         <p className="text-xs text-muted">
-                          {ticket.customerName || ticket.customerEmail || "-"}
+                          {ticket.customerName || ticket.customerEmail || notProvided}
                         </p>
                       </div>
                       <AdminBadge variant="info">{ticket.status}</AdminBadge>
@@ -318,24 +386,29 @@ export default async function AdminOrderDetailPage({
                       <div>
                         <p className="font-semibold text-foreground">{log.subject}</p>
                         <p className="text-xs text-muted">{log.recipientEmail}</p>
+                        <p className="mt-2 text-xs text-muted">
+                          {t("orders.emailTemplateLabel")}:{" "}
+                          {getEmailTemplateLabel(t, log.templateType)}
+                          {" • "}
+                          {t("orders.publicStageLabel")}:{" "}
+                          {log.publicStage
+                            ? t(`publicTrackingStage.${log.publicStage}`)
+                            : t("orders.notStageSpecific")}
+                        </p>
                       </div>
                       <AdminBadge
-                        variant={
-                          log.status === "sent"
-                            ? "success"
-                            : log.status === "failed"
-                              ? "danger"
-                              : "neutral"
-                        }
+                        variant={getEmailLogVariant(log.status)}
                       >
-                        {log.status}
+                        {t(`emailLogStatus.${log.status}`)}
                       </AdminBadge>
                     </div>
                     <p className="mt-2 text-xs text-muted">
                       {log.sentAt || log.createdAt}
                     </p>
                     {log.errorMessage ? (
-                      <p className="mt-3 text-sm text-muted">{log.errorMessage}</p>
+                      <p className="mt-3 text-sm text-muted">
+                        {getEmailLogErrorMessage(t, log.errorMessage)}
+                      </p>
                     ) : null}
                   </div>
                 ))}
@@ -355,15 +428,15 @@ export default async function AdminOrderDetailPage({
               </div>
               <div>
                 <p className="text-muted">{t("orders.customerEmailLabel")}</p>
-                <p className="mt-1 text-foreground">{order.customerEmail || "-"}</p>
+                <p className="mt-1 text-foreground">{order.customerEmail || notProvided}</p>
               </div>
               <div>
                 <p className="text-muted">{t("newOrder.fields.customerPhone")}</p>
-                <p className="mt-1 text-foreground">{order.customerPhone || "-"}</p>
+                <p className="mt-1 text-foreground">{order.customerPhone || notProvided}</p>
               </div>
               <div>
                 <p className="text-muted">{t("newOrder.fields.customerReference")}</p>
-                <p className="mt-1 text-foreground">{order.customerReference || "-"}</p>
+                <p className="mt-1 text-foreground">{order.customerReference || notProvided}</p>
               </div>
               <div>
                 <p className="text-muted">{copy.customerLanguage}</p>
@@ -373,7 +446,7 @@ export default async function AdminOrderDetailPage({
               </div>
               <div>
                 <p className="text-muted">{t("newOrder.fields.workshop")}</p>
-                <p className="mt-1 text-foreground">{order.workshopName || "-"}</p>
+                <p className="mt-1 text-foreground">{order.workshopName || notProvided}</p>
               </div>
             </div>
           </AdminCard>
@@ -385,6 +458,7 @@ export default async function AdminOrderDetailPage({
             employees={employees}
             initialEmployeeId={order.employeeId}
             initialEvents={order.trackingEvents}
+            initialPublicStage={order.publicTrackingStage}
             initialStatus={order.trackingStatus}
             initialWorkshopId={order.workshopId}
             locale={locale}

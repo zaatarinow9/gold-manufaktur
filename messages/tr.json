@@ -47,7 +47,8 @@
       "shop": "Shop",
       "contact": "İletişim",
       "impressum": "Yasal Bilgiler",
-      "privacy": "Gizlilik"
+      "privacy": "Gizlilik",
+      "tracking": "Siparisi Takip Et"
     }
   },
   "Footer": {
@@ -440,7 +441,8 @@
       "yes": "Evet",
       "no": "Hayir",
       "enabled": "Acik",
-      "disabled": "Kapali"
+      "disabled": "Kapali",
+      "notProvided": "Belirtilmedi"
     },
     "filters": {
       "category": "Kategori",
@@ -661,7 +663,9 @@
         "customerEmail": "Musteri e-postasi",
         "emailUpdatesEnabled": "E-posta guncellemelerini ac",
         "trackingNumber": "Takip numarasi",
-        "trackingStatus": "Takip durumu"
+        "trackingStatus": "Takip durumu",
+        "totalAmount": "Toplam tutar",
+        "currency": "Para birimi"
       },
       "productDescription": "Urunu ve kategoriyi secin.",
       "orderDescription": "Musteri ve siparis bilgilerini girin.",
@@ -783,7 +787,18 @@
       "statusSavedDescription": "Takip durumu guncellendi.",
       "statusSavedAndNotified": "Takip durumu kaydedildi ve musteri bilgilendirildi.",
       "statusSaved": "Takip durumu kaydedildi.",
-      "noStatusChanges": "Lutfen durumu degistirin veya not ekleyin."
+      "noStatusChanges": "Lutfen durumu degistirin veya not ekleyin.",
+      "publicStageLabel": "Genel asama",
+      "internalStatusLabel": "Ic takip durumu",
+      "publicStageHelp": "Musterinin gorecegi ve e-posta tetikleyebilecek tek uc asama bunlardir.",
+      "publicStageEmailNotice": "Bu genel asama degistiginde, e-posta guncellemeleri aciksa musteri e-postasi otomatik olarak gonderilir.",
+      "publicStageSavedAndNotified": "Genel asama kaydedildi ve musteri bilgilendirildi.",
+      "noPublicStage": "Henuz yayinlanmadi",
+      "notStageSpecific": "Genel asama yok",
+      "emailTemplateLabel": "Sablon",
+      "emailLogDuplicateSkipped": "Bu e-posta, ayni musteri sablonu bu siparis icin daha once gonderildigi icin atlandi.",
+      "emailLogSmtpNotice": "SMTP henuz tam olarak yapilandirilmadigi icin e-posta gonderimi atlandi.",
+      "emailLogErrorFallback": "E-posta teslim edilemedi. Lutfen SMTP ayarlari ve kayitlarini kontrol edin."
     },
     "workshops": {
       "eyebrow": "Atolyeler",
@@ -935,6 +950,21 @@
       "picked_up": "Teslim alindi",
       "completed": "Tamamlandi",
       "cancelled": "Iptal edildi"
+    },
+    "publicTrackingStage": {
+      "order_in_workshop": "Siparis atolyede",
+      "shipping": "Siparis kargoya veriliyor",
+      "ready_for_pickup": "Teslime hazir"
+    },
+    "emailLogStatus": {
+      "pending": "Bekliyor",
+      "sent": "E-posta gonderildi",
+      "skipped": "E-posta atlandi",
+      "failed": "E-posta basarisiz"
+    },
+    "emailTemplateType": {
+      "orderConfirmation": "Siparis onayi",
+      "publicStageUpdate": "Genel asama guncellemesi"
     }
   },
   "Tracking": {
@@ -945,6 +975,49 @@
     "timelineDescription": "Siparisiniz icin son guncellemeler.",
     "contact": "Iletisim",
     "phone": "Ara",
-    "backToWebsite": "Siteye don"
+    "backToWebsite": "Siteye don",
+    "trackingNumberLabel": "Takip numarasi",
+    "currentPublicStageLabel": "Guncel genel asama",
+    "progressTitle": "Genel ilerleme",
+    "progressDescription": "Musteri icin sadece uc gorunur asama yayinliyoruz.",
+    "trackAnotherOrder": "Baska bir siparisi takip et",
+    "contactSupport": "Destek iletisimi",
+    "notesTitle": "Musteri guncellemeleri",
+    "notesDescription": "Burada sadece musteriye acik notlar ve guncellemeler gorunur.",
+    "orderReceivedLabel": "Siparis alindi",
+    "instructionsTitle": "Siparis nasil takip edilir",
+    "instructionsDescription": "Takip numaranizi dogrudan link yerine site menusu uzerinden kullanin.",
+    "instructionsStepOne": "Web sitesinin ana sayfasini acin.",
+    "instructionsStepTwo": "Menuden \"Siparisi Takip Et\" secenegine tiklayin.",
+    "instructionsStepThree": "Takip numaranizi girin.",
+    "receivedMessage": "Siparisiniz alindi ve durumu yakinda guncellenecek.",
+    "receivedDescription": "Siparisiniz kaydedildi ve ilk genel asamayi bekliyor.",
+    "currentStageDescription": "Bu, siparisinizin guncel genel asamasidir.",
+    "completedStageDescription": "Bu asama zaten tamamlandi.",
+    "upcomingStageDescription": "Siparisiniz bu noktaya geldiginde bu asama gorunecek.",
+    "lookup": {
+      "eyebrow": "Siparisi Takip Et",
+      "title": "Siparisinizi bulun",
+      "description": "GoldHelwah siparisinizin son genel guncellemelerini gormek icin takip numaranizi girin.",
+      "helperTitle": "Numara yaninizda mi?",
+      "helperDescription": "Bu numarayi siparis e-postasinda bulabilir ve site menusu uzerinden kullanabilirsiniz.",
+      "formTitle": "Takip numarasini girin",
+      "formDescription": "Ardindan bu numaranin canli siparis sayfasini acacagiz.",
+      "label": "Takip numarasi",
+      "placeholder": "GH-20260618-0001",
+      "submit": "Siparisi Takip Et",
+      "emptyError": "Lutfen takip numaranizi girin."
+    },
+    "support": {
+      "title": "Destek iletisimi",
+      "description": "Bu siparisle ilgili yardima ihtiyaciniz varsa bize mesaj gonderin, ekibimiz size donsun.",
+      "success": "Mesajiniz gonderildi.",
+      "error": "Mesajiniz su anda gonderilemedi."
+    },
+    "stages": {
+      "order_in_workshop": "Siparis atolyede",
+      "shipping": "Siparis kargoya veriliyor",
+      "ready_for_pickup": "Teslime hazir"
+    }
   }
 }

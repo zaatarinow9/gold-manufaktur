@@ -52,6 +52,15 @@ export const trackingStatusValues = [
 
 export type TrackingStatus = (typeof trackingStatusValues)[number];
 
+export const publicTrackingStageValues = [
+  "order_in_workshop",
+  "shipping",
+  "ready_for_pickup",
+] as const;
+
+export type PublicTrackingStage =
+  (typeof publicTrackingStageValues)[number];
+
 export type AttendanceStatus =
   | "present"
   | "absent"

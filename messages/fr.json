@@ -47,7 +47,8 @@
       "shop": "Shop",
       "contact": "Contact",
       "impressum": "Mentions légales",
-      "privacy": "Confidentialité"
+      "privacy": "Confidentialité",
+      "tracking": "Suivre la commande"
     }
   },
   "Footer": {
@@ -440,7 +441,8 @@
       "yes": "Oui",
       "no": "Non",
       "enabled": "Active",
-      "disabled": "Desactive"
+      "disabled": "Desactive",
+      "notProvided": "Non renseigne"
     },
     "filters": {
       "category": "Catégorie",
@@ -661,7 +663,9 @@
         "customerEmail": "E-mail client",
         "emailUpdatesEnabled": "Activer les e-mails",
         "trackingNumber": "Numero de suivi",
-        "trackingStatus": "Statut de suivi"
+        "trackingStatus": "Statut de suivi",
+        "totalAmount": "Montant total",
+        "currency": "Devise"
       },
       "productDescription": "Choisir le produit et la categorie.",
       "orderDescription": "Ajouter les details client et commande.",
@@ -783,7 +787,18 @@
       "statusSavedDescription": "Le statut de suivi a ete mis a jour.",
       "statusSavedAndNotified": "Statut enregistre et client informe.",
       "statusSaved": "Statut de suivi enregistre.",
-      "noStatusChanges": "Modifiez le statut ou ajoutez une note."
+      "noStatusChanges": "Modifiez le statut ou ajoutez une note.",
+      "publicStageLabel": "Etape publique",
+      "internalStatusLabel": "Statut interne de suivi",
+      "publicStageHelp": "Seuls ces trois jalons sont visibles pour le client et peuvent declencher des e-mails client.",
+      "publicStageEmailNotice": "Quand cette etape publique change, l e-mail client est envoye automatiquement si les mises a jour e-mail sont actives.",
+      "publicStageSavedAndNotified": "Etape publique enregistree et client informe.",
+      "noPublicStage": "Pas encore publiee",
+      "notStageSpecific": "Aucune etape publique",
+      "emailTemplateLabel": "Modele",
+      "emailLogDuplicateSkipped": "Cet e-mail a ete ignore car le meme modele client a deja ete envoye pour cette commande.",
+      "emailLogSmtpNotice": "L envoi a ete ignore car SMTP n est pas encore completement configure.",
+      "emailLogErrorFallback": "L e-mail n a pas pu etre livre. Veuillez verifier la configuration et les journaux SMTP."
     },
     "workshops": {
       "eyebrow": "Ateliers",
@@ -935,6 +950,21 @@
       "picked_up": "Recupere",
       "completed": "Termine",
       "cancelled": "Annule"
+    },
+    "publicTrackingStage": {
+      "order_in_workshop": "Commande en atelier",
+      "shipping": "Commande en cours d expedition",
+      "ready_for_pickup": "Prete au retrait"
+    },
+    "emailLogStatus": {
+      "pending": "En attente",
+      "sent": "E-mail envoye",
+      "skipped": "E-mail ignore",
+      "failed": "E-mail echoue"
+    },
+    "emailTemplateType": {
+      "orderConfirmation": "Confirmation de commande",
+      "publicStageUpdate": "Mise a jour de l etape publique"
     }
   },
   "Tracking": {
@@ -945,6 +975,49 @@
     "timelineDescription": "Dernieres mises a jour de votre commande.",
     "contact": "Contact",
     "phone": "Appeler",
-    "backToWebsite": "Retour au site"
+    "backToWebsite": "Retour au site",
+    "trackingNumberLabel": "Numero de suivi",
+    "currentPublicStageLabel": "Etape publique actuelle",
+    "progressTitle": "Progression publique",
+    "progressDescription": "Nous publions seulement trois jalons visibles pour le client.",
+    "trackAnotherOrder": "Suivre une autre commande",
+    "contactSupport": "Contacter le support",
+    "notesTitle": "Mises a jour client",
+    "notesDescription": "Seules les informations destinees au client apparaissent ici.",
+    "orderReceivedLabel": "Commande recue",
+    "instructionsTitle": "Comment suivre votre commande",
+    "instructionsDescription": "Utilisez votre numero de suivi depuis le menu du site plutot qu un lien direct.",
+    "instructionsStepOne": "Ouvrez la page d accueil du site.",
+    "instructionsStepTwo": "Cliquez sur ? Suivre la commande ? dans le menu.",
+    "instructionsStepThree": "Saisissez votre numero de suivi.",
+    "receivedMessage": "Votre commande a ete recue et son statut sera bientot mis a jour.",
+    "receivedDescription": "Votre commande est enregistree et attend son premier jalon public.",
+    "currentStageDescription": "C est l etape publique actuelle de votre commande.",
+    "completedStageDescription": "Cette etape est deja terminee.",
+    "upcomingStageDescription": "Cette etape apparaitra lorsque votre commande y arrivera.",
+    "lookup": {
+      "eyebrow": "Suivre la commande",
+      "title": "Retrouver votre commande",
+      "description": "Saisissez votre numero de suivi pour consulter les dernieres mises a jour publiques de votre commande GoldHelwah.",
+      "helperTitle": "Numero de suivi disponible ?",
+      "helperDescription": "Vous le trouverez dans l e-mail de commande et pourrez l utiliser depuis le menu du site.",
+      "formTitle": "Entrer le numero de suivi",
+      "formDescription": "Nous ouvrirons ensuite la page en direct pour ce numero.",
+      "label": "Numero de suivi",
+      "placeholder": "GH-20260618-0001",
+      "submit": "Suivre la commande",
+      "emptyError": "Veuillez entrer votre numero de suivi."
+    },
+    "support": {
+      "title": "Contacter le support",
+      "description": "Besoin d aide pour cette commande ? Envoyez-nous un message et notre equipe vous recontactera.",
+      "success": "Votre message a ete envoye.",
+      "error": "Nous n avons pas pu envoyer votre message pour le moment."
+    },
+    "stages": {
+      "order_in_workshop": "Commande en atelier",
+      "shipping": "Commande en cours d expedition",
+      "ready_for_pickup": "Prete au retrait"
+    }
   }
 }

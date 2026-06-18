@@ -11,6 +11,7 @@ export type TransactionalEmailInput = {
   orderId?: string | null;
   recipientEmail: string;
   replyTo?: string;
+  skipDeliveryReason?: string;
   subject: string;
   supportTicketId?: string | null;
   text: string;
@@ -30,18 +31,26 @@ type SmtpState =
   | { config: SmtpTransportConfig; ready: true }
   | { ready: false; reason: string };
 
+function extractEmailAddress(value: string) {
+  const match = value.match(/<([^>]+)>/);
+  return (match?.[1] ?? value).trim();
+}
+
 function getSmtpState(): SmtpState {
   const host = process.env.SMTP_HOST?.trim() ?? "";
   const portValue = process.env.SMTP_PORT?.trim() ?? "";
   const user = process.env.SMTP_USER?.trim() ?? "";
   const password =
     process.env.SMTP_PASSWORD?.trim() ?? process.env.SMTP_PASS?.trim() ?? "";
-  const from =
+  const fromAddressValue =
+    process.env.EMAIL_FROM_ADDRESS?.trim() ??
     process.env.SMTP_FROM_EMAIL?.trim() ??
     process.env.SMTP_FROM?.trim() ??
     user;
+  const fromAddress = extractEmailAddress(fromAddressValue);
+  const fromName = process.env.EMAIL_FROM_NAME?.trim() ?? "GoldHelwah GmbH";
 
-  if (!host || !portValue || !user || !from) {
+  if (!host || !portValue || !user || !fromAddress) {
     return {
       ready: false,
       reason: "smtp_not_configured",
@@ -66,7 +75,8 @@ function getSmtpState(): SmtpState {
 
   return {
     config: {
-      from,
+      fromAddress,
+      fromHeader: `${fromName} <${fromAddress}>`,
       host,
       password,
       port,
@@ -178,6 +188,31 @@ export async function sendTransactionalEmail(
       ok: true,
       provider: "log_only",
       reason: "missing_recipient_email",
+      status: "skipped",
+    };
+  }
+
+  if (input.skipDeliveryReason) {
+    const logId = await createEmailLog({
+      errorMessage: input.skipDeliveryReason,
+      metadata: input.metadata ?? {},
+      notificationId: input.notificationId ?? null,
+      orderId: input.orderId ?? null,
+      provider: "log_only",
+      recipientEmail,
+      status: "skipped",
+      subject: input.subject,
+      supportTicketId: input.supportTicketId ?? null,
+      text: input.text,
+    });
+
+    return {
+      delivered: false,
+      fallback: false,
+      logId,
+      ok: true,
+      provider: "log_only",
+      reason: input.skipDeliveryReason,
       status: "skipped",
     };
   }

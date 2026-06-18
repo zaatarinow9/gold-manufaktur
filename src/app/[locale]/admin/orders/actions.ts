@@ -250,14 +250,12 @@ export async function updateOrderWorkflowAction(
 
     let message = copy.assignmentSaved;
 
-    if (input.notifyCustomer) {
-      if (result.emailResult?.delivered) {
-        message = t("orders.statusSavedAndNotified");
-      } else if (result.emailResult?.fallback) {
-        message = copy.statusEmailFallback;
-      } else if (result.emailResult && !result.emailResult.ok) {
-        message = copy.statusEmailFailed;
-      }
+    if (result.emailResult?.delivered) {
+      message = t("orders.publicStageSavedAndNotified");
+    } else if (result.emailResult?.fallback) {
+      message = copy.statusEmailFallback;
+    } else if (result.emailResult && !result.emailResult.ok) {
+      message = copy.statusEmailFailed;
     }
 
     return {

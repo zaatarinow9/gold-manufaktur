@@ -10,8 +10,13 @@ import { getTrackingLinkPath } from "@/lib/admin/tracking";
 import type { EmployeeRecord } from "@/lib/db/employees";
 import type { WorkshopRecord } from "@/lib/db/workshops";
 import type { AppLocale } from "@/i18n/routing";
-import type { AdminRole, OrderTrackingEvent, TrackingStatus } from "@/types/admin";
-import { trackingStatusValues } from "@/types/admin";
+import type {
+  AdminRole,
+  OrderTrackingEvent,
+  PublicTrackingStage,
+  TrackingStatus,
+} from "@/types/admin";
+import { publicTrackingStageValues, trackingStatusValues } from "@/types/admin";
 
 import { AdminBadge } from "./AdminBadge";
 import { AdminButton } from "./AdminButton";
@@ -27,6 +32,7 @@ type OrderTrackingCardProps = {
   employees: EmployeeRecord[];
   initialEmployeeId?: string | null;
   initialEvents?: OrderTrackingEvent[];
+  initialPublicStage?: PublicTrackingStage | null;
   initialStatus: TrackingStatus;
   initialWorkshopId?: string | null;
   locale: AppLocale;
@@ -45,17 +51,20 @@ type FeedbackState =
 
 type SavedState = {
   employeeId: string;
+  publicStage: string;
   status: TrackingStatus;
   workshopId: string;
 };
 
 function createSavedState(input: {
   employeeId?: string | null;
+  publicStage?: PublicTrackingStage | null;
   status: TrackingStatus;
   workshopId?: string | null;
 }) {
   return {
     employeeId: input.employeeId ?? "",
+    publicStage: input.publicStage ?? "",
     status: input.status,
     workshopId: input.workshopId ?? "",
   } satisfies SavedState;
@@ -68,6 +77,7 @@ export function OrderTrackingCard({
   employees,
   initialEmployeeId,
   initialEvents = [],
+  initialPublicStage,
   initialStatus,
   initialWorkshopId,
   locale,
@@ -84,22 +94,20 @@ export function OrderTrackingCard({
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [workshopId, setWorkshopId] = useState(initialWorkshopId ?? "");
   const [employeeId, setEmployeeId] = useState(initialEmployeeId ?? "");
+  const [publicStage, setPublicStage] = useState(initialPublicStage ?? "");
   const [trackingStatus, setTrackingStatus] = useState<TrackingStatus>(initialStatus);
   const [internalNote, setInternalNote] = useState("");
   const [customerNote, setCustomerNote] = useState("");
-  const [notifyCustomer, setNotifyCustomer] = useState(
-    Boolean(customerEmail && emailUpdatesEnabled)
-  );
   const [savedState, setSavedState] = useState(() =>
     createSavedState({
       employeeId: initialEmployeeId,
+      publicStage: initialPublicStage,
       status: initialStatus,
       workshopId: initialWorkshopId,
     })
   );
 
   const canChangeAssignment = currentUserRole !== "employee";
-  const canNotifyCustomer = Boolean(customerEmail && emailUpdatesEnabled);
   const trackingPath = getTrackingLinkPath(locale, trackingNumber);
   const availableEmployees = workshopId
     ? employees.filter((employee) => employee.workshopId === workshopId)
@@ -107,6 +115,7 @@ export function OrderTrackingCard({
   const hasChanges =
     workshopId !== savedState.workshopId ||
     employeeId !== savedState.employeeId ||
+    publicStage !== savedState.publicStage ||
     trackingStatus !== savedState.status ||
     internalNote.trim().length > 0 ||
     customerNote.trim().length > 0;
@@ -176,8 +185,10 @@ export function OrderTrackingCard({
         customerNote,
         employeeId: canChangeAssignment ? employeeId || null : null,
         internalNote,
-        notifyCustomer: canNotifyCustomer ? notifyCustomer : false,
         orderId,
+        publicStage: publicStage
+          ? (publicStage as PublicTrackingStage)
+          : null,
         status: trackingStatus,
         workshopId: canChangeAssignment ? workshopId || null : null,
       });
@@ -197,6 +208,9 @@ export function OrderTrackingCard({
       setSavedState(
         createSavedState({
           employeeId,
+          publicStage: publicStage
+            ? (publicStage as PublicTrackingStage)
+            : null,
           status: trackingStatus,
           workshopId,
         })
@@ -214,16 +228,28 @@ export function OrderTrackingCard({
             <p className="mt-2 text-sm font-semibold text-foreground">{trackingNumber}</p>
           </div>
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
-            <p className="text-xs text-muted">{t("orders.trackingStatusLabel")}</p>
+            <p className="text-xs text-muted">{t("orders.publicStageLabel")}</p>
             <div className="mt-2">
               <AdminBadge variant="gold">
+                {publicStage
+                  ? t(`publicTrackingStage.${publicStage}`)
+                  : t("orders.noPublicStage")}
+              </AdminBadge>
+            </div>
+          </div>
+          <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
+            <p className="text-xs text-muted">{t("orders.trackingStatusLabel")}</p>
+            <div className="mt-2">
+              <AdminBadge variant="info">
                 {t(`trackingStatus.${trackingStatus}`)}
               </AdminBadge>
             </div>
           </div>
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
             <p className="text-xs text-muted">{t("orders.customerEmailLabel")}</p>
-            <p className="mt-2 text-sm text-foreground">{customerEmail ?? "-"}</p>
+            <p className="mt-2 text-sm text-foreground">
+              {customerEmail || t("common.notProvided")}
+            </p>
           </div>
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
             <p className="text-xs text-muted">{t("orders.emailUpdatesLabel")}</p>
@@ -295,7 +321,23 @@ export function OrderTrackingCard({
 
           <div className="grid gap-4 lg:grid-cols-2">
             <AdminSelect
-              label={t("orders.trackingStatusLabel")}
+              label={t("orders.publicStageLabel")}
+              value={publicStage}
+              helperText={t("orders.publicStageHelp")}
+              onChange={(event) => {
+                clearFieldError("publicStage");
+                setPublicStage(event.target.value);
+              }}
+            >
+              <option value="">{t("orders.noPublicStage")}</option>
+              {publicTrackingStageValues.map((stage) => (
+                <option key={stage} value={stage}>
+                  {t(`publicTrackingStage.${stage}`)}
+                </option>
+              ))}
+            </AdminSelect>
+            <AdminSelect
+              label={t("orders.internalStatusLabel")}
               value={trackingStatus}
               helperText={fieldErrors.status}
               className={fieldErrors.status ? "border-rose-400/30" : undefined}
@@ -327,26 +369,15 @@ export function OrderTrackingCard({
             />
           </div>
 
-          <label className="admin-checkbox-row">
-            <input
-              type="checkbox"
-              className="h-4 w-4 accent-[#c49a52]"
-              checked={notifyCustomer}
-              disabled={!canNotifyCustomer}
-              onChange={(event) => setNotifyCustomer(event.target.checked)}
-            />
-            <span className="text-sm text-foreground">{t("orders.notifyByEmail")}</span>
-          </label>
-
           {!customerEmail ? (
             <p className="text-sm text-muted">{t("orders.noCustomerEmail")}</p>
-          ) : null}
-
-          {customerEmail && !emailUpdatesEnabled ? (
+          ) : !emailUpdatesEnabled ? (
             <p className="text-sm text-muted">
               {t("orders.emailUpdatesLabel")}: {t("common.disabled")}
             </p>
-          ) : null}
+          ) : (
+            <p className="text-sm text-muted">{t("orders.publicStageEmailNotice")}</p>
+          )}
 
           <AdminButton
             block

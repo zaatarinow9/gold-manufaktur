@@ -6,7 +6,8 @@ import tls from "node:tls";
 import { once } from "node:events";
 
 export type SmtpTransportConfig = {
-  from: string;
+  fromAddress: string;
+  fromHeader: string;
   host: string;
   password: string;
   port: number;
@@ -219,7 +220,7 @@ async function authenticate(
 function buildMimeMessage(config: SmtpTransportConfig, input: SmtpSendOptions) {
   const toHeader = input.to.join(", ");
   const headers = [
-    `From: ${config.from}`,
+    `From: ${config.fromHeader}`,
     `To: ${toHeader}`,
     `Subject: ${encodeHeaderValue(input.subject)}`,
     `Date: ${new Date().toUTCString()}`,
@@ -285,7 +286,7 @@ export async function sendViaSmtp(
     }
 
     await authenticate(socket, reader, capabilities, config);
-    await sendCommand(socket, reader, `MAIL FROM:<${config.from}>`, [250]);
+    await sendCommand(socket, reader, `MAIL FROM:<${config.fromAddress}>`, [250]);
 
     for (const recipient of input.to) {
       await sendCommand(socket, reader, `RCPT TO:<${recipient}>`, [250, 251]);

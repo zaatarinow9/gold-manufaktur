@@ -1,3 +1,4 @@
+import { getPublicTrackingStageFromStatus } from "@/lib/orderTracking/publicStages";
 import { getAdminSessionContext } from "@/lib/admin/auth";
 import { orderNotificationSchema } from "@/lib/admin/tracking";
 import { getScopedOrderDetail } from "@/lib/db/orders";
@@ -60,6 +61,8 @@ export async function POST(
   const dispatchResult = await sendTransactionalEmail({
     metadata: {
       kind: "manual_order_notification",
+      publicStage: getPublicTrackingStageFromStatus(result.data.trackingStatus),
+      templateType: "public_stage_update",
       trackingNumber: order.trackingNumber,
       trackingStatus: result.data.trackingStatus,
     },
@@ -73,7 +76,8 @@ export async function POST(
       result.data.message,
       "",
       `Tracking status: ${result.data.trackingStatus}`,
-      `Tracking link: ${result.data.trackingLink}`,
+      "Use your tracking number from the website menu to follow this order.",
+      process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gold-manufaktur.vercel.app",
     ].join("\n"),
   });
 
