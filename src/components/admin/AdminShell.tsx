@@ -3,23 +3,25 @@
 import { useState } from "react";
 
 import { usePathname } from "@/i18n/navigation";
-import { setCurrentAdminUser } from "@/lib/admin/currentUser";
 import type { AdminUser } from "@/types/admin";
 import { AdminHeader } from "./AdminHeader";
 import { AdminMobileNav } from "./AdminMobileNav";
-import { AdminSidebar } from "./AdminSidebar";
+import { AdminSidebar, type AdminNavCounts } from "./AdminSidebar";
 
 type AdminShellProps = {
   children: React.ReactNode;
   currentUser: AdminUser;
+  navCounts?: AdminNavCounts;
 };
 
-export function AdminShell({ children, currentUser }: AdminShellProps) {
+export function AdminShell({
+  children,
+  currentUser,
+  navCounts,
+}: AdminShellProps) {
   const pathname = usePathname() ?? "/admin";
   const isLoginRoute = pathname === "/admin/login";
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-
-  setCurrentAdminUser(currentUser);
 
   if (isLoginRoute) {
     return (
@@ -36,13 +38,15 @@ export function AdminShell({ children, currentUser }: AdminShellProps) {
       <AdminMobileNav
         currentUser={currentUser}
         isOpen={isMobileNavOpen}
+        navCounts={navCounts}
         onClose={() => setIsMobileNavOpen(false)}
       />
       <div className="flex h-screen overflow-hidden">
-        <AdminSidebar currentUser={currentUser} />
+        <AdminSidebar currentUser={currentUser} navCounts={navCounts} />
         <div className="flex min-w-0 flex-1 flex-col lg:ps-[17rem]">
           <AdminHeader
             currentUser={currentUser}
+            navCounts={navCounts}
             onOpenNav={() => setIsMobileNavOpen(true)}
           />
           <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-6 lg:px-8 lg:py-6">

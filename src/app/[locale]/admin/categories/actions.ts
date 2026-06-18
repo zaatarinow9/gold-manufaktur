@@ -2,6 +2,7 @@
 
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
+import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import { AdminActionResult } from "@/lib/admin/actionResult";
@@ -29,6 +30,94 @@ function revalidateCategoryViews() {
     revalidatePath(`/${locale}/shop`);
     revalidatePath(`/${locale}/tracking`);
   });
+}
+
+function getRequiredFieldLabel(locale: AppLocale) {
+  if (locale === "de") {
+    return "Bitte fuellen Sie dieses Pflichtfeld aus.";
+  }
+
+  if (locale === "ar") {
+    return "يرجى تعبئة هذا الحقل المطلوب.";
+  }
+
+  if (locale === "fr") {
+    return "Veuillez renseigner ce champ obligatoire.";
+  }
+
+  if (locale === "tr") {
+    return "Lutfen bu zorunlu alani doldurun.";
+  }
+
+  return "Please complete this required field.";
+}
+
+function getInvalidSlugMessage(locale: AppLocale) {
+  if (locale === "de") {
+    return "Bitte geben Sie einen gueltigen Slug ein oder lassen Sie das Feld leer.";
+  }
+
+  if (locale === "ar") {
+    return "يرجى إدخال slug صالح أو ترك الحقل فارغاً.";
+  }
+
+  if (locale === "fr") {
+    return "Saisissez un slug valide ou laissez ce champ vide.";
+  }
+
+  if (locale === "tr") {
+    return "Lutfen gecerli bir slug girin veya alani bos birakin.";
+  }
+
+  return "Enter a valid slug or leave the field empty.";
+}
+
+function getCategoryFieldErrors(locale: AppLocale, error: ZodError) {
+  const fieldErrors: Record<string, string> = {};
+  const requiredMessage = getRequiredFieldLabel(locale);
+
+  for (const issue of error.issues) {
+    const path = issue.path.join(".");
+
+    if (!path || fieldErrors[path]) {
+      continue;
+    }
+
+    switch (path) {
+      case "name.de":
+      case "name.ar":
+        fieldErrors[path] = requiredMessage;
+        break;
+      case "slug":
+        fieldErrors.slug = getInvalidSlugMessage(locale);
+        break;
+      default:
+        fieldErrors[path] = issue.message || requiredMessage;
+        break;
+    }
+  }
+
+  return fieldErrors;
+}
+
+function getCategoryDeleteMessage(locale: AppLocale) {
+  if (locale === "de") {
+    return "Das Element wurde aus dem System entfernt.";
+  }
+
+  if (locale === "ar") {
+    return "تم حذف العنصر من النظام.";
+  }
+
+  if (locale === "fr") {
+    return "L'element a ete retire du systeme.";
+  }
+
+  if (locale === "tr") {
+    return "Oge sistemden kaldirildi.";
+  }
+
+  return "The item was removed from the system.";
 }
 
 export async function saveCategoryAction(
@@ -60,6 +149,24 @@ export async function saveCategoryAction(
       ok: true,
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      const fieldErrors = getCategoryFieldErrors(locale, error);
+      return {
+        fieldErrors,
+        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
+        ok: false,
+      };
+    }
+
+    if (error instanceof Error && error.message === "INVALID_CATEGORY_SLUG") {
+      const message = getInvalidSlugMessage(locale);
+      return {
+        fieldErrors: { slug: message },
+        message,
+        ok: false,
+      };
+    }
+
     return {
       message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,
@@ -115,34 +222,11 @@ export async function deleteCategoryAction(
   }
 
   try {
-    const result = await deleteCategory(categoryId);
+    await deleteCategory(categoryId);
     revalidateCategoryViews();
 
-    if (result.mode === "blocked_has_products") {
-      return {
-        message: locale === "de"
-          ? "Die Kategorie kann nicht geloescht werden, da sie Produkte enthaelt."
-          : locale === "ar"
-            ? "لا يمكن حذف التصنيف لأنه يحتوي على منتجات."
-            : locale === "fr"
-              ? "Cette categorie ne peut pas etre supprimee car elle contient des produits."
-              : locale === "tr"
-                ? "Bu kategori urunler icerdigi icin silinemez."
-            : "This category cannot be deleted because it still contains products.",
-        ok: false,
-      };
-    }
-
     return {
-      message: locale === "de"
-        ? "Die Kategorie wurde geloescht."
-        : locale === "ar"
-          ? "تم حذف التصنيف."
-          : locale === "fr"
-            ? "La categorie a ete supprimee."
-            : locale === "tr"
-              ? "Kategori silindi."
-          : "The category was deleted.",
+      message: getCategoryDeleteMessage(locale),
       ok: true,
     };
   } catch (error) {

@@ -31,7 +31,7 @@ export default async function NewOrderPage({
 
   const [{ product: preselectedProductId }, products] = await Promise.all([
     searchParams,
-    getAdminProducts(locale),
+    getAdminProducts(locale, { activeOnly: true }),
   ]);
 
   return (

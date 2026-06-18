@@ -12,17 +12,19 @@ import { AdminBrand } from "./AdminBrand";
 import { getAdminButtonClassName } from "./AdminButton";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
 import { AdminLogoutButton } from "./AdminLogoutButton";
-import { getVisibleAdminNavItems } from "./AdminSidebar";
+import { getVisibleAdminNavItems, type AdminNavCounts } from "./AdminSidebar";
 
 type AdminMobileNavProps = {
   currentUser: AdminUser;
   isOpen: boolean;
+  navCounts?: AdminNavCounts;
   onClose: () => void;
 };
 
 export function AdminMobileNav({
   currentUser,
   isOpen,
+  navCounts,
   onClose,
 }: AdminMobileNavProps) {
   const pathname = usePathname() ?? "/admin";
@@ -93,6 +95,11 @@ export function AdminMobileNav({
               >
                 <item.icon className="h-4 w-4 shrink-0" />
                 <span>{t(`nav.${item.key}`)}</span>
+                {navCounts?.[item.key] ? (
+                  <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
+                    {navCounts[item.key]}
+                  </span>
+                ) : null}
               </Link>
             );
           })}

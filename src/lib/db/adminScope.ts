@@ -19,6 +19,10 @@ type WithAssignedAdminId = {
   assignedAdminId?: string | null;
 };
 
+type WithAssignedWorkerEmail = {
+  assignedWorkerEmail?: string | null;
+};
+
 export function logAdminReadError(scope: string, message: string) {
   console.error(`[admin-db] ${scope}: ${message}`);
 }
@@ -60,17 +64,20 @@ export function canAccessEmployee(
 
 export function canAccessOrder(
   viewer: AdminViewer,
-  order: WithWorkshopId & WithEmployeeId & WithAssignedAdminId
+  order: WithWorkshopId &
+    WithEmployeeId &
+    WithAssignedAdminId &
+    WithAssignedWorkerEmail
 ) {
-  if (viewer.role === "super_admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin") {
     return true;
   }
 
-  if (
-    viewer.role === "admin" &&
-    order.assignedAdminId &&
-    order.assignedAdminId === viewer.id
-  ) {
+  const normalizedViewerEmail = viewer.email.trim().toLowerCase();
+  const normalizedAssignedWorkerEmail =
+    order.assignedWorkerEmail?.trim().toLowerCase() ?? "";
+
+  if (normalizedViewerEmail && normalizedViewerEmail === normalizedAssignedWorkerEmail) {
     return true;
   }
 
@@ -101,12 +108,15 @@ export function scopeEmployeesForViewer<
 }
 
 export function scopeOrdersForViewer<
-  T extends WithEmployeeId & WithWorkshopId & WithAssignedAdminId,
+  T extends WithEmployeeId &
+    WithWorkshopId &
+    WithAssignedAdminId &
+    WithAssignedWorkerEmail,
 >(
   viewer: AdminViewer,
   orders: T[]
 ) {
-  if (viewer.role === "super_admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin") {
     return orders;
   }
 

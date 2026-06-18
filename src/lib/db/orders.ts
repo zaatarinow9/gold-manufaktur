@@ -14,6 +14,7 @@ import {
   normalizeOptionalUuid,
 } from "@/lib/admin/orderWorkflow";
 import { createAdminNotification } from "@/lib/db/notifications";
+import { getAdminNotificationEmail } from "@/lib/db/siteSettings";
 import {
   buildCustomerOrderEmail,
   getEmailPublicStageFromMetadata,
@@ -142,6 +143,7 @@ const orderWorkflowUpdateSchema = z.object({
     "completed",
     "cancelled",
   ]),
+  workerEmail: z.string().trim().email().or(z.literal("")).default(""),
 });
 
 export const supportTicketSchema = z.object({
@@ -224,8 +226,12 @@ export type EmailLogRecord = {
 };
 
 export type OrderListRecord = {
+  archivedAt: string;
+  assignedAt: string;
+  assignedWorkerEmail: string;
   createdAt: string;
   currency: string;
+  deletedAt: string;
   customerEmail: string;
   customerName: string;
   dueDate: string;
@@ -238,12 +244,15 @@ export type OrderListRecord = {
   previewProductName: string;
   priority: "express" | "normal" | "urgent";
   publicTrackingStage: PublicTrackingStage | null;
+  completedAt: string;
+  cancelledAt: string;
   status: WorkshopOrderStatus;
   supportTicketCount: number;
   totalAmount: number | null;
   trackingNumber: string;
   trackingStatus: TrackingStatus;
   updatedAt: string;
+  withdrawnAt: string;
   workshopId: string | null;
   workshopName: string;
 };
@@ -276,7 +285,13 @@ export type PublicTrackingOrderRecord = {
 };
 
 type OrderSchemaCapabilities = {
+  assignedAt: boolean;
+  assignedWorkerEmail: boolean;
+  cancelledAt: boolean;
+  completedAt: boolean;
+  deletedAt: boolean;
   productSpecifications: boolean;
+  withdrawnAt: boolean;
 };
 
 let orderSchemaCapabilitiesPromise: Promise<OrderSchemaCapabilities> | null = null;
@@ -309,15 +324,51 @@ async function getOrderSchemaCapabilities() {
       .then(({ data, error }) => {
         if (error || !data) {
           return {
+            assignedAt: false,
+            assignedWorkerEmail: false,
+            cancelledAt: false,
+            completedAt: false,
+            deletedAt: false,
             productSpecifications: false,
+            withdrawnAt: false,
           } satisfies OrderSchemaCapabilities;
         }
 
         return {
+          assignedAt: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "assigned_at"
+          ),
+          assignedWorkerEmail: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "assigned_worker_email"
+          ),
+          cancelledAt: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "cancelled_at"
+          ),
+          completedAt: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "completed_at"
+          ),
+          deletedAt: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "deleted_at"
+          ),
           productSpecifications: data.some(
             (column) =>
               column.table_name === "orders" &&
               column.column_name === "product_specifications"
+          ),
+          withdrawnAt: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "withdrawn_at"
           ),
         } satisfies OrderSchemaCapabilities;
       });
@@ -440,6 +491,23 @@ function normalizeAmount(value: unknown) {
   }
 
   return null;
+}
+
+function normalizeEmail(value?: string | null) {
+  return value?.trim().toLowerCase() ?? "";
+}
+
+function isDeletedOrderRow(order: Partial<TableRow<"orders">>) {
+  return Boolean(order.deleted_at);
+}
+
+function isCompletedOrderRow(order: Partial<TableRow<"orders">>) {
+  return (
+    Boolean(order.completed_at) ||
+    order.tracking_status === "completed" ||
+    order.tracking_status === "picked_up" ||
+    order.tracking_status === "delivered_to_store"
+  );
 }
 
 function parseKaratValue(value?: string | null): JewelryKarat | null {
@@ -784,12 +852,15 @@ function getScopedOrderRows(
   viewer: AdminViewer,
   orders: TableRow<"orders">[]
 ) {
-  return orders.filter((order) =>
-    canAccessOrder(viewer, {
-      assignedAdminId: order.assigned_admin_id ?? null,
-      employeeId: order.employee_id ?? null,
-      workshopId: order.workshop_id ?? null,
-    })
+  return orders.filter(
+    (order) =>
+      !isDeletedOrderRow(order) &&
+      canAccessOrder(viewer, {
+        assignedAdminId: order.assigned_admin_id ?? null,
+        assignedWorkerEmail: order.assigned_worker_email ?? null,
+        employeeId: order.employee_id ?? null,
+        workshopId: order.workshop_id ?? null,
+      })
   );
 }
 
@@ -1033,10 +1104,16 @@ export async function getScopedOrders(
     const orderItems = itemsByOrderId.get(order.id) ?? [];
 
     return {
+      archivedAt: order.archived_at ?? "",
+      assignedAt: order.assigned_at ?? "",
+      assignedWorkerEmail: order.assigned_worker_email ?? "",
+      cancelledAt: order.cancelled_at ?? "",
+      completedAt: order.completed_at ?? "",
       createdAt: order.created_at,
       currency: normalizeCurrency(order.currency),
       customerEmail: order.customer_email ?? "",
       customerName: order.customer_name ?? "",
+      deletedAt: order.deleted_at ?? "",
       dueDate: order.due_date ?? "",
       emailUpdatesEnabled: order.email_updates_enabled ?? false,
       employeeId: order.employee_id ?? null,
@@ -1056,6 +1133,7 @@ export async function getScopedOrders(
       trackingNumber: order.tracking_number,
       trackingStatus: normalizeTrackingStatus(order.tracking_status),
       updatedAt: order.updated_at,
+      withdrawnAt: order.withdrawn_at ?? "",
       workshopId: order.workshop_id ?? null,
       workshopName: bundle.workshopMap.get(order.workshop_id ?? "")?.name ?? "",
     };
@@ -1100,6 +1178,11 @@ export async function getScopedOrderDetail(
 
   return {
     attachments: getStringArray(order.attachments_json),
+    archivedAt: order.archived_at ?? "",
+    assignedAt: order.assigned_at ?? "",
+    assignedWorkerEmail: order.assigned_worker_email ?? "",
+    cancelledAt: order.cancelled_at ?? "",
+    completedAt: order.completed_at ?? "",
     createdAt: order.created_at,
     currency: normalizeCurrency(order.currency),
     customerEmail: order.customer_email ?? "",
@@ -1107,6 +1190,7 @@ export async function getScopedOrderDetail(
     customerName: order.customer_name ?? "",
     customerPhone: order.customer_phone ?? "",
     customerReference: order.customer_reference ?? "",
+    deletedAt: order.deleted_at ?? "",
     dueDate: order.due_date ?? "",
     emailLogs,
     emailUpdatesEnabled: order.email_updates_enabled ?? false,
@@ -1139,6 +1223,7 @@ export async function getScopedOrderDetail(
     trackingNumber: order.tracking_number,
     trackingStatus: normalizeTrackingStatus(order.tracking_status),
     updatedAt: order.updated_at,
+    withdrawnAt: order.withdrawn_at ?? "",
     workshopId: order.workshop_id ?? null,
     workshopName: bundle.workshopMap.get(order.workshop_id ?? "")?.name ?? "",
   };
@@ -1241,6 +1326,130 @@ async function dispatchCustomerOrderEmail(input: {
     skipDeliveryReason: alreadySent ? "duplicate_customer_email" : undefined,
     subject: email.subject,
     text: email.text,
+  });
+}
+
+function buildWorkerAssignmentEmailText(input: {
+  customerNote?: string | null;
+  kind: "assigned" | "withdrawn";
+  productName: string;
+  productSpecifications: ProductSpecifications;
+  trackingNumber: string;
+}) {
+  const lines =
+    input.kind === "assigned"
+      ? [
+          "Guten Tag,",
+          "",
+          "Ihnen wurde ein neuer Auftrag bei GoldHelwah zugewiesen.",
+          "",
+        ]
+      : [
+          "Guten Tag,",
+          "",
+          "Der folgende Auftrag wurde bei GoldHelwah zurueckgezogen und soll nicht weiter bearbeitet werden.",
+          "",
+        ];
+
+  lines.push(`Tracking-Nummer: ${input.trackingNumber}`);
+  lines.push(`Produkt: ${input.productName}`);
+  lines.push(
+    `Legierung: ${input.productSpecifications.karat ?? "Nicht angegeben"}`
+  );
+  lines.push(
+    `Gewicht: ${formatWeightGrams(input.productSpecifications.weightGrams) ?? "Nicht angegeben"}`
+  );
+  lines.push(
+    `Namenspersonalisierung: ${
+      input.productSpecifications.nameCustomization.enabled
+        ? input.productSpecifications.nameCustomization.text ?? "Aktiv"
+        : "Nein"
+    }`
+  );
+
+  if (input.customerNote?.trim()) {
+    lines.push(`Kundennotiz: ${input.customerNote.trim()}`);
+  }
+
+  lines.push("");
+  lines.push("GoldHelwah GmbH");
+
+  return lines.join("\n");
+}
+
+async function dispatchWorkerAssignmentEmail(input: {
+  customerNote?: string | null;
+  kind: "assigned" | "withdrawn";
+  orderId: string;
+  productName: string;
+  productSpecifications: ProductSpecifications;
+  recipientEmail: string;
+  trackingNumber: string;
+}) {
+  const subject =
+    input.kind === "assigned"
+      ? "Neuer Auftrag zugewiesen - GoldHelwah"
+      : "Auftrag wurde zurueckgezogen - GoldHelwah";
+
+  return sendTransactionalEmail({
+    metadata: {
+      kind:
+        input.kind === "assigned"
+          ? "worker_order_assigned"
+          : "worker_order_withdrawn",
+      trackingNumber: input.trackingNumber,
+    },
+    orderId: input.orderId,
+    recipientEmail: input.recipientEmail,
+    subject,
+    text: buildWorkerAssignmentEmailText(input),
+  });
+}
+
+async function dispatchAdminOrderNotificationEmail(input: {
+  createdAt: string;
+  customerName: string;
+  customerNote?: string | null;
+  orderId: string;
+  productName: string;
+  productSpecifications: ProductSpecifications;
+  trackingNumber: string;
+}) {
+  const configuredRecipient = await getAdminNotificationEmail();
+  const fallbackRecipient =
+    process.env.EMAIL_FROM_ADDRESS?.trim() ?? process.env.SMTP_USER?.trim() ?? "";
+  const recipientEmail = configuredRecipient || fallbackRecipient;
+
+  if (!recipientEmail) {
+    return null;
+  }
+
+  return sendTransactionalEmail({
+    metadata: {
+      kind: "admin_order_notification",
+      trackingNumber: input.trackingNumber,
+    },
+    orderId: input.orderId,
+    recipientEmail,
+    subject: "Neuer Auftrag eingegangen - GoldHelwah",
+    text: [
+      "Guten Tag,",
+      "",
+      "Ein neuer Auftrag ist eingegangen.",
+      "",
+      `Tracking-Nummer: ${input.trackingNumber}`,
+      `Kunde: ${input.customerName || "Nicht angegeben"}`,
+      `Produkt: ${input.productName}`,
+      `Legierung: ${input.productSpecifications.karat ?? "Nicht angegeben"}`,
+      `Gewicht: ${formatWeightGrams(input.productSpecifications.weightGrams) ?? "Nicht angegeben"}`,
+      `Namenspersonalisierung: ${
+        input.productSpecifications.nameCustomization.enabled
+          ? input.productSpecifications.nameCustomization.text ?? "Aktiv"
+          : "Nein"
+      }`,
+      `Kundennotiz: ${input.customerNote?.trim() || "Nicht angegeben"}`,
+      `Eingegangen am: ${new Date(input.createdAt).toLocaleString("de-DE")}`,
+    ].join("\n"),
   });
 }
 
@@ -1472,6 +1681,16 @@ export async function createOrder(
     });
   }
 
+  await dispatchAdminOrderNotificationEmail({
+    createdAt: order.created_at,
+    customerName: parsed.customerName,
+    customerNote: parsed.notes.customerNotes,
+    orderId: order.id,
+    productName: parsed.productName,
+    productSpecifications,
+    trackingNumber,
+  });
+
   return {
     emailResult,
     orderId: order.id,
@@ -1495,21 +1714,28 @@ export async function updateOrderWorkflow(
     throw new Error("ORDER_NOT_FOUND");
   }
 
-  if (viewer.role === "employee" && (parsed.workshopId || parsed.employeeId)) {
+  if (
+    viewer.role === "employee" &&
+    (parsed.workshopId || parsed.employeeId || parsed.workerEmail)
+  ) {
     throw new Error("ORDER_ASSIGNMENT_FORBIDDEN");
   }
 
-  const nextWorkshopId = parsed.workshopId ?? order.workshopId ?? null;
+  const nextWorkshopId =
+    viewer.role === "employee" ? order.workshopId ?? null : parsed.workshopId;
   const workshopChanged = nextWorkshopId !== order.workshopId;
   const nextEmployeeId =
-    parsed.employeeId ??
-    (workshopChanged ? null : order.employeeId ?? null);
+    viewer.role === "employee" ? order.employeeId ?? null : parsed.employeeId;
+  const nextWorkerEmail =
+    viewer.role === "employee" ? order.assignedWorkerEmail : normalizeEmail(parsed.workerEmail);
+  const workerChanged = nextWorkerEmail !== normalizeEmail(order.assignedWorkerEmail);
 
   if (!nextWorkshopId && nextEmployeeId) {
     throw new Error("WORKSHOP_REQUIRED_FOR_EMPLOYEE");
   }
 
   const supabase = createSupabaseAdminClient();
+  const capabilities = await getOrderSchemaCapabilities();
   let assignedEmployeeName = order.employeeName;
   let assignedWorkshopName = order.workshopName;
 
@@ -1554,6 +1780,7 @@ export async function updateOrderWorkflow(
   }
 
   const employeeChanged = nextEmployeeId !== order.employeeId;
+  const now = new Date().toISOString();
   const customerLocale = order.customerLanguage ?? locale;
   const currentPublicStage = order.publicTrackingStage;
   const publicStageChanged = parsed.publicStage !== currentPublicStage;
@@ -1570,24 +1797,51 @@ export async function updateOrderWorkflow(
     ? parsed.customerNote
     : getTrackingStatusNote(customerLocale, publicEventStage);
 
+  const orderUpdate: TableUpdate<"orders"> = {
+    assigned_admin_id: viewer.role === "employee" ? undefined : viewer.id,
+    employee_id: nextEmployeeId,
+    notes: hasInternalNote ? parsed.internalNote : undefined,
+    public_tracking_stage: publicStageChanged ? parsed.publicStage : undefined,
+    status: trackingStatusToOrderStatus(parsed.status),
+    tracking_status: parsed.status,
+    workshop_id: nextWorkshopId,
+  };
+
+  if (capabilities.assignedWorkerEmail) {
+    orderUpdate.assigned_worker_email = nextWorkerEmail || null;
+  }
+
+  if (capabilities.assignedAt && workerChanged && nextWorkerEmail) {
+    orderUpdate.assigned_at = now;
+  }
+
+  if (capabilities.withdrawnAt && workerChanged && !nextWorkerEmail) {
+    orderUpdate.withdrawn_at = now;
+  }
+
+  if (capabilities.cancelledAt) {
+    orderUpdate.cancelled_at = parsed.status === "cancelled" ? now : null;
+  }
+
+  if (capabilities.completedAt) {
+    orderUpdate.completed_at = isCompletedOrderRow({
+      completed_at: null,
+      tracking_status: parsed.status,
+    })
+      ? order.completedAt || now
+      : null;
+  }
+
   const { error: orderError } = await supabase
     .from("orders")
-    .update({
-      assigned_admin_id: viewer.role === "employee" ? undefined : viewer.id,
-      employee_id: nextEmployeeId,
-      notes: hasInternalNote ? parsed.internalNote : undefined,
-      public_tracking_stage: publicStageChanged ? parsed.publicStage : undefined,
-      status: trackingStatusToOrderStatus(parsed.status),
-      tracking_status: parsed.status,
-      workshop_id: nextWorkshopId,
-    } satisfies TableUpdate<"orders">)
+    .update(orderUpdate)
     .eq("id", parsed.orderId);
 
   if (orderError) {
     throw new Error(`Unable to update order: ${orderError.message}`);
   }
 
-  if (hasInternalNote || workshopChanged || employeeChanged) {
+  if (hasInternalNote || workshopChanged || employeeChanged || workerChanged) {
     const internalSummary = [
       parsed.internalNote,
       workshopChanged
@@ -1595,6 +1849,9 @@ export async function updateOrderWorkflow(
         : "",
       employeeChanged
         ? `Employee assignment: ${assignedEmployeeName || "unassigned"}`
+        : "",
+      workerChanged
+        ? `Worker email: ${nextWorkerEmail || "unassigned"}`
         : "",
     ]
       .filter(Boolean)
@@ -1655,6 +1912,9 @@ export async function updateOrderWorkflow(
     employeeChanged
       ? `Employee: ${assignedEmployeeName || "unassigned"}`
       : "",
+    workerChanged
+      ? `Worker email: ${nextWorkerEmail || "unassigned"}`
+      : "",
     hasInternalNote ? parsed.internalNote : "",
   ].filter(Boolean);
 
@@ -1695,8 +1955,139 @@ export async function updateOrderWorkflow(
     });
   }
 
+  const productName = order.items[0]?.productName || order.previewProductName || order.id;
+  const customerNote = order.items[0]?.notes ?? "";
+
+  if (workerChanged && normalizeEmail(order.assignedWorkerEmail)) {
+    await dispatchWorkerAssignmentEmail({
+      customerNote,
+      kind: "withdrawn",
+      orderId: order.id,
+      productName,
+      productSpecifications: order.productSpecifications,
+      recipientEmail: order.assignedWorkerEmail,
+      trackingNumber: order.trackingNumber,
+    });
+  }
+
+  if (workerChanged && nextWorkerEmail) {
+    await dispatchWorkerAssignmentEmail({
+      customerNote,
+      kind: "assigned",
+      orderId: order.id,
+      productName,
+      productSpecifications: order.productSpecifications,
+      recipientEmail: nextWorkerEmail,
+      trackingNumber: order.trackingNumber,
+    });
+  }
+
   return {
     emailResult,
+    trackingNumber: order.trackingNumber,
+  };
+}
+
+export async function archiveOrder(viewer: AdminViewer, orderId: string) {
+  const order = await getScopedOrderDetail(viewer, orderId);
+
+  if (!order) {
+    throw new Error("ORDER_NOT_FOUND");
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      archived_at: new Date().toISOString(),
+      status: "archived",
+    } satisfies TableUpdate<"orders">)
+    .eq("id", orderId);
+
+  if (error) {
+    throw new Error(`Unable to archive order: ${error.message}`);
+  }
+
+  return {
+    trackingNumber: order.trackingNumber,
+  };
+}
+
+export async function deleteOrder(viewer: AdminViewer, orderId: string) {
+  const order = await getScopedOrderDetail(viewer, orderId);
+
+  if (!order) {
+    throw new Error("ORDER_NOT_FOUND");
+  }
+
+  const capabilities = await getOrderSchemaCapabilities();
+
+  if (!capabilities.deletedAt) {
+    return archiveOrder(viewer, orderId);
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const now = new Date().toISOString();
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      archived_at: now,
+      deleted_at: now,
+      status: "archived",
+    } satisfies TableUpdate<"orders">)
+    .eq("id", orderId);
+
+  if (error) {
+    throw new Error(`Unable to delete order: ${error.message}`);
+  }
+
+  return {
+    trackingNumber: order.trackingNumber,
+  };
+}
+
+export async function withdrawOrderAssignment(viewer: AdminViewer, orderId: string) {
+  const order = await getScopedOrderDetail(viewer, orderId);
+
+  if (!order) {
+    throw new Error("ORDER_NOT_FOUND");
+  }
+
+  const capabilities = await getOrderSchemaCapabilities();
+  const supabase = createSupabaseAdminClient();
+  const now = new Date().toISOString();
+  const payload: TableUpdate<"orders"> = {
+    employee_id: null,
+    workshop_id: null,
+  };
+
+  if (capabilities.assignedWorkerEmail) {
+    payload.assigned_worker_email = null;
+  }
+
+  if (capabilities.withdrawnAt) {
+    payload.withdrawn_at = now;
+  }
+
+  const { error } = await supabase.from("orders").update(payload).eq("id", orderId);
+
+  if (error) {
+    throw new Error(`Unable to withdraw order assignment: ${error.message}`);
+  }
+
+  if (normalizeEmail(order.assignedWorkerEmail)) {
+    await dispatchWorkerAssignmentEmail({
+      customerNote: order.items[0]?.notes ?? "",
+      kind: "withdrawn",
+      orderId: order.id,
+      productName: order.items[0]?.productName || order.previewProductName || order.id,
+      productSpecifications: order.productSpecifications,
+      recipientEmail: order.assignedWorkerEmail,
+      trackingNumber: order.trackingNumber,
+    });
+  }
+
+  return {
     trackingNumber: order.trackingNumber,
   };
 }

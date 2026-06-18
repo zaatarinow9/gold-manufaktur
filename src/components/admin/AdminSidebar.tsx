@@ -2,10 +2,6 @@
 
 import clsx from "clsx";
 import {
-  Archive,
-  BriefcaseBusiness,
-  ClipboardList,
-  FolderOpenDot,
   Gem,
   Home,
   ImageIcon,
@@ -13,7 +9,6 @@ import {
   Package,
   Settings2,
   ShoppingBag,
-  Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -31,12 +26,9 @@ export type AdminNavKey =
   | "gallery"
   | "options"
   | "orders"
-  | "workshops"
-  | "employees"
-  | "attendance"
-  | "reports"
-  | "archive"
   | "settings";
+
+export type AdminNavCounts = Partial<Record<AdminNavKey, number>>;
 
 export type AdminNavItem = {
   href: string;
@@ -46,28 +38,13 @@ export type AdminNavItem = {
 };
 
 export const adminNavItems: AdminNavItem[] = [
-  { href: "/admin", icon: Home, key: "overview", roles: ["super_admin", "admin", "employee"] },
+  { href: "/admin", icon: Home, key: "overview", roles: ["super_admin", "admin"] },
   { href: "/admin/products", icon: Package, key: "products", roles: ["super_admin", "admin"] },
   { href: "/admin/categories", icon: Layers3, key: "categories", roles: ["super_admin", "admin"] },
   { href: "/admin/gallery", icon: ImageIcon, key: "gallery", roles: ["super_admin", "admin"] },
   { href: "/admin/options", icon: Gem, key: "options", roles: ["super_admin", "admin"] },
   { href: "/admin/orders", icon: ShoppingBag, key: "orders", roles: ["super_admin", "admin", "employee"] },
-  {
-    href: "/admin/workshops",
-    icon: BriefcaseBusiness,
-    key: "workshops",
-    roles: ["super_admin", "admin"],
-  },
-  { href: "/admin/employees", icon: Users, key: "employees", roles: ["super_admin", "admin"] },
-  {
-    href: "/admin/attendance",
-    icon: ClipboardList,
-    key: "attendance",
-    roles: ["super_admin", "admin", "employee"],
-  },
-  { href: "/admin/reports", icon: FolderOpenDot, key: "reports", roles: ["super_admin", "admin"] },
-  { href: "/admin/archive", icon: Archive, key: "archive", roles: ["super_admin", "admin"] },
-  { href: "/admin/settings", icon: Settings2, key: "settings", roles: ["super_admin"] },
+  { href: "/admin/settings", icon: Settings2, key: "settings", roles: ["super_admin", "admin"] },
 ];
 
 export function getVisibleAdminNavItems(role: AdminRole) {
@@ -76,9 +53,10 @@ export function getVisibleAdminNavItems(role: AdminRole) {
 
 type AdminSidebarProps = {
   currentUser: AdminUser;
+  navCounts?: AdminNavCounts;
 };
 
-export function AdminSidebar({ currentUser }: AdminSidebarProps) {
+export function AdminSidebar({ currentUser, navCounts }: AdminSidebarProps) {
   const pathname = usePathname() ?? "/admin";
   const locale = useLocale() as AppLocale;
   const t = useTranslations("Admin");
@@ -118,6 +96,11 @@ export function AdminSidebar({ currentUser }: AdminSidebarProps) {
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 <span className="truncate">{t(`nav.${item.key}`)}</span>
+                {navCounts?.[item.key] ? (
+                  <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
+                    {navCounts[item.key]}
+                  </span>
+                ) : null}
               </Link>
             );
           })}

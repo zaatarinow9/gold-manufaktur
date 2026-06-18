@@ -130,6 +130,7 @@ const slugSchema = z
   .min(1)
   .max(255)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+const optionalSlugSchema = z.string().trim().max(255).optional().default("");
 
 const tagSchema = z.string().trim().min(1).max(64);
 const imagePathSchema = z.string().trim().min(1).max(500);
@@ -145,7 +146,7 @@ export const categoryInputSchema = z.object({
   imageUrl: createOptionalTextSchema(500),
   isActive: z.boolean().default(true),
   name: localizedRequiredSchema,
-  slug: slugSchema,
+  slug: optionalSlugSchema,
   sortOrder: z.number().int().min(0).default(0),
   supportsNameCustomization: z.boolean().default(false),
 });
@@ -167,10 +168,10 @@ export const productInputSchema = z.object({
         isRequired: z.boolean().default(false),
         optionId: z.string().uuid(),
       })
-    )
-    .default([]),
+  )
+  .default([]),
   sku: z.string().trim().min(1).max(120),
-  slug: slugSchema,
+  slug: optionalSlugSchema,
   sortOrder: z.number().int().min(0).default(0),
   supportsNameCustomization: z.boolean().nullable().default(null),
   tags: z.array(tagSchema).default([]),
@@ -246,6 +247,133 @@ function normalizeLocalizedText(fields: LocalizedText) {
 
 function nullableText(value: string) {
   return value.length > 0 ? value : null;
+}
+
+const arabicToLatinMap: Record<string, string> = {
+  "ء": "",
+  "آ": "aa",
+  "أ": "a",
+  "ؤ": "w",
+  "إ": "i",
+  "ئ": "y",
+  "ا": "a",
+  "ب": "b",
+  "ة": "h",
+  "ت": "t",
+  "ث": "th",
+  "ج": "j",
+  "ح": "h",
+  "خ": "kh",
+  "د": "d",
+  "ذ": "dh",
+  "ر": "r",
+  "ز": "z",
+  "س": "s",
+  "ش": "sh",
+  "ص": "s",
+  "ض": "d",
+  "ط": "t",
+  "ظ": "z",
+  "ع": "a",
+  "غ": "gh",
+  "ف": "f",
+  "ق": "q",
+  "ك": "k",
+  "ل": "l",
+  "م": "m",
+  "ن": "n",
+  "ه": "h",
+  "و": "w",
+  "ى": "a",
+  "ي": "y",
+};
+
+function transliterateArabic(value: string) {
+  return Array.from(value)
+    .map((character) => arabicToLatinMap[character] ?? character)
+    .join("");
+}
+
+function normalizeSlugValue(value: string) {
+  const transliterated = transliterateArabic(
+    value
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+  );
+
+  return transliterated
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
+
+function buildFallbackSlugFromLocalizedText(
+  fields: LocalizedText,
+  fallbackPrefix: string
+) {
+  const candidates = [fields.de, fields.en, fields.fr, fields.tr, fields.ar];
+
+  for (const candidate of candidates) {
+    const normalized = normalizeSlugValue(candidate);
+
+    if (normalized.length > 0) {
+      return normalized;
+    }
+  }
+
+  return `${fallbackPrefix}-${crypto.randomUUID().slice(0, 8)}`;
+}
+
+async function resolveUniqueSlug(input: {
+  baseName: LocalizedText;
+  fallbackPrefix: string;
+  preferredSlug: string;
+  scope: "categories" | "products";
+  excludeId?: string;
+}) {
+  const supabase = await createSupabaseServerClient();
+  const manualSlug = input.preferredSlug.trim();
+  const normalizedManualSlug =
+    manualSlug.length > 0 ? normalizeSlugValue(manualSlug) : "";
+
+  if (manualSlug.length > 0 && normalizedManualSlug.length === 0) {
+    throw new Error(
+      input.scope === "categories" ? "INVALID_CATEGORY_SLUG" : "INVALID_PRODUCT_SLUG"
+    );
+  }
+
+  const baseSlug =
+    normalizedManualSlug ||
+    buildFallbackSlugFromLocalizedText(input.baseName, input.fallbackPrefix);
+
+  let counter = 1;
+
+  while (true) {
+    const candidate =
+      counter === 1 ? baseSlug : `${baseSlug}-${counter}`;
+    let query = supabase
+      .from(input.scope)
+      .select("id")
+      .eq("slug", candidate);
+
+    if (input.excludeId) {
+      query = query.neq("id", input.excludeId);
+    }
+
+    const { data, error } = await query.maybeSingle();
+
+    if (error) {
+      throw new Error(`Unable to validate slug uniqueness: ${error.message}`);
+    }
+
+    if (!data) {
+      return candidate;
+    }
+
+    counter += 1;
+  }
 }
 
 function getLocalizedFields<
@@ -547,24 +675,36 @@ async function loadOptionGroupRows() {
   return data;
 }
 
+function isDeletedRow(row: { deleted_at?: string | null }) {
+  return typeof row.deleted_at === "string" && row.deleted_at.length > 0;
+}
+
 export async function getPublicCategoryLookup() {
   const categories = await loadCategoryRows();
   return new Map(categories.map((category) => [category.id, category]));
 }
 
 export async function getAdminCategories(
-  locale: AppLocale = "de"
+  locale: AppLocale = "de",
+  options?: {
+    includeDeleted?: boolean;
+  }
 ): Promise<AdminCategoryRecord[]> {
   const [categories, products, productOptions] = await Promise.all([
     loadCategoryRows(),
     loadProductRows(),
     loadProductOptions(),
   ]);
+  const includeDeleted = options?.includeDeleted ?? false;
+  const visibleCategories = includeDeleted
+    ? categories
+    : categories.filter((category) => !isDeletedRow(category));
+  const visibleProducts = products.filter((product) => !isDeletedRow(product));
 
   const productIdsByCategory = new Map<string, string[]>();
   const optionIdsByProduct = new Map<string, string[]>();
 
-  products.forEach((product) => {
+  visibleProducts.forEach((product) => {
     if (!product.category_id) {
       return;
     }
@@ -580,7 +720,7 @@ export async function getAdminCategories(
     optionIdsByProduct.set(assignment.product_id, current);
   });
 
-  return categories.map((category) => {
+  return visibleCategories.map((category) => {
     const name = getLocalizedFields(category, "name");
     const description = getLocalizedFields(category, "description");
     const productIds = productIdsByCategory.get(category.id) ?? [];
@@ -611,7 +751,11 @@ export async function getAdminCategories(
 }
 
 export async function getAdminProducts(
-  locale: AppLocale = "de"
+  locale: AppLocale = "de",
+  options?: {
+    activeOnly?: boolean;
+    includeDeleted?: boolean;
+  }
 ): Promise<AdminProductRecord[]> {
   const [products, categories, images, productOptions, optionRows, optionGroupRows] =
     await Promise.all([
@@ -622,8 +766,26 @@ export async function getAdminProducts(
       loadOptionRows(),
       loadOptionGroupRows(),
     ]);
+  const includeDeleted = options?.includeDeleted ?? false;
+  const activeOnly = options?.activeOnly ?? false;
+  const visibleCategories = categories.filter((category) => !isDeletedRow(category));
+  const visibleProducts = products.filter((product) => {
+    if (!includeDeleted && isDeletedRow(product)) {
+      return false;
+    }
 
-  const categoryById = new Map(categories.map((category) => [category.id, category]));
+    if (activeOnly && !product.is_active) {
+      return false;
+    }
+
+    return true;
+  });
+  const visibleOptionRows = optionRows.filter((option) => !isDeletedRow(option));
+  const visibleOptionGroups = optionGroupRows.filter((group) => !isDeletedRow(group));
+
+  const categoryById = new Map(
+    visibleCategories.map((category) => [category.id, category])
+  );
   const galleryByProductId = new Map<string, string[]>();
   const optionSettingsByProduct = new Map<
     string,
@@ -639,7 +801,7 @@ export async function getAdminProducts(
     }>
   >();
   const optionGroupById = new Map(
-    optionGroupRows.map((group) => [
+    visibleOptionGroups.map((group) => [
       group.id,
       {
         groupKey: group.key,
@@ -648,7 +810,7 @@ export async function getAdminProducts(
     ])
   );
   const optionById = new Map(
-    optionRows.map((option) => [
+    visibleOptionRows.map((option) => [
       option.id,
       {
         displayLabel: resolveLocalizedText(getLocalizedFields(option, "label"), locale),
@@ -700,7 +862,7 @@ export async function getAdminProducts(
     optionSettingsByProduct.set(assignment.product_id, current);
   });
 
-  return products.map((product) => {
+  return visibleProducts.map((product) => {
     const name = getLocalizedFields(product, "name");
     const description = getLocalizedFields(product, "description");
     const category = product.category_id ? categoryById.get(product.category_id) : null;
@@ -751,7 +913,10 @@ export async function getAdminProducts(
 }
 
 export async function getAdminOptions(
-  locale: AppLocale = "de"
+  locale: AppLocale = "de",
+  config?: {
+    includeDeleted?: boolean;
+  }
 ): Promise<AdminOptionRecord[]> {
   const [options, groups, products, productOptions] = await Promise.all([
     loadOptionRows(),
@@ -759,9 +924,17 @@ export async function getAdminOptions(
     loadProductRows(),
     loadProductOptions(),
   ]);
+  const includeDeleted = config?.includeDeleted ?? false;
+  const visibleGroups = groups.filter((group) => !isDeletedRow(group));
+  const visibleProducts = products.filter((product) => !isDeletedRow(product));
+  const visibleOptions = includeDeleted
+    ? options
+    : options.filter((option) => !isDeletedRow(option));
 
-  const groupById = new Map(groups.map((group) => [group.id, group]));
-  const productById = new Map(products.map((product) => [product.id, product]));
+  const groupById = new Map(visibleGroups.map((group) => [group.id, group]));
+  const productById = new Map(
+    visibleProducts.map((product) => [product.id, product])
+  );
   const assignmentsByOption = new Map<string, string[]>();
 
   productOptions.forEach((assignment) => {
@@ -770,7 +943,7 @@ export async function getAdminOptions(
     assignmentsByOption.set(assignment.option_id, current);
   });
 
-  return options.map((option) => {
+  return visibleOptions.map((option) => {
     const group = groupById.get(option.group_id);
     const label = getLocalizedFields(option, "label");
     const groupName = group
@@ -823,13 +996,15 @@ export async function getOptionGroups(
   locale: AppLocale = "de"
 ): Promise<AdminOptionGroupRecord[]> {
   const [groups, options] = await Promise.all([loadOptionGroupRows(), loadOptionRows()]);
+  const visibleGroups = groups.filter((group) => !isDeletedRow(group));
+  const visibleOptions = options.filter((option) => !isDeletedRow(option));
   const counts = new Map<string, number>();
 
-  options.forEach((option) => {
+  visibleOptions.forEach((option) => {
     counts.set(option.group_id, (counts.get(option.group_id) ?? 0) + 1);
   });
 
-  return groups.map((group) => {
+  return visibleGroups.map((group) => {
     const name = getLocalizedFields(group, "name");
 
     return {
@@ -850,6 +1025,12 @@ export async function createCategory(input: CategoryInput) {
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
     ...toCategoryInsert(parsed),
+    slug: await resolveUniqueSlug({
+      baseName: parsed.name,
+      fallbackPrefix: "category",
+      preferredSlug: parsed.slug,
+      scope: "categories",
+    }),
   } as TableInsert<"categories">;
 
   if (!capabilities.categoriesSupportsNameCustomization) {
@@ -875,6 +1056,13 @@ export async function updateCategory(input: CategoryUpdateInput) {
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
     ...toCategoryInsert(parsed),
+    slug: await resolveUniqueSlug({
+      baseName: parsed.name,
+      excludeId: parsed.id,
+      fallbackPrefix: "category",
+      preferredSlug: parsed.slug,
+      scope: "categories",
+    }),
   } as TableUpdate<"categories">;
 
   if (!capabilities.categoriesSupportsNameCustomization) {
@@ -897,14 +1085,9 @@ export async function updateCategory(input: CategoryUpdateInput) {
 
 export async function setCategoryActive(categoryId: string, isActive: boolean) {
   const supabase = await createSupabaseServerClient();
-  const capabilities = await getCatalogSchemaCapabilities();
-  const payload: TableUpdate<"categories"> & { deleted_at?: string | null } = {
+  const payload: TableUpdate<"categories"> = {
     is_active: isActive,
   };
-
-  if (capabilities.categoriesDeletedAt) {
-    payload.deleted_at = isActive ? null : new Date().toISOString();
-  }
 
   const { data, error } = await supabase
     .from("categories")
@@ -922,17 +1105,16 @@ export async function setCategoryActive(categoryId: string, isActive: boolean) {
 
 export async function deleteCategory(categoryId: string) {
   const supabase = await createSupabaseServerClient();
-  const { count, error: productCountError } = await supabase
+  const capabilities = await getCatalogSchemaCapabilities();
+  const { error: productUpdateError } = await supabase
     .from("products")
-    .select("id", { count: "exact", head: true })
+    .update({ category_id: null })
     .eq("category_id", categoryId);
 
-  if (productCountError) {
-    throw new Error(`Unable to inspect category products: ${productCountError.message}`);
-  }
-
-  if ((count ?? 0) > 0) {
-    return { mode: "blocked_has_products" as const };
+  if (productUpdateError) {
+    throw new Error(
+      `Unable to unassign category products: ${productUpdateError.message}`
+    );
   }
 
   const { error } = await supabase
@@ -940,11 +1122,47 @@ export async function deleteCategory(categoryId: string) {
     .delete()
     .eq("id", categoryId);
 
-  if (error) {
-    throw new Error(`Unable to delete category: ${error.message}`);
+  if (!error) {
+    return { mode: "deleted" as const };
   }
 
-  return { mode: "deleted" as const };
+  if (capabilities.categoriesDeletedAt) {
+    const { error: softDeleteError } = await supabase
+      .from("categories")
+      .update({
+        deleted_at: new Date().toISOString(),
+        is_active: false,
+      })
+      .eq("id", categoryId);
+
+    if (!softDeleteError) {
+      return { mode: "soft_deleted" as const };
+    }
+  }
+
+  throw new Error(`Unable to delete category: ${error.message}`);
+}
+
+async function markProductDeleted(productId: string) {
+  const supabase = await createSupabaseServerClient();
+  const capabilities = await getCatalogSchemaCapabilities();
+
+  if (!capabilities.productsDeletedAt) {
+    throw new Error("PRODUCT_DELETE_UNSUPPORTED");
+  }
+
+  const { error } = await supabase
+    .from("products")
+    .update({
+      deleted_at: new Date().toISOString(),
+      is_active: false,
+      is_featured: false,
+    })
+    .eq("id", productId);
+
+  if (error) {
+    throw new Error(`Unable to soft delete product: ${error.message}`);
+  }
 }
 
 async function replaceProductImages(
@@ -1047,6 +1265,12 @@ export async function createProduct(input: ProductInput) {
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
     ...toProductInsert(parsed),
+    slug: await resolveUniqueSlug({
+      baseName: parsed.name,
+      fallbackPrefix: "product",
+      preferredSlug: parsed.slug,
+      scope: "products",
+    }),
   } as TableInsert<"products">;
 
   if (!capabilities.productsSupportsNameCustomization) {
@@ -1075,6 +1299,13 @@ export async function updateProduct(input: ProductUpdateInput) {
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
     ...toProductInsert(parsed),
+    slug: await resolveUniqueSlug({
+      baseName: parsed.name,
+      excludeId: parsed.id,
+      fallbackPrefix: "product",
+      preferredSlug: parsed.slug,
+      scope: "products",
+    }),
   } as TableUpdate<"products">;
 
   if (!capabilities.productsSupportsNameCustomization) {
@@ -1100,14 +1331,9 @@ export async function updateProduct(input: ProductUpdateInput) {
 
 export async function setProductActive(productId: string, isActive: boolean) {
   const supabase = await createSupabaseServerClient();
-  const capabilities = await getCatalogSchemaCapabilities();
-  const payload: TableUpdate<"products"> & { deleted_at?: string | null } = {
+  const payload: TableUpdate<"products"> = {
     is_active: isActive,
   };
-
-  if (capabilities.productsDeletedAt) {
-    payload.deleted_at = isActive ? null : new Date().toISOString();
-  }
 
   const { data, error } = await supabase
     .from("products")
@@ -1161,21 +1387,26 @@ export async function deleteProduct(productId: string) {
     throw new Error(`Unable to inspect product usage: ${orderUsageError.message}`);
   }
 
-  if ((count ?? 0) > 0) {
-    await setProductActive(productId, false);
-    return { mode: "soft_deleted_in_use" as const };
-  }
-
-  const [{ error: optionDeleteError }, { error: imageDeleteError }] = await Promise.all([
-    supabase.from("product_options").delete().eq("product_id", productId),
-    supabase.from("product_images").delete().eq("product_id", productId),
-  ]);
+  const { error: optionDeleteError } = await supabase
+    .from("product_options")
+    .delete()
+    .eq("product_id", productId);
 
   if (optionDeleteError) {
     throw new Error(
       `Unable to delete product option assignments: ${optionDeleteError.message}`
     );
   }
+
+  if ((count ?? 0) > 0) {
+    await markProductDeleted(productId);
+    return { mode: "soft_deleted_in_use" as const };
+  }
+
+  const { error: imageDeleteError } = await supabase
+    .from("product_images")
+    .delete()
+    .eq("product_id", productId);
 
   if (imageDeleteError) {
     throw new Error(`Unable to delete product images: ${imageDeleteError.message}`);
@@ -1338,14 +1569,9 @@ export async function updateOption(input: OptionUpdateInput) {
 
 export async function setOptionActive(optionId: string, isActive: boolean) {
   const supabase = await createSupabaseServerClient();
-  const capabilities = await getCatalogSchemaCapabilities();
-  const payload: TableUpdate<"options"> & { deleted_at?: string | null } = {
+  const payload: TableUpdate<"options"> = {
     is_active: isActive,
   };
-
-  if (capabilities.optionsDeletedAt) {
-    payload.deleted_at = isActive ? null : new Date().toISOString();
-  }
 
   const { data, error } = await supabase
     .from("options")
@@ -1363,6 +1589,7 @@ export async function setOptionActive(optionId: string, isActive: boolean) {
 
 export async function deleteOption(optionId: string) {
   const supabase = await createSupabaseServerClient();
+  const capabilities = await getCatalogSchemaCapabilities();
   const [{ count: productAssignmentCount, error: productAssignmentError }, { data: orderItems, error: orderItemError }] =
     await Promise.all([
       supabase
@@ -1395,11 +1622,6 @@ export async function deleteOption(optionId: string) {
     )
   );
 
-  if ((productAssignmentCount ?? 0) > 0 || isUsedInOrders) {
-    await setOptionActive(optionId, false);
-    return { mode: "soft_deleted_in_use" as const };
-  }
-
   const { error: assignmentDeleteError } = await supabase
     .from("product_options")
     .delete()
@@ -1409,6 +1631,26 @@ export async function deleteOption(optionId: string) {
     throw new Error(
       `Unable to delete option assignments: ${assignmentDeleteError.message}`
     );
+  }
+
+  if ((productAssignmentCount ?? 0) > 0 || isUsedInOrders) {
+    if (!capabilities.optionsDeletedAt) {
+      throw new Error("OPTION_DELETE_UNSUPPORTED");
+    }
+
+    const { error: softDeleteError } = await supabase
+      .from("options")
+      .update({
+        deleted_at: new Date().toISOString(),
+        is_active: false,
+      })
+      .eq("id", optionId);
+
+    if (softDeleteError) {
+      throw new Error(`Unable to soft delete option: ${softDeleteError.message}`);
+    }
+
+    return { mode: "soft_deleted_in_use" as const };
   }
 
   const { error } = await supabase.from("options").delete().eq("id", optionId);

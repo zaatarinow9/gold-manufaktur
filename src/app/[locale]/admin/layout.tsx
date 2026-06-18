@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AdminShell } from "@/components/admin/AdminShell";
 import { getAdminShellUser } from "@/lib/admin/auth";
+import { getAdminNavCounts } from "@/lib/db/adminNotifications";
 import { resolveLocale } from "@/lib/site";
 
 type AdminLayoutProps = {
@@ -28,8 +29,14 @@ export default async function AdminLayout({
 }: AdminLayoutProps) {
   const locale = await resolveLocale(params);
   const currentUser = await getAdminShellUser();
+  const navCounts =
+    currentUser.id !== "guest" ? await getAdminNavCounts(currentUser) : {};
 
   setRequestLocale(locale);
 
-  return <AdminShell currentUser={currentUser}>{children}</AdminShell>;
+  return (
+    <AdminShell currentUser={currentUser} navCounts={navCounts}>
+      {children}
+    </AdminShell>
+  );
 }

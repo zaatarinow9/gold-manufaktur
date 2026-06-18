@@ -2,6 +2,7 @@
 
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
+import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import { AdminActionResult } from "@/lib/admin/actionResult";
@@ -159,6 +160,75 @@ function revalidateProductViews() {
   });
 }
 
+function getRequiredFieldLabel(locale: AppLocale) {
+  if (locale === "de") {
+    return "Bitte fuellen Sie dieses Pflichtfeld aus.";
+  }
+
+  if (locale === "ar") {
+    return "يرجى تعبئة هذا الحقل المطلوب.";
+  }
+
+  if (locale === "fr") {
+    return "Veuillez renseigner ce champ obligatoire.";
+  }
+
+  if (locale === "tr") {
+    return "Lutfen bu zorunlu alani doldurun.";
+  }
+
+  return "Please complete this required field.";
+}
+
+function getInvalidSlugMessage(locale: AppLocale) {
+  if (locale === "de") {
+    return "Bitte geben Sie einen gueltigen Slug ein oder lassen Sie das Feld leer.";
+  }
+
+  if (locale === "ar") {
+    return "يرجى إدخال slug صالح أو ترك الحقل فارغاً.";
+  }
+
+  if (locale === "fr") {
+    return "Saisissez un slug valide ou laissez ce champ vide.";
+  }
+
+  if (locale === "tr") {
+    return "Lutfen gecerli bir slug girin veya alani bos birakin.";
+  }
+
+  return "Enter a valid slug or leave the field empty.";
+}
+
+function getProductFieldErrors(locale: AppLocale, error: ZodError) {
+  const fieldErrors: Record<string, string> = {};
+  const requiredMessage = getRequiredFieldLabel(locale);
+
+  for (const issue of error.issues) {
+    const path = issue.path.join(".");
+
+    if (!path || fieldErrors[path]) {
+      continue;
+    }
+
+    switch (path) {
+      case "name.de":
+      case "name.ar":
+      case "sku":
+        fieldErrors[path] = requiredMessage;
+        break;
+      case "slug":
+        fieldErrors.slug = getInvalidSlugMessage(locale);
+        break;
+      default:
+        fieldErrors[path] = issue.message || requiredMessage;
+        break;
+    }
+  }
+
+  return fieldErrors;
+}
+
 export async function saveProductAction(
   locale: AppLocale,
   input: ProductInput | ProductUpdateInput
@@ -190,6 +260,24 @@ export async function saveProductAction(
       ok: true,
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      const fieldErrors = getProductFieldErrors(locale, error);
+      return {
+        fieldErrors,
+        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
+        ok: false,
+      };
+    }
+
+    if (error instanceof Error && error.message === "INVALID_PRODUCT_SLUG") {
+      const message = getInvalidSlugMessage(locale);
+      return {
+        fieldErrors: { slug: message },
+        message,
+        ok: false,
+      };
+    }
+
     return {
       message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,

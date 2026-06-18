@@ -13,7 +13,6 @@ import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import { getScopedEmployees } from "@/lib/db/employees";
 import { getScopedOrderDetail } from "@/lib/db/orders";
-import { getScopedWorkshops } from "@/lib/db/workshops";
 import { resolveLocale } from "@/lib/site";
 
 type OrderDetailPageProps = {
@@ -170,9 +169,8 @@ export default async function AdminOrderDetailPage({
     );
   }
 
-  const [order, workshops, employees] = await Promise.all([
+  const [order, employees] = await Promise.all([
     getScopedOrderDetail(access.user, id),
-    getScopedWorkshops(access.user),
     getScopedEmployees(access.user),
   ]);
 
@@ -295,7 +293,10 @@ export default async function AdminOrderDetailPage({
                     },
                     {
                       label: t("orders.table.employee"),
-                      value: order.employeeName || t("common.unassigned"),
+                      value:
+                        order.assignedWorkerEmail ||
+                        order.employeeName ||
+                        t("common.unassigned"),
                     },
                     {
                       label: t("newOrder.fields.totalAmount"),
@@ -514,15 +515,13 @@ export default async function AdminOrderDetailPage({
             customerEmail={order.customerEmail}
             emailUpdatesEnabled={order.emailUpdatesEnabled}
             employees={employees}
-            initialEmployeeId={order.employeeId}
+            initialAssignedWorkerEmail={order.assignedWorkerEmail}
             initialEvents={order.trackingEvents}
             initialPublicStage={order.publicTrackingStage}
             initialStatus={order.trackingStatus}
-            initialWorkshopId={order.workshopId}
             locale={locale}
             orderId={order.id}
             trackingNumber={order.trackingNumber}
-            workshops={workshops}
           />
         </div>
       </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -11,15 +11,15 @@ import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
+import { AdminTabs } from "@/components/admin/AdminTabs";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
+import { scrollCardIntoView } from "@/lib/admin/clientForm";
 import type { EmployeeRecord } from "@/lib/db/employees";
 import type { OrderListRecord } from "@/lib/db/orders";
-import type { WorkshopRecord } from "@/lib/db/workshops";
 import type { AdminRole } from "@/types/admin";
-import { workshopOrderStatusValues } from "@/types/admin";
 
 type AdminOrdersClientProps = {
   canCreate: boolean;
@@ -27,8 +27,98 @@ type AdminOrdersClientProps = {
   employees: EmployeeRecord[];
   locale: AppLocale;
   orders: OrderListRecord[];
-  workshops: WorkshopRecord[];
 };
+
+type OrderTabKey =
+  | "all"
+  | "pending"
+  | "assigned"
+  | "in_progress"
+  | "shipped"
+  | "completed"
+  | "cancelled"
+  | "archived";
+
+function getOrderTabKey(order: OrderListRecord): Exclude<OrderTabKey, "all"> {
+  if (order.deletedAt || order.archivedAt || order.status === "archived") {
+    return "archived";
+  }
+
+  if (order.cancelledAt || order.trackingStatus === "cancelled") {
+    return "cancelled";
+  }
+
+  if (
+    order.completedAt ||
+    order.trackingStatus === "completed" ||
+    order.trackingStatus === "picked_up" ||
+    order.trackingStatus === "delivered_to_store"
+  ) {
+    return "completed";
+  }
+
+  if (
+    order.publicTrackingStage === "shipping" ||
+    order.trackingStatus === "on_the_way"
+  ) {
+    return "shipped";
+  }
+
+  if (
+    order.trackingStatus === "in_production" ||
+    order.trackingStatus === "quality_check"
+  ) {
+    return "in_progress";
+  }
+
+  if (order.assignedWorkerEmail || order.employeeId) {
+    return "assigned";
+  }
+
+  return "pending";
+}
+
+function getOrdersUiCopy(locale: AppLocale) {
+  if (locale === "ar") {
+    return {
+      assignedWorker: "\u0627\u0644\u0639\u0627\u0645\u0644 \u0627\u0644\u0645\u0633\u0646\u062f",
+      archived: "\u0627\u0644\u0623\u0631\u0634\u064a\u0641",
+      assigned: "\u0645\u0633\u0646\u062f",
+      cancelled: "\u0645\u0644\u063a\u0649",
+      completed: "\u0645\u0643\u062a\u0645\u0644",
+      inProgress: "\u0642\u064a\u062f \u0627\u0644\u062a\u0646\u0641\u064a\u0630",
+      pending: "\u062c\u062f\u064a\u062f / \u0645\u0639\u0644\u0642",
+      noWorker: "\u063a\u064a\u0631 \u0645\u0633\u0646\u062f",
+      shipped: "\u0642\u064a\u062f \u0627\u0644\u0634\u062d\u0646",
+    };
+  }
+
+  if (locale === "de") {
+    return {
+      assignedWorker: "Zugewiesener Bearbeiter",
+      archived: "Archiv",
+      assigned: "Zugewiesen",
+      cancelled: "Storniert",
+      completed: "Abgeschlossen",
+      inProgress: "In Bearbeitung",
+      pending: "Neu / Offen",
+      noWorker: "Nicht zugewiesen",
+      shipped: "Versand",
+    };
+  }
+
+  return {
+    assignedWorker: "Assigned worker",
+    archived: "Archived",
+    assigned: "Assigned",
+    cancelled: "Cancelled",
+    completed: "Completed",
+    inProgress: "In progress",
+    pending: "New / Pending",
+    noWorker: "Unassigned",
+    shipped: "Shipped",
+  };
+}
 
 export function AdminOrdersClient({
   canCreate,
@@ -36,51 +126,81 @@ export function AdminOrdersClient({
   employees,
   locale,
   orders,
-  workshops,
 }: AdminOrdersClientProps) {
   const t = useTranslations("Admin");
+  const uiCopy = getOrdersUiCopy(locale);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
-  const [workshopFilter, setWorkshopFilter] = useState("all");
-  const [employeeFilter, setEmployeeFilter] = useState("all");
+  const [tab, setTab] = useState<OrderTabKey>("all");
+  const [assignedFilter, setAssignedFilter] = useState("all");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const selectedCardRef = useRef<HTMLDivElement | null>(null);
+
+  const workerChoices = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          [
+            ...employees.map((employee) => employee.email.trim()),
+            ...orders.map((order) => order.assignedWorkerEmail.trim()),
+          ].filter((email) => email.length > 0)
+        )
+      ).sort((left, right) => left.localeCompare(right, locale)),
+    [employees, locale, orders]
+  );
 
   const filteredOrders = useMemo(() => {
-    const normalizedSearch = search.toLowerCase();
+    const normalizedSearch = search.trim().toLowerCase();
 
     return orders.filter((order) => {
+      const orderTab = getOrderTabKey(order);
+      const matchesTab = tab === "all" || orderTab === tab;
+      const matchesAssignment =
+        assignedFilter === "all" ||
+        order.assignedWorkerEmail.toLowerCase() === assignedFilter.toLowerCase();
       const matchesSearch =
-        search.length === 0 ||
+        normalizedSearch.length === 0 ||
         order.internalOrderNumber.toLowerCase().includes(normalizedSearch) ||
         order.trackingNumber.toLowerCase().includes(normalizedSearch) ||
         order.previewProductName.toLowerCase().includes(normalizedSearch) ||
-        order.workshopName.toLowerCase().includes(normalizedSearch) ||
-        order.employeeName.toLowerCase().includes(normalizedSearch) ||
         order.customerName.toLowerCase().includes(normalizedSearch) ||
-        order.customerEmail.toLowerCase().includes(normalizedSearch);
-      const matchesStatus =
-        statusFilter === "all" || order.status === statusFilter;
-      const matchesPriority =
-        priorityFilter === "all" || order.priority === priorityFilter;
-      const matchesWorkshop =
-        workshopFilter === "all" || order.workshopId === workshopFilter;
-      const matchesEmployee =
-        employeeFilter === "all" || order.employeeId === employeeFilter;
+        order.customerEmail.toLowerCase().includes(normalizedSearch) ||
+        order.assignedWorkerEmail.toLowerCase().includes(normalizedSearch) ||
+        order.employeeName.toLowerCase().includes(normalizedSearch);
 
-      return (
-        matchesSearch &&
-        matchesStatus &&
-        matchesPriority &&
-        matchesWorkshop &&
-        matchesEmployee
-      );
+      return matchesTab && matchesAssignment && matchesSearch;
     });
-  }, [employeeFilter, orders, priorityFilter, search, statusFilter, workshopFilter]);
+  }, [assignedFilter, orders, search, tab]);
 
-  const workshopChoices = workshops.map((workshop) => [workshop.id, workshop.name] as const);
-  const employeeChoices = employees.map((employee) => [employee.id, employee.fullName] as const);
   const selectedOrder = orders.find((order) => order.id === selectedOrderId) ?? null;
+
+  useEffect(() => {
+    if (!selectedOrder || !selectedCardRef.current) {
+      return;
+    }
+
+    scrollCardIntoView(selectedCardRef.current);
+  }, [selectedOrder]);
+
+  const tabs = useMemo(
+    () =>
+      [
+        { id: "all", label: t("common.all") },
+        { id: "pending", label: uiCopy.pending },
+        { id: "assigned", label: uiCopy.assigned },
+        { id: "in_progress", label: uiCopy.inProgress },
+        { id: "shipped", label: uiCopy.shipped },
+        { id: "completed", label: uiCopy.completed },
+        { id: "cancelled", label: uiCopy.cancelled },
+        { id: "archived", label: uiCopy.archived },
+      ].map((tabItem) => ({
+        ...tabItem,
+        count:
+          tabItem.id === "all"
+            ? orders.length
+            : orders.filter((order) => getOrderTabKey(order) === tabItem.id).length,
+      })),
+    [orders, t, uiCopy]
+  );
 
   const columns: AdminTableColumn<OrderListRecord>[] = [
     {
@@ -106,12 +226,24 @@ export function AdminOrdersClient({
     {
       id: "customer",
       header: t("orders.table.customer"),
-      cell: (order) => order.customerName || t("common.noCustomer"),
+      cell: (order) => (
+        <div className="space-y-1">
+          <p className="text-foreground">{order.customerName || t("common.noCustomer")}</p>
+          <p className="text-xs text-muted">{order.customerEmail || "-"}</p>
+        </div>
+      ),
     },
     {
-      id: "workshop",
-      header: t("orders.table.workshop"),
-      cell: (order) => order.workshopName || "-",
+      id: "worker",
+      header: uiCopy.assignedWorker,
+      cell: (order) => (
+        <div className="space-y-1">
+          <p className="text-foreground">
+            {order.assignedWorkerEmail || order.employeeName || uiCopy.noWorker}
+          </p>
+          <p className="text-xs text-muted">{order.workshopName || "-"}</p>
+        </div>
+      ),
     },
     {
       id: "status",
@@ -123,30 +255,17 @@ export function AdminOrdersClient({
               ? t(`publicTrackingStage.${order.publicTrackingStage}`)
               : t("orders.noPublicStage")}
           </AdminBadge>
-          <AdminBadge variant="info">{t(`status.${order.status}`)}</AdminBadge>
-          <AdminBadge variant="neutral">
-            {t(`trackingStatus.${order.trackingStatus}`)}
+          <AdminBadge variant="info">{t(`trackingStatus.${order.trackingStatus}`)}</AdminBadge>
+          <AdminBadge variant={getOrderTabKey(order) === "pending" ? "danger" : "neutral"}>
+            {getOrderTabKey(order).replace("_", " ")}
           </AdminBadge>
         </div>
       ),
     },
     {
-      id: "assignment",
-      header: t("orders.table.employee"),
-      cell: (order) => (
-        <div className="space-y-1">
-          <p className="text-foreground">{order.employeeName || t("common.unassigned")}</p>
-          <p className="text-xs text-muted">
-            {t(`priority.${order.priority}`)} {" | "}
-            {order.supportTicketCount} ticket(s)
-          </p>
-        </div>
-      ),
-    },
-    {
-      id: "dueDate",
+      id: "updatedAt",
       header: t("orders.table.dueDate"),
-      cell: (order) => order.dueDate || "-",
+      cell: (order) => order.dueDate || order.updatedAt.slice(0, 10),
     },
     {
       id: "action",
@@ -190,6 +309,13 @@ export function AdminOrdersClient({
         }
       />
 
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <AdminTabs tabs={tabs} value={tab} onChange={(value) => setTab(value as OrderTabKey)} />
+        <p className="text-sm text-muted">
+          {t("products.resultCount", { count: filteredOrders.length })}
+        </p>
+      </div>
+
       <AdminCard title={t("orders.filtersTitle")} description={t("orders.filtersDescription")}>
         <AdminToolbar>
           <AdminInput
@@ -200,50 +326,14 @@ export function AdminOrdersClient({
             icon={<Search className="h-4 w-4" />}
           />
           <AdminSelect
-            value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
-            label={t("filters.status")}
+            value={assignedFilter}
+            onChange={(event) => setAssignedFilter(event.target.value)}
+            label={uiCopy.assignedWorker}
           >
             <option value="all">{t("common.all")}</option>
-            {workshopOrderStatusValues.map((status) => (
-              <option key={status} value={status}>
-                {t(`status.${status}`)}
-              </option>
-            ))}
-          </AdminSelect>
-          <AdminSelect
-            value={priorityFilter}
-            onChange={(event) => setPriorityFilter(event.target.value)}
-            label={t("filters.priority")}
-          >
-            <option value="all">{t("common.all")}</option>
-            {["normal", "urgent", "express"].map((priority) => (
-              <option key={priority} value={priority}>
-                {t(`priority.${priority}`)}
-              </option>
-            ))}
-          </AdminSelect>
-          <AdminSelect
-            value={workshopFilter}
-            onChange={(event) => setWorkshopFilter(event.target.value)}
-            label={t("filters.workshop")}
-          >
-            <option value="all">{t("common.all")}</option>
-            {workshopChoices.map(([id, name]) => (
-              <option key={id} value={id}>
-                {name}
-              </option>
-            ))}
-          </AdminSelect>
-          <AdminSelect
-            value={employeeFilter}
-            onChange={(event) => setEmployeeFilter(event.target.value)}
-            label={t("filters.employee")}
-          >
-            <option value="all">{t("common.all")}</option>
-            {employeeChoices.map(([id, name]) => (
-              <option key={id} value={id}>
-                {name}
+            {workerChoices.map((email) => (
+              <option key={email} value={email}>
+                {email}
               </option>
             ))}
           </AdminSelect>
@@ -251,22 +341,22 @@ export function AdminOrdersClient({
       </AdminCard>
 
       {selectedOrder ? (
-        <OrderTrackingCard
-          key={selectedOrder.id}
-          currentUserRole={currentUserRole}
-          customerEmail={selectedOrder.customerEmail}
-          emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
-          employees={employees}
-          initialEmployeeId={selectedOrder.employeeId}
-          initialPublicStage={selectedOrder.publicTrackingStage}
-          initialStatus={selectedOrder.trackingStatus}
-          initialWorkshopId={selectedOrder.workshopId}
-          locale={locale}
-          orderId={selectedOrder.id}
-          showTimeline={false}
-          trackingNumber={selectedOrder.trackingNumber}
-          workshops={workshops}
-        />
+        <div ref={selectedCardRef}>
+          <OrderTrackingCard
+            key={selectedOrder.id}
+            currentUserRole={currentUserRole}
+            customerEmail={selectedOrder.customerEmail}
+            emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
+            employees={employees}
+            initialAssignedWorkerEmail={selectedOrder.assignedWorkerEmail}
+            initialPublicStage={selectedOrder.publicTrackingStage}
+            initialStatus={selectedOrder.trackingStatus}
+            locale={locale}
+            orderId={selectedOrder.id}
+            showTimeline={false}
+            trackingNumber={selectedOrder.trackingNumber}
+          />
+        </div>
       ) : null}
 
       <AdminCard>

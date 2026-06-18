@@ -12,23 +12,29 @@ import { AdminBadge } from "./AdminBadge";
 import { getAdminButtonClassName } from "./AdminButton";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
 import { AdminLogoutButton } from "./AdminLogoutButton";
-import { adminNavItems } from "./AdminSidebar";
+import { adminNavItems, getVisibleAdminNavItems, type AdminNavCounts } from "./AdminSidebar";
 
 type AdminHeaderProps = {
   currentUser: AdminUser;
+  navCounts?: AdminNavCounts;
   onOpenNav: () => void;
 };
 
-export function AdminHeader({ currentUser, onOpenNav }: AdminHeaderProps) {
+export function AdminHeader({
+  currentUser,
+  navCounts,
+  onOpenNav,
+}: AdminHeaderProps) {
   const pathname = usePathname() ?? "/admin";
   const locale = useLocale() as AppLocale;
   const t = useTranslations("Admin");
+  const visibleItems = getVisibleAdminNavItems(currentUser.role);
   const currentItem =
-    adminNavItems.find((item) =>
+    visibleItems.find((item) =>
       item.href === "/admin"
         ? pathname === "/admin"
         : pathname === item.href || pathname.startsWith(`${item.href}/`)
-    ) ?? adminNavItems[0];
+    ) ?? visibleItems[0] ?? adminNavItems[0];
   const dateLabel = new Intl.DateTimeFormat(locale, {
     day: "2-digit",
     month: "long",
@@ -60,6 +66,11 @@ export function AdminHeader({ currentUser, onOpenNav }: AdminHeaderProps) {
               <p className="truncate text-sm font-semibold text-foreground">
                 {t(`nav.${currentItem.key}`)}
               </p>
+              {navCounts?.[currentItem.key] ? (
+                <AdminBadge variant="danger" className="px-2 py-0.5 text-[0.68rem]">
+                  {navCounts[currentItem.key]}
+                </AdminBadge>
+              ) : null}
             </div>
             <div className="rtl-inline-row flex flex-wrap items-center gap-3 text-sm text-muted">
               <span>{currentUser.name}</span>

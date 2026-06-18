@@ -543,14 +543,18 @@ export type Database = {
       orders: {
         Row: {
           archived_at: string | null;
+          assigned_at: string | null;
           assigned_admin_id: string | null;
+          assigned_worker_email: string | null;
           attachments_json: Json;
+          cancelled_at: string | null;
           currency: string;
           created_at: string;
           customer_email: string | null;
           customer_name: string | null;
           customer_phone: string | null;
           customer_reference: string | null;
+          deleted_at: string | null;
           due_date: string | null;
           employee_id: string | null;
           email_updates_enabled: boolean;
@@ -562,6 +566,7 @@ export type Database = {
           notes_json: Json;
           personalization_json: Json;
           priority: Database["public"]["Enums"]["order_priority"];
+          completed_at: string | null;
           product_specifications: Json;
           public_tracking_stage: string | null;
           status: Database["public"]["Enums"]["workshop_order_status"];
@@ -570,18 +575,23 @@ export type Database = {
           tracking_status: Database["public"]["Enums"]["tracking_status"];
           tracking_number: string;
           updated_at: string;
+          withdrawn_at: string | null;
           workshop_id: string | null;
         };
         Insert: {
           archived_at?: string | null;
+          assigned_at?: string | null;
           assigned_admin_id?: string | null;
+          assigned_worker_email?: string | null;
           attachments_json?: Json;
+          cancelled_at?: string | null;
           currency?: string;
           created_at?: string;
           customer_email?: string | null;
           customer_name?: string | null;
           customer_phone?: string | null;
           customer_reference?: string | null;
+          deleted_at?: string | null;
           due_date?: string | null;
           employee_id?: string | null;
           email_updates_enabled?: boolean;
@@ -593,6 +603,7 @@ export type Database = {
           notes_json?: Json;
           personalization_json?: Json;
           priority?: Database["public"]["Enums"]["order_priority"];
+          completed_at?: string | null;
           product_specifications?: Json;
           public_tracking_stage?: string | null;
           status: Database["public"]["Enums"]["workshop_order_status"];
@@ -601,18 +612,23 @@ export type Database = {
           tracking_status?: Database["public"]["Enums"]["tracking_status"];
           tracking_number: string;
           updated_at?: string;
+          withdrawn_at?: string | null;
           workshop_id?: string | null;
         };
         Update: {
           archived_at?: string | null;
+          assigned_at?: string | null;
           assigned_admin_id?: string | null;
+          assigned_worker_email?: string | null;
           attachments_json?: Json;
+          cancelled_at?: string | null;
           currency?: string;
           created_at?: string;
           customer_email?: string | null;
           customer_name?: string | null;
           customer_phone?: string | null;
           customer_reference?: string | null;
+          deleted_at?: string | null;
           due_date?: string | null;
           employee_id?: string | null;
           email_updates_enabled?: boolean;
@@ -624,6 +640,7 @@ export type Database = {
           notes_json?: Json;
           personalization_json?: Json;
           priority?: Database["public"]["Enums"]["order_priority"];
+          completed_at?: string | null;
           product_specifications?: Json;
           public_tracking_stage?: string | null;
           status?: Database["public"]["Enums"]["workshop_order_status"];
@@ -632,6 +649,7 @@ export type Database = {
           tracking_status?: Database["public"]["Enums"]["tracking_status"];
           tracking_number?: string;
           updated_at?: string;
+          withdrawn_at?: string | null;
           workshop_id?: string | null;
         };
         Relationships: [
@@ -856,6 +874,30 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      site_settings: {
+        Row: {
+          created_at: string;
+          key: string;
+          updated_at: string;
+          value_json: Json;
+          value_text: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          key: string;
+          updated_at?: string;
+          value_json?: Json;
+          value_text?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          key?: string;
+          updated_at?: string;
+          value_json?: Json;
+          value_text?: string | null;
+        };
+        Relationships: [];
       };
       support_tickets: {
         Row: {

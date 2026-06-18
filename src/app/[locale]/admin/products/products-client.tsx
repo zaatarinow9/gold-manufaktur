@@ -1,6 +1,6 @@
 "use client";
 
-import { type ChangeEvent, useMemo, useState, useTransition } from "react";
+import { type ChangeEvent, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { LoaderCircle, Search, Upload, X } from "lucide-react";
@@ -24,6 +24,11 @@ import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable
 import { AdminTabs } from "@/components/admin/AdminTabs";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import {
+  focusFirstInvalidField,
+  getRequiredFieldBadge,
+  scrollCardIntoView,
+} from "@/lib/admin/clientForm";
 import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import type {
   AdminCategoryRecord,
@@ -407,15 +412,31 @@ export function AdminProductsClient({
   const [statusFilter, setStatusFilter] = useState("all");
   const [featuredFilter, setFeaturedFilter] = useState("all");
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [formState, setFormState] = useState<ProductFormState>(() =>
     createEmptyProductForm(categories, products)
   );
+  const editorRef = useRef<HTMLDivElement | null>(null);
+  const requiredLabel = getRequiredFieldBadge(locale);
   const galleryUrls = useMemo(
     () => splitTextareaLines(formState.galleryText),
     [formState.galleryText]
   );
+  const selectedCategory =
+    categories.find((category) => category.id === formState.categoryId) ?? null;
+  const inheritedCustomizationEnabled =
+    selectedCategory?.supportsNameCustomization ?? false;
+
+  useEffect(() => {
+    if (!editorOpen || !editorRef.current) {
+      return;
+    }
+
+    scrollCardIntoView(editorRef.current);
+  }, [editorOpen, editingProductId]);
 
   const filteredProducts = useMemo(
     () =>
@@ -457,8 +478,22 @@ export function AdminProductsClient({
     ]
   );
 
+  const clearFieldError = (field: string) => {
+    setFieldErrors((current) => {
+      if (!(field in current)) {
+        return current;
+      }
+
+      const nextState = { ...current };
+      delete nextState[field];
+      return nextState;
+    });
+  };
+
   const resetForm = () => {
+    setFieldErrors({});
     setFormState(createEmptyProductForm(categories, products));
+    setEditingProductId(null);
     setUploadError(null);
     setEditorOpen(false);
   };
@@ -475,10 +510,7 @@ export function AdminProductsClient({
       sku: formState.sku.trim(),
       slug: formState.slug.trim(),
       sortOrder: Number(formState.sortOrder),
-      supportsNameCustomization:
-        formState.supportsNameCustomizationMode === "category"
-          ? null
-          : formState.supportsNameCustomizationMode === "enabled",
+      supportsNameCustomization: null,
       tags: splitCommaList(formState.tagsText),
     };
 
@@ -487,12 +519,16 @@ export function AdminProductsClient({
         ? await saveProductAction(locale, { ...payload, id: formState.id })
         : await saveProductAction(locale, payload);
 
+      setFieldErrors(result.fieldErrors ?? {});
       setFeedback(result.message);
 
-      if (result.ok) {
-        resetForm();
-        router.refresh();
+      if (!result.ok) {
+        focusFirstInvalidField(result.fieldErrors ?? {});
+        return;
       }
+
+      resetForm();
+      router.refresh();
     });
   };
 
@@ -569,7 +605,9 @@ export function AdminProductsClient({
 
   const openCreateForm = () => {
     setFeedback(null);
+    setFieldErrors({});
     setUploadError(null);
+    setEditingProductId("new");
     setFormState(createEmptyProductForm(categories, products));
     setEditorOpen(true);
   };
@@ -650,13 +688,20 @@ export function AdminProductsClient({
       align: "end",
       header: t("products.table.actions"),
       cell: (product) => (
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {editorOpen && editingProductId === product.id ? (
+            <AdminBadge variant="info">
+              {locale === "ar" ? "\u0645\u0641\u062a\u0648\u062d \u0627\u0644\u0622\u0646" : "Geoeffnet"}
+            </AdminBadge>
+          ) : null}
           <AdminButton
             size="sm"
             variant="secondary"
             onClick={() => {
               setFeedback(null);
+              setFieldErrors({});
               setUploadError(null);
+              setEditingProductId(product.id);
               setFormState(createEditProductForm(product));
               setEditorOpen(true);
             }}
@@ -798,87 +843,127 @@ export function AdminProductsClient({
       ) : null}
 
       {editorOpen ? (
-        <AdminCard
-          title={formState.id ? t("buttons.edit") : t("buttons.addProduct")}
-          description={t("products.description")}
-          action={
-            <div className="flex gap-2">
-              <AdminButton variant="ghost" onClick={resetForm}>
-                {t("buttons.close")}
-              </AdminButton>
-              <AdminButton
-                variant="primary"
-                onClick={submitForm}
-                disabled={isPending || isUploadingImages}
+        <div ref={editorRef}>
+          <AdminCard
+            title={formState.id ? t("buttons.edit") : t("buttons.addProduct")}
+            description={t("products.description")}
+            action={
+              <div className="flex gap-2">
+                <AdminButton variant="ghost" onClick={resetForm}>
+                  {t("buttons.close")}
+                </AdminButton>
+                <AdminButton
+                  variant="primary"
+                  onClick={submitForm}
+                  disabled={isPending || isUploadingImages}
+                >
+                  {t("buttons.save")}
+                </AdminButton>
+              </div>
+            }
+          >
+            <div className="grid gap-4 xl:grid-cols-2">
+              <AdminInput
+                id="sku"
+                name="sku"
+                label="SKU"
+                value={formState.sku}
+                required
+                requiredLabel={requiredLabel}
+                errorText={fieldErrors.sku}
+                onChange={(event) => {
+                  clearFieldError("sku");
+                  setFormState((current) => ({ ...current, sku: event.target.value }));
+                }}
+              />
+              <AdminInput
+                id="slug"
+                name="slug"
+                label="Slug"
+                value={formState.slug}
+                errorText={fieldErrors.slug}
+                helperText={!fieldErrors.slug ? (locale === "de" ? "Lassen Sie das Feld leer, wenn der Slug automatisch erzeugt werden soll." : "Leave the field empty to generate the slug automatically.") : undefined}
+                onChange={(event) => {
+                  clearFieldError("slug");
+                  setFormState((current) => ({ ...current, slug: event.target.value }));
+                }}
+              />
+              <AdminSelect
+                id="categoryId"
+                name="categoryId"
+                label={t("filters.category")}
+                value={formState.categoryId}
+                errorText={fieldErrors.categoryId}
+                onChange={(event) => {
+                  clearFieldError("categoryId");
+                  setFormState((current) => ({
+                    ...current,
+                    categoryId: event.target.value,
+                  }));
+                }}
               >
-                {t("buttons.save")}
-              </AdminButton>
-            </div>
-          }
-        >
-          <div className="grid gap-4 xl:grid-cols-2">
-            <AdminInput
-              label="SKU"
-              value={formState.sku}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, sku: event.target.value }))
-              }
-            />
-            <AdminInput
-              label="Slug"
-              value={formState.slug}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, slug: event.target.value }))
-              }
-            />
-            <AdminSelect
-              label={t("filters.category")}
-              value={formState.categoryId}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  categoryId: event.target.value,
-                }))
-              }
-            >
-              <option value="">{t("common.all")}</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.displayName}
-                </option>
-              ))}
-            </AdminSelect>
-            <AdminSelect
-              label={uiCopy.personalizationLabel}
-              value={formState.supportsNameCustomizationMode}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  supportsNameCustomizationMode: event.target.value as ProductFormState["supportsNameCustomizationMode"],
-                }))
-              }
-            >
-              <option value="category">{uiCopy.categoryDefault}</option>
-              <option value="enabled">{uiCopy.personalizationOn}</option>
-              <option value="disabled">{uiCopy.personalizationOff}</option>
-            </AdminSelect>
-            <AdminInput
-              label="Sort Order"
-              type="number"
-              value={String(formState.sortOrder)}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  sortOrder: Number(event.target.value || 0),
-                }))
-              }
-            />
-            {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+                <option value="">{t("common.all")}</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.displayName}
+                  </option>
+                ))}
+              </AdminSelect>
+              <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
+                <p className="admin-label">
+                  {locale === "de"
+                    ? "Namenspersonalisierung"
+                    : locale === "ar"
+                      ? "\u062a\u062e\u0635\u064a\u0635 \u0627\u0644\u0627\u0633\u0645"
+                      : "Name personalization"}
+                </p>
+                <p className="mt-2 text-sm text-foreground">
+                  {locale === "de"
+                    ? "Uebernimmt Namenspersonalisierung aus der Kategorie"
+                    : locale === "ar"
+                      ? "\u064a\u0631\u062b \u062a\u062e\u0635\u064a\u0635 \u0627\u0644\u0627\u0633\u0645 \u0645\u0646 \u0627\u0644\u062a\u0635\u0646\u064a\u0641"
+                      : "Inherits name personalization from the category"}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <AdminBadge variant={inheritedCustomizationEnabled ? "gold" : "neutral"}>
+                    {inheritedCustomizationEnabled
+                      ? uiCopy.personalizationBadge
+                      : t("common.disabled")}
+                  </AdminBadge>
+                  {selectedCategory ? (
+                    <AdminBadge variant="neutral">{selectedCategory.displayName}</AdminBadge>
+                  ) : null}
+                </div>
+              </div>
+              <AdminInput
+                id="sortOrder"
+                name="sortOrder"
+                label="Sort Order"
+                type="number"
+                value={String(formState.sortOrder)}
+                errorText={fieldErrors.sortOrder}
+                onChange={(event) => {
+                  clearFieldError("sortOrder");
+                  setFormState((current) => ({
+                    ...current,
+                    sortOrder: Number(event.target.value || 0),
+                  }));
+                }}
+              />
+              {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
               <AdminInput
                 key={`name-${language}`}
+                id={`name.${language}`}
+                name={`name.${language}`}
                 label={`Name ${language.toUpperCase()}`}
                 value={formState.name[language]}
-                onChange={(event) =>
+                required={language === "de" || language === "ar"}
+                requiredLabel={
+                  language === "de" || language === "ar" ? requiredLabel : undefined
+                }
+                errorText={fieldErrors[`name.${language}`]}
+                onChange={(event) => {
+                  clearFieldError(`name.${language}`);
                   setFormState((current) => ({
                     ...current,
                     name: updateLocalizedText(
@@ -886,16 +971,20 @@ export function AdminProductsClient({
                       language,
                       event.target.value
                     ),
-                  }))
-                }
+                  }));
+                }}
               />
-            ))}
-            {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+              ))}
+              {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
               <AdminTextarea
                 key={`description-${language}`}
+                id={`description.${language}`}
+                name={`description.${language}`}
                 label={`Description ${language.toUpperCase()}`}
                 value={formState.description[language]}
-                onChange={(event) =>
+                errorText={fieldErrors[`description.${language}`]}
+                onChange={(event) => {
+                  clearFieldError(`description.${language}`);
                   setFormState((current) => ({
                     ...current,
                     description: updateLocalizedText(
@@ -903,34 +992,42 @@ export function AdminProductsClient({
                       language,
                       event.target.value
                     ),
-                  }))
-                }
+                  }));
+                }}
               />
-            ))}
-            <AdminTextarea
-              label="Tags"
-              helperText={editorCopy.tagsHelper}
-              value={formState.tagsText}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  tagsText: event.target.value,
-                }))
-              }
-            />
-            <div className="space-y-4 xl:col-span-2">
+              ))}
+              <AdminTextarea
+                id="tags"
+                name="tags"
+                label="Tags"
+                helperText={editorCopy.tagsHelper}
+                errorText={fieldErrors.tags}
+                value={formState.tagsText}
+                onChange={(event) => {
+                  clearFieldError("tags");
+                  setFormState((current) => ({
+                    ...current,
+                    tagsText: event.target.value,
+                  }));
+                }}
+              />
+              <div className="space-y-4 xl:col-span-2">
               <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                 <div className="space-y-4">
                   <AdminTextarea
+                    id="gallery"
+                    name="gallery"
                     label={editorCopy.galleryLabel}
-                    helperText={editorCopy.galleryHelper}
+                    errorText={fieldErrors.gallery}
+                    helperText={!fieldErrors.gallery ? editorCopy.galleryHelper : undefined}
                     value={formState.galleryText}
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      clearFieldError("gallery");
                       setFormState((current) => ({
                         ...current,
                         galleryText: event.target.value,
-                      }))
-                    }
+                      }));
+                    }}
                   />
                   <label className="block space-y-2">
                     <span className="admin-label">{editorCopy.uploadButton}</span>
@@ -1017,7 +1114,7 @@ export function AdminProductsClient({
                 </div>
               </div>
             </div>
-            <div className="space-y-4 xl:col-span-2">
+              <div className="space-y-4 xl:col-span-2">
               <div className="space-y-1">
                 <p className="admin-label">{t("products.table.options")}</p>
                 <p className="text-xs text-muted">
@@ -1112,7 +1209,7 @@ export function AdminProductsClient({
                 </div>
               )}
             </div>
-            <div className="flex flex-wrap gap-5 xl:col-span-2">
+              <div className="flex flex-wrap gap-5 xl:col-span-2">
               <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
                 <input
                   type="checkbox"
@@ -1144,6 +1241,7 @@ export function AdminProductsClient({
             </div>
           </div>
         </AdminCard>
+        </div>
       ) : null}
 
       <div className="flex flex-wrap items-center justify-between gap-3">

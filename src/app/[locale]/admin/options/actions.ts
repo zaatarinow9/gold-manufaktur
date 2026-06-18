@@ -2,6 +2,7 @@
 
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
+import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import { AdminActionResult } from "@/lib/admin/actionResult";
@@ -31,6 +32,108 @@ function revalidateOptionViews() {
   });
 }
 
+function getRequiredFieldLabel(locale: AppLocale) {
+  if (locale === "de") {
+    return "Bitte fuellen Sie dieses Pflichtfeld aus.";
+  }
+
+  if (locale === "ar") {
+    return "يرجى تعبئة هذا الحقل المطلوب.";
+  }
+
+  if (locale === "fr") {
+    return "Veuillez renseigner ce champ obligatoire.";
+  }
+
+  if (locale === "tr") {
+    return "Lutfen bu zorunlu alani doldurun.";
+  }
+
+  return "Please complete this required field.";
+}
+
+function getKeyMessage(locale: AppLocale) {
+  if (locale === "de") {
+    return "Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.";
+  }
+
+  if (locale === "ar") {
+    return "استخدم أحرفاً صغيرة وأرقاماً وشرطات فقط.";
+  }
+
+  if (locale === "fr") {
+    return "Utilisez uniquement des lettres minuscules, des chiffres et des tirets.";
+  }
+
+  if (locale === "tr") {
+    return "Yalnizca kucuk harfler, rakamlar ve tire kullanin.";
+  }
+
+  return "Use lowercase letters, numbers, and hyphens only.";
+}
+
+function getOptionFieldErrors(locale: AppLocale, error: ZodError) {
+  const fieldErrors: Record<string, string> = {};
+  const requiredMessage = getRequiredFieldLabel(locale);
+  const keyMessage = getKeyMessage(locale);
+
+  for (const issue of error.issues) {
+    const path = issue.path.join(".");
+
+    if (!path || fieldErrors[path]) {
+      continue;
+    }
+
+    switch (path) {
+      case "key":
+        fieldErrors.key = keyMessage;
+        break;
+      case "label.de":
+      case "label.ar":
+      case "name.de":
+      case "name.ar":
+      case "groupId":
+        fieldErrors[path] = requiredMessage;
+        break;
+      default:
+        fieldErrors[path] = issue.message || requiredMessage;
+        break;
+    }
+  }
+
+  return fieldErrors;
+}
+
+function getOptionDeleteMessage(locale: AppLocale, mode: "deleted" | "soft_deleted_in_use") {
+  if (locale === "de") {
+    return mode === "deleted"
+      ? "Das Element wurde aus dem System entfernt."
+      : "Die Option wurde aus aktiven Formularen entfernt und bleibt nur in historischen Auftraegen erhalten.";
+  }
+
+  if (locale === "ar") {
+    return mode === "deleted"
+      ? "تم حذف العنصر من النظام."
+      : "تمت إزالة الخيار من النماذج النشطة وسيبقى فقط ضمن الطلبات السابقة.";
+  }
+
+  if (locale === "fr") {
+    return mode === "deleted"
+      ? "L'element a ete retire du systeme."
+      : "L'option a ete retiree des formulaires actifs et reste uniquement dans l'historique.";
+  }
+
+  if (locale === "tr") {
+    return mode === "deleted"
+      ? "Oge sistemden kaldirildi."
+      : "Secenek aktif formlardan kaldirildi ve yalnizca gecmis siparislerde tutuluyor.";
+  }
+
+  return mode === "deleted"
+    ? "The item was removed from the system."
+    : "The option was removed from active forms and is only kept for historical orders.";
+}
+
 export async function saveOptionGroupAction(
   locale: AppLocale,
   input: OptionGroupInput
@@ -55,6 +158,15 @@ export async function saveOptionGroupAction(
       ok: true,
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      const fieldErrors = getOptionFieldErrors(locale, error);
+      return {
+        fieldErrors,
+        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
+        ok: false,
+      };
+    }
+
     return {
       message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,
@@ -91,6 +203,15 @@ export async function saveOptionAction(
       ok: true,
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      const fieldErrors = getOptionFieldErrors(locale, error);
+      return {
+        fieldErrors,
+        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
+        ok: false,
+      };
+    }
+
     return {
       message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,
@@ -149,31 +270,8 @@ export async function deleteOptionAction(
     const result = await deleteOption(optionId);
     revalidateOptionViews();
 
-    if (result.mode === "soft_deleted_in_use") {
-      return {
-        message: locale === "de"
-          ? "Die Option wird weiterhin verwendet und wurde deshalb nur deaktiviert."
-          : locale === "ar"
-            ? "الخيار ما زال مستخدماً، لذلك تم تعطيله فقط."
-            : locale === "fr"
-              ? "Cette option est encore utilisee et a seulement ete desactivee."
-              : locale === "tr"
-                ? "Bu secenek hala kullanildigi icin yalnizca devre disi birakildi."
-            : "This option is still in use, so it was deactivated instead of fully deleted.",
-        ok: true,
-      };
-    }
-
     return {
-      message: locale === "de"
-        ? "Die Option wurde geloescht."
-        : locale === "ar"
-          ? "تم حذف الخيار."
-          : locale === "fr"
-            ? "L'option a ete supprimee."
-            : locale === "tr"
-              ? "Secenek silindi."
-          : "The option was deleted.",
+      message: getOptionDeleteMessage(locale, result.mode),
       ok: true,
     };
   } catch (error) {

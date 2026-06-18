@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
@@ -21,6 +21,11 @@ import { AdminReadonlyField } from "@/components/admin/AdminReadonlyField";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import {
+  focusFirstInvalidField,
+  getRequiredFieldBadge,
+  scrollCardIntoView,
+} from "@/lib/admin/clientForm";
 import type { AdminCategoryRecord, LocalizedText } from "@/lib/db/adminCatalog";
 
 type CategoryFormState = {
@@ -50,9 +55,7 @@ function createEmptyLocalizedText(): LocalizedText {
   };
 }
 
-function createEmptyCategoryForm(
-  categories: AdminCategoryRecord[]
-): CategoryFormState {
+function createEmptyCategoryForm(categories: AdminCategoryRecord[]): CategoryFormState {
   return {
     accent: "",
     description: createEmptyLocalizedText(),
@@ -94,49 +97,36 @@ function getCategoryUiCopy(locale: AppLocale) {
   if (locale === "ar") {
     return {
       deleteConfirm:
-        "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذه العملية.",
-      personalizationBadge: "يدعم تخصيص الاسم",
-      personalizationHeader: "التخصيص",
-      personalizationLabel: "يدعم تخصيص الاسم",
+        "\u0647\u0644 \u0623\u0646\u062a \u0645\u062a\u0623\u0643\u062f \u0645\u0646 \u062d\u0630\u0641 \u0647\u0630\u0627 \u0627\u0644\u062a\u0635\u0646\u064a\u0641\u061f",
+      imageFallback: "\u0628\u062f\u0648\u0646 \u0635\u0648\u0631\u0629",
+      openNow: "\u0645\u0641\u062a\u0648\u062d \u0627\u0644\u0622\u0646",
+      personalizationBadge: "\u064a\u062f\u0639\u0645 \u062a\u062e\u0635\u064a\u0635 \u0627\u0644\u0627\u0633\u0645",
+      personalizationLabel:
+        "\u062a\u0641\u0639\u064a\u0644 \u062a\u062e\u0635\u064a\u0635 \u0627\u0644\u0627\u0633\u0645 \u0644\u0647\u0630\u0627 \u0627\u0644\u062a\u0635\u0646\u064a\u0641",
+      slugHelper:
+        "\u064a\u0645\u0643\u0646 \u062a\u0631\u0643 \u0627\u0644\u062d\u0642\u0644 \u0641\u0627\u0631\u063a\u0627\u064b \u0644\u064a\u062a\u0645 \u0625\u0646\u0634\u0627\u0621 \u0627\u0644\u0631\u0627\u0628\u0637 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b.",
     };
   }
 
   if (locale === "de") {
     return {
-      deleteConfirm:
-        "Moechten Sie dieses Element wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.",
+      deleteConfirm: "Moechten Sie diese Kategorie wirklich entfernen?",
+      imageFallback: "Kein Bild",
+      openNow: "Geoeffnet",
       personalizationBadge: "Namenspersonalisierung",
-      personalizationHeader: "Personalisierung",
-      personalizationLabel: "Namenspersonalisierung aktivieren",
-    };
-  }
-
-  if (locale === "fr") {
-    return {
-      deleteConfirm:
-        "Voulez-vous vraiment supprimer cet element ? Cette action ne peut pas etre annulee.",
-      personalizationBadge: "Personnalisation du nom",
-      personalizationHeader: "Personnalisation",
-      personalizationLabel: "Activer la personnalisation du nom",
-    };
-  }
-
-  if (locale === "tr") {
-    return {
-      deleteConfirm:
-        "Bu ogeyi silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
-      personalizationBadge: "Isim kisilestirmesi",
-      personalizationHeader: "Kisilestirme",
-      personalizationLabel: "Isim kisilestirmesini etkinlestir",
+      personalizationLabel: "Namenspersonalisierung fuer diese Kategorie aktivieren",
+      slugHelper:
+        "Lassen Sie das Feld leer, wenn der Slug automatisch erzeugt werden soll.",
     };
   }
 
   return {
-    deleteConfirm:
-      "Do you really want to delete this item? This action cannot be undone.",
+    deleteConfirm: "Do you really want to remove this category?",
+    imageFallback: "No image",
+    openNow: "Opened",
     personalizationBadge: "Name personalization",
-    personalizationHeader: "Personalization",
-    personalizationLabel: "Enable name personalization",
+    personalizationLabel: "Enable name personalization for this category",
+    slugHelper: "Leave the field empty to generate the slug automatically.",
   };
 }
 
@@ -151,15 +141,27 @@ export function AdminCategoriesClient({
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [editorOpen, setEditorOpen] = useState(false);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [formState, setFormState] = useState<CategoryFormState>(() =>
     createEmptyCategoryForm(categories)
   );
+  const editorRef = useRef<HTMLDivElement | null>(null);
+  const requiredLabel = getRequiredFieldBadge(locale);
+
+  useEffect(() => {
+    if (!editorOpen || !editorRef.current) {
+      return;
+    }
+
+    scrollCardIntoView(editorRef.current);
+  }, [editorOpen, editingCategoryId]);
 
   const filtered = useMemo(
     () =>
       categories.filter((category) => {
-        if (!search) {
+        if (!search.trim()) {
           return true;
         }
 
@@ -173,9 +175,39 @@ export function AdminCategoriesClient({
     [categories, search]
   );
 
+  const clearFieldError = (field: string) => {
+    setFieldErrors((current) => {
+      if (!(field in current)) {
+        return current;
+      }
+
+      const nextState = { ...current };
+      delete nextState[field];
+      return nextState;
+    });
+  };
+
   const resetForm = () => {
+    setFieldErrors({});
     setFormState(createEmptyCategoryForm(categories));
+    setEditingCategoryId(null);
     setEditorOpen(false);
+  };
+
+  const openCreateForm = () => {
+    setFeedback(null);
+    setFieldErrors({});
+    setEditingCategoryId("new");
+    setFormState(createEmptyCategoryForm(categories));
+    setEditorOpen(true);
+  };
+
+  const openEditForm = (category: AdminCategoryRecord) => {
+    setFeedback(null);
+    setFieldErrors({});
+    setEditingCategoryId(category.id);
+    setFormState(createEditCategoryForm(category));
+    setEditorOpen(true);
   };
 
   const submitForm = () => {
@@ -195,12 +227,16 @@ export function AdminCategoriesClient({
         ? await saveCategoryAction(locale, { ...payload, id: formState.id })
         : await saveCategoryAction(locale, payload);
 
+      setFieldErrors(result.fieldErrors ?? {});
       setFeedback(result.message);
 
-      if (result.ok) {
-        resetForm();
-        router.refresh();
+      if (!result.ok) {
+        focusFirstInvalidField(result.fieldErrors ?? {});
+        return;
       }
+
+      resetForm();
+      router.refresh();
     });
   };
 
@@ -223,8 +259,8 @@ export function AdminCategoriesClient({
         }
       }
 
-      setFeedback(t("common.mockSubmit"));
       setSelected([]);
+      setFeedback(t("common.mockSubmit"));
       router.refresh();
     });
   };
@@ -247,14 +283,20 @@ export function AdminCategoriesClient({
       header: t("categories.table.category"),
       cell: (category) => (
         <div className="flex items-center gap-3">
-          <div className="relative h-[56px] w-[56px] overflow-hidden rounded-[0.9rem] border border-white/10">
-            <Image
-              src={category.imageUrl}
-              alt={category.displayName}
-              fill
-              className="object-cover"
-              sizes="56px"
-            />
+          <div className="relative h-[56px] w-[56px] overflow-hidden rounded-[0.9rem] border border-white/10 bg-white/4">
+            {category.imageUrl ? (
+              <Image
+                src={category.imageUrl}
+                alt={category.displayName}
+                fill
+                className="object-cover"
+                sizes="56px"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-[0.7rem] text-muted">
+                {uiCopy.imageFallback}
+              </div>
+            )}
           </div>
           <div>
             <p className="font-semibold text-foreground">{category.displayName}</p>
@@ -284,7 +326,7 @@ export function AdminCategoriesClient({
     },
     {
       id: "personalization",
-      header: uiCopy.personalizationHeader,
+      header: t("common.required"),
       cell: (category) => (
         <AdminBadge variant={category.supportsNameCustomization ? "gold" : "neutral"}>
           {category.supportsNameCustomization
@@ -298,16 +340,11 @@ export function AdminCategoriesClient({
       header: t("categories.table.actions"),
       align: "end",
       cell: (category) => (
-        <div className="flex flex-wrap justify-end gap-2">
-          <AdminButton
-            size="sm"
-            variant="secondary"
-            onClick={() => {
-              setFeedback(null);
-              setFormState(createEditCategoryForm(category));
-              setEditorOpen(true);
-            }}
-          >
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {editorOpen && editingCategoryId === category.id ? (
+            <AdminBadge variant="info">{uiCopy.openNow}</AdminBadge>
+          ) : null}
+          <AdminButton size="sm" variant="secondary" onClick={() => openEditForm(category)}>
             {t("buttons.edit")}
           </AdminButton>
           <AdminButton
@@ -341,6 +378,9 @@ export function AdminCategoriesClient({
                 const result = await deleteCategoryAction(locale, category.id);
                 setFeedback(result.message);
                 if (result.ok) {
+                  if (editingCategoryId === category.id) {
+                    resetForm();
+                  }
                   router.refresh();
                 }
               });
@@ -360,14 +400,7 @@ export function AdminCategoriesClient({
         title={t("categories.title")}
         description={t("categories.description")}
         actions={
-          <AdminButton
-            variant="primary"
-            onClick={() => {
-              setFeedback(null);
-              setFormState(createEmptyCategoryForm(categories));
-              setEditorOpen(true);
-            }}
-          >
+          <AdminButton variant="primary" onClick={openCreateForm}>
             {t("buttons.newCategory")}
           </AdminButton>
         }
@@ -380,130 +413,146 @@ export function AdminCategoriesClient({
       ) : null}
 
       {editorOpen ? (
-        <AdminCard
-          title={formState.id ? t("buttons.edit") : t("buttons.newCategory")}
-          description={t("categories.description")}
-          action={
-            <div className="flex gap-2">
-              <AdminButton variant="ghost" onClick={resetForm}>
-                {t("buttons.close")}
-              </AdminButton>
-              <AdminButton variant="primary" onClick={submitForm} disabled={isPending}>
-                {t("buttons.save")}
-              </AdminButton>
-            </div>
-          }
-        >
-          <div className="grid gap-4 xl:grid-cols-2">
-            <AdminInput
-              label="Slug"
-              value={formState.slug}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, slug: event.target.value }))
-              }
-            />
-            <AdminInput
-              label="Accent"
-              value={formState.accent}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, accent: event.target.value }))
-              }
-            />
-            <AdminInput
-              label="Image URL"
-              value={formState.imageUrl}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  imageUrl: event.target.value,
-                }))
-              }
-            />
-            <AdminInput
-              label="Sort Order"
-              type="number"
-              value={String(formState.sortOrder)}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  sortOrder: Number(event.target.value || 0),
-                }))
-              }
-            />
-            {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+        <div ref={editorRef}>
+          <AdminCard
+            title={formState.id ? t("buttons.edit") : t("buttons.newCategory")}
+            description={t("categories.description")}
+            action={
+              <div className="flex gap-2">
+                <AdminButton variant="ghost" onClick={resetForm}>
+                  {t("buttons.close")}
+                </AdminButton>
+                <AdminButton variant="primary" onClick={submitForm} disabled={isPending}>
+                  {t("buttons.save")}
+                </AdminButton>
+              </div>
+            }
+          >
+            <div className="grid gap-4 xl:grid-cols-2">
               <AdminInput
-                key={`name-${language}`}
-                label={`Name ${language.toUpperCase()}`}
-                value={formState.name[language]}
+                id="slug"
+                name="slug"
+                label="Slug"
+                value={formState.slug}
+                errorText={fieldErrors.slug}
+                helperText={!fieldErrors.slug ? uiCopy.slugHelper : undefined}
+                onChange={(event) => {
+                  clearFieldError("slug");
+                  setFormState((current) => ({ ...current, slug: event.target.value }));
+                }}
+              />
+              <AdminInput
+                id="accent"
+                name="accent"
+                label="Accent"
+                value={formState.accent}
+                onChange={(event) =>
+                  setFormState((current) => ({ ...current, accent: event.target.value }))
+                }
+              />
+              <AdminInput
+                id="imageUrl"
+                name="imageUrl"
+                label="Image URL"
+                value={formState.imageUrl}
                 onChange={(event) =>
                   setFormState((current) => ({
                     ...current,
-                    name: updateLocalizedText(
-                      current.name,
-                      language,
-                      event.target.value
-                    ),
+                    imageUrl: event.target.value,
                   }))
                 }
               />
-            ))}
-            {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
-              <AdminTextarea
-                key={`description-${language}`}
-                label={`Description ${language.toUpperCase()}`}
-                value={formState.description[language]}
+              <AdminInput
+                id="sortOrder"
+                name="sortOrder"
+                label="Sort Order"
+                type="number"
+                value={String(formState.sortOrder)}
                 onChange={(event) =>
                   setFormState((current) => ({
                     ...current,
-                    description: updateLocalizedText(
-                      current.description,
-                      language,
-                      event.target.value
-                    ),
+                    sortOrder: Number(event.target.value || 0),
                   }))
                 }
               />
-            ))}
-            <div className="xl:col-span-2">
-              <div className="flex flex-wrap gap-5">
-                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                  <input
-                    type="checkbox"
-                    checked={formState.isActive}
-                    onChange={(event) =>
-                      setFormState((current) => ({
-                        ...current,
-                        isActive: event.target.checked,
-                      }))
-                    }
-                    className="h-4 w-4 accent-[#c49a52]"
-                  />
-                  {t("common.active")}
-                </label>
-                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                  <input
-                    type="checkbox"
-                    checked={formState.supportsNameCustomization}
-                    onChange={(event) =>
-                      setFormState((current) => ({
-                        ...current,
-                        supportsNameCustomization: event.target.checked,
-                      }))
-                    }
-                    className="h-4 w-4 accent-[#c49a52]"
-                  />
-                  {uiCopy.personalizationLabel}
-                </label>
+              {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+                <AdminInput
+                  key={`name-${language}`}
+                  id={`name.${language}`}
+                  name={`name.${language}`}
+                  label={`Name ${language.toUpperCase()}`}
+                  value={formState.name[language]}
+                  required={language === "de" || language === "ar"}
+                  requiredLabel={language === "de" || language === "ar" ? requiredLabel : undefined}
+                  errorText={fieldErrors[`name.${language}`]}
+                  onChange={(event) => {
+                    clearFieldError(`name.${language}`);
+                    setFormState((current) => ({
+                      ...current,
+                      name: updateLocalizedText(current.name, language, event.target.value),
+                    }));
+                  }}
+                />
+              ))}
+              {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+                <AdminTextarea
+                  key={`description-${language}`}
+                  id={`description.${language}`}
+                  name={`description.${language}`}
+                  label={`Description ${language.toUpperCase()}`}
+                  value={formState.description[language]}
+                  errorText={fieldErrors[`description.${language}`]}
+                  onChange={(event) => {
+                    clearFieldError(`description.${language}`);
+                    setFormState((current) => ({
+                      ...current,
+                      description: updateLocalizedText(
+                        current.description,
+                        language,
+                        event.target.value
+                      ),
+                    }));
+                  }}
+                />
+              ))}
+              <div className="xl:col-span-2">
+                <div className="flex flex-wrap gap-5">
+                  <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={formState.isActive}
+                      onChange={(event) =>
+                        setFormState((current) => ({
+                          ...current,
+                          isActive: event.target.checked,
+                        }))
+                      }
+                      className="h-4 w-4 accent-[#c49a52]"
+                    />
+                    {t("common.active")}
+                  </label>
+                  <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={formState.supportsNameCustomization}
+                      onChange={(event) =>
+                        setFormState((current) => ({
+                          ...current,
+                          supportsNameCustomization: event.target.checked,
+                        }))
+                      }
+                      className="h-4 w-4 accent-[#c49a52]"
+                    />
+                    {uiCopy.personalizationLabel}
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-        </AdminCard>
+          </AdminCard>
+        </div>
       ) : null}
 
-      <AdminCard
-        title={t("categories.bulkTitle")}
-        description={t("categories.bulkDescription")}
-      >
+      <AdminCard title={t("categories.bulkTitle")} description={t("categories.bulkDescription")}>
         <AdminToolbar
           actions={
             <>

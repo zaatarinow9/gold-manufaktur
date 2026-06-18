@@ -6,6 +6,7 @@ import {
   ShoppingBag,
   Users,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
@@ -56,14 +57,19 @@ export default async function AdminDashboardPage({
     );
   }
 
+  if (access.user.role === "employee") {
+    redirect(`/${locale}/admin/orders`);
+  }
+
+  const currentUser = access.user;
   const [orders, workshops, employees, categories, products, notifications] =
     await Promise.all([
-      getScopedOrders(access.user),
-      getScopedWorkshops(access.user),
-      getScopedEmployees(access.user),
+      getScopedOrders(currentUser),
+      getScopedWorkshops(currentUser),
+      getScopedEmployees(currentUser),
       getAdminCategories(locale),
       getAdminProducts(locale),
-      getScopedAdminNotifications(access.user),
+      getScopedAdminNotifications(currentUser),
     ]);
 
   const recentOrders = [...orders]
@@ -77,10 +83,6 @@ export default async function AdminDashboardPage({
   ).length;
   const inProduction = orders.filter((order) => order.status === "in_production").length;
   const readyOrders = orders.filter((order) => order.status === "ready").length;
-  const openTickets = orders.reduce(
-    (total, order) => total + order.supportTicketCount,
-    0
-  );
 
   const stats = [
     {
@@ -88,7 +90,7 @@ export default async function AdminDashboardPage({
       hint: t("overview.stats.totalProductsHint"),
       icon: <Package className="h-5 w-5" />,
       label: t("overview.stats.totalProducts"),
-      value: access.user.role === "employee" ? orders.length : activeProducts,
+      value: activeProducts,
     },
     {
       badge: t("common.curated"),
@@ -119,14 +121,11 @@ export default async function AdminDashboardPage({
       value: readyOrders,
     },
     {
-      badge: t(`roles.${access.user.role}`),
+      badge: t(`roles.${currentUser.role}`),
       hint: t("overview.stats.employeesHint"),
       icon: <Users className="h-5 w-5" />,
-      label:
-        access.user.role === "employee"
-          ? "Assigned tickets"
-          : t("overview.stats.employees"),
-      value: access.user.role === "employee" ? openTickets : employees.length,
+      label: t("overview.stats.employees"),
+      value: employees.length,
     },
   ];
 
@@ -188,14 +187,12 @@ export default async function AdminDashboardPage({
         title={t("overview.title")}
         description={t("overview.description")}
         actions={
-          access.user.role !== "employee" ? (
-            <Link
-              href="/admin/gallery/new-order"
-              className={getAdminButtonClassName({ variant: "primary" })}
-            >
-              {t("buttons.createOrder")}
-            </Link>
-          ) : undefined
+          <Link
+            href="/admin/gallery/new-order"
+            className={getAdminButtonClassName({ variant: "primary" })}
+          >
+            {t("buttons.createOrder")}
+          </Link>
         }
       />
 
@@ -225,31 +222,27 @@ export default async function AdminDashboardPage({
             description={t("overview.quickActionsDescription")}
           >
             <div className="grid gap-3">
-              {access.user.role !== "employee" ? (
-                <>
-                  <Link
-                    href="/admin/gallery/new-order"
-                    className={getAdminButtonClassName({
-                      block: true,
-                      variant: "primary",
-                    })}
-                  >
-                    {t("overview.actions.createOrder")}
-                  </Link>
-                  <Link
-                    href="/admin/products"
-                    className={getAdminButtonClassName({ block: true, variant: "secondary" })}
-                  >
-                    {t("overview.actions.addProduct")}
-                  </Link>
-                  <Link
-                    href="/admin/options"
-                    className={getAdminButtonClassName({ block: true, variant: "secondary" })}
-                  >
-                    {t("overview.actions.manageOptions")}
-                  </Link>
-                </>
-              ) : null}
+              <Link
+                href="/admin/gallery/new-order"
+                className={getAdminButtonClassName({
+                  block: true,
+                  variant: "primary",
+                })}
+              >
+                {t("overview.actions.createOrder")}
+              </Link>
+              <Link
+                href="/admin/products"
+                className={getAdminButtonClassName({ block: true, variant: "secondary" })}
+              >
+                {t("overview.actions.addProduct")}
+              </Link>
+              <Link
+                href="/admin/options"
+                className={getAdminButtonClassName({ block: true, variant: "secondary" })}
+              >
+                {t("overview.actions.manageOptions")}
+              </Link>
               <Link
                 href="/admin/orders"
                 className={getAdminButtonClassName({ block: true, variant: "secondary" })}

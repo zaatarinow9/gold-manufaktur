@@ -13,6 +13,10 @@ import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
+import {
+  focusFirstInvalidField,
+  getRequiredFieldBadge,
+} from "@/lib/admin/clientForm";
 import type { AdminProductRecord } from "@/lib/db/adminCatalog";
 
 type NewOrderClientProps = {
@@ -137,6 +141,13 @@ export function NewOrderClient({
   const [totalAmount, setTotalAmount] = useState("");
   const [currency, setCurrency] = useState("EUR");
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
+  const requiredLabel = getRequiredFieldBadge(locale);
+  const productRequiredMessage =
+    locale === "de"
+      ? "Bitte waehlen Sie zuerst ein Produkt aus."
+      : locale === "ar"
+        ? "\u064a\u0631\u062c\u0649 \u0627\u062e\u062a\u064a\u0627\u0631 \u0645\u0646\u062a\u062c \u0623\u0648\u0644\u0627\u064b."
+        : "Please choose a product first.";
 
   const selectedProduct =
     products.find((product) => product.id === productId) ?? products[0];
@@ -157,7 +168,9 @@ export function NewOrderClient({
 
   const submitForm = () => {
     if (!selectedProduct) {
-      setFieldErrors({ productId: t("newOrder.fields.product") });
+      const nextErrors = { productId: productRequiredMessage };
+      setFieldErrors(nextErrors);
+      focusFirstInvalidField(nextErrors);
       return;
     }
 
@@ -222,7 +235,12 @@ export function NewOrderClient({
       setFeedback(result.message);
       setFieldErrors(result.fieldErrors ?? {});
 
-      if (result.ok && result.orderId) {
+      if (!result.ok) {
+        focusFirstInvalidField(result.fieldErrors ?? {});
+        return;
+      }
+
+      if (result.orderId) {
         router.push(`/${locale}/admin/orders/${result.orderId}`);
       }
     });
@@ -250,10 +268,13 @@ export function NewOrderClient({
           >
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminSelect
+                id="productId"
+                name="productId"
                 label={t("newOrder.fields.product")}
+                required
+                requiredLabel={requiredLabel}
                 value={productId}
-                helperText={fieldErrors.productId}
-                className={fieldErrors.productId ? "border-rose-400/30" : undefined}
+                errorText={fieldErrors.productId}
                 onChange={(event) => {
                   clearFieldError("productId");
                   setProductId(event.target.value);
@@ -266,11 +287,14 @@ export function NewOrderClient({
                 ))}
               </AdminSelect>
               <AdminInput
+                id="quantity"
+                name="quantity"
                 label={t("newOrder.fields.quantity")}
                 type="number"
+                required
+                requiredLabel={requiredLabel}
                 value={String(quantity)}
-                helperText={fieldErrors.quantity}
-                className={fieldErrors.quantity ? "border-rose-400/30" : undefined}
+                errorText={fieldErrors.quantity}
                 onChange={(event) => {
                   clearFieldError("quantity");
                   setQuantity(Number(event.target.value || 1));
@@ -285,37 +309,55 @@ export function NewOrderClient({
           >
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminInput
+                id="customerName"
+                name="customerName"
                 label={t("newOrder.fields.customerName")}
+                required
+                requiredLabel={requiredLabel}
                 value={customerName}
-                helperText={fieldErrors.customerName}
-                className={fieldErrors.customerName ? "border-rose-400/30" : undefined}
+                errorText={fieldErrors.customerName}
                 onChange={(event) => {
                   clearFieldError("customerName");
                   setCustomerName(event.target.value);
                 }}
               />
               <AdminInput
+                id="customerEmail"
+                name="customerEmail"
                 label={t("newOrder.fields.customerEmail")}
+                type="email"
+                required
+                requiredLabel={requiredLabel}
                 value={customerEmail}
-                helperText={fieldErrors.customerEmail}
-                className={fieldErrors.customerEmail ? "border-rose-400/30" : undefined}
+                errorText={fieldErrors.customerEmail}
                 onChange={(event) => {
                   clearFieldError("customerEmail");
                   setCustomerEmail(event.target.value);
                 }}
               />
               <AdminInput
+                id="customerPhone"
+                name="customerPhone"
                 label={t("newOrder.fields.customerPhone")}
                 type="tel"
                 value={customerPhone}
                 dir="ltr"
                 inputMode="tel"
-                onChange={(event) => setCustomerPhone(event.target.value)}
+                errorText={fieldErrors.customerPhone}
+                onChange={(event) => {
+                  clearFieldError("customerPhone");
+                  setCustomerPhone(event.target.value);
+                }}
               />
               <AdminInput
+                id="customerReference"
+                name="customerReference"
                 label={t("newOrder.fields.customerReference")}
                 value={customerReference}
-                onChange={(event) => setCustomerReference(event.target.value)}
+                onChange={(event) => {
+                  clearFieldError("customerReference");
+                  setCustomerReference(event.target.value);
+                }}
               />
             </div>
           </AdminCard>
@@ -326,14 +368,13 @@ export function NewOrderClient({
           >
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminSelect
+                id="productSpecifications.karat"
+                name="productSpecifications.karat"
                 label={uiCopy.karat}
+                required
+                requiredLabel={requiredLabel}
                 value={karat}
-                helperText={fieldErrors["productSpecifications.karat"]}
-                className={
-                  fieldErrors["productSpecifications.karat"]
-                    ? "border-rose-400/30"
-                    : undefined
-                }
+                errorText={fieldErrors["productSpecifications.karat"]}
                 onChange={(event) => {
                   clearFieldError("productSpecifications.karat");
                   setKarat(event.target.value as "14" | "18" | "21");
@@ -346,17 +387,16 @@ export function NewOrderClient({
                 ))}
               </AdminSelect>
               <AdminInput
+                id="productSpecifications.weightGrams"
+                name="productSpecifications.weightGrams"
                 label={uiCopy.weight}
                 type="number"
                 min="0"
                 step="0.01"
+                required
+                requiredLabel={requiredLabel}
                 value={weightGrams}
-                helperText={fieldErrors["productSpecifications.weightGrams"]}
-                className={
-                  fieldErrors["productSpecifications.weightGrams"]
-                    ? "border-rose-400/30"
-                    : undefined
-                }
+                errorText={fieldErrors["productSpecifications.weightGrams"]}
                 onChange={(event) => {
                   clearFieldError("productSpecifications.weightGrams");
                   setWeightGrams(event.target.value);
@@ -365,15 +405,14 @@ export function NewOrderClient({
               {supportsNameCustomization ? (
                 <>
                   <AdminSelect
+                    id="productSpecifications.nameCustomization.language"
+                    name="productSpecifications.nameCustomization.language"
                     label={uiCopy.designLanguage}
+                    required
+                    requiredLabel={requiredLabel}
                     value={nameLanguage}
-                    helperText={
+                    errorText={
                       fieldErrors["productSpecifications.nameCustomization.language"]
-                    }
-                    className={
-                      fieldErrors["productSpecifications.nameCustomization.language"]
-                        ? "border-rose-400/30"
-                        : undefined
                     }
                     onChange={(event) => {
                       clearFieldError("productSpecifications.nameCustomization.language");
@@ -384,15 +423,16 @@ export function NewOrderClient({
                     <option value="en">{uiCopy.designLanguageEnglish}</option>
                   </AdminSelect>
                   <AdminInput
+                    id="productSpecifications.nameCustomization.text"
+                    name="productSpecifications.nameCustomization.text"
                     label={uiCopy.requestedName}
+                    required
+                    requiredLabel={requiredLabel}
                     value={requestedName}
+                    errorText={fieldErrors["productSpecifications.nameCustomization.text"]}
                     helperText={
-                      fieldErrors["productSpecifications.nameCustomization.text"] ||
-                      uiCopy.helper
-                    }
-                    className={
-                      fieldErrors["productSpecifications.nameCustomization.text"]
-                        ? "border-rose-400/30"
+                      !fieldErrors["productSpecifications.nameCustomization.text"]
+                        ? uiCopy.helper
                         : undefined
                     }
                     onChange={(event) => {
@@ -403,17 +443,27 @@ export function NewOrderClient({
                 </>
               ) : null}
               <AdminInput
+                id="totalAmount"
+                name="totalAmount"
                 label={uiCopy.totalAmount}
                 type="number"
                 min="0"
                 step="0.01"
                 value={totalAmount}
-                onChange={(event) => setTotalAmount(event.target.value)}
+                onChange={(event) => {
+                  clearFieldError("totalAmount");
+                  setTotalAmount(event.target.value);
+                }}
               />
               <AdminSelect
+                id="currency"
+                name="currency"
                 label={t("newOrder.fields.currency")}
                 value={currency}
-                onChange={(event) => setCurrency(event.target.value)}
+                onChange={(event) => {
+                  clearFieldError("currency");
+                  setCurrency(event.target.value);
+                }}
               >
                 {["EUR", "USD", "TRY"].map((value) => (
                   <option key={value} value={value}>
@@ -427,14 +477,26 @@ export function NewOrderClient({
           <AdminCard title={t("newOrder.sections.notes")} description={t("newOrder.reviewDescription")}>
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminTextarea
+                id="notes.customerNotes"
+                name="notes.customerNotes"
                 label={uiCopy.customerNote}
                 value={customerNotes}
-                onChange={(event) => setCustomerNotes(event.target.value)}
+                errorText={fieldErrors["notes.customerNotes"]}
+                onChange={(event) => {
+                  clearFieldError("notes.customerNotes");
+                  setCustomerNotes(event.target.value);
+                }}
               />
               <AdminTextarea
+                id="notes.adminNotes"
+                name="notes.adminNotes"
                 label={uiCopy.internalNote}
                 value={adminNotes}
-                onChange={(event) => setAdminNotes(event.target.value)}
+                errorText={fieldErrors["notes.adminNotes"]}
+                onChange={(event) => {
+                  clearFieldError("notes.adminNotes");
+                  setAdminNotes(event.target.value);
+                }}
               />
             </div>
           </AdminCard>

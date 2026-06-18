@@ -1,7 +1,7 @@
 "use server";
 
-import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
@@ -11,8 +11,11 @@ import {
 } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
+  archiveOrder,
   createOrder,
+  deleteOrder,
   updateOrderWorkflow,
+  withdrawOrderAssignment,
   type OrderCreatePayload,
   type OrderWorkflowUpdatePayload,
 } from "@/lib/db/orders";
@@ -39,38 +42,45 @@ function getLocalizedOrderFieldMessage(
     | "nameCustomizationTextRequired"
     | "productKaratRequired"
     | "productWeightRequired"
+    | "workerEmailInvalid"
 ) {
   switch (key) {
     case "customerNameRequired":
       return locale === "de"
         ? "Bitte geben Sie den Kundennamen ein."
         : locale === "ar"
-          ? "يرجى إدخال اسم العميل."
+          ? "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0627\u0633\u0645 \u0627\u0644\u0639\u0645\u064a\u0644."
           : "Please enter the customer name.";
     case "nameCustomizationLanguageRequired":
       return locale === "de"
         ? "Bitte waehlen Sie eine Designsprache aus."
         : locale === "ar"
-          ? "يرجى اختيار لغة التصميم."
+          ? "\u064a\u0631\u062c\u0649 \u0627\u062e\u062a\u064a\u0627\u0631 \u0644\u063a\u0629 \u0627\u0644\u062a\u0635\u0645\u064a\u0645."
           : "Please select a design language.";
     case "nameCustomizationTextRequired":
       return locale === "de"
         ? "Bitte geben Sie den gewuenschten Namen ein."
         : locale === "ar"
-          ? "يرجى إدخال الاسم المطلوب."
+          ? "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0627\u0644\u0627\u0633\u0645 \u0627\u0644\u0645\u0637\u0644\u0648\u0628."
           : "Please enter the requested name.";
     case "productKaratRequired":
       return locale === "de"
         ? "Bitte waehlen Sie eine Legierung aus."
         : locale === "ar"
-          ? "يرجى اختيار العيار."
+          ? "\u064a\u0631\u062c\u0649 \u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u0639\u064a\u0627\u0631."
           : "Please select a karat value.";
     case "productWeightRequired":
       return locale === "de"
         ? "Bitte geben Sie ein gueltiges Gewicht in Gramm ein."
         : locale === "ar"
-          ? "يرجى إدخال وزن صحيح بالغرام."
+          ? "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0648\u0632\u0646 \u0635\u062d\u064a\u062d \u0628\u0627\u0644\u063a\u0631\u0627\u0645."
           : "Please enter a valid weight in grams.";
+    case "workerEmailInvalid":
+      return locale === "de"
+        ? "Bitte geben Sie eine gueltige Mitarbeiter-E-Mail ein."
+        : locale === "ar"
+          ? "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0628\u0631\u064a\u062f \u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0635\u062d\u064a\u062d \u0644\u0644\u0639\u0627\u0645\u0644."
+          : "Please enter a valid worker email address.";
   }
 }
 
@@ -110,9 +120,8 @@ function getOrderFieldErrors(locale: AppLocale, error: ZodError) {
         fieldErrors.customerEmail = copy.customerEmailInvalid;
         break;
       case "customerName":
-        fieldErrors.customerName = issue.code === "too_small"
-          ? "customerNameRequired"
-          : copy.formErrorFallback;
+        fieldErrors.customerName =
+          issue.code === "too_small" ? "customerNameRequired" : copy.formErrorFallback;
         break;
       case "employeeId":
         fieldErrors.employeeId = copy.invalidSelection;
@@ -143,6 +152,9 @@ function getOrderFieldErrors(locale: AppLocale, error: ZodError) {
       case "status":
         fieldErrors.status = copy.selectStatus;
         break;
+      case "workerEmail":
+        fieldErrors.workerEmail = "workerEmailInvalid";
+        break;
       case "workshopId":
         fieldErrors.workshopId = copy.invalidSelection;
         break;
@@ -155,10 +167,7 @@ function getOrderFieldErrors(locale: AppLocale, error: ZodError) {
   return fieldErrors;
 }
 
-async function getLocalizedFieldErrors(
-  locale: AppLocale,
-  error: ZodError
-) {
+async function getLocalizedFieldErrors(locale: AppLocale, error: ZodError) {
   const fieldErrors = getOrderFieldErrors(locale, error);
 
   if (fieldErrors.customerName === "customerNameRequired") {
@@ -198,7 +207,50 @@ async function getLocalizedFieldErrors(
       getLocalizedOrderFieldMessage(locale, "nameCustomizationTextRequired");
   }
 
+  if (fieldErrors.workerEmail === "workerEmailInvalid") {
+    fieldErrors.workerEmail = getLocalizedOrderFieldMessage(
+      locale,
+      "workerEmailInvalid"
+    );
+  }
+
   return fieldErrors;
+}
+
+function getLifecycleMessage(
+  locale: AppLocale,
+  key: "archived" | "deleted" | "withdrawn"
+) {
+  if (locale === "ar") {
+    switch (key) {
+      case "archived":
+        return "\u062a\u0645\u062a \u0623\u0631\u0634\u0641\u0629 \u0627\u0644\u0637\u0644\u0628.";
+      case "deleted":
+        return "\u062a\u0645 \u062d\u0630\u0641 \u0627\u0644\u0637\u0644\u0628 \u0645\u0646 \u0627\u0644\u0646\u0638\u0627\u0645.";
+      case "withdrawn":
+        return "\u062a\u0645 \u0633\u062d\u0628 \u0627\u0644\u0637\u0644\u0628 \u0645\u0646 \u0627\u0644\u0639\u0627\u0645\u0644 \u0648\u0625\u0639\u0627\u062f\u062a\u0647 \u0625\u0644\u0649 \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u0625\u062f\u0627\u0631\u0629.";
+    }
+  }
+
+  if (locale === "de") {
+    switch (key) {
+      case "archived":
+        return "Der Auftrag wurde archiviert.";
+      case "deleted":
+        return "Der Auftrag wurde aus dem System entfernt.";
+      case "withdrawn":
+        return "Der Auftrag wurde vom Bearbeiter zurueckgezogen und liegt wieder in der Admin-Warteschlange.";
+    }
+  }
+
+  switch (key) {
+    case "archived":
+      return "The order was archived.";
+    case "deleted":
+      return "The order was removed from the system.";
+    case "withdrawn":
+      return "The order assignment was withdrawn and returned to the admin queue.";
+  }
 }
 
 async function getOrderFailure(
@@ -379,6 +431,87 @@ export async function updateOrderWorkflowAction(
 
     return {
       message,
+      ok: true,
+      trackingNumber: result.trackingNumber,
+    };
+  } catch (error) {
+    return getOrderFailure(locale, error, "update");
+  }
+}
+
+export async function archiveOrderAction(
+  locale: AppLocale,
+  orderId: string
+): Promise<OrderActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+
+  if (access.state !== "authenticated" || !access.user) {
+    return {
+      message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await archiveOrder(access.user, orderId);
+    revalidateOrderViews(orderId, result.trackingNumber);
+    return {
+      message: getLifecycleMessage(locale, "archived"),
+      ok: true,
+      trackingNumber: result.trackingNumber,
+    };
+  } catch (error) {
+    return getOrderFailure(locale, error, "update");
+  }
+}
+
+export async function deleteOrderAction(
+  locale: AppLocale,
+  orderId: string
+): Promise<OrderActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+
+  if (access.state !== "authenticated" || !access.user) {
+    return {
+      message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await deleteOrder(access.user, orderId);
+    revalidateOrderViews(orderId, result.trackingNumber);
+    return {
+      message: getLifecycleMessage(locale, "deleted"),
+      ok: true,
+      trackingNumber: result.trackingNumber,
+    };
+  } catch (error) {
+    return getOrderFailure(locale, error, "update");
+  }
+}
+
+export async function withdrawOrderAssignmentAction(
+  locale: AppLocale,
+  orderId: string
+): Promise<OrderActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+
+  if (access.state !== "authenticated" || !access.user) {
+    return {
+      message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await withdrawOrderAssignment(access.user, orderId);
+    revalidateOrderViews(orderId, result.trackingNumber);
+    return {
+      message: getLifecycleMessage(locale, "withdrawn"),
       ok: true,
       trackingNumber: result.trackingNumber,
     };
