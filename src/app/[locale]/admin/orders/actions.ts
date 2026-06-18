@@ -31,8 +31,51 @@ type OrderActionResult =
       trackingNumber?: string;
     };
 
+function getLocalizedOrderFieldMessage(
+  locale: AppLocale,
+  key:
+    | "customerNameRequired"
+    | "nameCustomizationLanguageRequired"
+    | "nameCustomizationTextRequired"
+    | "productKaratRequired"
+    | "productWeightRequired"
+) {
+  switch (key) {
+    case "customerNameRequired":
+      return locale === "de"
+        ? "Bitte geben Sie den Kundennamen ein."
+        : locale === "ar"
+          ? "يرجى إدخال اسم العميل."
+          : "Please enter the customer name.";
+    case "nameCustomizationLanguageRequired":
+      return locale === "de"
+        ? "Bitte waehlen Sie eine Designsprache aus."
+        : locale === "ar"
+          ? "يرجى اختيار لغة التصميم."
+          : "Please select a design language.";
+    case "nameCustomizationTextRequired":
+      return locale === "de"
+        ? "Bitte geben Sie den gewuenschten Namen ein."
+        : locale === "ar"
+          ? "يرجى إدخال الاسم المطلوب."
+          : "Please enter the requested name.";
+    case "productKaratRequired":
+      return locale === "de"
+        ? "Bitte waehlen Sie eine Legierung aus."
+        : locale === "ar"
+          ? "يرجى اختيار العيار."
+          : "Please select a karat value.";
+    case "productWeightRequired":
+      return locale === "de"
+        ? "Bitte geben Sie ein gueltiges Gewicht in Gramm ein."
+        : locale === "ar"
+          ? "يرجى إدخال وزن صحيح بالغرام."
+          : "Please enter a valid weight in grams.";
+  }
+}
+
 function getFieldErrorKey(path: ReadonlyArray<PropertyKey>) {
-  const [first, second] = path;
+  const [first, second, third] = path;
 
   if (typeof first !== "string") {
     return "";
@@ -40,6 +83,12 @@ function getFieldErrorKey(path: ReadonlyArray<PropertyKey>) {
 
   if (first === "notes" && typeof second === "string") {
     return `notes.${second}`;
+  }
+
+  if (first === "productSpecifications") {
+    return [first, second, third]
+      .filter((part): part is string => typeof part === "string")
+      .join(".");
   }
 
   return first;
@@ -74,6 +123,20 @@ function getOrderFieldErrors(locale: AppLocale, error: ZodError) {
       case "productId":
         fieldErrors.productId = copy.productRequired;
         break;
+      case "productSpecifications.karat":
+        fieldErrors["productSpecifications.karat"] = "productKaratRequired";
+        break;
+      case "productSpecifications.weightGrams":
+        fieldErrors["productSpecifications.weightGrams"] = "productWeightRequired";
+        break;
+      case "productSpecifications.nameCustomization.language":
+        fieldErrors["productSpecifications.nameCustomization.language"] =
+          "nameCustomizationLanguageRequired";
+        break;
+      case "productSpecifications.nameCustomization.text":
+        fieldErrors["productSpecifications.nameCustomization.text"] =
+          "nameCustomizationTextRequired";
+        break;
       case "quantity":
         fieldErrors.quantity = copy.quantityInvalid;
         break;
@@ -99,11 +162,40 @@ async function getLocalizedFieldErrors(
   const fieldErrors = getOrderFieldErrors(locale, error);
 
   if (fieldErrors.customerName === "customerNameRequired") {
-    fieldErrors.customerName = locale === "de"
-      ? "Bitte geben Sie den Kundennamen ein."
-      : locale === "ar"
-        ? "يرجى إدخال اسم العميل."
-        : "Please enter the customer name.";
+    fieldErrors.customerName = getLocalizedOrderFieldMessage(
+      locale,
+      "customerNameRequired"
+    );
+  }
+
+  if (fieldErrors["productSpecifications.karat"] === "productKaratRequired") {
+    fieldErrors["productSpecifications.karat"] = getLocalizedOrderFieldMessage(
+      locale,
+      "productKaratRequired"
+    );
+  }
+
+  if (
+    fieldErrors["productSpecifications.weightGrams"] === "productWeightRequired"
+  ) {
+    fieldErrors["productSpecifications.weightGrams"] =
+      getLocalizedOrderFieldMessage(locale, "productWeightRequired");
+  }
+
+  if (
+    fieldErrors["productSpecifications.nameCustomization.language"] ===
+    "nameCustomizationLanguageRequired"
+  ) {
+    fieldErrors["productSpecifications.nameCustomization.language"] =
+      getLocalizedOrderFieldMessage(locale, "nameCustomizationLanguageRequired");
+  }
+
+  if (
+    fieldErrors["productSpecifications.nameCustomization.text"] ===
+    "nameCustomizationTextRequired"
+  ) {
+    fieldErrors["productSpecifications.nameCustomization.text"] =
+      getLocalizedOrderFieldMessage(locale, "nameCustomizationTextRequired");
   }
 
   return fieldErrors;
@@ -142,6 +234,33 @@ async function getOrderFailure(
         return {
           fieldErrors: { workshopId: copy.invalidSelection },
           message: copy.invalidSelection,
+          ok: false as const,
+        };
+      case "NAME_CUSTOMIZATION_LANGUAGE_REQUIRED":
+        return {
+          fieldErrors: {
+            "productSpecifications.nameCustomization.language":
+              getLocalizedOrderFieldMessage(
+                locale,
+                "nameCustomizationLanguageRequired"
+              ),
+          },
+          message: getLocalizedOrderFieldMessage(
+            locale,
+            "nameCustomizationLanguageRequired"
+          ),
+          ok: false as const,
+        };
+      case "NAME_CUSTOMIZATION_TEXT_REQUIRED":
+        return {
+          fieldErrors: {
+            "productSpecifications.nameCustomization.text":
+              getLocalizedOrderFieldMessage(locale, "nameCustomizationTextRequired"),
+          },
+          message: getLocalizedOrderFieldMessage(
+            locale,
+            "nameCustomizationTextRequired"
+          ),
           ok: false as const,
         };
       case "ORDER_ASSIGNMENT_FORBIDDEN":

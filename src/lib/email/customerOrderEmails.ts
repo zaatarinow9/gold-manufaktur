@@ -11,12 +11,12 @@ export type CustomerEmailTemplateType =
   | "public_stage_update";
 
 export type CustomerEmailItem = {
-  engraving: string | null;
+  customerNote: string | null;
+  designLanguage: string | null;
   karat: string | null;
   name: string;
-  options: string[];
   quantity: number;
-  size: string | null;
+  requestedName: string | null;
   totalPrice: number | null;
   unitPrice: number | null;
   weight: string | null;
@@ -28,7 +28,6 @@ type CustomerEmailCopy = {
   confirmationNextStep: string;
   confirmationSubject: string;
   confirmationTitle: string;
-  contactLabel: string;
   customerNoteLabel: string;
   footerLabel: string;
   homepageLabel: string;
@@ -42,12 +41,12 @@ type CustomerEmailCopy = {
   stageLeadPrefix: string;
   stageSubjects: Record<PublicTrackingStage, string>;
   tableLabels: {
-    engraving: string;
+    customerNote: string;
+    designLanguage: string;
     karat: string;
-    options: string;
     productName: string;
     quantity: string;
-    size: string;
+    requestedName: string;
     totalPrice: string;
     unitPrice: string;
     weight: string;
@@ -70,279 +69,57 @@ type CustomerOrderEmailInput = {
   type: CustomerEmailTemplateType;
 };
 
-function createCopy(locale: AppLocale): CustomerEmailCopy {
-  switch (locale) {
-    case "ar":
-      return {
-        brandLabel: "GoldHelwah GmbH",
-        confirmationLead:
-          "شكرًا لاختيار GoldHelwah. لقد استلمنا طلبك وسنوافيك بالتحديثات الرئيسية فور تقدم العمل عليه.",
-        confirmationNextStep:
-          "تم استلام طلبك وسيتم تحديث الحالة العامة قريبًا عند انتقاله إلى الورشة.",
-        confirmationSubject: "تم استلام طلبك من GoldHelwah",
-        confirmationTitle: "لقد استلمنا طلبك",
-        contactLabel: "التواصل",
-        customerNoteLabel: "ملاحظة العميل",
-        footerLabel: "بيانات التواصل",
-        homepageLabel: "الموقع الإلكتروني",
-        menuLabel: "تتبع الطلب",
-        notProvided: "غير محدد",
-        progressDescription:
-          "التحديثات العامة المتاحة للعميل تظهر فقط عند دخول الطلب الورشة أو الشحن أو الجاهزية للاستلام.",
-        progressTitle: "مسار الحالة العامة",
-        productDetailsTitle: "تفاصيل المنتج",
-        stages: {
-          order_in_workshop: "الطلب في الورشة",
-          shipping: "جاري شحن الطلب",
-          ready_for_pickup: "جاهز للاستلام",
-        },
-        stageDescriptions: {
-          order_in_workshop:
-            "طلبك أصبح الآن داخل الورشة ويتم العمل عليه.",
-          shipping: "طلبك قيد الشحن الآن.",
-          ready_for_pickup: "طلبك جاهز للاستلام.",
-        },
-        stageLeadPrefix: "الحالة العامة الحالية",
-        stageSubjects: {
-          order_in_workshop: "طلبك الآن في الورشة - GoldHelwah",
-          shipping: "طلبك قيد الشحن - GoldHelwah",
-          ready_for_pickup: "طلبك جاهز للاستلام - GoldHelwah",
-        },
-        tableLabels: {
-          engraving: "النقش/الاسم",
-          karat: "العيار",
-          options: "الخيارات",
-          productName: "اسم المنتج",
-          quantity: "الكمية",
-          size: "المقاس",
-          totalPrice: "السعر الإجمالي",
-          unitPrice: "سعر القطعة",
-          weight: "الوزن",
-        },
-        textGreeting: (customerName) =>
-          customerName ? `مرحبًا ${customerName}،` : "مرحبًا،",
-        trackingHelp:
-          'يمكنك متابعة حالة طلبك من القائمة عبر تبويب "تتبع الطلب"، ثم إدخال رقم التتبع.',
-        trackingNumberLabel: "رقم التتبع",
-        totalAmountLabel: "إجمالي المبلغ",
-      };
-    case "de":
-      return {
-        brandLabel: "GoldHelwah GmbH",
-        confirmationLead:
-          "Vielen Dank, dass Sie sich für GoldHelwah entschieden haben. Wir haben Ihren Auftrag erhalten und informieren Sie bei den nächsten öffentlichen Schritten.",
-        confirmationNextStep:
-          "Ihr Auftrag wurde erhalten. Der öffentliche Status wird aktualisiert, sobald er in die Werkstatt geht.",
-        confirmationSubject: "Wir haben Ihren Auftrag erhalten - GoldHelwah",
-        confirmationTitle: "Wir haben Ihren Auftrag erhalten",
-        contactLabel: "Kontakt",
-        customerNoteLabel: "Kundenhinweis",
-        footerLabel: "Kontaktinformationen",
-        homepageLabel: "Website",
-        menuLabel: "Auftrag verfolgen",
-        notProvided: "Nicht angegeben",
-        progressDescription:
-          "Sichtbare Kundenphasen werden nur für Werkstatt, Versand und Abholung veröffentlicht.",
-        progressTitle: "Öffentlicher Status",
-        productDetailsTitle: "Produktdetails",
-        stages: {
-          order_in_workshop: "Auftrag in der Werkstatt",
-          shipping: "Auftrag wird versendet",
-          ready_for_pickup: "Bereit zur Abholung",
-        },
-        stageDescriptions: {
-          order_in_workshop:
-            "Ihr Auftrag befindet sich jetzt in unserer Werkstatt.",
-          shipping: "Ihr Auftrag wird jetzt versendet.",
-          ready_for_pickup: "Ihr Auftrag ist jetzt zur Abholung bereit.",
-        },
-        stageLeadPrefix: "Aktuelle öffentliche Phase",
-        stageSubjects: {
-          order_in_workshop: "Ihr Auftrag ist jetzt in der Werkstatt - GoldHelwah",
-          shipping: "Ihr Auftrag wird versendet - GoldHelwah",
-          ready_for_pickup: "Ihr Auftrag ist abholbereit - GoldHelwah",
-        },
-        tableLabels: {
-          engraving: "Gravur/Name",
-          karat: "Karat",
-          options: "Optionen",
-          productName: "Produkt",
-          quantity: "Menge",
-          size: "Größe",
-          totalPrice: "Gesamtpreis",
-          unitPrice: "Stückpreis",
-          weight: "Gewicht",
-        },
-        textGreeting: (customerName) =>
-          customerName ? `Hallo ${customerName},` : "Hallo,",
-        trackingHelp:
-          'Sie können Ihren Auftrag über den Menüpunkt "Auftrag verfolgen" verfolgen und dort Ihre Tracking-Nummer eingeben.',
-        trackingNumberLabel: "Tracking-Nummer",
-        totalAmountLabel: "Gesamtbetrag",
-      };
-    case "fr":
-      return {
-        brandLabel: "GoldHelwah GmbH",
-        confirmationLead:
-          "Merci d avoir choisi GoldHelwah. Nous avons bien recu votre commande et nous vous informerons lors des prochaines etapes publiques.",
-        confirmationNextStep:
-          "Votre commande a ete recue et son statut public sera bientot mis a jour lorsqu elle entrera en atelier.",
-        confirmationSubject: "Nous avons bien recu votre commande - GoldHelwah",
-        confirmationTitle: "Nous avons bien recu votre commande",
-        contactLabel: "Contact",
-        customerNoteLabel: "Note client",
-        footerLabel: "Coordonnees",
-        homepageLabel: "Site web",
-        menuLabel: "Suivre la commande",
-        notProvided: "Non renseigne",
-        progressDescription:
-          "Les clients ne voient que les etapes publiques atelier, expedition et retrait.",
-        progressTitle: "Etape publique",
-        productDetailsTitle: "Details du produit",
-        stages: {
-          order_in_workshop: "Commande en atelier",
-          shipping: "Commande en cours d expedition",
-          ready_for_pickup: "Prete au retrait",
-        },
-        stageDescriptions: {
-          order_in_workshop:
-            "Votre commande se trouve maintenant dans notre atelier.",
-          shipping: "Votre commande est en cours d expedition.",
-          ready_for_pickup: "Votre commande est prete au retrait.",
-        },
-        stageLeadPrefix: "Etape publique actuelle",
-        stageSubjects: {
-          order_in_workshop: "Votre commande est en atelier - GoldHelwah",
-          shipping: "Votre commande est en cours d expedition - GoldHelwah",
-          ready_for_pickup: "Votre commande est prete au retrait - GoldHelwah",
-        },
-        tableLabels: {
-          engraving: "Gravure/nom",
-          karat: "Carat",
-          options: "Options",
-          productName: "Produit",
-          quantity: "Quantite",
-          size: "Taille",
-          totalPrice: "Prix total",
-          unitPrice: "Prix unitaire",
-          weight: "Poids",
-        },
-        textGreeting: (customerName) =>
-          customerName ? `Bonjour ${customerName},` : "Bonjour,",
-        trackingHelp:
-          'Vous pouvez suivre votre commande depuis le menu "Suivre la commande" puis saisir votre numero de suivi.',
-        trackingNumberLabel: "Numero de suivi",
-        totalAmountLabel: "Montant total",
-      };
-    case "tr":
-      return {
-        brandLabel: "GoldHelwah GmbH",
-        confirmationLead:
-          "GoldHelwah i sectiginiz icin tesekkur ederiz. Siparisinizi aldik ve bir sonraki genel asamalarda sizi bilgilendirecegiz.",
-        confirmationNextStep:
-          "Siparisiniz alindi. Atolyeye gectiginde genel durum yakinda guncellenecek.",
-        confirmationSubject: "Siparisinizi aldik - GoldHelwah",
-        confirmationTitle: "Siparisinizi aldik",
-        contactLabel: "Iletisim",
-        customerNoteLabel: "Musteri notu",
-        footerLabel: "Iletisim bilgileri",
-        homepageLabel: "Web sitesi",
-        menuLabel: "Siparisi Takip Et",
-        notProvided: "Belirtilmedi",
-        progressDescription:
-          "Musteri tarafinda yalnizca atolyede, kargoda ve teslime hazir asamalari gosterilir.",
-        progressTitle: "Genel asama",
-        productDetailsTitle: "Urun detaylari",
-        stages: {
-          order_in_workshop: "Siparis atolyede",
-          shipping: "Siparis kargoya veriliyor",
-          ready_for_pickup: "Teslim almaya hazir",
-        },
-        stageDescriptions: {
-          order_in_workshop:
-            "Siparisiniz su anda atolyemizde isleme alinmistir.",
-          shipping: "Siparisiniz su anda kargoya veriliyor.",
-          ready_for_pickup: "Siparisiniz teslim almaya hazir.",
-        },
-        stageLeadPrefix: "Guncel genel asama",
-        stageSubjects: {
-          order_in_workshop: "Siparisiniz atolyede - GoldHelwah",
-          shipping: "Siparisiniz kargoya veriliyor - GoldHelwah",
-          ready_for_pickup: "Siparisiniz hazir - GoldHelwah",
-        },
-        tableLabels: {
-          engraving: "Isim/gravur",
-          karat: "Ayar",
-          options: "Secenekler",
-          productName: "Urun",
-          quantity: "Adet",
-          size: "Olcu",
-          totalPrice: "Toplam fiyat",
-          unitPrice: "Birim fiyat",
-          weight: "Agirlik",
-        },
-        textGreeting: (customerName) =>
-          customerName ? `Merhaba ${customerName},` : "Merhaba,",
-        trackingHelp:
-          'Siparisinizi web sitemizdeki "Siparisi Takip Et" menusu uzerinden takip edebilir ve takip numaranizi girebilirsiniz.',
-        trackingNumberLabel: "Takip numarasi",
-        totalAmountLabel: "Toplam tutar",
-      };
-    default:
-      return {
-        brandLabel: "GoldHelwah GmbH",
-        confirmationLead:
-          "Thank you for choosing GoldHelwah. We have received your order and will keep you informed as its public progress moves forward.",
-        confirmationNextStep:
-          "We received your order. The public status will be updated soon once it enters the workshop.",
-        confirmationSubject: "We received your order - GoldHelwah",
-        confirmationTitle: "We received your order",
-        contactLabel: "Contact",
-        customerNoteLabel: "Customer note",
-        footerLabel: "Contact information",
-        homepageLabel: "Website",
-        menuLabel: "Track Order",
-        notProvided: "Not specified",
-        progressDescription:
-          "Customers only receive public updates for workshop, shipping, and pickup.",
-        progressTitle: "Public progress",
-        productDetailsTitle: "Product details",
-        stages: {
-          order_in_workshop: "Order in workshop",
-          shipping: "Order is being shipped",
-          ready_for_pickup: "Ready for pickup",
-        },
-        stageDescriptions: {
-          order_in_workshop: "Your order is now in our workshop.",
-          shipping: "Your order is now being shipped.",
-          ready_for_pickup: "Your order is now ready for pickup.",
-        },
-        stageLeadPrefix: "Current public stage",
-        stageSubjects: {
-          order_in_workshop: "Your order is in our workshop - GoldHelwah",
-          shipping: "Your order is being shipped - GoldHelwah",
-          ready_for_pickup: "Your order is ready for pickup - GoldHelwah",
-        },
-        tableLabels: {
-          engraving: "Engraving / name",
-          karat: "Karat",
-          options: "Selected options",
-          productName: "Product",
-          quantity: "Quantity",
-          size: "Size",
-          totalPrice: "Total price",
-          unitPrice: "Unit price",
-          weight: "Weight",
-        },
-        textGreeting: (customerName) =>
-          customerName ? `Hello ${customerName},` : "Hello,",
-        trackingHelp:
-          'You can track your order from the website menu using "Track Order", then enter your tracking number.',
-        trackingNumberLabel: "Tracking number",
-        totalAmountLabel: "Total amount",
-      };
-  }
-}
+const germanCopy: CustomerEmailCopy = {
+  brandLabel: "GoldHelwah GmbH",
+  confirmationLead:
+    "Vielen Dank, dass Sie sich fuer GoldHelwah entschieden haben. Wir haben Ihren Auftrag erhalten und bestaetigt.",
+  confirmationNextStep:
+    'Sie koennen Ihren Auftrag ueber den Menuepunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
+  confirmationSubject: "Wir haben Ihren Auftrag erhalten - GoldHelwah",
+  confirmationTitle: "Wir haben Ihren Auftrag erhalten",
+  customerNoteLabel: "Kundenhinweis",
+  footerLabel: "Kontaktinformationen",
+  homepageLabel: "Website",
+  menuLabel: "Auftrag verfolgen",
+  notProvided: "Nicht angegeben",
+  progressDescription:
+    "Oeffentliche Statusupdates werden nur fuer Werkstatt, Versand und Abholung angezeigt.",
+  progressTitle: "Oeffentlicher Status",
+  productDetailsTitle: "Produktdetails",
+  stages: {
+    order_in_workshop: "Auftrag in der Werkstatt",
+    shipping: "Auftrag wird versendet",
+    ready_for_pickup: "Bereit zur Abholung",
+  },
+  stageDescriptions: {
+    order_in_workshop: "Ihr Auftrag befindet sich jetzt in unserer Werkstatt.",
+    shipping: "Ihr Auftrag wird jetzt versendet.",
+    ready_for_pickup: "Ihr Auftrag ist jetzt zur Abholung bereit.",
+  },
+  stageLeadPrefix: "Aktuelle oeffentliche Phase",
+  stageSubjects: {
+    order_in_workshop: "Ihr Auftrag ist jetzt in der Werkstatt - GoldHelwah",
+    shipping: "Ihr Auftrag wird versendet - GoldHelwah",
+    ready_for_pickup: "Ihr Auftrag ist abholbereit - GoldHelwah",
+  },
+  tableLabels: {
+    customerNote: "Kundennotiz",
+    designLanguage: "Designsprache",
+    karat: "Legierung",
+    productName: "Produkt",
+    quantity: "Menge",
+    requestedName: "Gewuenschter Name",
+    totalPrice: "Gesamtbetrag",
+    unitPrice: "Einzelpreis",
+    weight: "Gewicht",
+  },
+  textGreeting: (customerName) =>
+    customerName ? `Guten Tag ${customerName},` : "Guten Tag,",
+  trackingHelp:
+    'Sie koennen Ihren Auftrag ueber den Menuepunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
+  trackingNumberLabel: "Tracking-Nummer",
+  totalAmountLabel: "Gesamtbetrag",
+};
 
 function escapeHtml(value: string) {
   return value
@@ -354,7 +131,6 @@ function escapeHtml(value: string) {
 }
 
 function formatCurrency(
-  locale: AppLocale,
   amount: number | null | undefined,
   currency: string | null | undefined,
   fallback: string
@@ -366,7 +142,7 @@ function formatCurrency(
   const normalizedCurrency = (currency || "EUR").trim().toUpperCase() || "EUR";
 
   try {
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat("de", {
       currency: normalizedCurrency,
       style: "currency",
     }).format(amount);
@@ -402,10 +178,6 @@ function renderTextOrFallback(value: string | null | undefined, fallback: string
   return normalized || fallback;
 }
 
-function renderOptions(options: string[], fallback: string) {
-  return options.length > 0 ? options.join(", ") : fallback;
-}
-
 function renderCustomerNoteHtml(note: string) {
   return escapeHtml(note).replace(/\n/g, "<br />");
 }
@@ -413,13 +185,12 @@ function renderCustomerNoteHtml(note: string) {
 function buildDetailRows(
   copy: CustomerEmailCopy,
   items: CustomerEmailItem[],
-  locale: AppLocale,
   currency: string | null | undefined
 ) {
   return items
     .map((item) => {
-      const unitPrice = formatCurrency(locale, item.unitPrice, currency, copy.notProvided);
-      const totalPrice = formatCurrency(locale, item.totalPrice, currency, copy.notProvided);
+      const unitPrice = formatCurrency(item.unitPrice, currency, copy.notProvided);
+      const totalPrice = formatCurrency(item.totalPrice, currency, copy.notProvided);
 
       return `
         <tr>
@@ -427,9 +198,9 @@ function buildDetailRows(
           <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(String(item.quantity))}</td>
           <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.karat, copy.notProvided))}</td>
           <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.weight, copy.notProvided))}</td>
-          <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.size, copy.notProvided))}</td>
-          <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.engraving, copy.notProvided))}</td>
-          <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderOptions(item.options, copy.notProvided))}</td>
+          <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.requestedName, copy.notProvided))}</td>
+          <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.designLanguage, copy.notProvided))}</td>
+          <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#c7b99e;font-size:13px;vertical-align:top;">${escapeHtml(renderTextOrFallback(item.customerNote, copy.notProvided))}</td>
           <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#f7f1e3;font-size:13px;vertical-align:top;">${escapeHtml(unitPrice)}</td>
           <td style="padding:14px 12px;border-top:1px solid rgba(255,255,255,0.08);color:#f7f1e3;font-size:13px;vertical-align:top;">${escapeHtml(totalPrice)}</td>
         </tr>
@@ -475,35 +246,20 @@ function buildTextBody(input: CustomerOrderEmailInput, copy: CustomerEmailCopy) 
     input.type === "public_stage_update" && input.publicStage
       ? `${copy.stageLeadPrefix}: ${copy.stages[input.publicStage]}`
       : "";
-  const totalAmount = formatCurrency(
-    input.locale,
-    input.totalAmount,
-    input.currency,
-    copy.notProvided
-  );
+  const totalAmount = formatCurrency(input.totalAmount, input.currency, copy.notProvided);
   const customerNote = normalizeText(input.customerNote);
   const itemLines = input.items.flatMap((item, index) => {
-    const unitPrice = formatCurrency(
-      input.locale,
-      item.unitPrice,
-      input.currency,
-      copy.notProvided
-    );
-    const totalPrice = formatCurrency(
-      input.locale,
-      item.totalPrice,
-      input.currency,
-      copy.notProvided
-    );
+    const unitPrice = formatCurrency(item.unitPrice, input.currency, copy.notProvided);
+    const totalPrice = formatCurrency(item.totalPrice, input.currency, copy.notProvided);
 
     return [
       `${index + 1}. ${item.name}`,
       `   ${copy.tableLabels.quantity}: ${item.quantity}`,
       `   ${copy.tableLabels.karat}: ${renderTextOrFallback(item.karat, copy.notProvided)}`,
       `   ${copy.tableLabels.weight}: ${renderTextOrFallback(item.weight, copy.notProvided)}`,
-      `   ${copy.tableLabels.size}: ${renderTextOrFallback(item.size, copy.notProvided)}`,
-      `   ${copy.tableLabels.engraving}: ${renderTextOrFallback(item.engraving, copy.notProvided)}`,
-      `   ${copy.tableLabels.options}: ${renderOptions(item.options, copy.notProvided)}`,
+      `   ${copy.tableLabels.requestedName}: ${renderTextOrFallback(item.requestedName, copy.notProvided)}`,
+      `   ${copy.tableLabels.designLanguage}: ${renderTextOrFallback(item.designLanguage, copy.notProvided)}`,
+      `   ${copy.tableLabels.customerNote}: ${renderTextOrFallback(item.customerNote, copy.notProvided)}`,
       `   ${copy.tableLabels.unitPrice}: ${unitPrice}`,
       `   ${copy.tableLabels.totalPrice}: ${totalPrice}`,
     ];
@@ -547,12 +303,7 @@ function buildHtmlBody(input: CustomerOrderEmailInput, copy: CustomerEmailCopy) 
   const homepageUrl = buildHomepageUrl();
   const logoUrl = buildLogoUrl();
   const customerNote = normalizeText(input.customerNote);
-  const totalAmount = formatCurrency(
-    input.locale,
-    input.totalAmount,
-    input.currency,
-    copy.notProvided
-  );
+  const totalAmount = formatCurrency(input.totalAmount, input.currency, copy.notProvided);
   const introTitle =
     input.type === "order_confirmation"
       ? copy.confirmationTitle
@@ -568,12 +319,12 @@ function buildHtmlBody(input: CustomerOrderEmailInput, copy: CustomerEmailCopy) 
 
   return `
     <!doctype html>
-    <html lang="${input.locale}">
+    <html lang="de">
       <body style="margin:0;padding:0;background:#060606;color:#f7f1e3;font-family:Arial,Helvetica,sans-serif;">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#060606;padding:24px 12px;">
           <tr>
             <td align="center">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:720px;border-collapse:separate;border-spacing:0;background:linear-gradient(180deg,#17120d,#090909);border:1px solid rgba(196,154,82,0.24);border-radius:28px;overflow:hidden;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;border-collapse:separate;border-spacing:0;background:linear-gradient(180deg,#17120d,#090909);border:1px solid rgba(196,154,82,0.24);border-radius:28px;overflow:hidden;">
                 <tr>
                   <td style="padding:30px 28px 20px 28px;border-bottom:1px solid rgba(255,255,255,0.05);">
                     <div style="text-align:center;">
@@ -639,15 +390,15 @@ function buildHtmlBody(input: CustomerOrderEmailInput, copy: CustomerEmailCopy) 
                             <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.quantity)}</th>
                             <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.karat)}</th>
                             <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.weight)}</th>
-                            <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.size)}</th>
-                            <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.engraving)}</th>
-                            <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.options)}</th>
+                            <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.requestedName)}</th>
+                            <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.designLanguage)}</th>
+                            <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.customerNote)}</th>
                             <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.unitPrice)}</th>
                             <th align="left" style="padding:0 12px 12px 12px;color:#e8c987;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;">${escapeHtml(copy.tableLabels.totalPrice)}</th>
                           </tr>
                         </thead>
                         <tbody>
-                          ${buildDetailRows(copy, input.items, input.locale, input.currency)}
+                          ${buildDetailRows(copy, input.items, input.currency)}
                         </tbody>
                       </table>
                     </div>
@@ -685,18 +436,17 @@ function buildHtmlBody(input: CustomerOrderEmailInput, copy: CustomerEmailCopy) 
 }
 
 export function buildCustomerOrderEmail(input: CustomerOrderEmailInput) {
-  const copy = createCopy(input.locale);
   const subject =
     input.type === "order_confirmation"
-      ? copy.confirmationSubject
+      ? germanCopy.confirmationSubject
       : input.publicStage
-        ? copy.stageSubjects[input.publicStage]
-        : copy.confirmationSubject;
+        ? germanCopy.stageSubjects[input.publicStage]
+        : germanCopy.confirmationSubject;
 
   return {
-    html: buildHtmlBody(input, copy),
+    html: buildHtmlBody(input, germanCopy),
     subject,
-    text: buildTextBody(input, copy),
+    text: buildTextBody(input, germanCopy),
   };
 }
 

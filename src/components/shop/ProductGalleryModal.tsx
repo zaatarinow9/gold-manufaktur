@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import type { CatalogCategory, CatalogProduct } from "@/data/catalog";
@@ -20,6 +20,7 @@ export function ProductGalleryModal({
   product,
 }: ProductGalleryModalProps) {
   const t = useTranslations("Shop.modal");
+  const locale = useLocale();
   const [selectedImageState, setSelectedImageState] = useState<{
     image: string;
     productId: string | null;
@@ -60,6 +61,15 @@ export function ProductGalleryModal({
     selectedImageState.productId === product.id && selectedImageState.image
       ? selectedImageState.image
       : images[0];
+  const personalizationNote = locale === "ar"
+    ? "يمكن تخصيص الاسم لهذا المنتج"
+    : locale === "de"
+      ? "Namenspersonalisierung moeglich"
+      : locale === "fr"
+        ? "Personnalisation du nom possible"
+        : locale === "tr"
+          ? "Isim kisilestirmesi mumkun"
+          : "Name personalization available";
 
   return (
     <div
@@ -145,6 +155,11 @@ export function ProductGalleryModal({
               <p className="mt-3 text-sm text-foreground [overflow-wrap:anywhere] sm:text-base">
                 {category?.name ?? t("fallbackCategory")}
               </p>
+              {product.supportsNameCustomization ? (
+                <p className="mt-3 text-xs uppercase tracking-[0.18em] text-gold-soft">
+                  {personalizationNote}
+                </p>
+              ) : null}
             </div>
 
             <div className="rounded-[24px] border border-white/10 bg-black/28 p-5">

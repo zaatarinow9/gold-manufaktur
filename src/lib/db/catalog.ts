@@ -3,6 +3,7 @@ import "server-only";
 import type { CatalogCategory, CatalogProduct } from "@/data/catalog";
 import type { AppLocale } from "@/i18n/routing";
 
+import { resolveSupportsNameCustomization } from "@/lib/catalog/nameCustomization";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TableRow } from "@/lib/supabase/types";
 
@@ -41,6 +42,7 @@ export async function getPublicCategories(
   const { data, error } = await supabase
     .from("categories")
     .select("*")
+    .eq("is_active", true)
     .order("sort_order", { ascending: true });
 
   if (error) {
@@ -65,6 +67,7 @@ export async function getPublicProducts(
   const { data: products, error: productsError } = await supabase
     .from("products")
     .select("*")
+    .eq("is_active", true)
     .order("sort_order", { ascending: true });
 
   if (productsError) {
@@ -86,7 +89,8 @@ export async function getPublicProducts(
       categoryIds.length > 0
         ? supabase
             .from("categories")
-            .select("id, slug")
+            .select("id, slug, supports_name_customization")
+            .eq("is_active", true)
             .in("id", categoryIds)
         : Promise.resolve({ data: [], error: null }),
       supabase
@@ -106,8 +110,8 @@ export async function getPublicProducts(
     return [];
   }
 
-  const categorySlugById = new Map(
-    categories.map((category) => [category.id, category.slug])
+  const categoryById = new Map(
+    categories.map((category) => [category.id, category])
   );
   const imageMap = new Map<string, string[]>();
 
@@ -119,10 +123,12 @@ export async function getPublicProducts(
 
   return products.map((product) => {
     const gallery = imageMap.get(product.id) ?? [];
+    const category = product.category_id
+      ? categoryById.get(product.category_id) ?? null
+      : null;
 
     return {
-      categorySlug:
-        (product.category_id && categorySlugById.get(product.category_id)) ?? "all",
+      categorySlug: category?.slug ?? "all",
       gallery,
       id: product.id,
       imageUrl: getCatalogImage(product, gallery),
@@ -130,6 +136,10 @@ export async function getPublicProducts(
       name: getLocalizedValue(product, "name", locale),
       shortDescription: getLocalizedValue(product, "description", locale),
       slug: product.slug,
+      supportsNameCustomization: resolveSupportsNameCustomization(
+        category?.supports_name_customization ?? false,
+        product.supports_name_customization ?? null
+      ),
       tags: product.tags ?? [],
     };
   });

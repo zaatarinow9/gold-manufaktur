@@ -23,6 +23,14 @@ import {
 } from "@/lib/email/customerOrderEmails";
 import { sendTransactionalEmail } from "@/lib/email/service";
 import {
+  createProductSpecifications,
+  formatWeightGrams,
+  getProductSpecifications,
+  productSpecificationsSchema,
+  type JewelryKarat,
+  type ProductSpecifications,
+} from "@/lib/orders/productSpecifications";
+import {
   getCanonicalTrackingStatusForPublicStage,
   getPublicTrackingStageFromStatus,
   resolvePublicTrackingStage,
@@ -89,6 +97,7 @@ const orderCreateSchema = z.object({
   productId: z.string().uuid(),
   productImage: z.string().trim().min(1).max(500),
   productName: z.string().trim().min(1).max(255),
+  productSpecifications: productSpecificationsSchema,
   productSku: z.string().trim().min(1).max(120),
   productSlug: z.string().trim().min(1).max(255),
   quantity: z.number().int().min(1).max(999).default(1),
@@ -239,6 +248,7 @@ export type OrderDetailRecord = OrderListRecord & {
   measurements: Record<string, string>;
   notes: Record<string, string>;
   personalization: Record<string, string>;
+  productSpecifications: ProductSpecifications;
   stones: Record<string, string>;
   supportTickets: SupportTicketRecord[];
   trackingEvents: OrderTrackingEventRecord[];
@@ -253,6 +263,57 @@ export type PublicTrackingOrderRecord = {
   trackingNumber: string;
   trackingStatus: TrackingStatus;
 };
+
+type OrderSchemaCapabilities = {
+  productSpecifications: boolean;
+};
+
+let orderSchemaCapabilitiesPromise: Promise<OrderSchemaCapabilities> | null = null;
+
+async function getOrderSchemaCapabilities() {
+  if (!orderSchemaCapabilitiesPromise) {
+    const supabase = createSupabaseAdminClient() as unknown as {
+      schema: (schema: string) => {
+        from: (table: string) => {
+          select: (
+            columns: string
+          ) => {
+            eq: (column: string, value: string) => {
+              in: (column: string, values: string[]) => Promise<{
+                data: Array<{ column_name: string; table_name: string }> | null;
+                error: { message: string } | null;
+              }>;
+            };
+          };
+        };
+      };
+    };
+
+    orderSchemaCapabilitiesPromise = supabase
+      .schema("information_schema")
+      .from("columns")
+      .select("table_name,column_name")
+      .eq("table_schema", "public")
+      .in("table_name", ["orders"])
+      .then(({ data, error }) => {
+        if (error || !data) {
+          return {
+            productSpecifications: false,
+          } satisfies OrderSchemaCapabilities;
+        }
+
+        return {
+          productSpecifications: data.some(
+            (column) =>
+              column.table_name === "orders" &&
+              column.column_name === "product_specifications"
+          ),
+        } satisfies OrderSchemaCapabilities;
+      });
+  }
+
+  return orderSchemaCapabilitiesPromise;
+}
 
 function emptyRecord() {
   return {} as Record<string, string>;
@@ -370,6 +431,35 @@ function normalizeAmount(value: unknown) {
   return null;
 }
 
+function parseKaratValue(value?: string | null): JewelryKarat | null {
+  const normalized = value?.trim() ?? "";
+
+  if (normalized === "14" || normalized === "18" || normalized === "21") {
+    return normalized;
+  }
+
+  return null;
+}
+
+function parseWeightGramsValue(value: unknown) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value > 0 ? value : null;
+  }
+
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const match = value.replace(",", ".").match(/(\d+(?:\.\d+)?)/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
 function fallbackTrackingTitle(status: TrackingStatus) {
   return status
     .split("_")
@@ -431,34 +521,6 @@ function getFirstDefinedValue(record: Record<string, string>, keys: string[]) {
   return null;
 }
 
-function getSizeSummary(measurements: Record<string, string>) {
-  return getFirstDefinedValue(measurements, [
-    "ringSize",
-    "braceletSize",
-    "chainLength",
-    "pendantSize",
-    "customMeasurements",
-    "width",
-    "height",
-    "length",
-  ]);
-}
-
-function getWeightSummary(goldDetails: Record<string, string>) {
-  return getFirstDefinedValue(goldDetails, [
-    "estimatedWeight",
-    "targetWeight",
-    "weightTolerance",
-  ]);
-}
-
-function getEngravingSummary(personalization: Record<string, string>) {
-  return getFirstDefinedValue(personalization, [
-    "engravingText",
-    "nameText",
-  ]);
-}
-
 function findSelectedOptionMatch(
   item: OrderItemRecord,
   pattern: RegExp
@@ -478,11 +540,84 @@ function findSelectedOptionMatch(
   return null;
 }
 
-function buildCustomerEmailItems(input: {
+function getLegacyDesignLanguage(personalization: Record<string, string>) {
+  const rawValue = getFirstDefinedValue(personalization, [
+    "nameLanguage",
+    "designLanguage",
+    "language",
+  ]);
+
+  if (!rawValue) {
+    return null;
+  }
+
+  const normalized = rawValue.trim().toLowerCase();
+
+  if (
+    normalized === "ar" ||
+    normalized.includes("arab") ||
+    normalized.includes("عرب")
+  ) {
+    return "ar" as const;
+  }
+
+  if (
+    normalized === "en" ||
+    normalized.includes("engl") ||
+    normalized.includes("latin") ||
+    normalized.includes("انج") ||
+    normalized.includes("إنج")
+  ) {
+    return "en" as const;
+  }
+
+  return null;
+}
+
+function mergeProductSpecifications(input: {
   goldDetails: Record<string, string>;
-  items: OrderItemRecord[];
-  measurements: Record<string, string>;
+  item: OrderItemRecord | null;
   personalization: Record<string, string>;
+  productSpecifications: ProductSpecifications;
+}) {
+  const { goldDetails, item, personalization, productSpecifications } = input;
+  const legacyNameText =
+    getFirstDefinedValue(personalization, ["nameText", "engravingText"]) ??
+    (item ? findSelectedOptionMatch(item, /engraving|name|text|نقش|اسم/i) : null);
+  const explicitNameText = productSpecifications.nameCustomization.text?.trim() ?? "";
+  const mergedNameText = explicitNameText || legacyNameText?.trim() || null;
+  const legacyKarat =
+    parseKaratValue(getFirstDefinedValue(goldDetails, ["goldKarat", "karat"])) ??
+    (item
+      ? parseKaratValue(findSelectedOptionMatch(item, /karat|carat|ayar|عيار/i))
+      : null);
+  const legacyWeight =
+    parseWeightGramsValue(
+      getFirstDefinedValue(goldDetails, [
+        "weightGrams",
+        "estimatedWeight",
+        "targetWeight",
+        "weight",
+      ])
+    ) ??
+    (item ? parseWeightGramsValue(findSelectedOptionMatch(item, /weight|gram|وزن/i)) : null);
+
+  return {
+    karat: productSpecifications.karat ?? legacyKarat,
+    nameCustomization: {
+      enabled: productSpecifications.nameCustomization.enabled || Boolean(mergedNameText),
+      language:
+        productSpecifications.nameCustomization.language ??
+        getLegacyDesignLanguage(personalization),
+      text: mergedNameText,
+    },
+    weightGrams: productSpecifications.weightGrams ?? legacyWeight,
+  } satisfies ProductSpecifications;
+}
+
+function buildCustomerEmailItems(input: {
+  items: OrderItemRecord[];
+  productSpecifications: ProductSpecifications;
   totalAmount: number | null;
 }) {
   const hasSingleItem = input.items.length === 1;
@@ -491,36 +626,24 @@ function buildCustomerEmailItems(input: {
     const quantity = item.quantity > 0 ? item.quantity : 1;
     const itemTotalPrice =
       hasSingleItem && typeof input.totalAmount === "number" ? input.totalAmount : null;
-    const unitPrice =
-      itemTotalPrice !== null ? itemTotalPrice / quantity : null;
-    const karat =
-      getFirstDefinedValue(input.goldDetails, ["goldKarat"]) ??
-      findSelectedOptionMatch(item, /karat|carat|ayar|عيار/i);
-    const weight =
-      getWeightSummary(input.goldDetails) ??
-      findSelectedOptionMatch(item, /weight|gram|وزن/i);
-    const size =
-      getSizeSummary(input.measurements) ??
-      findSelectedOptionMatch(item, /size|ring|bracelet|chain|length|width|height|مقاس/i);
-    const engraving =
-      getEngravingSummary(input.personalization) ??
-      findSelectedOptionMatch(item, /engraving|name|text|نقش|اسم/i);
+    const unitPrice = itemTotalPrice !== null ? itemTotalPrice / quantity : null;
+    const designLanguage = input.productSpecifications.nameCustomization.language;
 
     return {
-      engraving,
-      karat,
+      customerNote: item.notes?.trim() || null,
+      designLanguage:
+        designLanguage === "ar"
+          ? "Arabisch"
+          : designLanguage === "en"
+            ? "Englisch"
+            : null,
+      karat: input.productSpecifications.karat,
       name: item.productName || item.productSku || item.id,
-      options: item.selectedOptions
-        .map((option) => {
-          const value = formatSelectedOptionValue(option.value);
-          return value ? `${option.label}: ${value}` : "";
-        })
-        .filter(Boolean),
       quantity,
-      size,
+      requestedName: input.productSpecifications.nameCustomization.text,
       totalPrice: itemTotalPrice,
       unitPrice,
-      weight,
+      weight: formatWeightGrams(input.productSpecifications.weightGrams),
     } satisfies CustomerEmailItem;
   });
 }
@@ -952,6 +1075,14 @@ export async function getScopedOrderDetail(
     .filter((log) => log.order_id === orderId)
     .map(mapEmailLog);
   const orderNotes = getTextRecord(order.notes_json);
+  const goldDetails = getTextRecord(order.gold_details_json);
+  const personalization = getTextRecord(order.personalization_json);
+  const productSpecifications = mergeProductSpecifications({
+    goldDetails,
+    item: items[0] ?? null,
+    personalization,
+    productSpecifications: getProductSpecifications(order.product_specifications),
+  });
   const displayNotes = Object.fromEntries(
     Object.entries(orderNotes).filter((entry) => entry[0] !== "customerLanguage")
   ) as Record<string, string>;
@@ -970,7 +1101,7 @@ export async function getScopedOrderDetail(
     emailUpdatesEnabled: order.email_updates_enabled ?? false,
     employeeId: order.employee_id ?? null,
     employeeName: bundle.employeeMap.get(order.employee_id ?? "")?.name ?? "",
-    goldDetails: getTextRecord(order.gold_details_json),
+    goldDetails,
     id: order.id,
     internalOrderNumber: fallbackInternalOrderNumber(order),
     itemCount: items.length,
@@ -980,9 +1111,10 @@ export async function getScopedOrderDetail(
       ...displayNotes,
       legacyNotes: order.notes ?? "",
     },
-    personalization: getTextRecord(order.personalization_json),
+    personalization,
     previewProductName: items[0]?.productName ?? "",
     priority: normalizePriority(order.priority),
+    productSpecifications,
     publicTrackingStage: resolvePublicTrackingStage({
       publicTrackingStage: order.public_tracking_stage,
       trackingStatus: normalizeTrackingStatus(order.tracking_status),
@@ -1048,30 +1180,26 @@ async function dispatchCustomerOrderEmail(input: {
   customerEmail: string;
   customerName: string;
   customerNote?: string;
-  goldDetails: Record<string, string>;
   items: OrderItemRecord[];
-  locale: AppLocale;
-  measurements: Record<string, string>;
   notificationId?: string | null;
   orderId: string;
-  personalization: Record<string, string>;
+  productSpecifications: ProductSpecifications;
   publicStage?: PublicTrackingStage | null;
   totalAmount: number | null;
   trackingNumber: string;
   type: CustomerEmailTemplateType;
 }) {
+  const emailLocale: AppLocale = "de";
   const email = buildCustomerOrderEmail({
     currency: input.currency,
     customerName: input.customerName,
     customerNote: input.customerNote,
     items: buildCustomerEmailItems({
-      goldDetails: input.goldDetails,
       items: input.items,
-      measurements: input.measurements,
-      personalization: input.personalization,
+      productSpecifications: input.productSpecifications,
       totalAmount: input.totalAmount,
     }),
-    locale: input.locale,
+    locale: emailLocale,
     publicStage: input.publicStage,
     totalAmount: input.totalAmount,
     trackingNumber: input.trackingNumber,
@@ -1090,7 +1218,7 @@ async function dispatchCustomerOrderEmail(input: {
         input.type === "order_confirmation"
           ? "customer_order_confirmation"
           : "customer_public_stage_update",
-      locale: input.locale,
+      locale: emailLocale,
       publicStage: input.publicStage ?? null,
       templateType: input.type,
       trackingNumber: input.trackingNumber,
@@ -1151,13 +1279,53 @@ export async function createOrder(
   const internalOrderNumber = await generateInternalOrderNumber();
   const trackingStatus: TrackingStatus = "created";
   const status: WorkshopOrderStatus = "draft";
+  const capabilities = await getOrderSchemaCapabilities();
   const customerLocale = parsed.customerLanguage;
   const currency = normalizeCurrency(parsed.currency);
+  const productSpecifications = createProductSpecifications(parsed.productSpecifications);
+  const legacyGoldDetails = {
+    ...parsed.goldDetails,
+  };
+  const formattedWeightGrams = formatWeightGrams(productSpecifications.weightGrams);
+
+  if (productSpecifications.karat) {
+    legacyGoldDetails.goldKarat = productSpecifications.karat;
+  }
+
+  if (formattedWeightGrams) {
+    legacyGoldDetails.estimatedWeight = formattedWeightGrams;
+    legacyGoldDetails.weightGrams = String(productSpecifications.weightGrams);
+  }
+
+  const legacyPersonalization: Record<string, string> = {
+    ...parsed.personalization,
+    nameCustomizationEnabled: productSpecifications.nameCustomization.enabled
+      ? "true"
+      : "false",
+  };
+
+  if (productSpecifications.nameCustomization.enabled) {
+    if (productSpecifications.nameCustomization.language) {
+      legacyPersonalization.nameLanguage =
+        productSpecifications.nameCustomization.language;
+    }
+
+    if (productSpecifications.nameCustomization.text) {
+      legacyPersonalization.nameText = productSpecifications.nameCustomization.text;
+    }
+  } else {
+    delete legacyPersonalization.nameLanguage;
+    delete legacyPersonalization.nameText;
+    delete legacyPersonalization.engravingText;
+  }
+
   const notesJson = {
     ...parsed.notes,
     customerLanguage: customerLocale,
   };
-  const orderPayload = {
+  const orderPayload: TableInsert<"orders"> & {
+    product_specifications?: ProductSpecifications;
+  } = {
     assigned_admin_id: viewer.id,
     attachments_json: parsed.attachments,
     currency,
@@ -1168,13 +1336,14 @@ export async function createOrder(
     due_date: parsed.dueDate || null,
     email_updates_enabled: parsed.emailUpdatesEnabled,
     employee_id: parsed.employeeId,
-    gold_details_json: parsed.goldDetails,
+    gold_details_json: legacyGoldDetails,
     internal_order_number: internalOrderNumber,
     measurements_json: parsed.measurements,
     notes: parsed.notes.adminNotes || parsed.notes.workshopNotes || null,
     notes_json: notesJson,
-    personalization_json: parsed.personalization,
+    personalization_json: legacyPersonalization,
     priority: parsed.priority,
+    product_specifications: productSpecifications,
     public_tracking_stage: null,
     status,
     stones_json: parsed.stones,
@@ -1182,7 +1351,11 @@ export async function createOrder(
     tracking_number: trackingNumber,
     tracking_status: trackingStatus,
     workshop_id: parsed.workshopId,
-  } satisfies TableInsert<"orders">;
+  };
+
+  if (!capabilities.productSpecifications) {
+    delete orderPayload.product_specifications;
+  }
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -1197,6 +1370,7 @@ export async function createOrder(
   const itemPayload = {
     category_name_snapshot: parsed.productCategoryName,
     category_slug_snapshot: parsed.productCategorySlug,
+    notes: parsed.notes.customerNotes || null,
     order_id: order.id,
     product_id: parsed.productId,
     product_image_snapshot: parsed.productImage,
@@ -1277,13 +1451,10 @@ export async function createOrder(
       customerEmail: parsed.customerEmail,
       customerName: parsed.customerName,
       customerNote: customerFacingNote,
-      goldDetails: parsed.goldDetails,
       items: orderItemsForEmail,
-      locale: customerLocale,
-      measurements: parsed.measurements,
       notificationId,
       orderId: order.id,
-      personalization: parsed.personalization,
+      productSpecifications,
       totalAmount: parsed.totalAmount,
       trackingNumber,
       type: "order_confirmation",
@@ -1503,12 +1674,9 @@ export async function updateOrderWorkflow(
       customerEmail: order.customerEmail,
       customerName: order.customerName,
       customerNote: publicDescription,
-      goldDetails: order.goldDetails,
       items: order.items,
-      locale: customerLocale,
-      measurements: order.measurements,
       orderId: order.id,
-      personalization: order.personalization,
+      productSpecifications: order.productSpecifications,
       publicStage: parsed.publicStage,
       totalAmount: order.totalAmount,
       trackingNumber: order.trackingNumber,

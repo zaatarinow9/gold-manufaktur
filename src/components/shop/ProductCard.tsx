@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import type { CatalogProduct } from "@/data/catalog";
 
@@ -18,6 +18,16 @@ export function ProductCard({
   product,
 }: ProductCardProps) {
   const t = useTranslations("Shop.card");
+  const locale = useLocale();
+  const personalizationNote = locale === "ar"
+    ? "يمكن تخصيص الاسم لهذا المنتج"
+    : locale === "de"
+      ? "Namenspersonalisierung moeglich"
+      : locale === "fr"
+        ? "Personnalisation du nom possible"
+        : locale === "tr"
+          ? "Isim kisilestirmesi mumkun"
+          : "Name personalization available";
 
   return (
     <button
@@ -50,6 +60,11 @@ export function ProductCard({
         <p className="text-sm leading-6 text-muted [overflow-wrap:anywhere]">
           {product.shortDescription}
         </p>
+        {product.supportsNameCustomization ? (
+          <p className="text-xs uppercase tracking-[0.18em] text-gold-soft">
+            {personalizationNote}
+          </p>
+        ) : null}
         <span className="rtl-inline-row inline-flex items-center gap-2 text-sm font-medium text-gold-soft transition group-hover:text-foreground">
           {t("cta")}
           <ArrowUpRight className="h-4 w-4" />

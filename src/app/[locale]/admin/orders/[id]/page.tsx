@@ -28,13 +28,17 @@ const fieldTranslationKeys: Record<string, string> = {
   engravingText: "newOrder.fields.engravingText",
   goldColor: "newOrder.fields.goldColor",
   goldKarat: "newOrder.fields.goldKarat",
+  legacyNotes: "newOrder.fields.internalNotes",
   nameText: "newOrder.fields.nameText",
+  nameLanguage: "newOrder.fields.nameLanguage",
+  nameCustomizationEnabled: "newOrder.fields.nameCustomizationEnabled",
   packagingNotes: "newOrder.fields.packagingNotes",
   qualityRequirements: "newOrder.fields.qualityRequirements",
   ringSize: "newOrder.fields.ringSize",
   specialInstructions: "newOrder.fields.attachmentNotes",
   stoneColor: "newOrder.fields.stoneColor",
   stoneType: "newOrder.fields.stoneType",
+  weightGrams: "newOrder.fields.estimatedWeight",
   workshopNotes: "newOrder.fields.workshopNotes",
 };
 
@@ -182,6 +186,38 @@ export default async function AdminOrderDetailPage({
 
   const item = order.items[0];
   const notProvided = t("common.notProvided");
+  const productSpecificationsRows = [
+    { label: t("newOrder.fields.goldKarat"), value: order.productSpecifications.karat },
+    {
+      label: t("newOrder.fields.estimatedWeight"),
+      value:
+        typeof order.productSpecifications.weightGrams === "number"
+          ? `${order.productSpecifications.weightGrams} g`
+          : null,
+    },
+    {
+      label: t("newOrder.fields.nameCustomizationEnabled"),
+      value: order.productSpecifications.nameCustomization.enabled
+        ? t("common.enabled")
+        : t("common.disabled"),
+    },
+    {
+      label: t("newOrder.fields.nameLanguage"),
+      value: order.productSpecifications.nameCustomization.language === "ar"
+        ? locale === "ar"
+          ? "عربي"
+          : "Arabisch"
+        : order.productSpecifications.nameCustomization.language === "en"
+          ? locale === "ar"
+            ? "إنجليزي"
+            : "Englisch"
+          : null,
+    },
+    {
+      label: t("newOrder.fields.nameText"),
+      value: order.productSpecifications.nameCustomization.text,
+    },
+  ].filter((row) => row.value && String(row.value).trim().length > 0);
 
   return (
     <div className="space-y-6">
@@ -307,6 +343,21 @@ export default async function AdminOrderDetailPage({
           ) : null}
 
           <section className="grid gap-6 xl:grid-cols-2">
+            <AdminCard title={locale === "ar" ? "مواصفات المجوهرات" : "Schmuckspezifikationen"}>
+              {productSpecificationsRows.length === 0 ? (
+                <p className="text-sm text-muted">{notProvided}</p>
+              ) : (
+                <dl className="grid gap-3 text-sm">
+                  {productSpecificationsRows.map((row) => (
+                    <div key={row.label} className="flex items-start justify-between gap-4">
+                      <dt className="text-muted">{row.label}</dt>
+                      <dd className="max-w-[60%] text-end text-foreground">{row.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+            </AdminCard>
+
             <AdminCard title={t("orders.goldDetailsTitle")}>
               {renderKeyValueRows(locale, t, order.goldDetails, notProvided)}
             </AdminCard>

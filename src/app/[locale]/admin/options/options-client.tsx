@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
 import {
+  deleteOptionAction,
   saveOptionAction,
   saveOptionGroupAction,
   toggleOptionActiveAction,
@@ -141,12 +142,48 @@ function parseOptionValues(valuesText: string) {
     .filter((value) => value.label && value.value);
 }
 
+function getOptionUiCopy(locale: AppLocale) {
+  if (locale === "ar") {
+    return {
+      deleteConfirm:
+        "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذه العملية.",
+    };
+  }
+
+  if (locale === "de") {
+    return {
+      deleteConfirm:
+        "Moechten Sie dieses Element wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.",
+    };
+  }
+
+  if (locale === "fr") {
+    return {
+      deleteConfirm:
+        "Voulez-vous vraiment supprimer cet element ? Cette action ne peut pas etre annulee.",
+    };
+  }
+
+  if (locale === "tr") {
+    return {
+      deleteConfirm:
+        "Bu ogeyi silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
+    };
+  }
+
+  return {
+    deleteConfirm:
+      "Do you really want to delete this item? This action cannot be undone.",
+  };
+}
+
 export function AdminOptionsClient({
   groups,
   locale,
   options,
 }: AdminOptionsClientProps) {
   const t = useTranslations("Admin");
+  const uiCopy = getOptionUiCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
@@ -326,6 +363,25 @@ export function AdminOptionsClient({
             }
           >
             {option.isActive ? t("buttons.deactivate") : t("buttons.activate")}
+          </AdminButton>
+          <AdminButton
+            size="sm"
+            variant="danger"
+            onClick={() => {
+              if (!window.confirm(uiCopy.deleteConfirm)) {
+                return;
+              }
+
+              startTransition(async () => {
+                const result = await deleteOptionAction(locale, option.id);
+                setFeedback(result.message);
+                if (result.ok) {
+                  router.refresh();
+                }
+              });
+            }}
+          >
+            {t("buttons.delete")}
           </AdminButton>
         </div>
       ),

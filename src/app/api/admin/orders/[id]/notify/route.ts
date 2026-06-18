@@ -69,14 +69,14 @@ export async function POST(
     orderId: order.id,
     recipientEmail: result.data.customerEmail,
     replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
-    subject: `Update for order ${order.trackingNumber}`,
+    subject: `Aktualisierung zu Ihrem Auftrag ${order.trackingNumber}`,
     text: [
-      `Hello${order.customerName ? ` ${order.customerName}` : ""},`,
+      `Guten Tag${order.customerName ? ` ${order.customerName}` : ""},`,
       "",
       result.data.message,
       "",
-      `Tracking status: ${result.data.trackingStatus}`,
-      "Use your tracking number from the website menu to follow this order.",
+      `Tracking-Status: ${result.data.trackingStatus}`,
+      'Sie koennen Ihren Auftrag ueber den Menuepunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
       process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gold-manufaktur.vercel.app",
     ].join("\n"),
   });

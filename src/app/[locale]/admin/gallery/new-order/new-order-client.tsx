@@ -13,7 +13,6 @@ import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
-import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import type { AdminProductRecord } from "@/lib/db/adminCatalog";
 
 type NewOrderClientProps = {
@@ -22,7 +21,6 @@ type NewOrderClientProps = {
   products: AdminProductRecord[];
 };
 
-type OptionValueMap = Record<string, string | string[] | boolean>;
 type FieldErrors = Record<string, string>;
 
 function getInitialProductId(
@@ -36,39 +34,79 @@ function getInitialProductId(
   return products[0]?.id ?? "";
 }
 
-function getOptionDisplayValue(value: string | string[] | boolean) {
-  if (Array.isArray(value)) {
-    return value;
+function getNewOrderUiCopy(locale: AppLocale) {
+  if (locale === "ar") {
+    return {
+      customerSectionDescription: "بيانات العميل الأساسية لإنشاء الطلب.",
+      customerSectionTitle: "العميل",
+      customerNote: "ملاحظات العميل",
+      designLanguage: "لغة التصميم",
+      designLanguageArabic: "عربي",
+      designLanguageEnglish: "إنجليزي",
+      helper:
+        "اختر لغة التصميم المطلوبة، ويمكنك كتابة الاسم بأي أحرف أو رموز.",
+      internalNote: "ملاحظات داخلية",
+      jewelrySectionDescription: "تفاصيل الذهب المطلوبة للطلب.",
+      jewelrySectionTitle: "مواصفات المجوهرات",
+      karat: "العيار",
+      requestedName: "الاسم المطلوب",
+      summaryCustomization: "تخصيص الاسم",
+      summaryLanguage: "لغة التصميم",
+      summaryWeight: "الوزن",
+      totalAmount: "المبلغ الإجمالي",
+      trackingSectionDescription: "تفعيل إشعارات البريد عند الحاجة.",
+      trackingSectionTitle: "التتبع والإشعارات",
+      weight: "الوزن بالغرام",
+    };
   }
 
-  return value;
-}
-
-function serializeSelectedOptionValue(value: string | string[] | boolean) {
-  if (Array.isArray(value)) {
-    return value.join(", ");
+  if (locale === "de") {
+    return {
+      customerSectionDescription: "Grundlegende Kundendaten fuer den Auftrag.",
+      customerSectionTitle: "Kunde",
+      customerNote: "Kundennotiz",
+      designLanguage: "Designsprache",
+      designLanguageArabic: "Arabisch",
+      designLanguageEnglish: "Englisch",
+      helper:
+        "Waehlen Sie die gewuenschte Designsprache. Der Name kann in beliebigen Zeichen eingegeben werden.",
+      internalNote: "Interne Notiz",
+      jewelrySectionDescription: "Die relevanten Schmuckdaten fuer diesen Auftrag.",
+      jewelrySectionTitle: "Schmuckspezifikationen",
+      karat: "Legierung",
+      requestedName: "Gewuenschter Name",
+      summaryCustomization: "Namenspersonalisierung",
+      summaryLanguage: "Designsprache",
+      summaryWeight: "Gewicht",
+      totalAmount: "Gesamtbetrag",
+      trackingSectionDescription: "Kunden-E-Mails bei Bedarf aktivieren.",
+      trackingSectionTitle: "Tracking & Benachrichtigung",
+      weight: "Gewicht in Gramm",
+    };
   }
 
-  if (typeof value === "boolean") {
-    return value ? "true" : "false";
-  }
-
-  return value;
-}
-
-function getGroupRecord(
-  selectedOptions: Array<{
-    groupKey: string;
-    label: string;
-    value: string | string[] | boolean;
-  }>,
-  groupKey: string
-) {
-  return Object.fromEntries(
-    selectedOptions
-      .filter((option) => option.groupKey === groupKey)
-      .map((option) => [option.label, serializeSelectedOptionValue(option.value)])
-  );
+  return {
+    customerSectionDescription: "Basic customer information for the order.",
+    customerSectionTitle: "Customer",
+    customerNote: "Customer note",
+    designLanguage: "Design language",
+    designLanguageArabic: "Arabic",
+    designLanguageEnglish: "English",
+    helper:
+      "Choose the intended design language. The requested name can use any characters or symbols.",
+    internalNote: "Internal note",
+    jewelrySectionDescription: "The relevant jewelry specifications for this order.",
+    jewelrySectionTitle: "Jewelry specifications",
+    karat: "Karat",
+    requestedName: "Requested name",
+    summaryCustomization: "Name personalization",
+    summaryLanguage: "Design language",
+    summaryWeight: "Weight",
+    totalAmount: "Total amount",
+    trackingSectionDescription: "Enable customer emails when needed.",
+    trackingSectionTitle: "Tracking & notifications",
+    weight: "Weight in grams",
+  };
 }
 
 export function NewOrderClient({
@@ -77,7 +115,7 @@ export function NewOrderClient({
   products,
 }: NewOrderClientProps) {
   const t = useTranslations("Admin");
-  const copy = getOrderWorkflowCopy(locale);
+  const uiCopy = getNewOrderUiCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -90,19 +128,20 @@ export function NewOrderClient({
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerReference, setCustomerReference] = useState("");
-  const [customerLanguage, setCustomerLanguage] = useState<AppLocale>(locale);
-  const [currency, setCurrency] = useState("EUR");
-  const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState<"express" | "normal" | "urgent">("normal");
-  const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
-  const [totalAmount, setTotalAmount] = useState("");
+  const [karat, setKarat] = useState<"14" | "18" | "21">("21");
+  const [weightGrams, setWeightGrams] = useState("");
+  const [nameLanguage, setNameLanguage] = useState<"ar" | "en">("ar");
+  const [requestedName, setRequestedName] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
-  const [optionValues, setOptionValues] = useState<OptionValueMap>({});
+  const [totalAmount, setTotalAmount] = useState("");
+  const [currency, setCurrency] = useState("EUR");
+  const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
 
   const selectedProduct =
     products.find((product) => product.id === productId) ?? products[0];
-  const productOptions = selectedProduct?.optionSettings ?? [];
+  const supportsNameCustomization =
+    selectedProduct?.effectiveSupportsNameCustomization ?? false;
 
   const clearFieldError = (field: string) => {
     setFieldErrors((current) => {
@@ -116,83 +155,42 @@ export function NewOrderClient({
     });
   };
 
-  const updateOptionValue = (optionId: string, value: string | string[] | boolean) => {
-    clearFieldError(`option:${optionId}`);
-    setOptionValues((current) => ({
-      ...current,
-      [optionId]: value,
-    }));
-  };
-
   const submitForm = () => {
     if (!selectedProduct) {
-      setFieldErrors({ productId: copy.productRequired });
-      setFeedback(copy.productRequired);
-      return;
-    }
-
-    if (!Number.isFinite(quantity) || quantity < 1) {
-      setFieldErrors({ quantity: copy.quantityInvalid });
-      setFeedback(copy.quantityInvalid);
+      setFieldErrors({ productId: t("newOrder.fields.product") });
       return;
     }
 
     setFeedback(null);
     setFieldErrors({});
+
     const parsedTotalAmount = totalAmount.trim().length > 0 ? Number(totalAmount) : null;
-
-    const selectedOptions = productOptions
-      .map((option) => ({
-        groupKey: option.groupKey,
-        key: option.key,
-        label: option.displayLabel,
-        optionId: option.id,
-        value: getOptionDisplayValue(optionValues[option.id] ?? ""),
-      }))
-      .filter((option) => {
-        if (Array.isArray(option.value)) {
-          return option.value.length > 0;
-        }
-
-        if (typeof option.value === "boolean") {
-          return option.value;
-        }
-
-        return String(option.value).trim().length > 0;
-      });
-
-    const goldDetails = getGroupRecord(selectedOptions, "gold_details");
-    const measurements = getGroupRecord(selectedOptions, "measurements");
-    const personalization = getGroupRecord(
-      selectedOptions,
-      "name_personalization"
-    );
-    const stones = getGroupRecord(selectedOptions, "stones");
+    const parsedWeightGrams = Number(weightGrams);
 
     startTransition(async () => {
       const result = await createOrderAction(locale, {
         attachments: [],
         currency,
         customerEmail,
-        customerLanguage,
+        customerLanguage: locale,
         customerName,
         customerPhone,
         customerReference,
-        dueDate,
+        dueDate: "",
         emailUpdatesEnabled,
-        goldDetails,
-        measurements,
+        goldDetails: {},
+        measurements: {},
         notes: {
           adminNotes,
           customerNotes,
-          specialInstructions: "",
           deliveryNotes: "",
           packagingNotes: "",
           qualityRequirements: "",
+          specialInstructions: "",
           workshopNotes: "",
         },
-        personalization,
-        priority,
+        personalization: {},
+        priority: "normal",
         productCategoryName: selectedProduct.categoryName,
         productCategorySlug: selectedProduct.categorySlug || "all",
         productId: selectedProduct.id,
@@ -200,10 +198,21 @@ export function NewOrderClient({
         productName: selectedProduct.displayName,
         productSku: selectedProduct.sku,
         productSlug: selectedProduct.slug,
+        productSpecifications: {
+          karat,
+          nameCustomization: {
+            enabled: supportsNameCustomization,
+            language: supportsNameCustomization ? nameLanguage : null,
+            text: supportsNameCustomization && requestedName.trim().length > 0
+              ? requestedName
+              : null,
+          },
+          weightGrams: parsedWeightGrams,
+        },
         quantity,
         referenceImages: [],
-        selectedOptions,
-        stones,
+        selectedOptions: [],
+        stones: {},
         totalAmount:
           parsedTotalAmount !== null && Number.isFinite(parsedTotalAmount)
             ? parsedTotalAmount
@@ -235,7 +244,10 @@ export function NewOrderClient({
 
       <section className="grid gap-6 xl:grid-cols-[1.3fr_0.9fr]">
         <div className="space-y-6">
-          <AdminCard title={t("newOrder.sections.product")} description={t("newOrder.productDescription")}>
+          <AdminCard
+            title={t("newOrder.sections.product")}
+            description={t("newOrder.productDescription")}
+          >
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminSelect
                 label={t("newOrder.fields.product")}
@@ -267,7 +279,10 @@ export function NewOrderClient({
             </div>
           </AdminCard>
 
-          <AdminCard title={t("newOrder.sections.order")} description={t("newOrder.orderDescription")}>
+          <AdminCard
+            title={uiCopy.customerSectionTitle}
+            description={uiCopy.customerSectionDescription}
+          >
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminInput
                 label={t("newOrder.fields.customerName")}
@@ -299,25 +314,93 @@ export function NewOrderClient({
                 value={customerReference}
                 onChange={(event) => setCustomerReference(event.target.value)}
               />
+            </div>
+          </AdminCard>
+
+          <AdminCard
+            title={uiCopy.jewelrySectionTitle}
+            description={uiCopy.jewelrySectionDescription}
+          >
+            <div className="grid gap-4 xl:grid-cols-2">
               <AdminSelect
-                label={copy.customerLanguage}
-                value={customerLanguage}
-                onChange={(event) => setCustomerLanguage(event.target.value as AppLocale)}
+                label={uiCopy.karat}
+                value={karat}
+                helperText={fieldErrors["productSpecifications.karat"]}
+                className={
+                  fieldErrors["productSpecifications.karat"]
+                    ? "border-rose-400/30"
+                    : undefined
+                }
+                onChange={(event) => {
+                  clearFieldError("productSpecifications.karat");
+                  setKarat(event.target.value as "14" | "18" | "21");
+                }}
               >
-                {[
-                  { value: "de", label: "Deutsch" },
-                  { value: "ar", label: "العربية" },
-                  { value: "en", label: "English" },
-                  { value: "fr", label: "Français" },
-                  { value: "tr", label: "Türkçe" },
-                ].map((language) => (
-                  <option key={language.value} value={language.value}>
-                    {language.label}
+                {["14", "18", "21"].map((value) => (
+                  <option key={value} value={value}>
+                    {value}
                   </option>
                 ))}
               </AdminSelect>
               <AdminInput
-                label={t("newOrder.fields.totalAmount")}
+                label={uiCopy.weight}
+                type="number"
+                min="0"
+                step="0.01"
+                value={weightGrams}
+                helperText={fieldErrors["productSpecifications.weightGrams"]}
+                className={
+                  fieldErrors["productSpecifications.weightGrams"]
+                    ? "border-rose-400/30"
+                    : undefined
+                }
+                onChange={(event) => {
+                  clearFieldError("productSpecifications.weightGrams");
+                  setWeightGrams(event.target.value);
+                }}
+              />
+              {supportsNameCustomization ? (
+                <>
+                  <AdminSelect
+                    label={uiCopy.designLanguage}
+                    value={nameLanguage}
+                    helperText={
+                      fieldErrors["productSpecifications.nameCustomization.language"]
+                    }
+                    className={
+                      fieldErrors["productSpecifications.nameCustomization.language"]
+                        ? "border-rose-400/30"
+                        : undefined
+                    }
+                    onChange={(event) => {
+                      clearFieldError("productSpecifications.nameCustomization.language");
+                      setNameLanguage(event.target.value as "ar" | "en");
+                    }}
+                  >
+                    <option value="ar">{uiCopy.designLanguageArabic}</option>
+                    <option value="en">{uiCopy.designLanguageEnglish}</option>
+                  </AdminSelect>
+                  <AdminInput
+                    label={uiCopy.requestedName}
+                    value={requestedName}
+                    helperText={
+                      fieldErrors["productSpecifications.nameCustomization.text"] ||
+                      uiCopy.helper
+                    }
+                    className={
+                      fieldErrors["productSpecifications.nameCustomization.text"]
+                        ? "border-rose-400/30"
+                        : undefined
+                    }
+                    onChange={(event) => {
+                      clearFieldError("productSpecifications.nameCustomization.text");
+                      setRequestedName(event.target.value);
+                    }}
+                  />
+                </>
+              ) : null}
+              <AdminInput
+                label={uiCopy.totalAmount}
                 type="number"
                 min="0"
                 step="0.01"
@@ -335,138 +418,18 @@ export function NewOrderClient({
                   </option>
                 ))}
               </AdminSelect>
-              <AdminInput
-                label={t("newOrder.fields.dueDate")}
-                type="date"
-                value={dueDate}
-                onChange={(event) => setDueDate(event.target.value)}
-              />
-              <AdminSelect
-                label={t("newOrder.fields.priority")}
-                value={priority}
-                onChange={(event) =>
-                  setPriority(event.target.value as "express" | "normal" | "urgent")
-                }
-              >
-                {["normal", "urgent", "express"].map((value) => (
-                  <option key={value} value={value}>
-                    {t(`priority.${value}`)}
-                  </option>
-                ))}
-              </AdminSelect>
             </div>
           </AdminCard>
-
-          {productOptions.length > 0 ? (
-            <AdminCard
-              title={t("newOrder.additionalOptionsTitle")}
-              description={t("newOrder.additionalOptionsDescription")}
-            >
-              <div className="grid gap-4 xl:grid-cols-2">
-                {productOptions.map((option) => {
-                  const currentValue = optionValues[option.id];
-
-                  if (option.type === "textarea") {
-                    return (
-                      <AdminTextarea
-                        key={option.id}
-                        label={option.displayLabel}
-                        value={typeof currentValue === "string" ? currentValue : ""}
-                        onChange={(event) =>
-                          updateOptionValue(option.id, event.target.value)
-                        }
-                      />
-                    );
-                  }
-
-                  if (option.type === "boolean") {
-                    return (
-                      <div key={option.id} className="flex items-center gap-2 rounded-[1rem] border border-white/8 bg-white/4 px-4 py-3">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(currentValue)}
-                          onChange={(event) =>
-                            updateOptionValue(option.id, event.target.checked)
-                          }
-                          className="h-4 w-4 accent-[#c49a52]"
-                        />
-                        <span className="text-sm text-foreground">{option.displayLabel}</span>
-                      </div>
-                    );
-                  }
-
-                  if (option.type === "multi_select") {
-                    return (
-                      <label key={option.id} className="block space-y-2">
-                        <span className="admin-label">{option.displayLabel}</span>
-                        <select
-                          multiple
-                          className="admin-select min-h-40"
-                          value={Array.isArray(currentValue) ? currentValue : []}
-                          onChange={(event) =>
-                            updateOptionValue(
-                              option.id,
-                              Array.from(event.target.selectedOptions).map(
-                                (selectedOption) => selectedOption.value
-                              )
-                            )
-                          }
-                        >
-                          {option.values.map((value) => (
-                            <option key={value.value} value={value.value}>
-                              {value.label}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    );
-                  }
-
-                  if (option.type === "select") {
-                    return (
-                      <AdminSelect
-                        key={option.id}
-                        label={option.displayLabel}
-                        value={typeof currentValue === "string" ? currentValue : ""}
-                        onChange={(event) =>
-                          updateOptionValue(option.id, event.target.value)
-                        }
-                      >
-                        <option value="">{t("common.selectPlaceholder")}</option>
-                        {option.values.map((value) => (
-                          <option key={value.value} value={value.value}>
-                            {value.label}
-                          </option>
-                        ))}
-                      </AdminSelect>
-                    );
-                  }
-
-                  return (
-                    <AdminInput
-                      key={option.id}
-                      label={option.displayLabel}
-                      type={option.type === "number" ? "number" : option.type === "date" ? "date" : "text"}
-                      value={typeof currentValue === "string" ? currentValue : ""}
-                      onChange={(event) =>
-                        updateOptionValue(option.id, event.target.value)
-                      }
-                    />
-                  );
-                })}
-              </div>
-            </AdminCard>
-          ) : null}
 
           <AdminCard title={t("newOrder.sections.notes")} description={t("newOrder.reviewDescription")}>
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminTextarea
-                label={t("newOrder.fields.customerNotes")}
+                label={uiCopy.customerNote}
                 value={customerNotes}
                 onChange={(event) => setCustomerNotes(event.target.value)}
               />
               <AdminTextarea
-                label={t("newOrder.fields.internalNotes")}
+                label={uiCopy.internalNote}
                 value={adminNotes}
                 onChange={(event) => setAdminNotes(event.target.value)}
               />
@@ -500,33 +463,39 @@ export function NewOrderClient({
                     <span className="text-foreground">{quantity}</span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{t("newOrder.fields.priority")}</span>
-                    <span className="text-foreground">{t(`priority.${priority}`)}</span>
+                    <span className="text-muted">{uiCopy.karat}</span>
+                    <span className="text-foreground">{karat}</span>
                   </div>
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{copy.customerLanguage}</span>
+                    <span className="text-muted">{uiCopy.summaryWeight}</span>
                     <span className="text-foreground">
-                      {{
-                        ar: "العربية",
-                        de: "Deutsch",
-                        en: "English",
-                        fr: "Français",
-                        tr: "Türkçe",
-                      }[customerLanguage]}
+                      {weightGrams.trim().length > 0 ? `${weightGrams} g` : t("common.notProvided")}
                     </span>
                   </div>
+                  {supportsNameCustomization ? (
+                    <>
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="text-muted">{uiCopy.summaryCustomization}</span>
+                        <span className="text-foreground">
+                          {requestedName.trim().length > 0 ? requestedName : t("common.notProvided")}
+                        </span>
+                      </div>
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="text-muted">{uiCopy.summaryLanguage}</span>
+                        <span className="text-foreground">
+                          {nameLanguage === "ar"
+                            ? uiCopy.designLanguageArabic
+                            : uiCopy.designLanguageEnglish}
+                        </span>
+                      </div>
+                    </>
+                  ) : null}
                   <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{t("newOrder.fields.totalAmount")}</span>
+                    <span className="text-muted">{uiCopy.totalAmount}</span>
                     <span className="text-foreground">
                       {totalAmount.trim().length > 0
                         ? `${totalAmount} ${currency}`
                         : t("common.notProvided")}
-                    </span>
-                  </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{t("newOrder.fields.emailUpdatesEnabled")}</span>
-                    <span className="text-foreground">
-                      {emailUpdatesEnabled ? t("common.enabled") : t("common.disabled")}
                     </span>
                   </div>
                 </div>
@@ -536,9 +505,11 @@ export function NewOrderClient({
             )}
           </AdminCard>
 
-          <AdminCard title={t("newOrder.sections.tracking")} description={t("newOrder.trackingDescription")}>
+          <AdminCard
+            title={uiCopy.trackingSectionTitle}
+            description={uiCopy.trackingSectionDescription}
+          >
             <div className="space-y-4">
-              <p className="text-sm text-muted">{copy.workshopAssignmentHint}</p>
               <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
                 <input
                   type="checkbox"

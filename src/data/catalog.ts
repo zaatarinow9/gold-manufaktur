@@ -16,6 +16,7 @@ export type CatalogProduct = {
   name: string;
   shortDescription: string;
   slug: string;
+  supportsNameCustomization?: boolean;
   tags: string[];
 };
 

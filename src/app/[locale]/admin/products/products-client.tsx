@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
 import {
+  deleteProductAction,
   duplicateProductAction,
   saveProductAction,
   toggleProductActiveAction,
@@ -48,6 +49,7 @@ type ProductFormState = {
   sku: string;
   slug: string;
   sortOrder: number;
+  supportsNameCustomizationMode: "category" | "disabled" | "enabled";
   tagsText: string;
 };
 
@@ -83,6 +85,7 @@ function createEmptyProductForm(
     sku: `GH-${String(products.length + 1).padStart(4, "0")}`,
     slug: "",
     sortOrder: products.length + 1,
+    supportsNameCustomizationMode: "category",
     tagsText: "",
   };
 }
@@ -103,6 +106,7 @@ function createEditProductForm(product: AdminProductRecord): ProductFormState {
     sku: product.sku,
     slug: product.slug,
     sortOrder: product.sortOrder,
+    supportsNameCustomizationMode: product.nameCustomizationMode,
     tagsText: product.tags.join(", "),
   };
 }
@@ -139,6 +143,71 @@ function getProductOptionSetting(
   return optionSettings.find((setting) => setting.optionId === optionId);
 }
 
+function getProductUiCopy(locale: AppLocale) {
+  if (locale === "ar") {
+    return {
+      categoryDefault: "يتبع التصنيف",
+      deleteConfirm:
+        "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذه العملية.",
+      personalizationBadge: "يدعم تخصيص الاسم",
+      personalizationHeader: "التخصيص",
+      personalizationLabel: "تخصيص الاسم لهذا المنتج",
+      personalizationOff: "معطل",
+      personalizationOn: "مفعل",
+    };
+  }
+
+  if (locale === "de") {
+    return {
+      categoryDefault: "Kategorie-Standard",
+      deleteConfirm:
+        "Moechten Sie dieses Element wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.",
+      personalizationBadge: "Namenspersonalisierung",
+      personalizationHeader: "Personalisierung",
+      personalizationLabel: "Namenspersonalisierung fuer dieses Produkt",
+      personalizationOff: "Deaktiviert",
+      personalizationOn: "Aktiviert",
+    };
+  }
+
+  if (locale === "fr") {
+    return {
+      categoryDefault: "Defaut de categorie",
+      deleteConfirm:
+        "Voulez-vous vraiment supprimer cet element ? Cette action ne peut pas etre annulee.",
+      personalizationBadge: "Personnalisation du nom",
+      personalizationHeader: "Personnalisation",
+      personalizationLabel: "Personnalisation du nom pour ce produit",
+      personalizationOff: "Desactive",
+      personalizationOn: "Active",
+    };
+  }
+
+  if (locale === "tr") {
+    return {
+      categoryDefault: "Kategori varsayilani",
+      deleteConfirm:
+        "Bu ogeyi silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
+      personalizationBadge: "Isim kisilestirmesi",
+      personalizationHeader: "Kisilestirme",
+      personalizationLabel: "Bu urun icin isim kisilestirmesi",
+      personalizationOff: "Devre disi",
+      personalizationOn: "Etkin",
+    };
+  }
+
+  return {
+    categoryDefault: "Category default",
+    deleteConfirm:
+      "Do you really want to delete this item? This action cannot be undone.",
+    personalizationBadge: "Name personalization",
+    personalizationHeader: "Personalization",
+    personalizationLabel: "Name personalization for this product",
+    personalizationOff: "Disabled",
+    personalizationOn: "Enabled",
+  };
+}
+
 function setProductOptionVisibility(
   optionSettings: ProductOptionSettingState[],
   optionId: string,
@@ -169,6 +238,7 @@ export function AdminProductsClient({
 }: AdminProductsClientProps) {
   const t = useTranslations("Admin");
   const copy = getOrderWorkflowCopy(locale);
+  const uiCopy = getProductUiCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
@@ -239,6 +309,10 @@ export function AdminProductsClient({
       sku: formState.sku.trim(),
       slug: formState.slug.trim(),
       sortOrder: Number(formState.sortOrder),
+      supportsNameCustomization:
+        formState.supportsNameCustomizationMode === "category"
+          ? null
+          : formState.supportsNameCustomizationMode === "enabled",
       tags: splitCommaList(formState.tagsText),
     };
 
@@ -304,9 +378,20 @@ export function AdminProductsClient({
       ),
     },
     {
-      id: "options",
-      header: t("products.table.options"),
-      cell: (product) => copy.optionsLabel(product.optionCount),
+      id: "personalization",
+      header: uiCopy.personalizationHeader,
+      cell: (product) => (
+        <div className="flex flex-wrap gap-2">
+          {product.effectiveSupportsNameCustomization ? (
+            <AdminBadge variant="gold">{uiCopy.personalizationBadge}</AdminBadge>
+          ) : (
+            <AdminBadge variant="neutral">{uiCopy.personalizationOff}</AdminBadge>
+          )}
+          {product.nameCustomizationMode === "category" ? (
+            <AdminBadge variant="neutral">{uiCopy.categoryDefault}</AdminBadge>
+          ) : null}
+        </div>
+      ),
     },
     {
       id: "visibility",
@@ -391,6 +476,25 @@ export function AdminProductsClient({
             }
           >
             {product.isActive ? t("buttons.deactivate") : t("buttons.activate")}
+          </AdminButton>
+          <AdminButton
+            size="sm"
+            variant="danger"
+            onClick={() => {
+              if (!window.confirm(uiCopy.deleteConfirm)) {
+                return;
+              }
+
+              startTransition(async () => {
+                const result = await deleteProductAction(locale, product.id);
+                setFeedback(result.message);
+                if (result.ok) {
+                  router.refresh();
+                }
+              });
+            }}
+          >
+            {t("buttons.delete")}
           </AdminButton>
         </div>
       ),
@@ -500,6 +604,20 @@ export function AdminProductsClient({
                   {category.displayName}
                 </option>
               ))}
+            </AdminSelect>
+            <AdminSelect
+              label={uiCopy.personalizationLabel}
+              value={formState.supportsNameCustomizationMode}
+              onChange={(event) =>
+                setFormState((current) => ({
+                  ...current,
+                  supportsNameCustomizationMode: event.target.value as ProductFormState["supportsNameCustomizationMode"],
+                }))
+              }
+            >
+              <option value="category">{uiCopy.categoryDefault}</option>
+              <option value="enabled">{uiCopy.personalizationOn}</option>
+              <option value="disabled">{uiCopy.personalizationOff}</option>
             </AdminSelect>
             <AdminInput
               label="Sort Order"

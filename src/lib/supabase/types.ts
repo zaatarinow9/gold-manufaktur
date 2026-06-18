@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           accent: string | null;
           created_at: string;
+          deleted_at: string | null;
           description_ar: string | null;
           description_de: string | null;
           description_en: string | null;
@@ -28,11 +29,13 @@ export type Database = {
           name_tr: string | null;
           slug: string;
           sort_order: number;
+          supports_name_customization: boolean;
           updated_at: string;
         };
         Insert: {
           accent?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description_ar?: string | null;
           description_de?: string | null;
           description_en?: string | null;
@@ -48,11 +51,13 @@ export type Database = {
           name_tr?: string | null;
           slug: string;
           sort_order?: number;
+          supports_name_customization?: boolean;
           updated_at?: string;
         };
         Update: {
           accent?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description_ar?: string | null;
           description_de?: string | null;
           description_en?: string | null;
@@ -68,6 +73,7 @@ export type Database = {
           name_tr?: string | null;
           slug?: string;
           sort_order?: number;
+          supports_name_customization?: boolean;
           updated_at?: string;
         };
         Relationships: [];
@@ -309,6 +315,7 @@ export type Database = {
       option_groups: {
         Row: {
           created_at: string;
+          deleted_at: string | null;
           id: string;
           is_active: boolean;
           key: string;
@@ -322,6 +329,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          deleted_at?: string | null;
           id?: string;
           is_active?: boolean;
           key: string;
@@ -335,6 +343,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          deleted_at?: string | null;
           id?: string;
           is_active?: boolean;
           key?: string;
@@ -351,6 +360,7 @@ export type Database = {
       options: {
         Row: {
           created_at: string;
+          deleted_at: string | null;
           group_id: string;
           id: string;
           is_active: boolean;
@@ -368,6 +378,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
+          deleted_at?: string | null;
           group_id: string;
           id?: string;
           is_active?: boolean;
@@ -385,6 +396,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          deleted_at?: string | null;
           group_id?: string;
           id?: string;
           is_active?: boolean;
@@ -550,6 +562,7 @@ export type Database = {
           notes_json: Json;
           personalization_json: Json;
           priority: Database["public"]["Enums"]["order_priority"];
+          product_specifications: Json;
           public_tracking_stage: string | null;
           status: Database["public"]["Enums"]["workshop_order_status"];
           stones_json: Json;
@@ -580,6 +593,7 @@ export type Database = {
           notes_json?: Json;
           personalization_json?: Json;
           priority?: Database["public"]["Enums"]["order_priority"];
+          product_specifications?: Json;
           public_tracking_stage?: string | null;
           status: Database["public"]["Enums"]["workshop_order_status"];
           stones_json?: Json;
@@ -610,6 +624,7 @@ export type Database = {
           notes_json?: Json;
           personalization_json?: Json;
           priority?: Database["public"]["Enums"]["order_priority"];
+          product_specifications?: Json;
           public_tracking_stage?: string | null;
           status?: Database["public"]["Enums"]["workshop_order_status"];
           stones_json?: Json;
@@ -713,6 +728,7 @@ export type Database = {
           category_id: string | null;
           cover_image_url: string | null;
           created_at: string;
+          deleted_at: string | null;
           description_ar: string | null;
           description_de: string | null;
           description_en: string | null;
@@ -729,6 +745,7 @@ export type Database = {
           sku: string;
           slug: string;
           sort_order: number;
+          supports_name_customization: boolean | null;
           tags: string[];
           updated_at: string;
         };
@@ -736,6 +753,7 @@ export type Database = {
           category_id?: string | null;
           cover_image_url?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description_ar?: string | null;
           description_de?: string | null;
           description_en?: string | null;
@@ -752,6 +770,7 @@ export type Database = {
           sku: string;
           slug: string;
           sort_order?: number;
+          supports_name_customization?: boolean | null;
           tags?: string[];
           updated_at?: string;
         };
@@ -759,6 +778,7 @@ export type Database = {
           category_id?: string | null;
           cover_image_url?: string | null;
           created_at?: string;
+          deleted_at?: string | null;
           description_ar?: string | null;
           description_de?: string | null;
           description_en?: string | null;
@@ -775,6 +795,7 @@ export type Database = {
           sku?: string;
           slug?: string;
           sort_order?: number;
+          supports_name_customization?: boolean | null;
           tags?: string[];
           updated_at?: string;
         };

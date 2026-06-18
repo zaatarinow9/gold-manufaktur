@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
 import {
+  deleteCategoryAction,
   saveCategoryAction,
   toggleCategoryActiveAction,
 } from "@/app/[locale]/admin/categories/actions";
@@ -31,6 +32,7 @@ type CategoryFormState = {
   name: LocalizedText;
   slug: string;
   sortOrder: number;
+  supportsNameCustomization: boolean;
 };
 
 type AdminCategoriesClientProps = {
@@ -59,6 +61,7 @@ function createEmptyCategoryForm(
     name: createEmptyLocalizedText(),
     slug: "",
     sortOrder: categories.length + 1,
+    supportsNameCustomization: false,
   };
 }
 
@@ -72,6 +75,7 @@ function createEditCategoryForm(category: AdminCategoryRecord): CategoryFormStat
     name: category.name,
     slug: category.slug,
     sortOrder: category.sortOrder,
+    supportsNameCustomization: category.supportsNameCustomization,
   };
 }
 
@@ -86,11 +90,62 @@ function updateLocalizedText(
   };
 }
 
+function getCategoryUiCopy(locale: AppLocale) {
+  if (locale === "ar") {
+    return {
+      deleteConfirm:
+        "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذه العملية.",
+      personalizationBadge: "يدعم تخصيص الاسم",
+      personalizationHeader: "التخصيص",
+      personalizationLabel: "يدعم تخصيص الاسم",
+    };
+  }
+
+  if (locale === "de") {
+    return {
+      deleteConfirm:
+        "Moechten Sie dieses Element wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.",
+      personalizationBadge: "Namenspersonalisierung",
+      personalizationHeader: "Personalisierung",
+      personalizationLabel: "Namenspersonalisierung aktivieren",
+    };
+  }
+
+  if (locale === "fr") {
+    return {
+      deleteConfirm:
+        "Voulez-vous vraiment supprimer cet element ? Cette action ne peut pas etre annulee.",
+      personalizationBadge: "Personnalisation du nom",
+      personalizationHeader: "Personnalisation",
+      personalizationLabel: "Activer la personnalisation du nom",
+    };
+  }
+
+  if (locale === "tr") {
+    return {
+      deleteConfirm:
+        "Bu ogeyi silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
+      personalizationBadge: "Isim kisilestirmesi",
+      personalizationHeader: "Kisilestirme",
+      personalizationLabel: "Isim kisilestirmesini etkinlestir",
+    };
+  }
+
+  return {
+    deleteConfirm:
+      "Do you really want to delete this item? This action cannot be undone.",
+    personalizationBadge: "Name personalization",
+    personalizationHeader: "Personalization",
+    personalizationLabel: "Enable name personalization",
+  };
+}
+
 export function AdminCategoriesClient({
   categories,
   locale,
 }: AdminCategoriesClientProps) {
   const t = useTranslations("Admin");
+  const uiCopy = getCategoryUiCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
@@ -132,6 +187,7 @@ export function AdminCategoriesClient({
       name: formState.name,
       slug: formState.slug.trim(),
       sortOrder: Number(formState.sortOrder),
+      supportsNameCustomization: formState.supportsNameCustomization,
     };
 
     startTransition(async () => {
@@ -227,9 +283,15 @@ export function AdminCategoriesClient({
       ),
     },
     {
-      id: "options",
-      header: t("categories.table.options"),
-      cell: (category) => `${category.optionCount}`,
+      id: "personalization",
+      header: uiCopy.personalizationHeader,
+      cell: (category) => (
+        <AdminBadge variant={category.supportsNameCustomization ? "gold" : "neutral"}>
+          {category.supportsNameCustomization
+            ? uiCopy.personalizationBadge
+            : t("common.disabled")}
+        </AdminBadge>
+      ),
     },
     {
       id: "actions",
@@ -266,6 +328,25 @@ export function AdminCategoriesClient({
             }
           >
             {category.isActive ? t("buttons.deactivate") : t("buttons.activate")}
+          </AdminButton>
+          <AdminButton
+            size="sm"
+            variant="danger"
+            onClick={() => {
+              if (!window.confirm(uiCopy.deleteConfirm)) {
+                return;
+              }
+
+              startTransition(async () => {
+                const result = await deleteCategoryAction(locale, category.id);
+                setFeedback(result.message);
+                if (result.ok) {
+                  router.refresh();
+                }
+              });
+            }}
+          >
+            {t("buttons.delete")}
           </AdminButton>
         </div>
       ),
@@ -384,20 +465,36 @@ export function AdminCategoriesClient({
               />
             ))}
             <div className="xl:col-span-2">
-              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                <input
-                  type="checkbox"
-                  checked={formState.isActive}
-                  onChange={(event) =>
-                    setFormState((current) => ({
-                      ...current,
-                      isActive: event.target.checked,
-                    }))
-                  }
-                  className="h-4 w-4 accent-[#c49a52]"
-                />
-                {t("common.active")}
-              </label>
+              <div className="flex flex-wrap gap-5">
+                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                  <input
+                    type="checkbox"
+                    checked={formState.isActive}
+                    onChange={(event) =>
+                      setFormState((current) => ({
+                        ...current,
+                        isActive: event.target.checked,
+                      }))
+                    }
+                    className="h-4 w-4 accent-[#c49a52]"
+                  />
+                  {t("common.active")}
+                </label>
+                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                  <input
+                    type="checkbox"
+                    checked={formState.supportsNameCustomization}
+                    onChange={(event) =>
+                      setFormState((current) => ({
+                        ...current,
+                        supportsNameCustomization: event.target.checked,
+                      }))
+                    }
+                    className="h-4 w-4 accent-[#c49a52]"
+                  />
+                  {uiCopy.personalizationLabel}
+                </label>
+              </div>
             </div>
           </div>
         </AdminCard>
