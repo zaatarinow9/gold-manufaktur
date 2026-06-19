@@ -1,4 +1,4 @@
-{
+﻿{
   "Metadata": {
     "site": {
       "brand": "مجوهرات حلوة",
@@ -944,13 +944,55 @@
     }
   },
   "Tracking": {
-    "title": "متابعة مسار الطلب",
-    "description": "بوابة شفافة تتيح لك تتبع مسار صياغة وتجهيز طلبك لدى خبراء مجوهرات حلوة.",
-    "currentStatus": "حالة التنفيذ الحالية",
-    "timelineTitle": "السجل الزمني للمراحل",
-    "timelineDescription": "توثيق دقيق لكافة الخطوات التي يمر بها طلبك حتى اكتماله.",
-    "contact": "قنوات الدعم",
-    "phone": "اتصال مباشر",
-    "backToWebsite": "العودة للرئيسية"
+  "title": "متابعة مسار الطلب",
+  "description": "بوابة واضحة تتيح لك متابعة حالة طلبك لدى GoldHelwah GmbH من خلال رقم التتبع.",
+  "currentStatus": "حالة التنفيذ الحالية",
+  "timelineTitle": "السجل الزمني للمراحل",
+  "timelineDescription": "متابعة واضحة للمراحل التي يمر بها طلبك حتى يصبح جاهزًا للاستلام.",
+  "contact": "قنوات الدعم",
+  "phone": "اتصال مباشر",
+  "backToWebsite": "العودة للرئيسية",
+  "trackingNumberLabel": "رقم التتبع",
+  "currentPublicStageLabel": "الحالة الحالية للطلب",
+  "progressTitle": "سير الطلب",
+  "progressDescription": "تابع حالة طلبك خطوة بخطوة حتى يصبح جاهزًا للاستلام.",
+  "trackAnotherOrder": "تتبع طلب آخر",
+  "contactSupport": "تواصل معنا بخصوص الطلب",
+  "notesTitle": "ملاحظات الطلب",
+  "notesDescription": "تظهر هنا الملاحظات المهمة المرتبطة بحالة الطلب.",
+  "orderReceivedLabel": "تم استلام الطلب",
+  "instructionsTitle": "طريقة تتبع الطلب",
+  "instructionsDescription": "يمكنك متابعة حالة طلبك من خلال إدخال رقم التتبع في صفحة تتبع الطلب.",
+  "instructionsStepOne": "افتح موقع GoldHelwah GmbH.",
+  "instructionsStepTwo": "اضغط على خيار \"تتبع الطلب\" من القائمة.",
+  "instructionsStepThree": "أدخل رقم التتبع.",
+  "receivedMessage": "تم استلام طلبك وسيتم تحديث الحالة قريبًا.",
+  "receivedDescription": "لم يتم تحديد مرحلة ظاهرة للعميل بعد.",
+  "currentStageDescription": "هذه هي الحالة الحالية لطلبك.",
+  "completedStageDescription": "تم إنجاز هذه المرحلة.",
+  "upcomingStageDescription": "سيتم تحديث هذه المرحلة عند تقدم الطلب.",
+  "lookup": {
+    "eyebrow": "تتبع الطلب",
+    "title": "تتبع طلبك",
+    "description": "أدخل رقم التتبع لمعرفة آخر حالة لطلبك لدى GoldHelwah GmbH.",
+    "helperTitle": "أين أجد رقم التتبع؟",
+    "helperDescription": "ستجد رقم التتبع في رسالة تأكيد الطلب أو في رسائل تحديث الحالة.",
+    "formTitle": "أدخل رقم التتبع",
+    "formDescription": "اكتب رقم التتبع لعرض حالة طلبك.",
+    "label": "رقم التتبع",
+    "submit": "تتبع الطلب",
+    "emptyError": "يرجى إدخال رقم التتبع."
+  },
+  "support": {
+    "title": "تواصل معنا بخصوص الطلب",
+    "description": "إذا كان لديك سؤال حول طلبك، أرسل لنا رسالة وسنرد عليك في أقرب وقت.",
+    "success": "تم إرسال رسالتك بنجاح.",
+    "error": "تعذر إرسال الرسالة. يرجى المحاولة مرة أخرى."
+  },
+  "stages": {
+    "order_in_workshop": "الطلب في الورشة",
+    "shipping": "جاري شحن الطلب",
+    "ready_for_pickup": "جاهز للاستلام"
   }
+}
 }
