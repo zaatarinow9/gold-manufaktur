@@ -8,13 +8,18 @@ import { LocationMap } from "@/components/site/LocationMap";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 import { Link } from "@/i18n/navigation";
 import { pickVisualProducts } from "@/lib/catalog/publicVisuals";
-import { getFeaturedProducts, getLatestProducts } from "@/lib/db/catalog";
+import {
+  getFeaturedProducts,
+  getLatestProducts,
+  getPublicProductByIdOrSlug,
+} from "@/lib/db/catalog";
 import { trimDisplayHeading } from "@/lib/displayText";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ product?: string }>;
 };
 
 export async function generateMetadata({
@@ -25,13 +30,18 @@ export async function generateMetadata({
 
 export default async function ContactPage({
   params,
+  searchParams,
 }: PageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Contact.hero" });
+  const { product } = await searchParams;
   const [featuredProducts, latestProducts] = await Promise.all([
     getFeaturedProducts(locale, 1),
     getLatestProducts(locale, 1),
   ]);
+  const selectedProduct = product
+    ? await getPublicProductByIdOrSlug(locale, product)
+    : null;
   const visualProduct = pickVisualProducts(
     [...featuredProducts, ...latestProducts],
     1
@@ -82,7 +92,7 @@ export default async function ContactPage({
       </section>
 
       <ContactCards />
-      <ContactForm />
+      <ContactForm product={selectedProduct} />
       <LocationMap />
     </div>
   );

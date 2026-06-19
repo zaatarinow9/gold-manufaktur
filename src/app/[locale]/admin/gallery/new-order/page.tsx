@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import { getAdminProducts } from "@/lib/db/adminCatalog";
+import { getAdminProducts, getOptionGroups } from "@/lib/db/adminCatalog";
 import { resolveLocale } from "@/lib/site";
 
 import { NewOrderClient } from "./new-order-client";
@@ -29,13 +29,15 @@ export default async function NewOrderPage({
     );
   }
 
-  const [{ product: preselectedProductId }, products] = await Promise.all([
+  const [{ product: preselectedProductId }, products, groups] = await Promise.all([
     searchParams,
     getAdminProducts(locale, { activeOnly: true }),
+    getOptionGroups(locale),
   ]);
 
   return (
     <NewOrderClient
+      groups={groups}
       locale={locale}
       preselectedProductId={preselectedProductId}
       products={products}

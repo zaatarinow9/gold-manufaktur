@@ -1,5 +1,5 @@
-import { contactInquirySchema } from "@/lib/contact";
-import { sendTransactionalEmail } from "@/lib/email/service";
+import { publicInquiryRequestSchema } from "@/lib/contact";
+import { createCustomerInquiry } from "@/lib/db/inquiries";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = contactInquirySchema.safeParse(body);
+  const result = publicInquiryRequestSchema.safeParse(body);
 
   if (!result.success) {
     return Response.json(
@@ -26,52 +26,23 @@ export async function POST(request: Request) {
     );
   }
 
-  const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL?.trim() ?? "";
-
-  if (!receiverEmail) {
-    if (process.env.NODE_ENV !== "production") {
-      console.info("[contact] Inquiry captured without email provider:", result.data);
-    } else {
-      console.warn(
-        "[contact] Contact inquiry accepted, but CONTACT_RECEIVER_EMAIL is missing."
-      );
-    }
-
-    return Response.json({ success: true });
-  }
-
-  const dispatchResult = await sendTransactionalEmail({
-    metadata: {
-      email: result.data.email,
-      kind: "contact_inquiry",
-      name: result.data.name,
-      phone: result.data.phone,
-    },
-    recipientEmail: receiverEmail,
-    replyTo: result.data.email,
-    subject: `Contact inquiry from ${result.data.name}`,
-    text: [
-      "A new contact inquiry was submitted.",
-      "",
-      `Name: ${result.data.name}`,
-      `Email: ${result.data.email}`,
-      `Phone: ${result.data.phone}`,
-      "",
-      result.data.message,
-    ].join("\n"),
+  const inquiryResult = await createCustomerInquiry({
+    customerEmail: result.data.email,
+    customerName: result.data.name,
+    customerPhone: result.data.phone,
+    locale: result.data.locale,
+    message: result.data.message,
+    optionValues: result.data.optionValues,
+    productSnapshot: result.data.productSnapshot,
+    source:
+      result.data.source === "product" && result.data.productSnapshot
+        ? "product"
+        : "contact",
   });
 
-  if (!dispatchResult.ok && !dispatchResult.fallback) {
-    console.warn(
-      `[contact] Contact inquiry email could not be delivered: ${
-        dispatchResult.reason ?? "unknown_error"
-      }`
-    );
-  }
-
   return Response.json({
-    delivered: dispatchResult.delivered,
-    fallback: dispatchResult.fallback,
+    delivered: inquiryResult.emailResult.delivered,
+    fallback: inquiryResult.emailResult.fallback,
     success: true,
   });
 }

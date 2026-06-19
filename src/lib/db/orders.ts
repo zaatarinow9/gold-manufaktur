@@ -853,14 +853,27 @@ function getScopedOrderRows(
   orders: TableRow<"orders">[]
 ) {
   return orders.filter(
-    (order) =>
-      !isDeletedOrderRow(order) &&
-      canAccessOrder(viewer, {
+    (order) => {
+      if (isDeletedOrderRow(order)) {
+        return false;
+      }
+
+      if (
+        viewer.role === "employee" &&
+        (Boolean(order.archived_at) ||
+          Boolean(order.cancelled_at) ||
+          isCompletedOrderRow(order))
+      ) {
+        return false;
+      }
+
+      return canAccessOrder(viewer, {
         assignedAdminId: order.assigned_admin_id ?? null,
         assignedWorkerEmail: order.assigned_worker_email ?? null,
         employeeId: order.employee_id ?? null,
         workshopId: order.workshop_id ?? null,
-      })
+      });
+    }
   );
 }
 
@@ -1500,6 +1513,7 @@ export async function createOrder(
   const trackingStatus: TrackingStatus = "created";
   const status: WorkshopOrderStatus = "draft";
   const capabilities = await getOrderSchemaCapabilities();
+  const actorProfileId = normalizeOptionalUuid(viewer.id);
   const customerLocale = parsed.customerLanguage;
   const currency = normalizeCurrency(parsed.currency);
   const productSpecifications = createProductSpecifications(parsed.productSpecifications);
@@ -1546,7 +1560,7 @@ export async function createOrder(
   const orderPayload: TableInsert<"orders"> & {
     product_specifications?: ProductSpecifications;
   } = {
-    assigned_admin_id: viewer.id,
+    assigned_admin_id: actorProfileId,
     attachments_json: parsed.attachments,
     currency,
     customer_email: parsed.customerEmail,
@@ -1612,7 +1626,7 @@ export async function createOrder(
     parsed.notes.customerNotes || getTrackingStatusNote(customerLocale, null);
   const eventPayload = {
     actor_name: viewer.name,
-    created_by: viewer.id,
+    created_by: actorProfileId,
     description: customerFacingNote,
     is_public: true,
     notify_customer: false,
@@ -1796,9 +1810,18 @@ export async function updateOrderWorkflow(
   const publicDescription = hasCustomerNote
     ? parsed.customerNote
     : getTrackingStatusNote(customerLocale, publicEventStage);
+  const movesToCompletedArchive = isCompletedOrderRow({
+    completed_at: null,
+    tracking_status: parsed.status,
+  });
 
   const orderUpdate: TableUpdate<"orders"> = {
     assigned_admin_id: viewer.role === "employee" ? undefined : viewer.id,
+    archived_at: movesToCompletedArchive
+      ? order.archivedAt || now
+      : order.completedAt && order.archivedAt && order.status !== "archived"
+        ? null
+        : undefined,
     employee_id: nextEmployeeId,
     notes: hasInternalNote ? parsed.internalNote : undefined,
     public_tracking_stage: publicStageChanged ? parsed.publicStage : undefined,
@@ -1824,10 +1847,7 @@ export async function updateOrderWorkflow(
   }
 
   if (capabilities.completedAt) {
-    orderUpdate.completed_at = isCompletedOrderRow({
-      completed_at: null,
-      tracking_status: parsed.status,
-    })
+    orderUpdate.completed_at = movesToCompletedArchive
       ? order.completedAt || now
       : null;
   }

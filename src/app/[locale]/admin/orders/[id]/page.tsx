@@ -13,6 +13,7 @@ import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import { getScopedEmployees } from "@/lib/db/employees";
 import { getScopedOrderDetail } from "@/lib/db/orders";
+import { getAdminSettingsSnapshot } from "@/lib/db/siteSettings";
 import { resolveLocale } from "@/lib/site";
 
 type OrderDetailPageProps = {
@@ -169,9 +170,10 @@ export default async function AdminOrderDetailPage({
     );
   }
 
-  const [order, employees] = await Promise.all([
+  const [order, employees, settings] = await Promise.all([
     getScopedOrderDetail(access.user, id),
     getScopedEmployees(access.user),
+    getAdminSettingsSnapshot(),
   ]);
 
   if (!order) {
@@ -180,6 +182,40 @@ export default async function AdminOrderDetailPage({
         title={t("common.noAccessTitle")}
         description={t("common.noAccessText")}
       />
+    );
+  }
+
+  if (settings.privacyModeEnabled && access.user.role !== "super_admin") {
+    return (
+      <div className="space-y-6">
+        <AdminPageHeader
+          eyebrow={t("orders.detailEyebrow")}
+          title={t("orders.title")}
+          description={settings.privacyModeReason || "Auftragsdetails sind voruebergehend ausgeblendet"}
+          actions={
+            <Link
+              href="/admin/orders"
+              className={getAdminButtonClassName({ variant: "ghost" })}
+            >
+              {t("buttons.backToOrders")}
+            </Link>
+          }
+        />
+        <AdminCard
+          title={
+            locale === "ar"
+              ? "تم إخفاء تفاصيل الطلبات مؤقتاً"
+              : "Auftragsdetails sind voruebergehend ausgeblendet"
+          }
+          description={settings.privacyModeReason || undefined}
+        >
+          <p className="text-sm text-muted">
+            {locale === "ar"
+              ? "يمكن للمالك أو المدير الأعلى فقط كشف التفاصيل من جديد."
+              : "Nur der Inhaber oder Super-Admin kann die Details erneut sichtbar machen."}
+          </p>
+        </AdminCard>
+      </div>
     );
   }
 

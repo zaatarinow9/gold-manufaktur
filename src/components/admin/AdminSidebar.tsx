@@ -6,6 +6,7 @@ import {
   Home,
   ImageIcon,
   Layers3,
+  MessageSquareMore,
   Package,
   Settings2,
   ShoppingBag,
@@ -24,6 +25,7 @@ export type AdminNavKey =
   | "products"
   | "categories"
   | "gallery"
+  | "inquiries"
   | "options"
   | "orders"
   | "settings";
@@ -44,11 +46,75 @@ export const adminNavItems: AdminNavItem[] = [
   { href: "/admin/gallery", icon: ImageIcon, key: "gallery", roles: ["super_admin", "admin"] },
   { href: "/admin/options", icon: Gem, key: "options", roles: ["super_admin", "admin"] },
   { href: "/admin/orders", icon: ShoppingBag, key: "orders", roles: ["super_admin", "admin", "employee"] },
+  { href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", roles: ["super_admin", "admin"] },
   { href: "/admin/settings", icon: Settings2, key: "settings", roles: ["super_admin", "admin"] },
 ];
 
 export function getVisibleAdminNavItems(role: AdminRole) {
   return adminNavItems.filter((item) => item.roles.includes(role));
+}
+
+export function getAdminNavLabel(key: AdminNavKey, locale: AppLocale) {
+  if (locale === "ar") {
+    switch (key) {
+      case "gallery":
+        return "إدخال الطلبات";
+      case "inquiries":
+        return "طلبات العملاء";
+      case "overview":
+        return "لوحة التحكم";
+      case "products":
+        return "المنتجات";
+      case "categories":
+        return "التصنيفات";
+      case "options":
+        return "الخيارات";
+      case "orders":
+        return "الطلبات";
+      case "settings":
+        return "الإعدادات";
+    }
+  }
+
+  if (locale === "de") {
+    switch (key) {
+      case "gallery":
+        return "Auftragserfassung";
+      case "inquiries":
+        return "Kundenanfragen";
+      case "overview":
+        return "Uebersicht";
+      case "products":
+        return "Produkte";
+      case "categories":
+        return "Kategorien";
+      case "options":
+        return "Optionen";
+      case "orders":
+        return "Auftraege";
+      case "settings":
+        return "Einstellungen";
+    }
+  }
+
+  switch (key) {
+    case "gallery":
+      return "Order entry";
+    case "inquiries":
+      return "Customer inquiries";
+    case "overview":
+      return "Overview";
+    case "products":
+      return "Products";
+    case "categories":
+      return "Categories";
+    case "options":
+      return "Options";
+    case "orders":
+      return "Orders";
+    case "settings":
+      return "Settings";
+  }
 }
 
 type AdminSidebarProps = {
@@ -95,7 +161,7 @@ export function AdminSidebar({ currentUser, navCounts }: AdminSidebarProps) {
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{t(`nav.${item.key}`)}</span>
+                <span className="truncate">{getAdminNavLabel(item.key, locale)}</span>
                 {navCounts?.[item.key] ? (
                   <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
                     {navCounts[item.key]}

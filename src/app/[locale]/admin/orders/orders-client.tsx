@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { AdminBadge } from "@/components/admin/AdminBadge";
-import { getAdminButtonClassName } from "@/components/admin/AdminButton";
+import { AdminButton, getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -27,6 +27,8 @@ type AdminOrdersClientProps = {
   employees: EmployeeRecord[];
   locale: AppLocale;
   orders: OrderListRecord[];
+  privacyModeEnabled: boolean;
+  privacyModeReason: string;
 };
 
 type OrderTabKey =
@@ -40,10 +42,6 @@ type OrderTabKey =
   | "archived";
 
 function getOrderTabKey(order: OrderListRecord): Exclude<OrderTabKey, "all"> {
-  if (order.deletedAt || order.archivedAt || order.status === "archived") {
-    return "archived";
-  }
-
   if (order.cancelledAt || order.trackingStatus === "cancelled") {
     return "cancelled";
   }
@@ -55,6 +53,10 @@ function getOrderTabKey(order: OrderListRecord): Exclude<OrderTabKey, "all"> {
     order.trackingStatus === "delivered_to_store"
   ) {
     return "completed";
+  }
+
+  if (order.deletedAt || order.archivedAt || order.status === "archived") {
+    return "archived";
   }
 
   if (
@@ -89,6 +91,9 @@ function getOrdersUiCopy(locale: AppLocale) {
       inProgress: "\u0642\u064a\u062f \u0627\u0644\u062a\u0646\u0641\u064a\u0630",
       pending: "\u062c\u062f\u064a\u062f / \u0645\u0639\u0644\u0642",
       noWorker: "\u063a\u064a\u0631 \u0645\u0633\u0646\u062f",
+      privacyHidden: "\u062a\u0645 \u0625\u062e\u0641\u0627\u0621 \u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0637\u0644\u0628\u0627\u062a \u0645\u0624\u0642\u062a\u0627\u064b",
+      reveal: "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
+      hideAgain: "\u0625\u062e\u0641\u0627\u0621 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
       shipped: "\u0642\u064a\u062f \u0627\u0644\u0634\u062d\u0646",
     };
   }
@@ -103,6 +108,9 @@ function getOrdersUiCopy(locale: AppLocale) {
       inProgress: "In Bearbeitung",
       pending: "Neu / Offen",
       noWorker: "Nicht zugewiesen",
+      privacyHidden: "Auftragsdetails sind voruebergehend ausgeblendet",
+      reveal: "Details einblenden",
+      hideAgain: "Details wieder ausblenden",
       shipped: "Versand",
     };
   }
@@ -116,6 +124,9 @@ function getOrdersUiCopy(locale: AppLocale) {
     inProgress: "In progress",
     pending: "New / Pending",
     noWorker: "Unassigned",
+    privacyHidden: "Order details are temporarily hidden",
+    reveal: "Reveal details",
+    hideAgain: "Hide details again",
     shipped: "Shipped",
   };
 }
@@ -126,6 +137,8 @@ export function AdminOrdersClient({
   employees,
   locale,
   orders,
+  privacyModeEnabled,
+  privacyModeReason,
 }: AdminOrdersClientProps) {
   const t = useTranslations("Admin");
   const uiCopy = getOrdersUiCopy(locale);
@@ -133,7 +146,11 @@ export function AdminOrdersClient({
   const [tab, setTab] = useState<OrderTabKey>("all");
   const [assignedFilter, setAssignedFilter] = useState("all");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [privacyRevealed, setPrivacyRevealed] = useState(false);
   const selectedCardRef = useRef<HTMLDivElement | null>(null);
+  const detailsHidden =
+    privacyModeEnabled &&
+    (currentUserRole !== "super_admin" || !privacyRevealed);
 
   const workerChoices = useMemo(
     () =>
@@ -208,8 +225,12 @@ export function AdminOrdersClient({
       header: t("orders.table.order"),
       cell: (order) => (
         <div className="space-y-1">
-          <p className="font-semibold text-foreground">{order.internalOrderNumber}</p>
-          <p className="text-xs text-muted">{order.previewProductName || "-"}</p>
+          <p className="font-semibold text-foreground">
+            {detailsHidden ? uiCopy.privacyHidden : order.internalOrderNumber}
+          </p>
+          <p className="text-xs text-muted">
+            {detailsHidden ? "GoldHelwah" : order.previewProductName || "-"}
+          </p>
         </div>
       ),
     },
@@ -228,8 +249,10 @@ export function AdminOrdersClient({
       header: t("orders.table.customer"),
       cell: (order) => (
         <div className="space-y-1">
-          <p className="text-foreground">{order.customerName || t("common.noCustomer")}</p>
-          <p className="text-xs text-muted">{order.customerEmail || "-"}</p>
+          <p className="text-foreground">
+            {detailsHidden ? uiCopy.privacyHidden : order.customerName || t("common.noCustomer")}
+          </p>
+          <p className="text-xs text-muted">{detailsHidden ? "hidden" : order.customerEmail || "-"}</p>
         </div>
       ),
     },
@@ -239,9 +262,11 @@ export function AdminOrdersClient({
       cell: (order) => (
         <div className="space-y-1">
           <p className="text-foreground">
-            {order.assignedWorkerEmail || order.employeeName || uiCopy.noWorker}
+            {detailsHidden
+              ? uiCopy.privacyHidden
+              : order.assignedWorkerEmail || order.employeeName || uiCopy.noWorker}
           </p>
-          <p className="text-xs text-muted">{order.workshopName || "-"}</p>
+          <p className="text-xs text-muted">{detailsHidden ? "hidden" : order.workshopName || "-"}</p>
         </div>
       ),
     },
@@ -309,6 +334,34 @@ export function AdminOrdersClient({
         }
       />
 
+      {privacyModeEnabled ? (
+        <AdminCard
+          title={uiCopy.privacyHidden}
+          description={privacyModeReason || uiCopy.privacyHidden}
+          action={
+            currentUserRole === "super_admin" ? (
+              <AdminButton
+                variant="secondary"
+                onClick={() => {
+                  if (!privacyRevealed) {
+                    const confirmed = window.confirm(uiCopy.reveal);
+                    if (!confirmed) {
+                      return;
+                    }
+                  }
+
+                  setPrivacyRevealed((current) => !current);
+                }}
+              >
+                {privacyRevealed ? uiCopy.hideAgain : uiCopy.reveal}
+              </AdminButton>
+            ) : undefined
+          }
+        >
+          <p className="text-sm text-muted">{uiCopy.privacyHidden}</p>
+        </AdminCard>
+      ) : null}
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <AdminTabs tabs={tabs} value={tab} onChange={(value) => setTab(value as OrderTabKey)} />
         <p className="text-sm text-muted">
@@ -342,20 +395,29 @@ export function AdminOrdersClient({
 
       {selectedOrder ? (
         <div ref={selectedCardRef}>
-          <OrderTrackingCard
-            key={selectedOrder.id}
-            currentUserRole={currentUserRole}
-            customerEmail={selectedOrder.customerEmail}
-            emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
-            employees={employees}
-            initialAssignedWorkerEmail={selectedOrder.assignedWorkerEmail}
-            initialPublicStage={selectedOrder.publicTrackingStage}
-            initialStatus={selectedOrder.trackingStatus}
-            locale={locale}
-            orderId={selectedOrder.id}
-            showTimeline={false}
-            trackingNumber={selectedOrder.trackingNumber}
-          />
+          {detailsHidden ? (
+            <AdminCard
+              title={uiCopy.privacyHidden}
+              description={privacyModeReason || uiCopy.privacyHidden}
+            >
+              <p className="text-sm text-muted">{uiCopy.privacyHidden}</p>
+            </AdminCard>
+          ) : (
+            <OrderTrackingCard
+              key={selectedOrder.id}
+              currentUserRole={currentUserRole}
+              customerEmail={selectedOrder.customerEmail}
+              emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
+              employees={employees}
+              initialAssignedWorkerEmail={selectedOrder.assignedWorkerEmail}
+              initialPublicStage={selectedOrder.publicTrackingStage}
+              initialStatus={selectedOrder.trackingStatus}
+              locale={locale}
+              orderId={selectedOrder.id}
+              showTimeline={false}
+              trackingNumber={selectedOrder.trackingNumber}
+            />
+          )}
         </div>
       ) : null}
 

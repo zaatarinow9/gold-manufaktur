@@ -5,7 +5,11 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolveSupportsNameCustomization } from "@/lib/catalog/nameCustomization";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TableRow } from "@/lib/supabase/types";
-import type { CatalogCategory, CatalogProduct } from "@/types/catalog";
+import type {
+  CatalogCategory,
+  CatalogProduct,
+  CatalogProductOptionGroup,
+} from "@/types/catalog";
 
 type PublicProductFilters = {
   categorySlug?: string;
@@ -23,7 +27,10 @@ type HomepageCatalog = {
 
 type PublicCatalogSchemaCapabilities = {
   categoriesDeletedAt: boolean;
+  optionGroupsDeletedAt: boolean;
+  optionsDeletedAt: boolean;
   productsDeletedAt: boolean;
+  productsOptionGroupId: boolean;
 };
 
 type SchemaColumnRow = {
@@ -59,7 +66,12 @@ function normalizeImageUrl(value: string | null | undefined) {
 }
 
 function getLocalizedValue<
-  Prefix extends "description" | "name",
+  Prefix extends
+    | "description"
+    | "help_text"
+    | "label"
+    | "name"
+    | "placeholder",
   Row extends Record<`${Prefix}_${AppLocale}`, string | null>,
 >(row: Row, prefix: Prefix, locale: AppLocale) {
   const candidates = [
@@ -95,6 +107,11 @@ function getCatalogImage(product: TableRow<"products">, gallery: string[]) {
   return gallery[0] ?? normalizeImageUrl(product.cover_image_url);
 }
 
+function getProductOptionGroupId(product: TableRow<"products">) {
+  return ((product as TableRow<"products"> & { option_group_id?: string | null })
+    .option_group_id ?? null);
+}
+
 function getProductGallery(product: TableRow<"products">, gallery: string[]) {
   const normalizedGallery = gallery
     .map((image) => normalizeImageUrl(image))
@@ -126,13 +143,16 @@ async function getPublicCatalogSchemaCapabilities() {
         .from("columns")
         .select("table_name,column_name")
         .eq("table_schema", "public")
-        .in("table_name", ["categories", "products"])
-        .in("column_name", ["deleted_at"]);
+        .in("table_name", ["categories", "option_groups", "options", "products"])
+        .in("column_name", ["deleted_at", "option_group_id"]);
 
         if (error || !data) {
           return {
             categoriesDeletedAt: false,
+            optionGroupsDeletedAt: false,
+            optionsDeletedAt: false,
             productsDeletedAt: false,
+            productsOptionGroupId: false,
           } satisfies PublicCatalogSchemaCapabilities;
         }
 
@@ -145,7 +165,10 @@ async function getPublicCatalogSchemaCapabilities() {
 
         return {
           categoriesDeletedAt: hasColumn("categories", "deleted_at"),
+          optionGroupsDeletedAt: hasColumn("option_groups", "deleted_at"),
+          optionsDeletedAt: hasColumn("options", "deleted_at"),
           productsDeletedAt: hasColumn("products", "deleted_at"),
+          productsOptionGroupId: hasColumn("products", "option_group_id"),
         } satisfies PublicCatalogSchemaCapabilities;
       })();
   }
@@ -195,6 +218,108 @@ async function fetchActiveCategories(
   });
 }
 
+async function loadPublicOptionGroups(
+  locale: AppLocale,
+  groupIds: string[]
+): Promise<Map<string, CatalogProductOptionGroup>> {
+  if (groupIds.length === 0) {
+    return new Map();
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const capabilities = await getPublicCatalogSchemaCapabilities();
+  let groupQuery = supabase
+    .from("option_groups")
+    .select("*")
+    .in("id", groupIds)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  if (capabilities.optionGroupsDeletedAt) {
+    groupQuery = groupQuery.is("deleted_at", null);
+  }
+
+  let optionQuery = supabase
+    .from("options")
+    .select("*")
+    .in("group_id", groupIds)
+    .eq("is_active", true)
+    .order("sort_order", { ascending: true });
+
+  if (capabilities.optionsDeletedAt) {
+    optionQuery = optionQuery.is("deleted_at", null);
+  }
+
+  const [{ data: groups, error: groupsError }, { data: options, error: optionsError }] =
+    await Promise.all([groupQuery, optionQuery]);
+
+  if (groupsError) {
+    logDbReadError("option groups", groupsError.message);
+    return new Map();
+  }
+
+  if (optionsError) {
+    logDbReadError("option fields", optionsError.message);
+    return new Map();
+  }
+
+  const optionsByGroupId = new Map<string, CatalogProductOptionGroup["options"]>();
+
+  (options ?? []).forEach((option) => {
+    const current = optionsByGroupId.get(option.group_id) ?? [];
+    current.push({
+      helpText: getLocalizedValue(
+        option as TableRow<"options"> &
+          Record<`help_text_${AppLocale}`, string | null>,
+        "help_text",
+        locale
+      ),
+      id: option.id,
+      isRequired: option.is_required,
+      key: option.key,
+      label: getLocalizedValue(option, "label", locale),
+      placeholder: getLocalizedValue(
+        option as TableRow<"options"> &
+          Record<`placeholder_${AppLocale}`, string | null>,
+        "placeholder",
+        locale
+      ),
+      type: option.type,
+      values: Array.isArray(option.values_json)
+        ? option.values_json
+            .filter(
+              (
+                value
+              ): value is { label: string; value: string } =>
+                typeof value === "object" &&
+                value !== null &&
+                "label" in value &&
+                "value" in value &&
+                typeof value.label === "string" &&
+                typeof value.value === "string"
+            )
+            .map((value) => ({
+              label: value.label,
+              value: value.value,
+            }))
+        : [],
+    });
+    optionsByGroupId.set(option.group_id, current);
+  });
+
+  return new Map(
+    (groups ?? []).map((group) => [
+      group.id,
+      {
+        id: group.id,
+        key: group.key,
+        name: getLocalizedValue(group, "name", locale),
+        options: optionsByGroupId.get(group.id) ?? [],
+      } satisfies CatalogProductOptionGroup,
+    ])
+  );
+}
+
 async function hydratePublicProducts(
   locale: AppLocale,
   products: TableRow<"products">[]
@@ -208,6 +333,15 @@ async function hydratePublicProducts(
   const categoryIds = [
     ...new Set(products.map((product) => product.category_id).filter(Boolean)),
   ] as string[];
+  const optionGroupIds = capabilities.productsOptionGroupId
+    ? [
+        ...new Set(
+          products
+            .map((product) => getProductOptionGroupId(product))
+            .filter(Boolean)
+        ),
+      ] as string[]
+    : [];
   let categoryQuery = categoryIds.length > 0
     ? supabase
         .from("categories")
@@ -220,11 +354,12 @@ async function hydratePublicProducts(
     categoryQuery = categoryQuery.is("deleted_at", null);
   }
 
-  const [categoryResult, imageMap] = await Promise.all([
+  const [categoryResult, imageMap, optionGroupMap] = await Promise.all([
     categoryQuery
       ? categoryQuery
       : Promise.resolve({ data: [], error: null }),
     getProductImages(products.map((product) => product.id)),
+    loadPublicOptionGroups(locale, optionGroupIds),
   ]);
 
   if (categoryResult.error) {
@@ -248,6 +383,9 @@ async function hydratePublicProducts(
     const categoryName = category
       ? getLocalizedValue(category, "name", locale)
       : "";
+    const optionGroup = capabilities.productsOptionGroupId
+      ? optionGroupMap.get(getProductOptionGroupId(product) ?? "") ?? null
+      : null;
 
     return [{
       categoryId: product.category_id,
@@ -259,9 +397,11 @@ async function hydratePublicProducts(
       imageUrl: getCatalogImage(product, gallery),
       isFeatured: product.is_featured,
       name: getLocalizedValue(product, "name", locale),
+      optionGroup,
       shortDescription:
         getLocalizedValue(product, "description", locale) ||
         getLocalizedValue(product, "name", locale),
+      sku: product.sku,
       slug: product.slug,
       supportsNameCustomization: resolveSupportsNameCustomization(
         category?.supports_name_customization ?? false,
@@ -432,4 +572,22 @@ export async function getHomepageCatalog(
             .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
             .slice(0, 4),
   };
+}
+
+export async function getPublicProductByIdOrSlug(
+  locale: AppLocale,
+  identifier: string
+): Promise<CatalogProduct | null> {
+  const normalized = identifier.trim();
+
+  if (!normalized) {
+    return null;
+  }
+
+  const products = await getPublicProducts(locale);
+  return (
+    products.find(
+      (product) => product.id === normalized || product.slug === normalized
+    ) ?? null
+  );
 }

@@ -14,10 +14,13 @@ import { requireAdminAccess } from "@/lib/admin/auth";
 import {
   createOption,
   createOptionGroup,
+  deleteOptionGroup,
   deleteOption,
   setOptionActive,
   updateOption,
+  updateOptionGroup,
   type OptionGroupInput,
+  type OptionGroupUpdateInput,
   type OptionInput,
   type OptionUpdateInput,
 } from "@/lib/db/adminCatalog";
@@ -134,9 +137,42 @@ function getOptionDeleteMessage(locale: AppLocale, mode: "deleted" | "soft_delet
     : "The option was removed from active forms and is only kept for historical orders.";
 }
 
+function getOptionGroupDeleteMessage(
+  locale: AppLocale,
+  mode: "deleted" | "soft_deleted_in_use"
+) {
+  if (locale === "de") {
+    return mode === "deleted"
+      ? "Die Optionsgruppe wurde aus dem System entfernt."
+      : "Die Optionsgruppe wurde aus aktiven Formularen entfernt und bleibt nur in historischen Auftraegen erhalten.";
+  }
+
+  if (locale === "ar") {
+    return mode === "deleted"
+      ? "تم حذف مجموعة الخيارات من النظام."
+      : "تمت إزالة مجموعة الخيارات من النماذج النشطة وستبقى فقط ضمن الطلبات السابقة.";
+  }
+
+  if (locale === "fr") {
+    return mode === "deleted"
+      ? "Le groupe d'options a ete retire du systeme."
+      : "Le groupe d'options a ete retire des formulaires actifs et reste uniquement dans l'historique.";
+  }
+
+  if (locale === "tr") {
+    return mode === "deleted"
+      ? "Secenek grubu sistemden kaldirildi."
+      : "Secenek grubu aktif formlardan kaldirildi ve yalnizca gecmis siparislerde tutuluyor.";
+  }
+
+  return mode === "deleted"
+    ? "The option group was removed from the system."
+    : "The option group was removed from active forms and is only kept for historical orders.";
+}
+
 export async function saveOptionGroupAction(
   locale: AppLocale,
-  input: OptionGroupInput
+  input: OptionGroupInput | OptionGroupUpdateInput
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
@@ -150,7 +186,11 @@ export async function saveOptionGroupAction(
   }
 
   try {
-    await createOptionGroup(input);
+    if ("id" in input && typeof input.id === "string") {
+      await updateOptionGroup(input as OptionGroupUpdateInput);
+    } else {
+      await createOptionGroup(input as OptionGroupInput);
+    }
     revalidateOptionViews();
 
     return {
@@ -167,6 +207,37 @@ export async function saveOptionGroupAction(
       };
     }
 
+    return {
+      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
+      ok: false,
+    };
+  }
+}
+
+export async function deleteOptionGroupAction(
+  locale: AppLocale,
+  groupId: string
+): Promise<AdminActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const copy = getOrderWorkflowCopy(locale);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+
+  if (access.state !== "authenticated") {
+    return {
+      message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await deleteOptionGroup(groupId);
+    revalidateOptionViews();
+
+    return {
+      message: getOptionGroupDeleteMessage(locale, result.mode),
+      ok: true,
+    };
+  } catch (error) {
     return {
       message: getSafeActionErrorMessage(error, copy.formErrorFallback),
       ok: false,

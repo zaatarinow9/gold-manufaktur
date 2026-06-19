@@ -12,7 +12,11 @@ import { AdminBrand } from "./AdminBrand";
 import { getAdminButtonClassName } from "./AdminButton";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
 import { AdminLogoutButton } from "./AdminLogoutButton";
-import { getVisibleAdminNavItems, type AdminNavCounts } from "./AdminSidebar";
+import {
+  getAdminNavLabel,
+  getVisibleAdminNavItems,
+  type AdminNavCounts,
+} from "./AdminSidebar";
 
 type AdminMobileNavProps = {
   currentUser: AdminUser;
@@ -92,9 +96,9 @@ export function AdminMobileNav({
                     ? "border-gold/22 bg-gold/12 text-foreground"
                     : "border-transparent text-muted hover:border-white/8 hover:bg-white/6 hover:text-foreground"
                 )}
-              >
-                <item.icon className="h-4 w-4 shrink-0" />
-                <span>{t(`nav.${item.key}`)}</span>
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                <span>{getAdminNavLabel(item.key, locale)}</span>
                 {navCounts?.[item.key] ? (
                   <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
                     {navCounts[item.key]}

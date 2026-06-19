@@ -6,89 +6,515 @@ import { z } from "zod";
 import { routing, type AppLocale } from "@/i18n/routing";
 import type { AdminActionResult } from "@/lib/admin/actionResult";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import { saveAdminNotificationEmail } from "@/lib/db/siteSettings";
+import {
+  createManagedAdminUser,
+  deleteManagedAdminUser,
+  resendManagedAdminInvite,
+  type ManagedAdminRole,
+  setManagedAdminUserActive,
+  updateManagedAdminUser,
+} from "@/lib/db/adminUsers";
+import {
+  buildOrderEntryUrl,
+  rotateOrderEntryAccess,
+  saveNotificationSettings,
+  saveOrderEntrySettings,
+  setPrivacyMode,
+  SiteSettingsError,
+} from "@/lib/db/siteSettings";
 
-const settingsSchema = z.object({
+const notificationSettingsSchema = z.object({
   adminNotificationEmail: z.string().trim().email().or(z.literal("")),
+  ownerEmail: z.string().trim().email().or(z.literal("")),
+  supportNotificationEmail: z.string().trim().email().or(z.literal("")),
 });
 
-function getSettingsCopy(locale: AppLocale) {
+const managedUserSchema = z.object({
+  displayName: z.string().trim().min(2).max(160),
+  email: z.string().trim().email().max(160),
+  isActive: z.boolean().default(true),
+  role: z.enum(["super_admin", "admin", "employee", "viewer"]),
+});
+
+const privacyModeSchema = z.object({
+  enabled: z.boolean(),
+  passphrase: z.string().trim().max(120).default(""),
+  reason: z.string().trim().max(400).default(""),
+});
+
+const orderEntrySchema = z.object({
+  enabled: z.boolean(),
+  expiresAt: z.string().trim().max(80).default(""),
+});
+
+const privacyPassphrase = "GOLDHELWAH PRIVACY";
+
+type SettingsActionWithLink = AdminActionResult & {
+  link?: string;
+};
+
+function getSettingsActionCopy(locale: AppLocale) {
   if (locale === "ar") {
     return {
       invalidEmail: "يرجى إدخال بريد إلكتروني صالح.",
-      saved: "تم حفظ إعدادات الإشعارات.",
-      tableMissing:
-        "جدول الإعدادات غير متوفر بعد. شغّل الهجرة 0008_admin_workflow_cleanup.sql أولاً.",
+      invalidName: "يرجى إدخال اسم واضح.",
+      noAccess: "لا تملك صلاحية الوصول.",
+      orderEntryRotated: "تم تدوير رابط إدخال الطلبات بنجاح.",
+      privacyPhrase: "عبارة التفعيل غير صحيحة.",
+      saved: "تم حفظ الإعدادات.",
+      userCreated: "تم إنشاء المستخدم وإرسال رابط الدخول إذا كانت خدمة البريد متاحة.",
+      userDeleted: "تمت إزالة المستخدم من النظام.",
+      userInviteSent: "تم إنشاء رابط جديد للمستخدم.",
+      userUpdated: "تم تحديث بيانات المستخدم.",
+      userVisibilityChanged: "تم تحديث حالة المستخدم.",
     };
   }
 
   if (locale === "de") {
     return {
       invalidEmail: "Bitte geben Sie eine gueltige E-Mail-Adresse ein.",
-      saved: "Die Benachrichtigungseinstellungen wurden gespeichert.",
-      tableMissing:
-        "Die Einstellungstabelle ist noch nicht verfuegbar. Fuehren Sie zuerst die Migration 0008_admin_workflow_cleanup.sql aus.",
+      invalidName: "Bitte geben Sie einen gueltigen Anzeigenamen ein.",
+      noAccess: "Kein Zugriff.",
+      orderEntryRotated: "Der Auftragserfassungslink wurde neu erzeugt.",
+      privacyPhrase: "Die Schutz-Passphrase ist ungueltig.",
+      saved: "Die Einstellungen wurden gespeichert.",
+      userCreated:
+        "Der Benutzer wurde angelegt. Der Zugangslink wurde versendet oder protokolliert.",
+      userDeleted: "Der Benutzer wurde aus dem System entfernt.",
+      userInviteSent: "Ein neuer Zugangslink wurde erstellt.",
+      userUpdated: "Die Benutzerdaten wurden aktualisiert.",
+      userVisibilityChanged: "Der Benutzerstatus wurde aktualisiert.",
     };
   }
 
   return {
     invalidEmail: "Please enter a valid email address.",
-    saved: "Notification settings saved.",
-    tableMissing:
-      "The settings table is not available yet. Run migration 0008_admin_workflow_cleanup.sql first.",
+    invalidName: "Please enter a valid display name.",
+    noAccess: "No access.",
+    orderEntryRotated: "The external order-entry link was rotated.",
+    privacyPhrase: "The privacy passphrase is invalid.",
+    saved: "Settings saved.",
+    userCreated: "The user was created. The access link was sent or logged.",
+    userDeleted: "The user was removed from the system.",
+    userInviteSent: "A new access link was generated.",
+    userUpdated: "The user was updated.",
+    userVisibilityChanged: "The user status was updated.",
   };
 }
 
-export async function saveAdminSettingsAction(
-  locale: AppLocale,
-  input: { adminNotificationEmail: string }
-): Promise<AdminActionResult> {
+function revalidateSettingsViews() {
+  routing.locales.forEach((targetLocale) => {
+    revalidatePath(`/${targetLocale}/admin`);
+    revalidatePath(`/${targetLocale}/admin/settings`);
+  });
+}
+
+async function requireSettingsAccess(locale: AppLocale) {
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
-  if (access.state !== "authenticated") {
+  if (access.state !== "authenticated" || !access.user) {
+    return null;
+  }
+
+  return access.user;
+}
+
+function getValidationFailure(
+  locale: AppLocale,
+  message?: string
+): AdminActionResult {
+  const copy = getSettingsActionCopy(locale);
+  return {
+    message: message ?? copy.invalidEmail,
+    ok: false,
+  };
+}
+
+function isSuperAdminRole(role: ManagedAdminRole) {
+  return role === "super_admin";
+}
+
+export async function saveNotificationSettingsAction(
+  locale: AppLocale,
+  input: z.infer<typeof notificationSettingsSchema>
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user) {
     return {
-      message: locale === "ar" ? "لا تملك صلاحية الوصول." : "No access.",
+      message: copy.noAccess,
       ok: false,
     };
   }
 
-  const copy = getSettingsCopy(locale);
-  const result = settingsSchema.safeParse(input);
+  const parsed = notificationSettingsSchema.safeParse(input);
 
-  if (!result.success) {
-    return {
-      fieldErrors: {
-        adminNotificationEmail: copy.invalidEmail,
-      },
-      message: copy.invalidEmail,
-      ok: false,
-    };
+  if (!parsed.success) {
+    return getValidationFailure(locale);
   }
 
   try {
-    await saveAdminNotificationEmail(result.data.adminNotificationEmail);
-
-    routing.locales.forEach((targetLocale) => {
-      revalidatePath(`/${targetLocale}/admin/settings`);
-    });
-
+    await saveNotificationSettings(parsed.data);
+    revalidateSettingsViews();
     return {
       message: copy.saved,
       ok: true,
     };
   } catch (error) {
-    if (error instanceof Error && error.message === "SITE_SETTINGS_TABLE_MISSING") {
-      return {
-        fieldErrors: {
-          adminNotificationEmail: copy.tableMissing,
-        },
-        message: copy.tableMissing,
-        ok: false,
-      };
-    }
+    return {
+      message:
+        error instanceof SiteSettingsError
+          ? error.messageForUi
+          : error instanceof Error
+            ? error.message
+            : copy.invalidEmail,
+      ok: false,
+    };
+  }
+}
+
+export async function saveOrderEntrySettingsAction(
+  locale: AppLocale,
+  input: z.infer<typeof orderEntrySchema>
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user) {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const parsed = orderEntrySchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      message: copy.saved,
+      ok: false,
+    };
+  }
+
+  try {
+    await saveOrderEntrySettings(parsed.data);
+    revalidateSettingsViews();
+    return {
+      message: copy.saved,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message:
+        error instanceof SiteSettingsError
+          ? error.messageForUi
+          : error instanceof Error
+            ? error.message
+            : copy.saved,
+      ok: false,
+    };
+  }
+}
+
+export async function rotateOrderEntryAccessAction(
+  locale: AppLocale,
+  input: z.infer<typeof orderEntrySchema>
+): Promise<SettingsActionWithLink> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user) {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const parsed = orderEntrySchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      message: copy.saved,
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await rotateOrderEntryAccess({
+      actorEmail: user.email,
+      enabled: parsed.data.enabled,
+      expiresAt: parsed.data.expiresAt,
+    });
+    revalidateSettingsViews();
 
     return {
-      message: error instanceof Error ? error.message : copy.tableMissing,
+      link: buildOrderEntryUrl(locale, result.token),
+      message: copy.orderEntryRotated,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message:
+        error instanceof SiteSettingsError
+          ? error.messageForUi
+          : error instanceof Error
+            ? error.message
+            : copy.saved,
+      ok: false,
+    };
+  }
+}
+
+export async function setPrivacyModeAction(
+  locale: AppLocale,
+  input: z.infer<typeof privacyModeSchema>
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user) {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  if (user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const parsed = privacyModeSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      message: copy.saved,
+      ok: false,
+    };
+  }
+
+  if (
+    parsed.data.enabled &&
+    parsed.data.passphrase.trim() !== privacyPassphrase
+  ) {
+    return {
+      message: copy.privacyPhrase,
+      ok: false,
+    };
+  }
+
+  try {
+    await setPrivacyMode({
+      actorEmail: user.email,
+      enabled: parsed.data.enabled,
+      reason: parsed.data.reason,
+    });
+    revalidateSettingsViews();
+    return {
+      message: copy.saved,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message:
+        error instanceof SiteSettingsError
+          ? error.messageForUi
+          : error instanceof Error
+            ? error.message
+            : copy.saved,
+      ok: false,
+    };
+  }
+}
+
+export async function createManagedAdminUserAction(
+  locale: AppLocale,
+  input: z.infer<typeof managedUserSchema>
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user || user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const parsed = managedUserSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      message: copy.invalidName,
+      ok: false,
+    };
+  }
+
+  try {
+    await createManagedAdminUser(user.email, parsed.data);
+    revalidateSettingsViews();
+    return {
+      message: copy.userCreated,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : copy.invalidName,
+      ok: false,
+    };
+  }
+}
+
+export async function updateManagedAdminUserAction(
+  locale: AppLocale,
+  userId: string,
+  input: z.infer<typeof managedUserSchema>
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user || user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const parsed = managedUserSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      message: copy.invalidName,
+      ok: false,
+    };
+  }
+
+  if (isSuperAdminRole(parsed.data.role) && user.id !== userId) {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  try {
+    await updateManagedAdminUser(user.email, userId, parsed.data);
+    revalidateSettingsViews();
+    return {
+      message: copy.userUpdated,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : copy.invalidName,
+      ok: false,
+    };
+  }
+}
+
+export async function resendManagedAdminInviteAction(
+  locale: AppLocale,
+  userId: string,
+  input: {
+    displayName: string;
+    email: string;
+    role: ManagedAdminRole;
+  }
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user || user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  try {
+    await resendManagedAdminInvite(
+      user.email,
+      userId,
+      input.email,
+      input.displayName,
+      input.role
+    );
+    revalidateSettingsViews();
+    return {
+      message: copy.userInviteSent,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : copy.userInviteSent,
+      ok: false,
+    };
+  }
+}
+
+export async function toggleManagedAdminUserActiveAction(
+  locale: AppLocale,
+  userId: string,
+  nextState: boolean
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user || user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  try {
+    await setManagedAdminUserActive(user.email, userId, nextState);
+    revalidateSettingsViews();
+    return {
+      message: copy.userVisibilityChanged,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : copy.userVisibilityChanged,
+      ok: false,
+    };
+  }
+}
+
+export async function deleteManagedAdminUserAction(
+  locale: AppLocale,
+  userId: string
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user || user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  if (user.id === userId) {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  try {
+    await deleteManagedAdminUser(user.email, userId);
+    revalidateSettingsViews();
+    return {
+      message: copy.userDeleted,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : copy.userDeleted,
       ok: false,
     };
   }

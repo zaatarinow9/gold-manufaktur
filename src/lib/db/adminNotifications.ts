@@ -3,6 +3,7 @@ import "server-only";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TableRow } from "@/lib/supabase/types";
+import { getAdminSettingsSnapshot } from "@/lib/db/siteSettings";
 
 type AdminNavCounts = Partial<
   Record<
@@ -10,12 +11,29 @@ type AdminNavCounts = Partial<
     | "products"
     | "categories"
     | "gallery"
+    | "inquiries"
     | "options"
     | "orders"
     | "settings",
     number
   >
 >;
+
+type InquiryNotificationRow = {
+  archived_at: string | null;
+  deleted_at: string | null;
+  id: string;
+  status: string | null;
+};
+
+type InquiryNotificationClient = {
+  from: (table: "customer_inquiries") => {
+    select: (columns: string) => Promise<{
+      data: InquiryNotificationRow[] | null;
+      error: { message: string } | null;
+    }>;
+  };
+};
 
 function normalizeEmail(value?: string | null) {
   return value?.trim().toLowerCase() ?? "";
@@ -88,10 +106,19 @@ function belongsToWorker(viewer: AdminViewer, order: Partial<TableRow<"orders">>
 
 export async function getAdminNavCounts(viewer: AdminViewer): Promise<AdminNavCounts> {
   const supabase = await createSupabaseServerClient();
-  const [{ data: orders, error: ordersError }, { data: tickets, error: ticketsError }] =
+  const [
+    { data: orders, error: ordersError },
+    { data: tickets, error: ticketsError },
+    inquiriesResult,
+    settingsSnapshot,
+  ] =
     await Promise.all([
       supabase.from("orders").select("*"),
       supabase.from("support_tickets").select("order_id, status"),
+      (supabase as unknown as InquiryNotificationClient)
+        .from("customer_inquiries")
+        .select("id, status, archived_at, deleted_at"),
+      getAdminSettingsSnapshot().catch(() => null),
     ]);
 
   if (ordersError) {
@@ -103,6 +130,7 @@ export async function getAdminNavCounts(viewer: AdminViewer): Promise<AdminNavCo
     console.warn(`[adminNotifications] ${ticketsError.message}`);
   }
 
+  const inquiries = Array.isArray(inquiriesResult?.data) ? inquiriesResult.data : [];
   const visibleOrders =
     viewer.role === "employee"
       ? (orders ?? []).filter((order) => belongsToWorker(viewer, order))
@@ -110,6 +138,19 @@ export async function getAdminNavCounts(viewer: AdminViewer): Promise<AdminNavCo
   const openSupportCount = (tickets ?? []).filter(
     (ticket) => ticket.status === "open" || ticket.status === "in_progress"
   ).length;
+  const unreadInquiryCount = inquiries.filter(
+    (inquiry) =>
+      inquiry.status === "new" &&
+      !inquiry.archived_at &&
+      !inquiry.deleted_at
+  ).length;
+  const settingsCount =
+    settingsSnapshot &&
+    settingsSnapshot.diagnostics.available &&
+    settingsSnapshot.adminNotificationEmail &&
+    settingsSnapshot.smtpStatus.configured
+      ? 0
+      : 1;
 
   if (viewer.role === "employee") {
     return {
@@ -118,7 +159,9 @@ export async function getAdminNavCounts(viewer: AdminViewer): Promise<AdminNavCo
   }
 
   return {
+    inquiries: unreadInquiryCount,
     orders: visibleOrders.filter(needsAdminAttention).length,
     overview: openSupportCount,
+    settings: settingsCount,
   };
 }

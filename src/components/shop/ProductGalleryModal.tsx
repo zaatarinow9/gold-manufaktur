@@ -195,7 +195,10 @@ export function ProductGalleryModal({
             </div>
 
             <div className="rtl-inline-row flex flex-wrap gap-3">
-              <Link href="/contact" className="gold-button">
+              <Link
+                href={`/contact?product=${encodeURIComponent(product.slug)}`}
+                className="gold-button"
+              >
                 {t("requestCta")}
               </Link>
               <button type="button" onClick={onClose} className="ghost-button">

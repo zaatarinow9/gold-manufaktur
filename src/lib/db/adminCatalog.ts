@@ -53,6 +53,9 @@ export type AdminProductRecord = {
   isFeatured: boolean;
   nameCustomizationMode: "category" | "disabled" | "enabled";
   name: LocalizedText;
+  optionGroupId: string | null;
+  optionGroupKey: string;
+  optionGroupName: string;
   optionCount: number;
   optionIds: string[];
   optionSettings: Array<{
@@ -79,6 +82,7 @@ export type AdminOptionGroupRecord = {
   key: string;
   name: LocalizedText;
   optionCount: number;
+  options: AdminOptionRecord[];
   sortOrder: number;
 };
 
@@ -88,11 +92,13 @@ export type AdminOptionRecord = {
   groupId: string;
   groupKey: string;
   groupName: string;
+  helpText: LocalizedText;
   id: string;
   isActive: boolean;
   isRequired: boolean;
   key: string;
   label: LocalizedText;
+  placeholder: LocalizedText;
   productCount: number;
   sortOrder: number;
   type: OptionType;
@@ -131,6 +137,16 @@ const slugSchema = z
   .max(255)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const optionalSlugSchema = z.string().trim().max(255).optional().default("");
+const optionalUuidSchema = z.preprocess(
+  (value) => {
+    if (value === "" || value === undefined || value === null) {
+      return null;
+    }
+
+    return value;
+  },
+  z.string().uuid().nullable()
+);
 
 const tagSchema = z.string().trim().min(1).max(64);
 const imagePathSchema = z.string().trim().min(1).max(500);
@@ -162,6 +178,7 @@ export const productInputSchema = z.object({
   isActive: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
   name: localizedRequiredSchema,
+  optionGroupId: optionalUuidSchema.default(null),
   optionSettings: z
     .array(
       z.object({
@@ -188,12 +205,18 @@ export const optionGroupInputSchema = z.object({
   sortOrder: z.number().int().min(0).default(0),
 });
 
+export const optionGroupUpdateSchema = optionGroupInputSchema.extend({
+  id: z.string().uuid(),
+});
+
 export const optionInputSchema = z.object({
   groupId: z.string().uuid(),
+  helpText: localizedOptionalSchema,
   isActive: z.boolean().default(true),
   isRequired: z.boolean().default(false),
   key: slugSchema,
   label: localizedRequiredSchema,
+  placeholder: localizedOptionalSchema,
   sortOrder: z.number().int().min(0).default(0),
   type: z.enum([
     "text",
@@ -218,6 +241,7 @@ export type CategoryUpdateInput = z.infer<typeof categoryUpdateSchema>;
 export type ProductInput = z.infer<typeof productInputSchema>;
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 export type OptionGroupInput = z.infer<typeof optionGroupInputSchema>;
+export type OptionGroupUpdateInput = z.infer<typeof optionGroupUpdateSchema>;
 export type OptionInput = z.infer<typeof optionInputSchema>;
 export type OptionUpdateInput = z.infer<typeof optionUpdateSchema>;
 
@@ -377,7 +401,12 @@ async function resolveUniqueSlug(input: {
 }
 
 function getLocalizedFields<
-  Prefix extends "description" | "label" | "name",
+  Prefix extends
+    | "description"
+    | "help_text"
+    | "label"
+    | "name"
+    | "placeholder",
   Row extends Record<`${Prefix}_${LocaleKey}`, string | null>,
 >(row: Row, prefix: Prefix) {
   const localized = emptyLocalizedText();
@@ -406,6 +435,11 @@ function getProductPrimaryImage(
   }
 
   return gallery[0] ?? "";
+}
+
+function getProductOptionGroupId(product: TableRow<"products">) {
+  return ((product as TableRow<"products"> & { option_group_id?: string | null })
+    .option_group_id ?? null);
 }
 
 function toCategoryInsert(input: CategoryInput | CategoryUpdateInput) {
@@ -454,6 +488,7 @@ function toProductInsert(input: ProductInput | ProductUpdateInput) {
     name_en: nullableText(name.en),
     name_fr: nullableText(name.fr),
     name_tr: nullableText(name.tr),
+    option_group_id: input.optionGroupId,
     sku: input.sku,
     slug: input.slug,
     sort_order: input.sortOrder,
@@ -468,6 +503,7 @@ type CatalogSchemaCapabilities = {
   optionGroupsDeletedAt: boolean;
   optionsDeletedAt: boolean;
   productsDeletedAt: boolean;
+  productsOptionGroupId: boolean;
   productsSupportsNameCustomization: boolean;
 };
 
@@ -500,7 +536,11 @@ async function getCatalogSchemaCapabilities() {
       .select("table_name,column_name")
       .eq("table_schema", "public")
       .in("table_name", ["categories", "option_groups", "options", "products"])
-      .in("column_name", ["deleted_at", "supports_name_customization"])
+      .in("column_name", [
+        "deleted_at",
+        "option_group_id",
+        "supports_name_customization",
+      ])
       .then(({ data, error }) => {
         if (error || !data) {
           return {
@@ -509,6 +549,7 @@ async function getCatalogSchemaCapabilities() {
             optionGroupsDeletedAt: false,
             optionsDeletedAt: false,
             productsDeletedAt: false,
+            productsOptionGroupId: false,
             productsSupportsNameCustomization: false,
           } satisfies CatalogSchemaCapabilities;
         }
@@ -529,6 +570,7 @@ async function getCatalogSchemaCapabilities() {
           optionGroupsDeletedAt: hasColumn("option_groups", "deleted_at"),
           optionsDeletedAt: hasColumn("options", "deleted_at"),
           productsDeletedAt: hasColumn("products", "deleted_at"),
+          productsOptionGroupId: hasColumn("products", "option_group_id"),
           productsSupportsNameCustomization: hasColumn(
             "products",
             "supports_name_customization"
@@ -557,6 +599,8 @@ function toOptionGroupInsert(input: OptionGroupInput) {
 
 function toOptionInsert(input: OptionInput | OptionUpdateInput) {
   const label = normalizeLocalizedText(input.label);
+  const helpText = normalizeLocalizedText(input.helpText);
+  const placeholder = normalizeLocalizedText(input.placeholder);
   const values = input.values
     .map((value) => ({
       label: value.label.trim(),
@@ -574,10 +618,21 @@ function toOptionInsert(input: OptionInput | OptionUpdateInput) {
     label_en: nullableText(label.en),
     label_fr: nullableText(label.fr),
     label_tr: nullableText(label.tr),
+    help_text_ar: nullableText(helpText.ar),
+    help_text_de: nullableText(helpText.de),
+    help_text_en: nullableText(helpText.en),
+    help_text_fr: nullableText(helpText.fr),
+    help_text_tr: nullableText(helpText.tr),
+    placeholder_ar: nullableText(placeholder.ar),
+    placeholder_de: nullableText(placeholder.de),
+    placeholder_en: nullableText(placeholder.en),
+    placeholder_fr: nullableText(placeholder.fr),
+    placeholder_tr: nullableText(placeholder.tr),
     sort_order: input.sortOrder,
     type: input.type,
     values_json: values,
-  } satisfies TableInsert<"options"> | TableUpdate<"options">;
+  } as (TableInsert<"options"> | TableUpdate<"options">) &
+    Record<string, unknown>;
 }
 
 async function loadCategoryRows() {
@@ -757,6 +812,7 @@ export async function getAdminProducts(
     includeDeleted?: boolean;
   }
 ): Promise<AdminProductRecord[]> {
+  const capabilities = await getCatalogSchemaCapabilities();
   const [products, categories, images, productOptions, optionRows, optionGroupRows] =
     await Promise.all([
       loadProductRows(),
@@ -787,7 +843,7 @@ export async function getAdminProducts(
     visibleCategories.map((category) => [category.id, category])
   );
   const galleryByProductId = new Map<string, string[]>();
-  const optionSettingsByProduct = new Map<
+  const legacyOptionSettingsByProduct = new Map<
     string,
     Array<{
       displayLabel: string;
@@ -809,6 +865,19 @@ export async function getAdminProducts(
       },
     ])
   );
+  const optionSettingsByGroup = new Map<
+    string,
+    Array<{
+      displayLabel: string;
+      groupKey: string;
+      groupName: string;
+      id: string;
+      isRequired: boolean;
+      key: string;
+      type: OptionType;
+      values: Array<{ label: string; value: string }>;
+    }>
+  >();
   const optionById = new Map(
     visibleOptionRows.map((option) => [
       option.id,
@@ -854,12 +923,45 @@ export async function getAdminProducts(
       return;
     }
 
-    const current = optionSettingsByProduct.get(assignment.product_id) ?? [];
+    const current = legacyOptionSettingsByProduct.get(assignment.product_id) ?? [];
     current.push({
       ...option,
       isRequired: assignment.is_required,
     });
-    optionSettingsByProduct.set(assignment.product_id, current);
+    legacyOptionSettingsByProduct.set(assignment.product_id, current);
+  });
+
+  visibleOptionRows.forEach((option) => {
+    const groupMeta = optionGroupById.get(option.group_id);
+    const current = optionSettingsByGroup.get(option.group_id) ?? [];
+    current.push({
+      displayLabel: resolveLocalizedText(getLocalizedFields(option, "label"), locale),
+      groupKey: groupMeta?.groupKey ?? option.group_id,
+      groupName: groupMeta?.groupName ?? "",
+      id: option.id,
+      isRequired: option.is_required,
+      key: option.key,
+      type: option.type,
+      values: Array.isArray(option.values_json)
+        ? option.values_json
+            .filter(
+              (
+                value
+              ): value is { label: string; value: string } =>
+                typeof value === "object" &&
+                value !== null &&
+                "label" in value &&
+                "value" in value &&
+                typeof value.label === "string" &&
+                typeof value.value === "string"
+            )
+            .map((value) => ({
+              label: value.label,
+              value: value.value,
+            }))
+        : [],
+    });
+    optionSettingsByGroup.set(option.group_id, current);
   });
 
   return visibleProducts.map((product) => {
@@ -879,7 +981,16 @@ export async function getAdminProducts(
       supportsNameCustomization
     );
     const gallery = galleryByProductId.get(product.id) ?? [];
-    const optionSettings = optionSettingsByProduct.get(product.id) ?? [];
+    const optionGroupId = capabilities.productsOptionGroupId
+      ? getProductOptionGroupId(product)
+      : null;
+    const optionGroupMeta = optionGroupId
+      ? optionGroupById.get(optionGroupId)
+      : null;
+    const optionSettings =
+      optionGroupId && optionSettingsByGroup.has(optionGroupId)
+        ? optionSettingsByGroup.get(optionGroupId) ?? []
+        : legacyOptionSettingsByProduct.get(product.id) ?? [];
     const optionIds = optionSettings.map((option) => option.id);
 
     return {
@@ -900,6 +1011,9 @@ export async function getAdminProducts(
         supportsNameCustomization
       ),
       name,
+      optionGroupId,
+      optionGroupKey: optionGroupMeta?.groupKey ?? "",
+      optionGroupName: optionGroupMeta?.groupName ?? "",
       optionCount: optionSettings.length,
       optionIds,
       optionSettings,
@@ -946,6 +1060,16 @@ export async function getAdminOptions(
   return visibleOptions.map((option) => {
     const group = groupById.get(option.group_id);
     const label = getLocalizedFields(option, "label");
+    const helpText = getLocalizedFields(
+      option as TableRow<"options"> &
+        Record<`help_text_${LocaleKey}`, string | null>,
+      "help_text"
+    );
+    const placeholder = getLocalizedFields(
+      option as TableRow<"options"> &
+        Record<`placeholder_${LocaleKey}`, string | null>,
+      "placeholder"
+    );
     const groupName = group
       ? resolveLocalizedText(getLocalizedFields(group, "name"), locale)
       : option.group_id;
@@ -962,11 +1086,13 @@ export async function getAdminOptions(
       groupId: option.group_id,
       groupKey: group?.key ?? option.group_id,
       groupName,
+      helpText,
       id: option.id,
       isActive: option.is_active,
       isRequired: option.is_required,
       key: option.key,
       label,
+      placeholder,
       productCount: productIds.length,
       sortOrder: option.sort_order,
       type: option.type,
@@ -995,17 +1121,26 @@ export async function getAdminOptions(
 export async function getOptionGroups(
   locale: AppLocale = "de"
 ): Promise<AdminOptionGroupRecord[]> {
-  const [groups, options] = await Promise.all([loadOptionGroupRows(), loadOptionRows()]);
+  const [groups, options] = await Promise.all([
+    loadOptionGroupRows(),
+    getAdminOptions(locale),
+  ]);
   const visibleGroups = groups.filter((group) => !isDeletedRow(group));
-  const visibleOptions = options.filter((option) => !isDeletedRow(option));
   const counts = new Map<string, number>();
+  const optionsByGroupId = new Map<string, AdminOptionRecord[]>();
 
-  visibleOptions.forEach((option) => {
-    counts.set(option.group_id, (counts.get(option.group_id) ?? 0) + 1);
+  options.forEach((option) => {
+    counts.set(option.groupId, (counts.get(option.groupId) ?? 0) + 1);
+    const current = optionsByGroupId.get(option.groupId) ?? [];
+    current.push(option);
+    optionsByGroupId.set(option.groupId, current);
   });
 
   return visibleGroups.map((group) => {
     const name = getLocalizedFields(group, "name");
+    const groupOptions = (optionsByGroupId.get(group.id) ?? []).sort(
+      (left, right) => left.sortOrder - right.sortOrder
+    );
 
     return {
       displayName: resolveLocalizedText(name, locale),
@@ -1014,6 +1149,7 @@ export async function getOptionGroups(
       key: group.key,
       name,
       optionCount: counts.get(group.id) ?? 0,
+      options: groupOptions,
       sortOrder: group.sort_order,
     };
   });
@@ -1273,6 +1409,10 @@ export async function createProduct(input: ProductInput) {
     }),
   } as TableInsert<"products">;
 
+  if (!capabilities.productsOptionGroupId) {
+    delete (payload as Record<string, unknown>).option_group_id;
+  }
+
   if (!capabilities.productsSupportsNameCustomization) {
     delete (payload as Record<string, unknown>).supports_name_customization;
   }
@@ -1288,7 +1428,12 @@ export async function createProduct(input: ProductInput) {
   }
 
   await replaceProductImages(data.id, parsed.gallery, parsed.name.de);
-  await assignProductOptions(data.id, parsed.optionSettings);
+  await assignProductOptions(
+    data.id,
+    capabilities.productsOptionGroupId && parsed.optionGroupId
+      ? await getOptionSettingsForGroup(parsed.optionGroupId)
+      : parsed.optionSettings
+  );
 
   return data;
 }
@@ -1308,6 +1453,10 @@ export async function updateProduct(input: ProductUpdateInput) {
     }),
   } as TableUpdate<"products">;
 
+  if (!capabilities.productsOptionGroupId) {
+    delete (payload as Record<string, unknown>).option_group_id;
+  }
+
   if (!capabilities.productsSupportsNameCustomization) {
     delete (payload as Record<string, unknown>).supports_name_customization;
   }
@@ -1324,7 +1473,12 @@ export async function updateProduct(input: ProductUpdateInput) {
   }
 
   await replaceProductImages(parsed.id, parsed.gallery, parsed.name.de);
-  await assignProductOptions(parsed.id, parsed.optionSettings);
+  await assignProductOptions(
+    parsed.id,
+    capabilities.productsOptionGroupId && parsed.optionGroupId
+      ? await getOptionSettingsForGroup(parsed.optionGroupId)
+      : parsed.optionSettings
+  );
 
   return data;
 }
@@ -1471,6 +1625,7 @@ async function generateDuplicateSlug(baseSlug: string) {
 
 export async function duplicateProduct(productId: string) {
   const supabase = await createSupabaseServerClient();
+  const capabilities = await getCatalogSchemaCapabilities();
   const [{ data: product, error: productError }, { data: images, error: imagesError }, { data: options, error: optionsError }] =
     await Promise.all([
       supabase.from("products").select("*").eq("id", productId).single(),
@@ -1504,6 +1659,9 @@ export async function duplicateProduct(productId: string) {
     isActive: product.is_active,
     isFeatured: false,
     name: getLocalizedFields(product, "name"),
+    optionGroupId: capabilities.productsOptionGroupId
+      ? getProductOptionGroupId(product)
+      : null,
     optionSettings: options.map((option) => ({
       isRequired: option.is_required,
       optionId: option.option_id,
@@ -1534,6 +1692,23 @@ export async function createOptionGroup(input: OptionGroupInput) {
   return data;
 }
 
+export async function updateOptionGroup(input: OptionGroupUpdateInput) {
+  const supabase = await createSupabaseServerClient();
+  const parsed = optionGroupUpdateSchema.parse(input);
+  const { data, error } = await supabase
+    .from("option_groups")
+    .update(toOptionGroupInsert(parsed))
+    .eq("id", parsed.id)
+    .select("*")
+    .single();
+
+  if (error) {
+    throw new Error(`Unable to update option group: ${error.message}`);
+  }
+
+  return data;
+}
+
 export async function createOption(input: OptionInput) {
   const supabase = await createSupabaseServerClient();
   const parsed = optionInputSchema.parse(input);
@@ -1553,8 +1728,18 @@ export async function createOption(input: OptionInput) {
 export async function updateOption(input: OptionUpdateInput) {
   const supabase = await createSupabaseServerClient();
   const parsed = optionUpdateSchema.parse(input);
-  const { data, error } = await supabase
-    .from("options")
+  const { data, error } = await (supabase.from("options") as unknown as {
+    update: (value: Record<string, unknown>) => {
+      eq: (column: string, value: string) => {
+        select: (columns: string) => {
+          single: () => Promise<{
+            data: TableRow<"options"> | null;
+            error: { message: string } | null;
+          }>;
+        };
+      };
+    };
+  })
     .update(toOptionInsert(parsed))
     .eq("id", parsed.id)
     .select("*")
@@ -1657,6 +1842,150 @@ export async function deleteOption(optionId: string) {
 
   if (error) {
     throw new Error(`Unable to delete option: ${error.message}`);
+  }
+
+  return { mode: "deleted" as const };
+}
+
+async function getOptionSettingsForGroup(groupId: string) {
+  const options = await loadOptionRows();
+
+  return options
+    .filter(
+      (option) =>
+        option.group_id === groupId &&
+        option.is_active &&
+        !isDeletedRow(option)
+    )
+    .sort((left, right) => left.sort_order - right.sort_order)
+    .map((option) => ({
+      isRequired: option.is_required,
+      optionId: option.id,
+    }));
+}
+
+export async function deleteOptionGroup(groupId: string) {
+  const supabase = await createSupabaseServerClient();
+  const capabilities = await getCatalogSchemaCapabilities();
+  const [options, products, orderItems] = await Promise.all([
+    loadOptionRows(),
+    loadProductRows(),
+    supabase.from("order_items").select("selected_options_json"),
+  ]);
+  const groupOptionIds = options
+    .filter((option) => option.group_id === groupId)
+    .map((option) => option.id);
+  const assignedProducts = capabilities.productsOptionGroupId
+    ? products.filter((product) => getProductOptionGroupId(product) === groupId)
+    : [];
+  const hasOrderHistory = (orderItems.data ?? []).some((item) =>
+    Array.isArray(item.selected_options_json) &&
+    item.selected_options_json.some(
+      (selectedOption) =>
+        selectedOption &&
+        typeof selectedOption === "object" &&
+        "optionId" in selectedOption &&
+        typeof selectedOption.optionId === "string" &&
+        groupOptionIds.includes(selectedOption.optionId)
+    )
+  );
+
+  if (orderItems.error) {
+    throw new Error(
+      `Unable to inspect option group usage: ${orderItems.error.message}`
+    );
+  }
+
+  if (groupOptionIds.length > 0) {
+    const { error: deleteAssignmentsError } = await supabase
+      .from("product_options")
+      .delete()
+      .in("option_id", groupOptionIds);
+
+    if (deleteAssignmentsError) {
+      throw new Error(
+        `Unable to delete option group assignments: ${deleteAssignmentsError.message}`
+      );
+    }
+  }
+
+  if (capabilities.productsOptionGroupId) {
+    const { error: unassignGroupError } = await (supabase.from("products") as unknown as {
+      update: (value: Record<string, unknown>) => {
+        eq: (column: string, value: string) => Promise<{
+          error: { message: string } | null;
+        }>;
+      };
+    })
+      .update({ option_group_id: null })
+      .eq("option_group_id", groupId);
+
+    if (unassignGroupError) {
+      throw new Error(
+        `Unable to unassign option group products: ${unassignGroupError.message}`
+      );
+    }
+  }
+
+  if (assignedProducts.length > 0 || hasOrderHistory) {
+    if (!capabilities.optionGroupsDeletedAt || !capabilities.optionsDeletedAt) {
+      throw new Error("OPTION_GROUP_DELETE_UNSUPPORTED");
+    }
+
+    const now = new Date().toISOString();
+    const { error: groupSoftDeleteError } = await supabase
+      .from("option_groups")
+      .update({
+        deleted_at: now,
+        is_active: false,
+      })
+      .eq("id", groupId);
+
+    if (groupSoftDeleteError) {
+      throw new Error(
+        `Unable to soft delete option group: ${groupSoftDeleteError.message}`
+      );
+    }
+
+    if (groupOptionIds.length > 0) {
+      const { error: optionSoftDeleteError } = await supabase
+        .from("options")
+        .update({
+          deleted_at: now,
+          is_active: false,
+        })
+        .in("id", groupOptionIds);
+
+      if (optionSoftDeleteError) {
+        throw new Error(
+          `Unable to soft delete option group fields: ${optionSoftDeleteError.message}`
+        );
+      }
+    }
+
+    return { mode: "soft_deleted_in_use" as const };
+  }
+
+  if (groupOptionIds.length > 0) {
+    const { error: deleteOptionsError } = await supabase
+      .from("options")
+      .delete()
+      .eq("group_id", groupId);
+
+    if (deleteOptionsError) {
+      throw new Error(
+        `Unable to delete option group fields: ${deleteOptionsError.message}`
+      );
+    }
+  }
+
+  const { error } = await supabase
+    .from("option_groups")
+    .delete()
+    .eq("id", groupId);
+
+  if (error) {
+    throw new Error(`Unable to delete option group: ${error.message}`);
   }
 
   return { mode: "deleted" as const };

@@ -14,8 +14,8 @@ import {
   toggleProductActiveAction,
   toggleProductFeaturedAction,
 } from "@/app/[locale]/admin/products/actions";
-import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminBadge } from "@/components/admin/AdminBadge";
+import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -29,10 +29,9 @@ import {
   getRequiredFieldBadge,
   scrollCardIntoView,
 } from "@/lib/admin/clientForm";
-import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import type {
   AdminCategoryRecord,
-  AdminOptionRecord,
+  AdminOptionGroupRecord,
   AdminProductRecord,
   LocalizedText,
 } from "@/lib/db/adminCatalog";
@@ -42,11 +41,6 @@ import {
   PRODUCT_IMAGE_UPLOAD_QUALITY,
 } from "@/lib/product-images";
 
-type ProductOptionSettingState = {
-  isRequired: boolean;
-  optionId: string;
-};
-
 type ProductFormState = {
   categoryId: string;
   description: LocalizedText;
@@ -55,20 +49,21 @@ type ProductFormState = {
   isActive: boolean;
   isFeatured: boolean;
   name: LocalizedText;
-  optionSettings: ProductOptionSettingState[];
+  optionGroupId: string;
   sku: string;
   slug: string;
   sortOrder: number;
-  supportsNameCustomizationMode: "category" | "disabled" | "enabled";
   tagsText: string;
 };
 
 type AdminProductsClientProps = {
   categories: AdminCategoryRecord[];
+  groups: AdminOptionGroupRecord[];
   locale: AppLocale;
-  options: AdminOptionRecord[];
   products: AdminProductRecord[];
 };
+
+const lastOptionGroupStorageKey = "goldhelwah.admin.last-option-group";
 
 function createEmptyLocalizedText(): LocalizedText {
   return {
@@ -82,7 +77,8 @@ function createEmptyLocalizedText(): LocalizedText {
 
 function createEmptyProductForm(
   categories: AdminCategoryRecord[],
-  products: AdminProductRecord[]
+  products: AdminProductRecord[],
+  optionGroupId = ""
 ): ProductFormState {
   return {
     categoryId: categories[0]?.id ?? "",
@@ -91,11 +87,10 @@ function createEmptyProductForm(
     isActive: true,
     isFeatured: false,
     name: createEmptyLocalizedText(),
-    optionSettings: [],
+    optionGroupId,
     sku: `GH-${String(products.length + 1).padStart(4, "0")}`,
     slug: "",
     sortOrder: products.length + 1,
-    supportsNameCustomizationMode: "category",
     tagsText: "",
   };
 }
@@ -109,14 +104,10 @@ function createEditProductForm(product: AdminProductRecord): ProductFormState {
     isActive: product.isActive,
     isFeatured: product.isFeatured,
     name: product.name,
-    optionSettings: product.optionSettings.map((option) => ({
-      isRequired: option.isRequired,
-      optionId: option.id,
-    })),
+    optionGroupId: product.optionGroupId ?? "",
     sku: product.sku,
     slug: product.slug,
     sortOrder: product.sortOrder,
-    supportsNameCustomizationMode: product.nameCustomizationMode,
     tagsText: product.tags.join(", "),
   };
 }
@@ -210,11 +201,31 @@ function updateLocalizedText(
   };
 }
 
-function getProductOptionSetting(
-  optionSettings: ProductOptionSettingState[],
-  optionId: string
-) {
-  return optionSettings.find((setting) => setting.optionId === optionId);
+function getStoredOptionGroupId(groups: AdminOptionGroupRecord[]) {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  const stored = window.localStorage.getItem(lastOptionGroupStorageKey);
+
+  if (!stored) {
+    return "";
+  }
+
+  return groups.some((group) => group.id === stored) ? stored : "";
+}
+
+function saveStoredOptionGroupId(optionGroupId: string) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (!optionGroupId) {
+    window.localStorage.removeItem(lastOptionGroupStorageKey);
+    return;
+  }
+
+  window.localStorage.setItem(lastOptionGroupStorageKey, optionGroupId);
 }
 
 function getProductUiCopy(locale: AppLocale) {
@@ -222,12 +233,26 @@ function getProductUiCopy(locale: AppLocale) {
     return {
       categoryDefault: "يتبع التصنيف",
       deleteConfirm:
-        "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذه العملية.",
+        "هل أنت متأكد من حذف هذا المنتج؟ لا يمكن التراجع عن هذه العملية.",
+      galleryEmpty: "لم تتم إضافة صور لهذا المنتج بعد.",
+      galleryHelper: "يمكنك لصق رابط في كل سطر أو رفع صور مضغوطة مباشرة.",
+      galleryLabel: "صور المعرض",
+      galleryPreview: "معاينة الصور",
+      galleryRemove: "إزالة",
+      noGroup: "بدون مجموعة خيارات",
+      optionGroupDescription:
+        "اختر مجموعة واحدة فقط لهذا المنتج. ستظهر حقولها في الطلبات والاستفسارات العامة.",
+      optionGroupLabel: "مجموعة الخيارات",
+      optionGroupPreview: "معاينة الحقول المرتبطة",
       personalizationBadge: "يدعم تخصيص الاسم",
       personalizationHeader: "التخصيص",
-      personalizationLabel: "تخصيص الاسم لهذا المنتج",
-      personalizationOff: "معطل",
-      personalizationOn: "مفعل",
+      tagsHelper: "افصل الكلمات المفتاحية بفواصل.",
+      uploadButton: "رفع صور",
+      uploadFailed: "تعذر رفع الصورة. يرجى المحاولة مرة أخرى.",
+      uploadHelper: "يتم ضغط الصور إلى WebP قبل الحفظ.",
+      uploadInvalidType: "يرجى اختيار ملفات صور فقط.",
+      uploadPending: "جارٍ ضغط الصور ورفعها...",
+      uploadTooLarge: "الصورة كبيرة جداً بعد الضغط. يرجى اختيار صورة أصغر.",
     };
   }
 
@@ -235,79 +260,20 @@ function getProductUiCopy(locale: AppLocale) {
     return {
       categoryDefault: "Kategorie-Standard",
       deleteConfirm:
-        "Moechten Sie dieses Element wirklich loeschen? Diese Aktion kann nicht rueckgaengig gemacht werden.",
-      personalizationBadge: "Namenspersonalisierung",
-      personalizationHeader: "Personalisierung",
-      personalizationLabel: "Namenspersonalisierung fuer dieses Produkt",
-      personalizationOff: "Deaktiviert",
-      personalizationOn: "Aktiviert",
-    };
-  }
-
-  if (locale === "fr") {
-    return {
-      categoryDefault: "Defaut de categorie",
-      deleteConfirm:
-        "Voulez-vous vraiment supprimer cet element ? Cette action ne peut pas etre annulee.",
-      personalizationBadge: "Personnalisation du nom",
-      personalizationHeader: "Personnalisation",
-      personalizationLabel: "Personnalisation du nom pour ce produit",
-      personalizationOff: "Desactive",
-      personalizationOn: "Active",
-    };
-  }
-
-  if (locale === "tr") {
-    return {
-      categoryDefault: "Kategori varsayilani",
-      deleteConfirm:
-        "Bu ogeyi silmek istediginizden emin misiniz? Bu islem geri alinamaz.",
-      personalizationBadge: "Isim kisilestirmesi",
-      personalizationHeader: "Kisilestirme",
-      personalizationLabel: "Bu urun icin isim kisilestirmesi",
-      personalizationOff: "Devre disi",
-      personalizationOn: "Etkin",
-    };
-  }
-
-  return {
-    categoryDefault: "Category default",
-    deleteConfirm:
-      "Do you really want to delete this item? This action cannot be undone.",
-    personalizationBadge: "Name personalization",
-    personalizationHeader: "Personalization",
-    personalizationLabel: "Name personalization for this product",
-    personalizationOff: "Disabled",
-    personalizationOn: "Enabled",
-  };
-}
-
-function getProductEditorCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      galleryEmpty: "لم تتم إضافة صور لهذا المنتج بعد.",
-      galleryHelper: "يمكنك لصق رابط في كل سطر أو رفع صور مضغوطة مباشرة إلى التخزين.",
-      galleryLabel: "صور المعرض",
-      galleryPreview: "معاينة الصور",
-      galleryRemove: "إزالة",
-      tagsHelper: "افصل الكلمات المفتاحية بفواصل.",
-      uploadButton: "رفع صور",
-      uploadFailed: "تعذر رفع الصورة. يرجى المحاولة مرة أخرى.",
-      uploadHelper: "يتم ضغط الصور إلى WebP قبل الحفظ لتحسين السرعة.",
-      uploadInvalidType: "يرجى اختيار ملفات صور فقط.",
-      uploadPending: "جارٍ ضغط الصور ورفعها...",
-      uploadTooLarge: "حجم الصورة كبير جداً بعد الضغط. يرجى اختيار صورة أصغر.",
-    };
-  }
-
-  if (locale === "de") {
-    return {
+        "Soll dieses Produkt wirklich geloescht werden? Diese Aktion kann nicht rueckgaengig gemacht werden.",
       galleryEmpty: "Fuer dieses Produkt wurden noch keine Bilder hinzugefuegt.",
       galleryHelper:
-        "Sie koennen pro Zeile einen Bildlink einfuegen oder Bilder direkt komprimiert hochladen.",
+        "Fuegen Sie pro Zeile einen Bildlink ein oder laden Sie komprimierte Bilder direkt hoch.",
       galleryLabel: "Galeriebilder",
       galleryPreview: "Bildvorschau",
       galleryRemove: "Entfernen",
+      noGroup: "Keine Optionsgruppe",
+      optionGroupDescription:
+        "Waehlen Sie genau eine Gruppe fuer dieses Produkt. Ihre Felder erscheinen dann in Auftragserfassung und Anfragen.",
+      optionGroupLabel: "Optionsgruppe",
+      optionGroupPreview: "Feldvorschau",
+      personalizationBadge: "Namenspersonalisierung",
+      personalizationHeader: "Personalisierung",
       tagsHelper: "Tags mit Kommas trennen.",
       uploadButton: "Bilder hochladen",
       uploadFailed: "Das Bild konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
@@ -318,49 +284,22 @@ function getProductEditorCopy(locale: AppLocale) {
     };
   }
 
-  if (locale === "fr") {
-    return {
-      galleryEmpty: "Aucune image n'a encore ete ajoutee a ce produit.",
-      galleryHelper:
-        "Ajoutez une URL par ligne ou televersez directement des images compressees.",
-      galleryLabel: "Images de la galerie",
-      galleryPreview: "Apercu des images",
-      galleryRemove: "Retirer",
-      tagsHelper: "Separez les tags par des virgules.",
-      uploadButton: "Televerser des images",
-      uploadFailed: "Impossible de televerser l'image pour le moment.",
-      uploadHelper: "Les images sont compressees en WebP avant l'enregistrement.",
-      uploadInvalidType: "Selectionnez uniquement des fichiers image.",
-      uploadPending: "Compression et televersement des images...",
-      uploadTooLarge: "L'image reste trop volumineuse apres compression. Choisissez un fichier plus petit.",
-    };
-  }
-
-  if (locale === "tr") {
-    return {
-      galleryEmpty: "Bu urun icin henuz gorsel eklenmedi.",
-      galleryHelper:
-        "Her satira bir gorsel baglantisi ekleyebilir veya gorselleri dogrudan yukleyebilirsiniz.",
-      galleryLabel: "Galeri gorselleri",
-      galleryPreview: "Gorsel onizleme",
-      galleryRemove: "Kaldir",
-      tagsHelper: "Etiketleri virgul ile ayirin.",
-      uploadButton: "Gorsel yukle",
-      uploadFailed: "Gorsel su anda yuklenemedi. Lutfen tekrar deneyin.",
-      uploadHelper: "Gorseller kaydedilmeden once WebP olarak sikistirilir.",
-      uploadInvalidType: "Lutfen yalnizca gorsel dosyalari secin.",
-      uploadPending: "Gorseller sikistiriliyor ve yukleniyor...",
-      uploadTooLarge: "Gorsel sikistirildiktan sonra bile fazla buyuk. Lutfen daha kucuk bir dosya secin.",
-    };
-  }
-
   return {
+    categoryDefault: "Category default",
+    deleteConfirm:
+      "Do you really want to delete this product? This action cannot be undone.",
     galleryEmpty: "No images have been added for this product yet.",
-    galleryHelper:
-      "Add one image URL per line or upload compressed images directly to storage.",
+    galleryHelper: "Add one image URL per line or upload compressed images directly.",
     galleryLabel: "Gallery images",
     galleryPreview: "Image preview",
     galleryRemove: "Remove",
+    noGroup: "No option group",
+    optionGroupDescription:
+      "Choose one group for this product. Its fields will appear in order entry and public inquiries.",
+    optionGroupLabel: "Option group",
+    optionGroupPreview: "Field preview",
+    personalizationBadge: "Name personalization",
+    personalizationHeader: "Personalization",
     tagsHelper: "Separate tags with commas.",
     uploadButton: "Upload images",
     uploadFailed: "The image could not be uploaded right now. Please try again.",
@@ -371,38 +310,14 @@ function getProductEditorCopy(locale: AppLocale) {
   };
 }
 
-function setProductOptionVisibility(
-  optionSettings: ProductOptionSettingState[],
-  optionId: string,
-  visible: boolean,
-  isRequired: boolean
-) {
-  if (!visible) {
-    return optionSettings.filter((setting) => setting.optionId !== optionId);
-  }
-
-  const nextSetting = { isRequired, optionId };
-  const existing = getProductOptionSetting(optionSettings, optionId);
-
-  if (!existing) {
-    return [...optionSettings, nextSetting];
-  }
-
-  return optionSettings.map((setting) =>
-    setting.optionId === optionId ? nextSetting : setting
-  );
-}
-
 export function AdminProductsClient({
   categories,
+  groups,
   locale,
-  options,
   products,
 }: AdminProductsClientProps) {
   const t = useTranslations("Admin");
-  const copy = getOrderWorkflowCopy(locale);
   const uiCopy = getProductUiCopy(locale);
-  const editorCopy = getProductEditorCopy(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isUploadingImages, startUploadTransition] = useTransition();
@@ -427,6 +342,8 @@ export function AdminProductsClient({
   );
   const selectedCategory =
     categories.find((category) => category.id === formState.categoryId) ?? null;
+  const selectedGroup =
+    groups.find((group) => group.id === formState.optionGroupId) ?? null;
   const inheritedCustomizationEnabled =
     selectedCategory?.supportsNameCustomization ?? false;
 
@@ -441,11 +358,13 @@ export function AdminProductsClient({
   const filteredProducts = useMemo(
     () =>
       products.filter((product) => {
+        const normalizedSearch = search.toLowerCase();
         const matchesSearch =
           search.length === 0 ||
-          product.displayName.toLowerCase().includes(search.toLowerCase()) ||
-          product.sku.toLowerCase().includes(search.toLowerCase()) ||
-          product.slug.toLowerCase().includes(search.toLowerCase());
+          product.displayName.toLowerCase().includes(normalizedSearch) ||
+          product.sku.toLowerCase().includes(normalizedSearch) ||
+          product.slug.toLowerCase().includes(normalizedSearch) ||
+          product.optionGroupName.toLowerCase().includes(normalizedSearch);
         const matchesTab =
           tab === "all" ||
           (tab === "active" && product.isActive) ||
@@ -468,14 +387,7 @@ export function AdminProductsClient({
           matchesFeatured
         );
       }),
-    [
-      categoryFilter,
-      featuredFilter,
-      products,
-      search,
-      statusFilter,
-      tab,
-    ]
+    [categoryFilter, featuredFilter, products, search, statusFilter, tab]
   );
 
   const clearFieldError = (field: string) => {
@@ -499,6 +411,12 @@ export function AdminProductsClient({
   };
 
   const submitForm = () => {
+    const derivedOptionSettings = selectedGroup
+      ? selectedGroup.options.map((option) => ({
+          isRequired: option.isRequired,
+          optionId: option.id,
+        }))
+      : [];
     const payload = {
       categoryId: formState.categoryId || null,
       description: formState.description,
@@ -506,7 +424,8 @@ export function AdminProductsClient({
       isActive: formState.isActive,
       isFeatured: formState.isFeatured,
       name: formState.name,
-      optionSettings: formState.optionSettings,
+      optionGroupId: formState.optionGroupId || null,
+      optionSettings: derivedOptionSettings,
       sku: formState.sku.trim(),
       slug: formState.slug.trim(),
       sortOrder: Number(formState.sortOrder),
@@ -525,6 +444,10 @@ export function AdminProductsClient({
       if (!result.ok) {
         focusFirstInvalidField(result.fieldErrors ?? {});
         return;
+      }
+
+      if (formState.optionGroupId) {
+        saveStoredOptionGroupId(formState.optionGroupId);
       }
 
       resetForm();
@@ -548,7 +471,7 @@ export function AdminProductsClient({
     );
 
     if (hasInvalidFile) {
-      setUploadError(editorCopy.uploadInvalidType);
+      setUploadError(uiCopy.uploadInvalidType);
       return;
     }
 
@@ -577,10 +500,10 @@ export function AdminProductsClient({
           if (!response.ok || !payload?.success || !payload.url) {
             throw new Error(
               payload?.error === "FILE_TOO_LARGE"
-                ? editorCopy.uploadTooLarge
+                ? uiCopy.uploadTooLarge
                 : payload?.error === "INVALID_FILE_TYPE"
-                  ? editorCopy.uploadInvalidType
-                  : editorCopy.uploadFailed
+                  ? uiCopy.uploadInvalidType
+                  : uiCopy.uploadFailed
             );
           }
 
@@ -589,7 +512,7 @@ export function AdminProductsClient({
           setUploadError(
             error instanceof Error && error.message.trim().length > 0
               ? error.message
-              : editorCopy.uploadFailed
+              : uiCopy.uploadFailed
           );
         }
       }
@@ -604,11 +527,12 @@ export function AdminProductsClient({
   };
 
   const openCreateForm = () => {
+    const storedGroupId = getStoredOptionGroupId(groups);
     setFeedback(null);
     setFieldErrors({});
     setUploadError(null);
     setEditingProductId("new");
-    setFormState(createEmptyProductForm(categories, products));
+    setFormState(createEmptyProductForm(categories, products, storedGroupId));
     setEditorOpen(true);
   };
 
@@ -618,14 +542,20 @@ export function AdminProductsClient({
       header: t("products.table.product"),
       cell: (product) => (
         <div className="flex items-center gap-3">
-          <div className="relative h-[72px] w-[72px] overflow-hidden rounded-[0.9rem] border border-white/10">
-            <Image
-              src={product.imageUrl}
-              alt={product.displayName}
-              fill
-              className="object-cover"
-              sizes="72px"
-            />
+          <div className="relative h-[72px] w-[72px] overflow-hidden rounded-[0.9rem] border border-white/10 bg-white/4">
+            {product.imageUrl ? (
+              <Image
+                src={product.imageUrl}
+                alt={product.displayName}
+                fill
+                className="object-cover"
+                sizes="72px"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-xs text-muted">
+                GH
+              </div>
+            )}
           </div>
           <div className="min-w-0">
             <p className="font-semibold text-foreground">{product.displayName}</p>
@@ -638,6 +568,32 @@ export function AdminProductsClient({
       id: "category",
       header: t("products.table.category"),
       cell: (product) => product.categoryName,
+    },
+    {
+      id: "optionGroup",
+      header: uiCopy.optionGroupLabel,
+      cell: (product) =>
+        product.optionGroupName ? (
+          <AdminBadge variant="gold">{product.optionGroupName}</AdminBadge>
+        ) : (
+          <AdminBadge variant="neutral">{uiCopy.noGroup}</AdminBadge>
+        ),
+    },
+    {
+      id: "personalization",
+      header: uiCopy.personalizationHeader,
+      cell: (product) => (
+        <div className="flex flex-wrap gap-2">
+          {product.effectiveSupportsNameCustomization ? (
+            <AdminBadge variant="gold">{uiCopy.personalizationBadge}</AdminBadge>
+          ) : (
+            <AdminBadge variant="neutral">{t("common.disabled")}</AdminBadge>
+          )}
+          {product.nameCustomizationMode === "category" ? (
+            <AdminBadge variant="neutral">{uiCopy.categoryDefault}</AdminBadge>
+          ) : null}
+        </div>
+      ),
     },
     {
       id: "status",
@@ -654,46 +610,11 @@ export function AdminProductsClient({
       ),
     },
     {
-      id: "personalization",
-      header: uiCopy.personalizationHeader,
-      cell: (product) => (
-        <div className="flex flex-wrap gap-2">
-          {product.effectiveSupportsNameCustomization ? (
-            <AdminBadge variant="gold">{uiCopy.personalizationBadge}</AdminBadge>
-          ) : (
-            <AdminBadge variant="neutral">{uiCopy.personalizationOff}</AdminBadge>
-          )}
-          {product.nameCustomizationMode === "category" ? (
-            <AdminBadge variant="neutral">{uiCopy.categoryDefault}</AdminBadge>
-          ) : null}
-        </div>
-      ),
-    },
-    {
-      id: "visibility",
-      header: t("common.visibility"),
-      cell: (product) => (
-        <div className="flex flex-wrap gap-2">
-          <AdminBadge variant={product.isActive ? "success" : "neutral"}>
-            {product.isActive ? t("common.visible") : t("common.hidden")}
-          </AdminBadge>
-          {product.isFeatured ? (
-            <AdminBadge variant="gold">{t("products.featuredOnly")}</AdminBadge>
-          ) : null}
-        </div>
-      ),
-    },
-    {
       id: "actions",
       align: "end",
       header: t("products.table.actions"),
       cell: (product) => (
         <div className="flex flex-wrap items-center justify-end gap-2">
-          {editorOpen && editingProductId === product.id ? (
-            <AdminBadge variant="info">
-              {locale === "ar" ? "\u0645\u0641\u062a\u0648\u062d \u0627\u0644\u0622\u0646" : "Geoeffnet"}
-            </AdminBadge>
-          ) : null}
           <AdminButton
             size="sm"
             variant="secondary"
@@ -785,44 +706,6 @@ export function AdminProductsClient({
     },
   ];
 
-  const optionGroups = useMemo(() => {
-    const groupedOptions = new Map<
-      string,
-      { groupName: string; options: AdminOptionRecord[] }
-    >();
-
-    options
-      .slice()
-      .sort((left, right) => {
-        const groupCompare = left.groupName.localeCompare(right.groupName, locale);
-
-        if (groupCompare !== 0) {
-          return groupCompare;
-        }
-
-        return left.displayLabel.localeCompare(right.displayLabel, locale);
-      })
-      .forEach((option) => {
-        const currentGroup = groupedOptions.get(option.groupKey);
-
-        if (!currentGroup) {
-          groupedOptions.set(option.groupKey, {
-            groupName: option.groupName,
-            options: [option],
-          });
-          return;
-        }
-
-        currentGroup.options.push(option);
-      });
-
-    return Array.from(groupedOptions.entries()).map(([groupKey, group]) => ({
-      groupKey,
-      groupName: group.groupName,
-      options: group.options,
-    }));
-  }, [locale, options]);
-
   return (
     <div className="space-y-6">
       <AdminPageHeader
@@ -862,145 +745,212 @@ export function AdminProductsClient({
               </div>
             }
           >
-            <div className="grid gap-4 xl:grid-cols-2">
-              <AdminInput
-                id="sku"
-                name="sku"
-                label="SKU"
-                value={formState.sku}
-                required
-                requiredLabel={requiredLabel}
-                errorText={fieldErrors.sku}
-                onChange={(event) => {
-                  clearFieldError("sku");
-                  setFormState((current) => ({ ...current, sku: event.target.value }));
-                }}
-              />
-              <AdminInput
-                id="slug"
-                name="slug"
-                label="Slug"
-                value={formState.slug}
-                errorText={fieldErrors.slug}
-                helperText={!fieldErrors.slug ? (locale === "de" ? "Lassen Sie das Feld leer, wenn der Slug automatisch erzeugt werden soll." : "Leave the field empty to generate the slug automatically.") : undefined}
-                onChange={(event) => {
-                  clearFieldError("slug");
-                  setFormState((current) => ({ ...current, slug: event.target.value }));
-                }}
-              />
-              <AdminSelect
-                id="categoryId"
-                name="categoryId"
-                label={t("filters.category")}
-                value={formState.categoryId}
-                errorText={fieldErrors.categoryId}
-                onChange={(event) => {
-                  clearFieldError("categoryId");
-                  setFormState((current) => ({
-                    ...current,
-                    categoryId: event.target.value,
-                  }));
-                }}
-              >
-                <option value="">{t("common.all")}</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.displayName}
-                  </option>
-                ))}
-              </AdminSelect>
-              <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
-                <p className="admin-label">
-                  {locale === "de"
-                    ? "Namenspersonalisierung"
-                    : locale === "ar"
-                      ? "\u062a\u062e\u0635\u064a\u0635 \u0627\u0644\u0627\u0633\u0645"
-                      : "Name personalization"}
-                </p>
-                <p className="mt-2 text-sm text-foreground">
-                  {locale === "de"
-                    ? "Uebernimmt Namenspersonalisierung aus der Kategorie"
-                    : locale === "ar"
-                      ? "\u064a\u0631\u062b \u062a\u062e\u0635\u064a\u0635 \u0627\u0644\u0627\u0633\u0645 \u0645\u0646 \u0627\u0644\u062a\u0635\u0646\u064a\u0641"
-                      : "Inherits name personalization from the category"}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <AdminBadge variant={inheritedCustomizationEnabled ? "gold" : "neutral"}>
-                    {inheritedCustomizationEnabled
-                      ? uiCopy.personalizationBadge
-                      : t("common.disabled")}
-                  </AdminBadge>
-                  {selectedCategory ? (
-                    <AdminBadge variant="neutral">{selectedCategory.displayName}</AdminBadge>
-                  ) : null}
+            <div className="space-y-6">
+              <div className="grid gap-4 xl:grid-cols-2">
+                <AdminInput
+                  id="sku"
+                  name="sku"
+                  label="SKU"
+                  value={formState.sku}
+                  required
+                  requiredLabel={requiredLabel}
+                  errorText={fieldErrors.sku}
+                  onChange={(event) => {
+                    clearFieldError("sku");
+                    setFormState((current) => ({ ...current, sku: event.target.value }));
+                  }}
+                />
+                <AdminInput
+                  id="slug"
+                  name="slug"
+                  label="Slug"
+                  value={formState.slug}
+                  errorText={fieldErrors.slug}
+                  helperText={
+                    !fieldErrors.slug
+                      ? locale === "de"
+                        ? "Leer lassen, wenn der Slug automatisch erzeugt werden soll."
+                        : "Leave empty to generate the slug automatically."
+                      : undefined
+                  }
+                  onChange={(event) => {
+                    clearFieldError("slug");
+                    setFormState((current) => ({ ...current, slug: event.target.value }));
+                  }}
+                />
+                <AdminSelect
+                  id="categoryId"
+                  name="categoryId"
+                  label={t("filters.category")}
+                  value={formState.categoryId}
+                  errorText={fieldErrors.categoryId}
+                  onChange={(event) => {
+                    clearFieldError("categoryId");
+                    setFormState((current) => ({
+                      ...current,
+                      categoryId: event.target.value,
+                    }));
+                  }}
+                >
+                  <option value="">{t("common.all")}</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.displayName}
+                    </option>
+                  ))}
+                </AdminSelect>
+                <AdminSelect
+                  id="optionGroupId"
+                  name="optionGroupId"
+                  label={uiCopy.optionGroupLabel}
+                  value={formState.optionGroupId}
+                  onChange={(event) => {
+                    const nextValue = event.target.value;
+                    setFormState((current) => ({
+                      ...current,
+                      optionGroupId: nextValue,
+                    }));
+                    saveStoredOptionGroupId(nextValue);
+                  }}
+                >
+                  <option value="">{uiCopy.noGroup}</option>
+                  {groups.map((group) => (
+                    <option key={group.id} value={group.id}>
+                      {group.displayName}
+                    </option>
+                  ))}
+                </AdminSelect>
+                <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
+                  <p className="admin-label">{uiCopy.personalizationHeader}</p>
+                  <p className="mt-2 text-sm text-foreground">
+                    {locale === "de"
+                      ? "Namenspersonalisierung wird weiterhin ueber die Kategorie gesteuert."
+                      : locale === "ar"
+                        ? "يستمر تخصيص الاسم بالاعتماد على إعدادات التصنيف."
+                        : "Name personalization still follows the category settings."}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <AdminBadge variant={inheritedCustomizationEnabled ? "gold" : "neutral"}>
+                      {inheritedCustomizationEnabled
+                        ? uiCopy.personalizationBadge
+                        : t("common.disabled")}
+                    </AdminBadge>
+                    {selectedCategory ? (
+                      <AdminBadge variant="neutral">{selectedCategory.displayName}</AdminBadge>
+                    ) : null}
+                  </div>
                 </div>
+                <AdminInput
+                  id="sortOrder"
+                  name="sortOrder"
+                  label="Sort Order"
+                  type="number"
+                  value={String(formState.sortOrder)}
+                  errorText={fieldErrors.sortOrder}
+                  onChange={(event) => {
+                    clearFieldError("sortOrder");
+                    setFormState((current) => ({
+                      ...current,
+                      sortOrder: Number(event.target.value || 0),
+                    }));
+                  }}
+                />
               </div>
-              <AdminInput
-                id="sortOrder"
-                name="sortOrder"
-                label="Sort Order"
-                type="number"
-                value={String(formState.sortOrder)}
-                errorText={fieldErrors.sortOrder}
-                onChange={(event) => {
-                  clearFieldError("sortOrder");
-                  setFormState((current) => ({
-                    ...current,
-                    sortOrder: Number(event.target.value || 0),
-                  }));
-                }}
-              />
-              {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
-              <AdminInput
-                key={`name-${language}`}
-                id={`name.${language}`}
-                name={`name.${language}`}
-                label={`Name ${language.toUpperCase()}`}
-                value={formState.name[language]}
-                required={language === "de" || language === "ar"}
-                requiredLabel={
-                  language === "de" || language === "ar" ? requiredLabel : undefined
-                }
-                errorText={fieldErrors[`name.${language}`]}
-                onChange={(event) => {
-                  clearFieldError(`name.${language}`);
-                  setFormState((current) => ({
-                    ...current,
-                    name: updateLocalizedText(
-                      current.name,
-                      language,
-                      event.target.value
-                    ),
-                  }));
-                }}
-              />
-              ))}
-              {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
-              <AdminTextarea
-                key={`description-${language}`}
-                id={`description.${language}`}
-                name={`description.${language}`}
-                label={`Description ${language.toUpperCase()}`}
-                value={formState.description[language]}
-                errorText={fieldErrors[`description.${language}`]}
-                onChange={(event) => {
-                  clearFieldError(`description.${language}`);
-                  setFormState((current) => ({
-                    ...current,
-                    description: updateLocalizedText(
-                      current.description,
-                      language,
-                      event.target.value
-                    ),
-                  }));
-                }}
-              />
-              ))}
+
+              <AdminCard
+                title={uiCopy.optionGroupLabel}
+                description={uiCopy.optionGroupDescription}
+              >
+                {selectedGroup ? (
+                  <div className="grid gap-3">
+                    {selectedGroup.options.map((option) => (
+                      <div
+                        key={option.id}
+                        className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-4"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <p className="font-medium text-foreground">{option.displayLabel}</p>
+                            <p className="text-xs text-muted">
+                              {option.key} {" · "} {option.type.replace(/_/g, " ")}
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {option.isRequired ? (
+                              <AdminBadge variant="gold">{t("common.required")}</AdminBadge>
+                            ) : null}
+                            <AdminBadge variant={option.isActive ? "success" : "neutral"}>
+                              {option.isActive ? t("common.active") : t("common.inactive")}
+                            </AdminBadge>
+                          </div>
+                        </div>
+                        {option.helpText.de || option.helpText.ar ? (
+                          <p className="mt-3 text-sm text-muted">
+                            {option.helpText.de || option.helpText.ar}
+                          </p>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted">{uiCopy.noGroup}</p>
+                )}
+              </AdminCard>
+
+              <div className="grid gap-4 xl:grid-cols-2">
+                {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+                  <AdminInput
+                    key={`name-${language}`}
+                    id={`name.${language}`}
+                    name={`name.${language}`}
+                    label={`Name ${language.toUpperCase()}`}
+                    value={formState.name[language]}
+                    required={language === "de" || language === "ar"}
+                    requiredLabel={
+                      language === "de" || language === "ar" ? requiredLabel : undefined
+                    }
+                    errorText={fieldErrors[`name.${language}`]}
+                    onChange={(event) => {
+                      clearFieldError(`name.${language}`);
+                      setFormState((current) => ({
+                        ...current,
+                        name: updateLocalizedText(
+                          current.name,
+                          language,
+                          event.target.value
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+                {(["de", "ar", "en", "fr", "tr"] as const).map((language) => (
+                  <AdminTextarea
+                    key={`description-${language}`}
+                    id={`description.${language}`}
+                    name={`description.${language}`}
+                    label={`Description ${language.toUpperCase()}`}
+                    value={formState.description[language]}
+                    errorText={fieldErrors[`description.${language}`]}
+                    onChange={(event) => {
+                      clearFieldError(`description.${language}`);
+                      setFormState((current) => ({
+                        ...current,
+                        description: updateLocalizedText(
+                          current.description,
+                          language,
+                          event.target.value
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </div>
+
               <AdminTextarea
                 id="tags"
                 name="tags"
                 label="Tags"
-                helperText={editorCopy.tagsHelper}
+                helperText={uiCopy.tagsHelper}
                 errorText={fieldErrors.tags}
                 value={formState.tagsText}
                 onChange={(event) => {
@@ -1011,15 +961,15 @@ export function AdminProductsClient({
                   }));
                 }}
               />
-              <div className="space-y-4 xl:col-span-2">
+
               <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
                 <div className="space-y-4">
                   <AdminTextarea
                     id="gallery"
                     name="gallery"
-                    label={editorCopy.galleryLabel}
+                    label={uiCopy.galleryLabel}
                     errorText={fieldErrors.gallery}
-                    helperText={!fieldErrors.gallery ? editorCopy.galleryHelper : undefined}
+                    helperText={!fieldErrors.gallery ? uiCopy.galleryHelper : undefined}
                     value={formState.galleryText}
                     onChange={(event) => {
                       clearFieldError("gallery");
@@ -1030,7 +980,7 @@ export function AdminProductsClient({
                     }}
                   />
                   <label className="block space-y-2">
-                    <span className="admin-label">{editorCopy.uploadButton}</span>
+                    <span className="admin-label">{uiCopy.uploadButton}</span>
                     <div className="rounded-[1rem] border border-dashed border-white/12 bg-white/4 px-4 py-4">
                       <div className="flex flex-wrap items-center gap-3">
                         <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-4 py-2 text-sm font-medium text-gold-soft transition hover:border-gold/40 hover:text-foreground">
@@ -1039,7 +989,7 @@ export function AdminProductsClient({
                           ) : (
                             <Upload className="h-4 w-4" />
                           )}
-                          {editorCopy.uploadButton}
+                          {uiCopy.uploadButton}
                           <input
                             type="file"
                             accept={PRODUCT_IMAGE_ALLOWED_MIME_TYPES.join(",")}
@@ -1049,9 +999,7 @@ export function AdminProductsClient({
                           />
                         </label>
                         <p className="text-sm text-muted">
-                          {isUploadingImages
-                            ? editorCopy.uploadPending
-                            : editorCopy.uploadHelper}
+                          {isUploadingImages ? uiCopy.uploadPending : uiCopy.uploadHelper}
                         </p>
                       </div>
                       {uploadError ? (
@@ -1063,12 +1011,12 @@ export function AdminProductsClient({
 
                 <div className="space-y-3">
                   <div className="space-y-1">
-                    <p className="admin-label">{editorCopy.galleryPreview}</p>
-                    <p className="text-xs text-muted">{editorCopy.galleryHelper}</p>
+                    <p className="admin-label">{uiCopy.galleryPreview}</p>
+                    <p className="text-xs text-muted">{uiCopy.galleryHelper}</p>
                   </div>
                   {galleryUrls.length === 0 ? (
                     <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
-                      {editorCopy.galleryEmpty}
+                      {uiCopy.galleryEmpty}
                     </div>
                   ) : (
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -1087,9 +1035,7 @@ export function AdminProductsClient({
                             />
                           </div>
                           <div className="flex items-center justify-between gap-3 px-3 py-3">
-                            <p className="min-w-0 truncate text-xs text-muted">
-                              {imageUrl}
-                            </p>
+                            <p className="min-w-0 truncate text-xs text-muted">{imageUrl}</p>
                             <button
                               type="button"
                               className="inline-flex items-center gap-1 text-xs font-medium text-gold-soft transition hover:text-foreground"
@@ -1104,7 +1050,7 @@ export function AdminProductsClient({
                               }
                             >
                               <X className="h-3.5 w-3.5" />
-                              {editorCopy.galleryRemove}
+                              {uiCopy.galleryRemove}
                             </button>
                           </div>
                         </div>
@@ -1113,134 +1059,39 @@ export function AdminProductsClient({
                   )}
                 </div>
               </div>
-            </div>
-              <div className="space-y-4 xl:col-span-2">
-              <div className="space-y-1">
-                <p className="admin-label">{t("products.table.options")}</p>
-                <p className="text-xs text-muted">
-                  {copy.optionVisibilityHelp}
-                </p>
-              </div>
-              {optionGroups.length === 0 ? (
-                <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
-                  {copy.optionVisibilityEmpty}
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  {optionGroups.map((group) => (
-                    <div
-                      key={group.groupKey}
-                      className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
-                    >
-                      <div className="mb-4">
-                        <p className="font-semibold text-foreground">{group.groupName}</p>
-                        <p className="text-xs text-muted">
-                          {copy.optionsLabel(group.options.length)}
-                        </p>
-                      </div>
-                      <div className="space-y-3">
-                        {group.options.map((option) => {
-                          const currentSetting = getProductOptionSetting(
-                            formState.optionSettings,
-                            option.id
-                          );
-                          const isVisible = Boolean(currentSetting);
-                          const isRequired = currentSetting?.isRequired ?? false;
 
-                          return (
-                            <div
-                              key={option.id}
-                              className="grid gap-3 rounded-[0.9rem] border border-white/8 bg-black/10 px-4 py-3 md:grid-cols-[minmax(0,1fr)_auto_auto]"
-                            >
-                              <div>
-                                <p className="font-medium text-foreground">
-                                  {option.displayLabel}
-                                </p>
-                                <p className="text-xs text-muted">
-                                  {option.type.replace(/_/g, " ")}
-                                </p>
-                              </div>
-                              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                                <input
-                                  type="checkbox"
-                                  checked={isVisible}
-                                  onChange={(event) =>
-                                    setFormState((current) => ({
-                                      ...current,
-                                      optionSettings: setProductOptionVisibility(
-                                        current.optionSettings,
-                                        option.id,
-                                        event.target.checked,
-                                        currentSetting?.isRequired ??
-                                          option.isRequired
-                                      ),
-                                    }))
-                                  }
-                                  className="h-4 w-4 accent-[#c49a52]"
-                                />
-                                {t("common.visible")}
-                              </label>
-                              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                                <input
-                                  type="checkbox"
-                                  checked={isRequired}
-                                  disabled={!isVisible}
-                                  onChange={(event) =>
-                                    setFormState((current) => ({
-                                      ...current,
-                                      optionSettings: setProductOptionVisibility(
-                                        current.optionSettings,
-                                        option.id,
-                                        true,
-                                        event.target.checked
-                                      ),
-                                    }))
-                                  }
-                                  className="h-4 w-4 accent-[#c49a52]"
-                                />
-                                {copy.requiredLabel}
-                              </label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="flex flex-wrap gap-5">
+                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                  <input
+                    type="checkbox"
+                    checked={formState.isActive}
+                    onChange={(event) =>
+                      setFormState((current) => ({
+                        ...current,
+                        isActive: event.target.checked,
+                      }))
+                    }
+                    className="h-4 w-4 accent-[#c49a52]"
+                  />
+                  {t("common.active")}
+                </label>
+                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                  <input
+                    type="checkbox"
+                    checked={formState.isFeatured}
+                    onChange={(event) =>
+                      setFormState((current) => ({
+                        ...current,
+                        isFeatured: event.target.checked,
+                      }))
+                    }
+                    className="h-4 w-4 accent-[#c49a52]"
+                  />
+                  {t("filters.featured")}
+                </label>
+              </div>
             </div>
-              <div className="flex flex-wrap gap-5 xl:col-span-2">
-              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                <input
-                  type="checkbox"
-                  checked={formState.isActive}
-                  onChange={(event) =>
-                    setFormState((current) => ({
-                      ...current,
-                      isActive: event.target.checked,
-                    }))
-                  }
-                  className="h-4 w-4 accent-[#c49a52]"
-                />
-                {t("common.active")}
-              </label>
-              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                <input
-                  type="checkbox"
-                  checked={formState.isFeatured}
-                  onChange={(event) =>
-                    setFormState((current) => ({
-                      ...current,
-                      isFeatured: event.target.checked,
-                    }))
-                  }
-                  className="h-4 w-4 accent-[#c49a52]"
-                />
-                {t("filters.featured")}
-              </label>
-            </div>
-          </div>
-        </AdminCard>
+          </AdminCard>
         </div>
       ) : null}
 

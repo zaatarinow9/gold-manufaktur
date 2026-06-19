@@ -2,22 +2,18 @@ import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import {
-  getAdminCategories,
-  getAdminProducts,
-  getOptionGroups,
-} from "@/lib/db/adminCatalog";
+import { listCustomerInquiries } from "@/lib/db/inquiries";
 import { resolveLocale } from "@/lib/site";
 
-import { AdminProductsClient } from "./products-client";
+import { AdminInquiriesClient } from "./inquiries-client";
 
-type AdminProductsPageProps = {
+type AdminInquiriesPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function AdminProductsPage({
+export default async function AdminInquiriesPage({
   params,
-}: AdminProductsPageProps) {
+}: AdminInquiriesPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin" });
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
@@ -31,18 +27,7 @@ export default async function AdminProductsPage({
     );
   }
 
-  const [categories, groups, products] = await Promise.all([
-    getAdminCategories(locale),
-    getOptionGroups(locale),
-    getAdminProducts(locale),
-  ]);
+  const inquiries = await listCustomerInquiries().catch(() => []);
 
-  return (
-    <AdminProductsClient
-      locale={locale}
-      categories={categories}
-      groups={groups}
-      products={products}
-    />
-  );
+  return <AdminInquiriesClient inquiries={inquiries} locale={locale} />;
 }

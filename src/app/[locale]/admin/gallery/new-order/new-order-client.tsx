@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -17,15 +17,34 @@ import {
   focusFirstInvalidField,
   getRequiredFieldBadge,
 } from "@/lib/admin/clientForm";
-import type { AdminProductRecord } from "@/lib/db/adminCatalog";
+import type {
+  AdminOptionGroupRecord,
+  AdminProductRecord,
+  LocalizedText,
+} from "@/lib/db/adminCatalog";
 
 type NewOrderClientProps = {
+  groups: AdminOptionGroupRecord[];
   locale: AppLocale;
   preselectedProductId?: string;
   products: AdminProductRecord[];
 };
 
 type FieldErrors = Record<string, string>;
+type OptionFieldValue = boolean | number | string | string[];
+
+type OrderFormOptionField = {
+  groupKey: string;
+  groupName: string;
+  helpText: string;
+  id: string;
+  isRequired: boolean;
+  key: string;
+  label: string;
+  placeholder: string;
+  type: AdminProductRecord["optionSettings"][number]["type"];
+  values: Array<{ label: string; value: string }>;
+};
 
 function getInitialProductId(
   products: AdminProductRecord[],
@@ -38,27 +57,43 @@ function getInitialProductId(
   return products[0]?.id ?? "";
 }
 
+function resolveLocalizedText(fields: LocalizedText, locale: AppLocale) {
+  const preferred = fields[locale].trim();
+
+  if (preferred.length > 0) {
+    return preferred;
+  }
+
+  return fields.de.trim();
+}
+
 function getNewOrderUiCopy(locale: AppLocale) {
   if (locale === "ar") {
     return {
       customerSectionDescription: "بيانات العميل الأساسية لإنشاء الطلب.",
       customerSectionTitle: "العميل",
-      customerNote: "ملاحظات العميل",
+      customerNote: "ملاحظة العميل",
       designLanguage: "لغة التصميم",
       designLanguageArabic: "عربي",
       designLanguageEnglish: "إنجليزي",
       helper:
-        "اختر لغة التصميم المطلوبة، ويمكنك كتابة الاسم بأي أحرف أو رموز.",
-      internalNote: "ملاحظات داخلية",
-      jewelrySectionDescription: "تفاصيل الذهب المطلوبة للطلب.",
+        "اختر لغة التصميم المطلوبة، ويمكن كتابة الاسم بأي أحرف أو رموز.",
+      internalNote: "ملاحظة داخلية",
+      jewelrySectionDescription: "تفاصيل الذهب الأساسية لهذا الطلب.",
       jewelrySectionTitle: "مواصفات المجوهرات",
       karat: "العيار",
+      optionDetailsDescription:
+        "هذه الحقول تأتي مباشرة من مجموعة الخيارات المرتبطة بالمنتج المختار.",
+      optionDetailsTitle: "تفاصيل الطلب",
+      optionRequired: "يرجى تعبئة هذا الحقل.",
       requestedName: "الاسم المطلوب",
       summaryCustomization: "تخصيص الاسم",
       summaryLanguage: "لغة التصميم",
+      summaryNo: "لا",
       summaryWeight: "الوزن",
+      summaryYes: "نعم",
       totalAmount: "المبلغ الإجمالي",
-      trackingSectionDescription: "تفعيل إشعارات البريد عند الحاجة.",
+      trackingSectionDescription: "تفعيل إشعارات البريد الإلكتروني عند الحاجة.",
       trackingSectionTitle: "التتبع والإشعارات",
       weight: "الوزن بالغرام",
     };
@@ -78,10 +113,16 @@ function getNewOrderUiCopy(locale: AppLocale) {
       jewelrySectionDescription: "Die relevanten Schmuckdaten fuer diesen Auftrag.",
       jewelrySectionTitle: "Schmuckspezifikationen",
       karat: "Legierung",
+      optionDetailsDescription:
+        "Diese Felder stammen direkt aus der dem Produkt zugewiesenen Optionsgruppe.",
+      optionDetailsTitle: "Auftragsdetails",
+      optionRequired: "Bitte fuellen Sie dieses Pflichtfeld aus.",
       requestedName: "Gewuenschter Name",
       summaryCustomization: "Namenspersonalisierung",
       summaryLanguage: "Designsprache",
+      summaryNo: "Nein",
       summaryWeight: "Gewicht",
+      summaryYes: "Ja",
       totalAmount: "Gesamtbetrag",
       trackingSectionDescription: "Kunden-E-Mails bei Bedarf aktivieren.",
       trackingSectionTitle: "Tracking & Benachrichtigung",
@@ -102,10 +143,16 @@ function getNewOrderUiCopy(locale: AppLocale) {
     jewelrySectionDescription: "The relevant jewelry specifications for this order.",
     jewelrySectionTitle: "Jewelry specifications",
     karat: "Karat",
+    optionDetailsDescription:
+      "These fields come directly from the option group assigned to the selected product.",
+    optionDetailsTitle: "Order details",
+    optionRequired: "Please complete this required field.",
     requestedName: "Requested name",
     summaryCustomization: "Name personalization",
     summaryLanguage: "Design language",
+    summaryNo: "No",
     summaryWeight: "Weight",
+    summaryYes: "Yes",
     totalAmount: "Total amount",
     trackingSectionDescription: "Enable customer emails when needed.",
     trackingSectionTitle: "Tracking & notifications",
@@ -113,7 +160,88 @@ function getNewOrderUiCopy(locale: AppLocale) {
   };
 }
 
+function isMissingRequiredValue(
+  type: OrderFormOptionField["type"],
+  value: OptionFieldValue | undefined
+) {
+  if (type === "boolean") {
+    return value !== true;
+  }
+
+  if (type === "multi_select") {
+    return !Array.isArray(value) || value.length === 0;
+  }
+
+  if (type === "number") {
+    if (typeof value === "number") {
+      return !Number.isFinite(value);
+    }
+
+    return typeof value !== "string" || value.trim().length === 0;
+  }
+
+  return typeof value !== "string" || value.trim().length === 0;
+}
+
+function normalizeFieldValue(
+  type: OrderFormOptionField["type"],
+  value: OptionFieldValue | undefined
+) {
+  if (type === "boolean") {
+    return value === true;
+  }
+
+  if (type === "multi_select") {
+    return Array.isArray(value) ? value : [];
+  }
+
+  if (type === "number") {
+    const parsed =
+      typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  return typeof value === "string" ? value.trim() : value ?? null;
+}
+
+function formatOptionValue(
+  locale: AppLocale,
+  type: OrderFormOptionField["type"],
+  value: OptionFieldValue | undefined
+) {
+  if (type === "boolean") {
+    if (value !== true && value !== false) {
+      return "";
+    }
+
+    if (locale === "ar") {
+      return value ? "نعم" : "لا";
+    }
+
+    if (locale === "de") {
+      return value ? "Ja" : "Nein";
+    }
+
+    return value ? "Yes" : "No";
+  }
+
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return typeof value === "string" ? value.trim() : "";
+}
+
 export function NewOrderClient({
+  groups,
   locale,
   preselectedProductId,
   products,
@@ -141,18 +269,74 @@ export function NewOrderClient({
   const [totalAmount, setTotalAmount] = useState("");
   const [currency, setCurrency] = useState("EUR");
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
+  const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const requiredLabel = getRequiredFieldBadge(locale);
   const productRequiredMessage =
     locale === "de"
       ? "Bitte waehlen Sie zuerst ein Produkt aus."
       : locale === "ar"
-        ? "\u064a\u0631\u062c\u0649 \u0627\u062e\u062a\u064a\u0627\u0631 \u0645\u0646\u062a\u062c \u0623\u0648\u0644\u0627\u064b."
+        ? "يرجى اختيار منتج أولاً."
         : "Please choose a product first.";
 
   const selectedProduct =
     products.find((product) => product.id === productId) ?? products[0];
   const supportsNameCustomization =
     selectedProduct?.effectiveSupportsNameCustomization ?? false;
+  const selectedGroup =
+    selectedProduct?.optionGroupId
+      ? groups.find((group) => group.id === selectedProduct.optionGroupId) ?? null
+      : null;
+  const productOptions = useMemo<OrderFormOptionField[]>(() => {
+    if (!selectedProduct) {
+      return [];
+    }
+
+    if (selectedGroup) {
+      return selectedGroup.options.map((field) => ({
+        groupKey: field.groupKey,
+        groupName: selectedGroup.displayName,
+        helpText: resolveLocalizedText(field.helpText, locale),
+        id: field.id,
+        isRequired: field.isRequired,
+        key: field.key,
+        label: field.displayLabel,
+        placeholder: resolveLocalizedText(field.placeholder, locale),
+        type: field.type,
+        values: field.values,
+      }));
+    }
+
+    return selectedProduct.optionSettings.map((field) => ({
+      groupKey: field.groupKey,
+      groupName: field.groupName,
+      helpText: "",
+      id: field.id,
+      isRequired: field.isRequired,
+      key: field.key,
+      label: field.displayLabel,
+      placeholder: "",
+      type: field.type,
+      values: field.values,
+    }));
+  }, [locale, selectedGroup, selectedProduct]);
+  const optionSummaryRows = useMemo(
+    () =>
+      productOptions
+        .map((field) => {
+          const value = formatOptionValue(locale, field.type, optionValues[field.id]);
+
+          if (!value) {
+            return null;
+          }
+
+          return {
+            label: field.label,
+            value,
+          };
+        })
+        .filter((entry): entry is { label: string; value: string } => entry !== null),
+    [locale, optionValues, productOptions]
+  );
 
   const clearFieldError = (field: string) => {
     setFieldErrors((current) => {
@@ -169,6 +353,21 @@ export function NewOrderClient({
   const submitForm = () => {
     if (!selectedProduct) {
       const nextErrors = { productId: productRequiredMessage };
+      setFieldErrors(nextErrors);
+      focusFirstInvalidField(nextErrors);
+      return;
+    }
+
+    const nextErrors: FieldErrors = {};
+
+    productOptions.forEach((field) => {
+      if (field.isRequired && isMissingRequiredValue(field.type, optionValues[field.id])) {
+        nextErrors[field.id] = uiCopy.optionRequired;
+      }
+    });
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFeedback(null);
       setFieldErrors(nextErrors);
       focusFirstInvalidField(nextErrors);
       return;
@@ -216,15 +415,22 @@ export function NewOrderClient({
           nameCustomization: {
             enabled: supportsNameCustomization,
             language: supportsNameCustomization ? nameLanguage : null,
-            text: supportsNameCustomization && requestedName.trim().length > 0
-              ? requestedName
-              : null,
+            text:
+              supportsNameCustomization && requestedName.trim().length > 0
+                ? requestedName
+                : null,
           },
           weightGrams: parsedWeightGrams,
         },
         quantity,
         referenceImages: [],
-        selectedOptions: [],
+        selectedOptions: productOptions.map((field) => ({
+          groupKey: field.groupKey,
+          key: field.key,
+          label: field.label,
+          optionId: field.id,
+          value: normalizeFieldValue(field.type, optionValues[field.id]),
+        })),
         stones: {},
         totalAmount:
           parsedTotalAmount !== null && Number.isFinite(parsedTotalAmount)
@@ -276,8 +482,11 @@ export function NewOrderClient({
                 value={productId}
                 errorText={fieldErrors.productId}
                 onChange={(event) => {
-                  clearFieldError("productId");
-                  setProductId(event.target.value);
+                  const nextProductId = event.target.value;
+                  setOptionValues({});
+                  setFieldErrors({});
+                  setFeedback(null);
+                  setProductId(nextProductId);
                 }}
               >
                 {products.map((product) => (
@@ -474,7 +683,205 @@ export function NewOrderClient({
             </div>
           </AdminCard>
 
-          <AdminCard title={t("newOrder.sections.notes")} description={t("newOrder.reviewDescription")}>
+          {productOptions.length > 0 ? (
+            <AdminCard
+              title={selectedGroup?.displayName || selectedProduct?.optionGroupName || uiCopy.optionDetailsTitle}
+              description={uiCopy.optionDetailsDescription}
+            >
+              <div className="grid gap-4 xl:grid-cols-2">
+                {productOptions.map((field) => {
+                  const errorText = fieldErrors[field.id];
+                  const helperText = field.helpText || undefined;
+                  const currentValue = optionValues[field.id];
+
+                  if (field.type === "textarea") {
+                    return (
+                      <AdminTextarea
+                        key={field.id}
+                        id={field.id}
+                        name={field.id}
+                        label={field.label}
+                        required={field.isRequired}
+                        requiredLabel={requiredLabel}
+                        value={typeof currentValue === "string" ? currentValue : ""}
+                        placeholder={field.placeholder}
+                        helperText={!errorText ? helperText : undefined}
+                        errorText={errorText}
+                        wrapperClassName="xl:col-span-2"
+                        onChange={(event) => {
+                          clearFieldError(field.id);
+                          setOptionValues((current) => ({
+                            ...current,
+                            [field.id]: event.target.value,
+                          }));
+                        }}
+                      />
+                    );
+                  }
+
+                  if (field.type === "select") {
+                    return (
+                      <AdminSelect
+                        key={field.id}
+                        id={field.id}
+                        name={field.id}
+                        label={field.label}
+                        required={field.isRequired}
+                        requiredLabel={requiredLabel}
+                        value={typeof currentValue === "string" ? currentValue : ""}
+                        helperText={!errorText ? helperText : undefined}
+                        errorText={errorText}
+                        onChange={(event) => {
+                          clearFieldError(field.id);
+                          setOptionValues((current) => ({
+                            ...current,
+                            [field.id]: event.target.value,
+                          }));
+                        }}
+                      >
+                        <option value="">{field.placeholder || field.label}</option>
+                        {field.values.map((value) => (
+                          <option key={`${field.id}-${value.value}`} value={value.value}>
+                            {value.label}
+                          </option>
+                        ))}
+                      </AdminSelect>
+                    );
+                  }
+
+                  if (field.type === "multi_select") {
+                    const selectedValues = Array.isArray(currentValue) ? currentValue : [];
+
+                    return (
+                      <div key={field.id} className="space-y-2 xl:col-span-2">
+                        <div className="admin-label">
+                          {field.label}
+                          {field.isRequired ? <span className="admin-required">*</span> : null}
+                          {field.isRequired ? (
+                            <span className="ms-2 text-[0.72rem] font-normal text-muted">
+                              {requiredLabel}
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="rounded-[1rem] border border-white/10 bg-black/20 px-4 py-4">
+                          <div className="flex flex-wrap gap-3 text-sm text-foreground">
+                            {field.values.map((value) => (
+                              <label
+                                key={`${field.id}-${value.value}`}
+                                className="rtl-inline-row flex items-center gap-2"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selectedValues.includes(value.value)}
+                                  onChange={(event) => {
+                                    clearFieldError(field.id);
+                                    setOptionValues((current) => {
+                                      const existing = Array.isArray(current[field.id])
+                                        ? (current[field.id] as string[])
+                                        : [];
+
+                                      return {
+                                        ...current,
+                                        [field.id]: event.target.checked
+                                          ? [...existing, value.value]
+                                          : existing.filter((item) => item !== value.value),
+                                      };
+                                    });
+                                  }}
+                                  className="h-4 w-4 accent-[#c49a52]"
+                                />
+                                {value.label}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                        {errorText ? (
+                          <p className="text-xs text-rose-300">{errorText}</p>
+                        ) : helperText ? (
+                          <p className="admin-helper">{helperText}</p>
+                        ) : null}
+                      </div>
+                    );
+                  }
+
+                  if (field.type === "boolean") {
+                    return (
+                      <div key={field.id} className="space-y-2 xl:col-span-2">
+                        <div className="admin-label">
+                          {field.label}
+                          {field.isRequired ? <span className="admin-required">*</span> : null}
+                          {field.isRequired ? (
+                            <span className="ms-2 text-[0.72rem] font-normal text-muted">
+                              {requiredLabel}
+                            </span>
+                          ) : null}
+                        </div>
+                        <label className="rtl-inline-row flex items-center gap-2 rounded-[1rem] border border-white/10 bg-black/20 px-4 py-3.5 text-sm text-foreground">
+                          <input
+                            id={field.id}
+                            type="checkbox"
+                            checked={currentValue === true}
+                            onChange={(event) => {
+                              clearFieldError(field.id);
+                              setOptionValues((current) => ({
+                                ...current,
+                                [field.id]: event.target.checked,
+                              }));
+                            }}
+                            className="h-4 w-4 accent-[#c49a52]"
+                          />
+                          {field.helpText || field.label}
+                        </label>
+                        {errorText ? (
+                          <p className="text-xs text-rose-300">{errorText}</p>
+                        ) : null}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <AdminInput
+                      key={field.id}
+                      id={field.id}
+                      name={field.id}
+                      label={field.label}
+                      type={
+                        field.type === "number"
+                          ? "number"
+                          : field.type === "date"
+                            ? "date"
+                            : "text"
+                      }
+                      required={field.isRequired}
+                      requiredLabel={requiredLabel}
+                      value={
+                        typeof currentValue === "number"
+                          ? String(currentValue)
+                          : typeof currentValue === "string"
+                            ? currentValue
+                            : ""
+                      }
+                      placeholder={field.placeholder}
+                      helperText={!errorText ? helperText : undefined}
+                      errorText={errorText}
+                      onChange={(event) => {
+                        clearFieldError(field.id);
+                        setOptionValues((current) => ({
+                          ...current,
+                          [field.id]: event.target.value,
+                        }));
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </AdminCard>
+          ) : null}
+
+          <AdminCard
+            title={t("newOrder.sections.notes")}
+            description={t("newOrder.reviewDescription")}
+          >
             <div className="grid gap-4 xl:grid-cols-2">
               <AdminTextarea
                 id="notes.customerNotes"
@@ -503,7 +910,10 @@ export function NewOrderClient({
         </div>
 
         <div className="space-y-6">
-          <AdminCard title={t("newOrder.summaryTitle")} description={t("newOrder.summaryDescription")}>
+          <AdminCard
+            title={t("newOrder.summaryTitle")}
+            description={t("newOrder.summaryDescription")}
+          >
             {selectedProduct ? (
               <div className="space-y-4">
                 <div className="relative aspect-[4/4.8] overflow-hidden rounded-[1rem] border border-white/10">
@@ -534,7 +944,9 @@ export function NewOrderClient({
                   <div className="flex items-start justify-between gap-4">
                     <span className="text-muted">{uiCopy.summaryWeight}</span>
                     <span className="text-foreground">
-                      {weightGrams.trim().length > 0 ? `${weightGrams} g` : t("common.notProvided")}
+                      {weightGrams.trim().length > 0
+                        ? `${weightGrams} g`
+                        : t("common.notProvided")}
                     </span>
                   </div>
                   {supportsNameCustomization ? (
@@ -542,7 +954,9 @@ export function NewOrderClient({
                       <div className="flex items-start justify-between gap-4">
                         <span className="text-muted">{uiCopy.summaryCustomization}</span>
                         <span className="text-foreground">
-                          {requestedName.trim().length > 0 ? requestedName : t("common.notProvided")}
+                          {requestedName.trim().length > 0
+                            ? requestedName
+                            : t("common.notProvided")}
                         </span>
                       </div>
                       <div className="flex items-start justify-between gap-4">
@@ -555,6 +969,15 @@ export function NewOrderClient({
                       </div>
                     </>
                   ) : null}
+                  {optionSummaryRows.map((row) => (
+                    <div
+                      key={row.label}
+                      className="flex items-start justify-between gap-4"
+                    >
+                      <span className="text-muted">{row.label}</span>
+                      <span className="text-end text-foreground">{row.value}</span>
+                    </div>
+                  ))}
                   <div className="flex items-start justify-between gap-4">
                     <span className="text-muted">{uiCopy.totalAmount}</span>
                     <span className="text-foreground">
