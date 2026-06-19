@@ -260,6 +260,8 @@ export async function saveProductAction(
       ok: true,
     };
   } catch (error) {
+    console.error("[saveProductAction] Product save failed", error);
+
     if (error instanceof ZodError) {
       const fieldErrors = getProductFieldErrors(locale, error);
       return {

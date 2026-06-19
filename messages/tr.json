@@ -48,7 +48,7 @@
       "contact": "İletişim",
       "impressum": "Yasal Bilgiler",
       "privacy": "Gizlilik",
-      "tracking": "Siparisi Takip Et"
+      "tracking": "Sipariş Takibi"
     }
   },
   "Footer": {
@@ -56,7 +56,7 @@
     "navigationTitle": "Sayfalar",
     "contactTitle": "İletişim",
     "socialTitle": "Bizi takip edin",
-    "emailPlaceholder": "info@goldhelwah.de",
+    "emailPlaceholder": "service@goldhelwah.de",
     "legalNote": "Saarbrücken'de bizi ziyaret edin ya da kişisel danışmanlık için bize ulaşın.",
     "rights": "GoldHelwah GmbH. Tüm haklari saklidir.",
     "socials": {
@@ -106,14 +106,14 @@
       "emptyText": "Urunleri panelden etkinlestirin veya size ozel secim icin bizimle iletisime gecin."
     },
     "showcase": {
-      "eyebrow": "Yeni eklenenler",
-      "title": "Koleksiyondaki yeni parcalar.",
-      "description": "Yonetim panelindeki en yeni aktif urunler burada statik kartlar olmadan gosterilir.",
-      "sectionCta": "Koleksiyonu inceleyin",
-      "leadCta": "Bu kategoriyi kesfedin",
-      "cardCta": "Kategoriyi gor",
-      "emptyTitle": "Su anda gorunen urun bulunmuyor",
-      "emptyText": "Yeni urunler kaydedilip etkinlestirildiginde bu alan otomatik olarak guncellenir."
+      "eyebrow": "Vitrinden seçtiklerimiz",
+      "title": "Açık detaylarla öne çıkan seçili parçalar",
+      "description": "Koleksiyonumuzdaki seçili altın takıları gerçek görseller ve karar vermenizi kolaylaştıran net bilgilerle inceleyin.",
+      "sectionCta": "Koleksiyonu incele",
+      "cardCta": "Detayları gör",
+      "leadCta": "Danışmanlık iste",
+      "emptyTitle": "Şu anda görünür ürün yok",
+      "emptyText": "Yeni ürünler kaydedilip aktif edildiğinde bu bölüm otomatik olarak güncellenecek."
     },
     "aboutGold": {
       "eyebrow": "Altın hakkında",
@@ -268,94 +268,106 @@
   },
   "Impressum": {
     "eyebrow": "Yasal",
-    "title": "Yasal Bilgiler",
-    "description": "GoldHelwah GmbH icin yasal bilgiler ve iletisim detaylari tek sayfada sunulur.",
-    "complianceNoticeTitle": "Önemli not",
-    "complianceNoticeDescription": "Asagidaki alanlar, uydurulmamasi gereken bilgileri bilerek isaretler. Yayina almadan önce sirket türü, temsil ve vergi bilgileri dogrulanarak eklenmelidir.",
+    "title": "Yasal bilgiler",
+    "description": "Gold Helwah için resmi sağlayıcı bilgileri ve yasal açıklamalar.",
+    "complianceNoticeTitle": "§ 5 DDG uyarınca bilgiler",
+    "complianceNoticeDescription": "Aşağıdaki bilgiler Gold Helwah web sitesi için geçerlidir.",
     "sections": [
       {
-        "title": "Sağlayıcı bilgileri",
+        "title": "Sağlayıcı",
         "lines": [
-          "GoldHelwah GmbH",
+          "Gold Helwah",
+          "Inh. Khaled Helwah",
           "Breite Straße 9, 66115 Saarbrücken",
-          "[Sirket türünü ekleyin]",
-          "[Yetkili temsilciyi ekleyin]"
+          "Deutschland"
         ]
       },
       {
         "title": "İletişim",
         "lines": [
-          "+49 173 5371225",
-          "[E-posta adresini ekleyin]",
-          "Showroom: Breite Straße 9, 66115 Saarbrücken"
+          "Sorularınız için memnuniyetle yardımcı oluruz:",
+          "Telefon: +49 173 537 1225",
+          "E-posta: service@goldhelwah.de"
         ]
       },
       {
-        "title": "Kayıt ve vergi",
+        "title": "KDV numarası",
         "lines": [
-          "[Ticaret sicili ve yetkili mahkemeyi ekleyin]",
-          "[KDV numarası veya vergi numarasını ekleyin]"
+          "§ 27 a Alman Katma Değer Vergisi Yasası uyarınca KDV kimlik numarası:",
+          "DE313207537"
         ]
       },
       {
-        "title": "İçerikten sorumlu kisi",
-        "lines": "[Geçerli medya hukukuna göre sorumlu kisiyi ekleyin]"
+        "title": "Temsil eden",
+        "lines": "Khaled Helwah"
       },
       {
-        "title": "Site notu",
+        "title": "Bağlantılar için sorumluluk",
         "lines": [
-          "Web sitesi, GoldHelwah GmbH koleksiyonlarini, gercek urun gorsellerini ve iletisim yollarini sunar.",
-          "Kisisel danismanlik ve urun talepleri deneyimin merkezinde kalir."
+          "Web sitemiz, içerikleri üzerinde hiçbir etkimizin olmadığı üçüncü taraf harici web sitelerine bağlantılar içermektedir. Bu nedenle bu harici içerikler için herhangi bir sorumluluk üstlenemeyiz.",
+          "Bağlantı verilen sayfaların içeriğinden her zaman ilgili sağlayıcı veya işletmeci sorumludur.",
+          "Bağlantı verilen sayfalar, bağlantı verildiği sırada olası yasal ihlaller açısından kontrol edilmiştir. O tarihte hukuka aykırı bir içerik tespit edilmemiştir.",
+          "Somut bir hukuk ihlali belirtisi olmadan bağlantı verilen sayfaların sürekli olarak izlenmesi makul değildir. Böyle bir ihlalin farkına varırsak söz konusu bağlantıları derhal kaldırırız."
+        ]
+      },
+      {
+        "title": "İçerikler için sorumluluk",
+        "lines": [
+          "Sayfalarımızın içerikleri büyük bir özenle hazırlanmıştır. Bununla birlikte içeriğin doğruluğu, eksiksizliği ve güncelliği konusunda garanti veremeyiz.",
+          "Bir hizmet sağlayıcı olarak § 5 DDG ve genel yasalar uyarınca bu sayfalardaki kendi içeriklerimizden sorumluyuz.",
+          "Ancak § 5 DDG uyarınca iletilen veya saklanan üçüncü taraf bilgilerini izlemek ya da yasa dışı faaliyete işaret eden koşulları araştırmakla yükümlü değiliz.",
+          "Genel yasalar uyarınca bilgilerin kaldırılması veya kullanımının engellenmesine ilişkin yükümlülükler bundan etkilenmez.",
+          "Bu kapsamda sorumluluk ancak somut bir ihlalin öğrenildiği andan itibaren mümkündür. Böyle bir ihlalden haberdar olduğumuzda ilgili içeriği derhal kaldırırız."
         ]
       }
     ],
-    "disclaimerTitle": "Bakim ve göncelleme",
-    "disclaimerText": "Daha fazla hizmet, form veya gerçek sirket bilgisi eklendiginde bu sayfa yeniden gözden geçirilmeli ve güncellenmelidir."
+    "disclaimerTitle": "Telif hakkı",
+    "disclaimerText": "Bu sayfalarda site işletmecileri tarafından oluşturulan içerikler ve eserler Alman telif hakkı yasasına tabidir. Telif hakkı sınırları dışındaki her türlü çoğaltma, işleme, dağıtım ve kullanım ilgili yazarın veya oluşturucunun yazılı onayını gerektirir. Bu sitenin indirilmesi ve kopyalanması yalnızca özel, ticari olmayan kullanım için izinlidir. Bu sayfadaki içerik işletmeci tarafından oluşturulmamışsa üçüncü taraf telif haklarına saygı gösterilir ve ilgili içerikler buna göre işaretlenir. Buna rağmen bir telif hakkı ihlali fark ederseniz lütfen bizi bilgilendirin. Böyle bir ihlalden haberdar olduğumuzda ilgili içeriği derhal kaldırırız."
   },
   "Privacy": {
     "eyebrow": "Gizlilik",
     "title": "Gizlilik bilgileri",
-    "description": "Bu gizlilik bilgileri showroomun mevcut kapsamini açiklar.",
-    "intro": "Hesaplar, siparisler veya ödeme akislari entegre edilmedigi için veri isleme bilinçli olarak sinirli tutulmustur. Yayina geçmeden önce tüm nihai hizmetler yeniden gözden geçirilmelidir.",
+    "description": "Bu sayfa, web sitesini ziyaret ettiğinizde veya bizimle iletişime geçtiğinizde kişisel verilerinizin nasıl işlendiğini açıklar.",
+    "intro": "Kişisel verileri yalnızca web sitesini sunmak, dil tercihinizi saklamak ve taleplerinize yanıt vermek için gerekli olduğu ölçüde işliyoruz.",
     "sections": [
       {
         "title": "1. Sorumlu taraf",
         "paragraphs": [
-          "Sorumlu taraf GoldHelwah GmbH, Breite Straße 9, 66115 Saarbrücken, telefon +49 173 5371225'tir. Nihai e-posta adresi üretime geçmeden önce eklenmelidir.",
-          "Son bilgiler hazır olduğunda yasal bilgiler ve gizlilik sayfası birbiriyle uyumlu hale getirilmelidir."
+          "Bu web sitesindeki veri işleme faaliyetlerinden sorumlu taraf Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, telefon +49 173 537 1225, e-posta service@goldhelwah.de adresidir.",
+          "Gizlilik hakkında sorularınız varsa veya haklarınızı kullanmak istiyorsanız bizimle her zaman iletişime geçebilirsiniz."
         ]
       },
       {
         "title": "2. Teknik bağlantı verileri",
         "paragraphs": [
-          "Site ziyaret edildiginde IP adresi, zaman, tarayici türü ve istenen içerik gibi teknik olarak gerekli veriler islenebilir.",
-          "Bu isleme, sitenin güvenli ve kararli sekilde sunulmasi için yapilir."
+          "Web sitesini ziyaret ettiğinizde IP adresi, tarih ve saat, tarayıcı bilgileri ve istenen sayfalar gibi teknik olarak gerekli veriler işlenebilir.",
+          "Bu işlem, web sitesini güvenli ve güvenilir şekilde sunmak için gereklidir."
         ]
       },
       {
-        "title": "3. İletişim talepleri",
+        "title": "3. İletişim ve talepler",
         "paragraphs": [
-          "Iletisim formunu kullanirsaniz veya telefonla ulasirsaniz, bilgileriniz yalnizca talebinizi islemek için kullanilir.",
-          "Hangi verilerin gerekli oldugu talebin konusuna ve ürün ilginize baglidir."
+          "Bizimle iletişim formu, e-posta, telefon veya WhatsApp üzerinden iletişime geçerseniz sağladığınız bilgileri yalnızca talebinizi yanıtlamak için işleriz.",
+          "İşlenen veriler, talebinizin konusuna ve bizimle paylaştığınız bilgilere bağlıdır."
         ]
       },
       {
-        "title": "4. Dil ve çerezler",
+        "title": "4. Dil tercihi ve zorunlu çerezler",
         "paragraphs": [
-          "Site birden fazla dili destekler. Dil tercihi teknik nedenlerle saklanabilir.",
-          "Bu yalnizca sonraki ziyaretlerde sitenin seçilen dilde gösterilmesi içindir."
+          "Web sitesi birden fazla dili destekler ve seçtiğiniz dili teknik nedenlerle saklayabilir.",
+          "Bu bilgi yalnızca sonraki ziyaretlerde siteyi tercih ettiğiniz dilde göstermek için kullanılır."
         ]
       },
       {
-        "title": "5. Talepler ve iletisim",
+        "title": "5. Haklarınız",
         "paragraphs": [
-          "Web sitesi uzerinden GoldHelwah GmbH'ye urun talepleri ve danismanlik istekleri iletilebilir.",
-          "Iletisim kanallari veya bagli hizmetler degisirse bu sayfa da buna gore guncellenmelidir."
+          "Hakkınızda saklanan kişisel verilerle ilgili bilgi talep etme ve yasal şartlar karşılandığında bunların düzeltilmesini, silinmesini veya işlemenin kısıtlanmasını isteme hakkına sahipsiniz.",
+          "Ayrıca işleme faaliyetlerine itiraz edebilir veya daha önce verdiğiniz bir onayı geleceğe etkili olacak şekilde geri çekebilirsiniz."
         ]
       }
     ],
-    "noticeTitle": "Güncelleme yükümlülüğü",
-    "noticeText": "Daha sonra eklenecek her araç, hizmet veya yeni iletisim süreci gizlilik metninin yeniden güncellenmesini gerektirmelidir."
+    "noticeTitle": "Güncel sürüm",
+    "noticeText": "Bu gizlilik bilgilerini düzenli olarak gözden geçirir ve web sitemiz, iletişim kanallarımız veya yasal yükümlülüklerimiz değiştiğinde güncelleriz."
   },
   "Admin": {
     "meta": {
@@ -704,7 +716,9 @@
         "personalization": "Kisisellestirme",
         "stones": "Taslar",
         "workshop": "Atolye",
-        "review": "Kontrol ve gonder"
+        "review": "Kontrol ve gonder",
+        "customerWorkshop": "Müşteri ve atölye",
+        "productOptions": "Ürün ve seçenekler"
       },
       "values": {
         "yellowGold": "Sari altin",
@@ -718,7 +732,8 @@
         "script": "Yazili"
       },
       "trackingDescription": "Musteri e-postasi, telefonu ve takip detaylarini hazirlayin.",
-      "successWithNotifications": "Siparis olusturuldu. Bildirimler artik gonderilebilir."
+      "successWithNotifications": "Siparis olusturuldu. Bildirimler artik gonderilebilir.",
+      "personalizationDisabled": "İsim kişiselleştirme kapalı"
     },
     "options": {
       "eyebrow": "Secenek motoru",
@@ -966,9 +981,17 @@
       "cancelled": "Iptal edildi"
     },
     "publicTrackingStage": {
-      "order_in_workshop": "Siparis atolyede",
-      "shipping": "Siparis kargoya veriliyor",
-      "ready_for_pickup": "Teslime hazir"
+      "order_in_workshop": "Sipariş atölyede",
+      "in_production": "Üretimde",
+      "quality_check": "Kalite kontrolünde",
+      "ready_for_pickup": "Teslime hazır",
+      "shipping": "Kargoya verildi",
+      "delivered": "Teslim edildi",
+      "completed": "Tamamlandı",
+      "cancelled": "İptal edildi",
+      "on_the_way": "Yolda",
+      "delivered_to_store": "Mağazada teslim alıma hazır",
+      "picked_up": "Teslim alındı"
     },
     "emailLogStatus": {
       "pending": "Bekliyor",
@@ -1002,7 +1025,7 @@
     "instructionsTitle": "Siparis nasil takip edilir",
     "instructionsDescription": "Takip numaranizi dogrudan link yerine site menusu uzerinden kullanin.",
     "instructionsStepOne": "Web sitesinin ana sayfasini acin.",
-    "instructionsStepTwo": "Menuden \"Siparisi Takip Et\" secenegine tiklayin.",
+    "instructionsStepTwo": "Menüden \"Sipariş Takibi\" seçeneğine tıklayın.",
     "instructionsStepThree": "Takip numaranizi girin.",
     "receivedMessage": "Siparisiniz alindi ve durumu yakinda guncellenecek.",
     "receivedDescription": "Siparisiniz kaydedildi ve ilk genel asamayi bekliyor.",
@@ -1010,7 +1033,7 @@
     "completedStageDescription": "Bu asama zaten tamamlandi.",
     "upcomingStageDescription": "Siparisiniz bu noktaya geldiginde bu asama gorunecek.",
     "lookup": {
-      "eyebrow": "Siparisi Takip Et",
+      "eyebrow": "Sipariş Takibi",
       "title": "Siparisinizi bulun",
       "description": "GoldHelwah siparisinizin son genel guncellemelerini gormek icin takip numaranizi girin.",
       "helperTitle": "Numara yaninizda mi?",
@@ -1019,7 +1042,7 @@
       "formDescription": "Ardindan bu numaranin canli siparis sayfasini acacagiz.",
       "label": "Takip numarasi",
       "placeholder": "GH-20260618-0001",
-      "submit": "Siparisi Takip Et",
+      "submit": "Sipariş Takibi",
       "emptyError": "Lutfen takip numaranizi girin."
     },
     "support": {

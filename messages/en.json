@@ -48,7 +48,7 @@
       "contact": "Contact",
       "impressum": "Legal Notice",
       "privacy": "Privacy",
-      "tracking": "Track Order"
+      "tracking": "Track order"
     }
   },
   "Footer": {
@@ -56,7 +56,7 @@
     "navigationTitle": "Pages",
     "contactTitle": "Contact",
     "socialTitle": "Follow us",
-    "emailPlaceholder": "info@goldhelwah.de",
+    "emailPlaceholder": "service@goldhelwah.de",
     "legalNote": "Visit us in Saarbrücken or contact us for personal consultation.",
     "rights": "GoldHelwah GmbH. All rights reserved.",
     "socials": {
@@ -106,12 +106,12 @@
       "emptyText": "Activate products in the dashboard or contact us for a personal selection."
     },
     "showcase": {
-      "eyebrow": "Fresh arrivals",
-      "title": "Recently added pieces from the collection.",
-      "description": "The latest active products from the admin catalog appear here without static placeholders.",
+      "eyebrow": "Selected from the showroom",
+      "title": "Selected pieces with clear details",
+      "description": "Browse highlighted gold jewelry from our collection with real images and details that help you choose with confidence.",
       "sectionCta": "Browse the collection",
-      "leadCta": "Explore this category",
-      "cardCta": "View category",
+      "cardCta": "View details",
+      "leadCta": "Request consultation",
       "emptyTitle": "No products are currently visible",
       "emptyText": "When new products are saved and activated, this section will update automatically."
     },
@@ -268,94 +268,106 @@
   },
   "Impressum": {
     "eyebrow": "Legal",
-    "title": "Legal Notice",
-    "description": "Legal details and contact information for GoldHelwah GmbH at a glance.",
-    "complianceNoticeTitle": "Important note",
-    "complianceNoticeDescription": "The following fields intentionally mark data that should not be invented. Before publishing, legal form, representation, and tax details must be completed with verified information.",
+    "title": "Legal notice",
+    "description": "Official provider information and legal notices for Gold Helwah.",
+    "complianceNoticeTitle": "Information according to § 5 DDG",
+    "complianceNoticeDescription": "The following information applies to the Gold Helwah website.",
     "sections": [
       {
-        "title": "Provider identification",
+        "title": "Provider",
         "lines": [
-          "GoldHelwah GmbH",
+          "Gold Helwah",
+          "Inh. Khaled Helwah",
           "Breite Straße 9, 66115 Saarbrücken",
-          "[Add legal form]",
-          "[Add authorized representative]"
+          "Deutschland"
         ]
       },
       {
         "title": "Contact",
         "lines": [
-          "+49 173 5371225",
-          "[Add email address]",
-          "Showroom: Breite Straße 9, 66115 Saarbrücken"
+          "We are happy to assist you with any questions:",
+          "Phone: +49 173 537 1225",
+          "Email: service@goldhelwah.de"
         ]
       },
       {
-        "title": "Register and taxes",
+        "title": "VAT ID",
         "lines": [
-          "[Add commercial register and court]",
-          "[Add VAT ID or tax number]"
+          "VAT identification number according to § 27 a German Value Added Tax Act:",
+          "DE313207537"
         ]
       },
       {
-        "title": "Responsible for content",
-        "lines": "[Add responsible person according to applicable media law]"
+        "title": "Represented by",
+        "lines": "Khaled Helwah"
       },
       {
-        "title": "Website note",
+        "title": "Liability for links",
         "lines": [
-          "The website presents collections, real product imagery, and contact options from GoldHelwah GmbH.",
-          "Personal consultation and product inquiries remain at the center of the experience."
+          "Our website contains links to external third-party websites whose content we do not control. Therefore, we cannot assume any liability for this external content.",
+          "The respective provider or operator is always responsible for the content of linked pages.",
+          "The linked pages were checked for possible legal violations at the time of linking. No unlawful content was identifiable at that time.",
+          "Permanent monitoring of linked pages is not reasonable without concrete evidence of a legal violation. If we become aware of any infringements, we will remove such links immediately."
+        ]
+      },
+      {
+        "title": "Liability for content",
+        "lines": [
+          "The content of our pages has been created with great care. However, we cannot guarantee the correctness, completeness, or timeliness of the content.",
+          "As a service provider, we are responsible for our own content on these pages in accordance with § 5 DDG and general laws.",
+          "According to § 5 DDG, we are not obliged to monitor transmitted or stored third-party information or investigate circumstances that indicate illegal activity.",
+          "Obligations to remove or block the use of information under general law remain unaffected.",
+          "Liability in this respect is only possible from the time of knowledge of a concrete infringement. If we become aware of such violations, we will remove the content immediately."
         ]
       }
     ],
-    "disclaimerTitle": "Maintenance and updates",
-    "disclaimerText": "Please review and update these details regularly so they reflect the current legal status of the company."
+    "disclaimerTitle": "Copyright",
+    "disclaimerText": "The content and works created by the site operators on these pages are subject to German copyright law. Reproduction, editing, distribution, and any type of use outside the limits of copyright require the written consent of the respective author or creator. Downloads and copies of this site are permitted only for private, non-commercial use. Where content on this site was not created by the operator, third-party copyrights are respected and such content is marked accordingly. Should you nevertheless become aware of a copyright infringement, please inform us. If we become aware of any legal violations, we will remove such content immediately."
   },
   "Privacy": {
     "eyebrow": "Privacy",
     "title": "Privacy information",
-    "description": "This page explains how data is processed when visiting the website or sending a contact request.",
-    "intro": "We only process data to the extent required to display the website, remember the language preference, and handle inquiries.",
+    "description": "This page explains how personal data is processed when you visit the website or contact us.",
+    "intro": "We process personal data only to the extent required to provide the website, store your language preference, and respond to inquiries.",
     "sections": [
       {
         "title": "1. Responsible party",
         "paragraphs": [
-          "The responsible party is GoldHelwah GmbH, Breite Straße 9, 66115 Saarbrücken, phone +49 173 5371225, email info@goldhelwah.de.",
-          "Once the final details are available, the legal notice and privacy page should be aligned."
+          "The responsible party for data processing on this website is Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, phone +49 173 537 1225, email service@goldhelwah.de.",
+          "If you have questions about privacy or wish to exercise your rights, you can contact us at any time."
         ]
       },
       {
         "title": "2. Technical connection data",
         "paragraphs": [
-          "When visiting the website, technically necessary data such as IP address, time, browser type, and requested content may be processed.",
-          "This processing serves the secure and stable delivery of the website."
+          "When you visit the website, technically necessary data such as IP address, date and time, browser information, and requested pages may be processed.",
+          "This processing is necessary to provide the website securely and reliably."
         ]
       },
       {
-        "title": "3. Contact inquiries",
+        "title": "3. Contact and inquiry requests",
         "paragraphs": [
-          "If you use the contact form or reach out by phone, your data will only be used to handle your inquiry.",
-          "The exact data required depends on the occasion and product interest."
+          "If you contact us by contact form, email, phone, or WhatsApp, we process the information you provide only to handle your request.",
+          "The data processed depends on the subject of your request and the information you share with us."
         ]
       },
       {
-        "title": "4. Language and cookies",
+        "title": "4. Language preference and essential cookies",
         "paragraphs": [
-          "The website supports multiple languages. A language preference may be stored for technical reasons.",
-          "This is used only to show the website in the selected language on later visits."
+          "The website supports multiple languages and may store your selected language for technical reasons.",
+          "This information is used only to display the website in your preferred language on later visits."
         ]
       },
       {
-        "title": "5. Inquiries and communication",
+        "title": "5. Your rights",
         "paragraphs": [
-          "The website can be used to send product inquiries and consultation requests to GoldHelwah GmbH.",
-          "If communication channels or connected services change, this page should be updated accordingly."
+          "You have the right to request information about your stored personal data and, where the legal requirements are met, to request correction, deletion, or restriction of processing.",
+          "You may also object to processing or withdraw previously granted consent with effect for the future."
         ]
       }
     ],
-    "noticeTitle": "Update requirement",
-    "noticeText": "Please update this information whenever contact channels, services, or processing steps change."
+    "noticeTitle": "Current version",
+    "noticeText": "We review this privacy information regularly and update it whenever our website, communication channels, or legal obligations change."
   },
   "Admin": {
     "meta": {
@@ -704,7 +716,9 @@
         "personalization": "Personalization",
         "stones": "Stones",
         "workshop": "Workshop",
-        "review": "Review & send"
+        "review": "Review & send",
+        "customerWorkshop": "Customer & workshop",
+        "productOptions": "Product & options"
       },
       "values": {
         "yellowGold": "Yellow gold",
@@ -718,7 +732,8 @@
         "script": "Script"
       },
       "trackingDescription": "Prepare customer email, phone, and tracking details.",
-      "successWithNotifications": "Order created. Notifications are ready to be sent."
+      "successWithNotifications": "Order created. Notifications are ready to be sent.",
+      "personalizationDisabled": "Name personalization disabled"
     },
     "options": {
       "eyebrow": "Option engine",
@@ -967,8 +982,16 @@
     },
     "publicTrackingStage": {
       "order_in_workshop": "Order in workshop",
-      "shipping": "Order is being shipped",
-      "ready_for_pickup": "Ready for pickup"
+      "in_production": "In production",
+      "quality_check": "Quality check",
+      "ready_for_pickup": "Ready for pickup",
+      "shipping": "Shipping",
+      "delivered": "Delivered",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "on_the_way": "On the way",
+      "delivered_to_store": "Delivered to store",
+      "picked_up": "Picked up"
     },
     "emailLogStatus": {
       "pending": "Pending",
@@ -1002,7 +1025,7 @@
     "instructionsTitle": "How to track your order",
     "instructionsDescription": "Use your tracking number from the website menu instead of a direct tracking link.",
     "instructionsStepOne": "Open the website homepage.",
-    "instructionsStepTwo": "Click \"Track Order\" in the menu.",
+    "instructionsStepTwo": "Click \"Track order\" in the menu.",
     "instructionsStepThree": "Enter your tracking number.",
     "receivedMessage": "We received your order and will update the public status soon.",
     "receivedDescription": "Your order has been recorded and is waiting for its first public milestone.",
@@ -1010,7 +1033,7 @@
     "completedStageDescription": "This stage has already been completed.",
     "upcomingStageDescription": "This stage will appear once your order reaches it.",
     "lookup": {
-      "eyebrow": "Track Order",
+      "eyebrow": "Track order",
       "title": "Look up your order",
       "description": "Enter your tracking number to see the latest public updates for your GoldHelwah order.",
       "helperTitle": "Need your number?",
@@ -1019,7 +1042,7 @@
       "formDescription": "We will open the live order page for this tracking number.",
       "label": "Tracking number",
       "placeholder": "GH-20260618-0001",
-      "submit": "Track Order",
+      "submit": "Track order",
       "emptyError": "Please enter your tracking number."
     },
     "support": {

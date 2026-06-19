@@ -48,7 +48,7 @@
       "contact": "Contact",
       "impressum": "Mentions légales",
       "privacy": "Confidentialité",
-      "tracking": "Suivre la commande"
+      "tracking": "Suivi de commande"
     }
   },
   "Footer": {
@@ -56,7 +56,7 @@
     "navigationTitle": "Pages",
     "contactTitle": "Contact",
     "socialTitle": "Suivez-nous",
-    "emailPlaceholder": "info@goldhelwah.de",
+    "emailPlaceholder": "service@goldhelwah.de",
     "legalNote": "Rendez-nous visite à Sarrebruck ou contactez-nous pour un conseil personnalisé.",
     "rights": "GoldHelwah GmbH. Tous droits réservés.",
     "socials": {
@@ -106,14 +106,14 @@
       "emptyText": "Activez des produits dans le tableau de bord ou contactez-nous pour une sélection personnalisée."
     },
     "showcase": {
-      "eyebrow": "Nouvelles pièces",
-      "title": "Les derniers ajouts de la collection.",
-      "description": "Les produits actifs les plus récents du catalogue admin apparaissent ici sans cartes statiques.",
-      "sectionCta": "Parcourir la collection",
-      "leadCta": "Explorer cette catégorie",
-      "cardCta": "Voir la catégorie",
-      "emptyTitle": "Aucun produit n'est visible pour le moment",
-      "emptyText": "Quand de nouveaux produits sont enregistrés et activés, cette section se met à jour automatiquement."
+      "eyebrow": "Sélection du showroom",
+      "title": "Des pièces choisies avec des détails clairs",
+      "description": "Découvrez une sélection de bijoux en or présentés avec de vraies images et des détails utiles pour choisir en toute confiance.",
+      "sectionCta": "Voir la collection",
+      "cardCta": "Voir les détails",
+      "leadCta": "Demander un conseil",
+      "emptyTitle": "Aucune pièce n'est visible pour le moment",
+      "emptyText": "Dès que de nouveaux produits seront enregistrés et activés, cette section se mettra à jour automatiquement."
     },
     "aboutGold": {
       "eyebrow": "À propos de l'or",
@@ -269,93 +269,105 @@
   "Impressum": {
     "eyebrow": "Juridique",
     "title": "Mentions légales",
-    "description": "Mentions légales et coordonnées de GoldHelwah GmbH en un seul endroit.",
-    "complianceNoticeTitle": "Note importante",
-    "complianceNoticeDescription": "Les champs suivants désignent volontairement des informations qui ne doivent pas être inventées. Avant publication, la forme juridique, la représentation et les données fiscales doivent être complétées.",
+    "description": "Informations officielles du fournisseur et mentions légales de Gold Helwah.",
+    "complianceNoticeTitle": "Informations conformément au § 5 DDG",
+    "complianceNoticeDescription": "Les informations suivantes s'appliquent au site web de Gold Helwah.",
     "sections": [
       {
-        "title": "Identification du fournisseur",
+        "title": "Fournisseur",
         "lines": [
-          "GoldHelwah GmbH",
+          "Gold Helwah",
+          "Inh. Khaled Helwah",
           "Breite Straße 9, 66115 Saarbrücken",
-          "[Ajouter la forme juridique]",
-          "[Ajouter le représentant autorisé]"
+          "Deutschland"
         ]
       },
       {
         "title": "Contact",
         "lines": [
-          "+49 173 5371225",
-          "[Ajouter l’adresse e-mail]",
-          "Showroom : Breite Straße 9, 66115 Saarbrücken"
+          "Nous restons à votre disposition pour toute question :",
+          "Téléphone : +49 173 537 1225",
+          "E-mail : service@goldhelwah.de"
         ]
       },
       {
-        "title": "Registre et fiscalité",
+        "title": "Numéro de TVA",
         "lines": [
-          "[Ajouter le registre du commerce et le tribunal compétent]",
-          "[Ajouter le numéro de TVA ou fiscal]"
+          "Numéro d'identification à la TVA conformément au § 27 a de la loi allemande sur la TVA :",
+          "DE313207537"
         ]
       },
       {
-        "title": "Responsable du contenu",
-        "lines": "[Ajouter la personne responsable selon le droit applicable]"
+        "title": "Représenté par",
+        "lines": "Khaled Helwah"
       },
       {
-        "title": "Note sur le site",
+        "title": "Responsabilité concernant les liens",
         "lines": [
-          "Le site présente les collections, des visuels réels et les moyens de contact de GoldHelwah GmbH.",
-          "Le conseil personnalisé et les demandes produit restent au coeur de l'expérience."
+          "Notre site contient des liens vers des sites externes de tiers sur lesquels nous n'avons aucune influence. Nous ne pouvons donc assumer aucune responsabilité pour ces contenus externes.",
+          "Le fournisseur ou l'exploitant de chaque page liée reste toujours responsable du contenu de cette page.",
+          "Les pages liées ont été vérifiées au moment de la mise en lien afin d'identifier d'éventuelles violations du droit. Aucun contenu illicite n'était identifiable à ce moment-là.",
+          "Un contrôle permanent du contenu des pages liées n'est pas raisonnable sans indice concret d'une violation du droit. Si nous avons connaissance d'une telle violation, nous retirerons immédiatement les liens concernés."
+        ]
+      },
+      {
+        "title": "Responsabilité concernant les contenus",
+        "lines": [
+          "Le contenu de nos pages a été élaboré avec le plus grand soin. Nous ne pouvons toutefois garantir l'exactitude, l'exhaustivité ou l'actualité de ces contenus.",
+          "En tant que prestataire de services, nous sommes responsables de nos propres contenus sur ces pages conformément au § 5 DDG et aux lois générales.",
+          "Conformément au § 5 DDG, nous ne sommes toutefois pas tenus de surveiller les informations transmises ou stockées par des tiers ni de rechercher des circonstances indiquant une activité illégale.",
+          "Les obligations de retirer ou de bloquer l'utilisation d'informations conformément aux lois générales restent inchangées.",
+          "Une responsabilité à cet égard n'est toutefois possible qu'à partir du moment où une violation concrète est connue. Si nous avons connaissance d'une telle violation, nous retirerons immédiatement le contenu concerné."
         ]
       }
     ],
-    "disclaimerTitle": "Entretien et mise à jour",
-    "disclaimerText": "Dès que d’autres services, formulaires ou données réelles de l’entreprise seront intégrés, cette page devra être revue et mise à jour."
+    "disclaimerTitle": "Droits d'auteur",
+    "disclaimerText": "Les contenus et œuvres créés par les exploitants du site sur ces pages sont soumis au droit d'auteur allemand. Toute reproduction, modification, diffusion ou exploitation en dehors des limites du droit d'auteur nécessite l'accord écrit de l'auteur ou du créateur concerné. Les téléchargements et copies de ce site ne sont autorisés qu'à des fins privées et non commerciales. Lorsque le contenu de cette page n'a pas été créé par l'exploitant, les droits d'auteur des tiers sont respectés et le contenu correspondant est signalé comme tel. Si vous constatez malgré tout une violation du droit d'auteur, merci de nous en informer. Dès que nous aurons connaissance d'une telle violation, nous retirerons immédiatement le contenu concerné."
   },
   "Privacy": {
     "eyebrow": "Confidentialité",
     "title": "Informations de confidentialité",
-    "description": "Ces informations couvrent le fonctionnement actuel du showroom.",
-    "intro": "Comme aucun compte, aucune commande ou aucun paiement n’est intégré, le traitement des données reste volontairement limité. Avant le lancement, tous les services finaux devront être revus.",
+    "description": "Cette page explique comment vos données personnelles sont traitées lorsque vous visitez le site ou nous contactez.",
+    "intro": "Nous traitons les données personnelles uniquement dans la mesure nécessaire pour fournir le site, mémoriser votre langue et répondre à vos demandes.",
     "sections": [
       {
         "title": "1. Responsable",
         "paragraphs": [
-          "Le responsable est GoldHelwah GmbH, Breite Straße 9, 66115 Saarbrücken, téléphone +49 173 5371225, e-mail info@goldhelwah.de.",
-          "Une fois les informations finales disponibles, les mentions légales et la confidentialité devront être harmonisées."
+          "Le responsable du traitement sur ce site est Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, téléphone +49 173 537 1225, e-mail service@goldhelwah.de.",
+          "Si vous avez des questions sur la confidentialité ou souhaitez exercer vos droits, vous pouvez nous contacter à tout moment."
         ]
       },
       {
         "title": "2. Données techniques de connexion",
         "paragraphs": [
-          "Lors de la visite du site, des données techniquement nécessaires comme l’adresse IP, l’heure, le type de navigateur et les contenus demandés peuvent être traitées.",
-          "Ce traitement sert à garantir une mise à disposition sûre et stable du site."
+          "Lors de la visite du site, des données techniquement nécessaires telles que l'adresse IP, la date et l'heure, des informations sur le navigateur et les pages demandées peuvent être traitées.",
+          "Ce traitement est nécessaire pour fournir le site de manière sûre et fiable."
         ]
       },
       {
-        "title": "3. Demandes de contact",
+        "title": "3. Prises de contact et demandes",
         "paragraphs": [
-          "Si vous utilisez le formulaire de contact ou nous appelez, vos données seront utilisées uniquement pour traiter votre demande.",
-          "Les informations réellement nécessaires dépendent du contexte et de votre intérêt produit."
+          "Si vous nous contactez via le formulaire de contact, par e-mail, téléphone ou WhatsApp, nous traitons les informations fournies uniquement afin de répondre à votre demande.",
+          "Les données traitées dépendent du sujet de votre demande et des informations que vous nous communiquez."
         ]
       },
       {
-        "title": "4. Langue et cookies",
+        "title": "4. Préférence de langue et cookies essentiels",
         "paragraphs": [
-          "Le site prend en charge plusieurs langues. Une préférence de langue peut être enregistrée pour des raisons techniques.",
-          "Cela sert uniquement à afficher le site dans la langue choisie lors des visites ultérieures."
+          "Le site prend en charge plusieurs langues et peut enregistrer votre langue choisie pour des raisons techniques.",
+          "Cette information est utilisée uniquement pour afficher le site dans votre langue préférée lors de visites ultérieures."
         ]
       },
       {
-        "title": "5. Demandes et communication",
+        "title": "5. Vos droits",
         "paragraphs": [
-          "Le site permet d'envoyer à GoldHelwah GmbH des demandes produit et des souhaits de conseil.",
-          "Si les canaux de communication ou les services liés au site évoluent, cette page doit être mise à jour en conséquence."
+          "Vous avez le droit de demander des informations sur les données personnelles stockées vous concernant et, lorsque les conditions légales sont remplies, de demander leur rectification, leur suppression ou la limitation du traitement.",
+          "Vous pouvez également vous opposer au traitement ou retirer avec effet pour l'avenir un consentement déjà accordé."
         ]
       }
     ],
-    "noticeTitle": "Obligation de mise à jour",
-    "noticeText": "Toute future intégration d’outils, de services ou de nouveaux processus de contact devra déclencher une nouvelle mise à jour de la confidentialité."
+    "noticeTitle": "Version actuelle",
+    "noticeText": "Nous révisons régulièrement ces informations de confidentialité et les mettons à jour lorsque notre site, nos canaux de communication ou nos obligations légales changent."
   },
   "Admin": {
     "meta": {
@@ -704,7 +716,9 @@
         "personalization": "Personnalisation",
         "stones": "Pierres",
         "workshop": "Atelier",
-        "review": "Verifier et envoyer"
+        "review": "Verifier et envoyer",
+        "customerWorkshop": "Client et atelier",
+        "productOptions": "Produit et options"
       },
       "values": {
         "yellowGold": "Or jaune",
@@ -718,7 +732,8 @@
         "script": "Script"
       },
       "trackingDescription": "Preparer l e-mail, le telephone et le suivi client.",
-      "successWithNotifications": "Commande créée. Les notifications peuvent maintenant être envoyées."
+      "successWithNotifications": "Commande créée. Les notifications peuvent maintenant être envoyées.",
+      "personalizationDisabled": "Personnalisation du nom désactivée"
     },
     "options": {
       "eyebrow": "Moteur d'options",
@@ -966,9 +981,17 @@
       "cancelled": "Annule"
     },
     "publicTrackingStage": {
-      "order_in_workshop": "Commande en atelier",
-      "shipping": "Commande en cours d expedition",
-      "ready_for_pickup": "Prete au retrait"
+      "order_in_workshop": "Commande à l'atelier",
+      "in_production": "En production",
+      "quality_check": "Contrôle qualité",
+      "ready_for_pickup": "Prête au retrait",
+      "shipping": "Expédition en cours",
+      "delivered": "Livrée",
+      "completed": "Terminée",
+      "cancelled": "Annulée",
+      "on_the_way": "En route",
+      "delivered_to_store": "Livrée en boutique",
+      "picked_up": "Retirée"
     },
     "emailLogStatus": {
       "pending": "En attente",
@@ -1002,7 +1025,7 @@
     "instructionsTitle": "Comment suivre votre commande",
     "instructionsDescription": "Utilisez votre numero de suivi depuis le menu du site plutot qu un lien direct.",
     "instructionsStepOne": "Ouvrez la page d accueil du site.",
-    "instructionsStepTwo": "Cliquez sur ? Suivre la commande ? dans le menu.",
+    "instructionsStepTwo": "Cliquez sur \"Suivi de commande\" dans le menu.",
     "instructionsStepThree": "Saisissez votre numero de suivi.",
     "receivedMessage": "Votre commande a ete recue et son statut sera bientot mis a jour.",
     "receivedDescription": "Votre commande est enregistree et attend son premier jalon public.",
@@ -1010,7 +1033,7 @@
     "completedStageDescription": "Cette etape est deja terminee.",
     "upcomingStageDescription": "Cette etape apparaitra lorsque votre commande y arrivera.",
     "lookup": {
-      "eyebrow": "Suivre la commande",
+      "eyebrow": "Suivi de commande",
       "title": "Retrouver votre commande",
       "description": "Saisissez votre numero de suivi pour consulter les dernieres mises a jour publiques de votre commande GoldHelwah.",
       "helperTitle": "Numero de suivi disponible ?",
@@ -1019,7 +1042,7 @@
       "formDescription": "Nous ouvrirons ensuite la page en direct pour ce numero.",
       "label": "Numero de suivi",
       "placeholder": "GH-20260618-0001",
-      "submit": "Suivre la commande",
+      "submit": "Suivi de commande",
       "emptyError": "Veuillez entrer votre numero de suivi."
     },
     "support": {

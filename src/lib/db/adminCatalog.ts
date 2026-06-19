@@ -1260,7 +1260,7 @@ export async function deleteCategory(categoryId: string) {
 }
 
 async function markProductDeleted(productId: string) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const capabilities = await getCatalogSchemaCapabilities();
 
   if (!capabilities.productsDeletedAt) {
@@ -1286,7 +1286,7 @@ async function replaceProductImages(
   gallery: string[],
   fallbackAltText: string
 ) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const normalizedGallery = [...new Set(gallery.map((image) => image.trim()).filter(Boolean))];
   const { data: existingImages, error: existingImagesError } = await supabase
     .from("product_images")
@@ -1337,7 +1337,7 @@ export async function assignProductOptions(
   productId: string,
   optionSettings: Array<{ isRequired: boolean; optionId: string }>
 ) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const uniqueOptionSettings = Array.from(
     new Map(
       optionSettings.map((setting) => [
@@ -1376,7 +1376,7 @@ export async function assignProductOptions(
 }
 
 export async function createProduct(input: ProductInput) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const parsed = productInputSchema.parse(input);
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
@@ -1419,7 +1419,7 @@ export async function createProduct(input: ProductInput) {
 }
 
 export async function updateProduct(input: ProductUpdateInput) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const parsed = productUpdateSchema.parse(input);
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
@@ -1464,7 +1464,7 @@ export async function updateProduct(input: ProductUpdateInput) {
 }
 
 export async function setProductActive(productId: string, isActive: boolean) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const payload: TableUpdate<"products"> = {
     is_active: isActive,
   };
@@ -1484,7 +1484,7 @@ export async function setProductActive(productId: string, isActive: boolean) {
 }
 
 export async function setProductFeatured(productId: string, isFeatured: boolean) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("products")
     .update({ is_featured: isFeatured })
@@ -1500,7 +1500,7 @@ export async function setProductFeatured(productId: string, isFeatured: boolean)
 }
 
 export async function deleteProduct(productId: string) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
   const { data: existingImages, error: existingImagesError } = await supabase
     .from("product_images")
     .select("image_url")

@@ -48,7 +48,7 @@
       "contact": "Kontakt",
       "impressum": "Impressum",
       "privacy": "Datenschutz",
-      "tracking": "Auftrag verfolgen"
+      "tracking": "Bestellung verfolgen"
     }
   },
   "Footer": {
@@ -56,7 +56,7 @@
     "navigationTitle": "Seiten",
     "contactTitle": "Kontakt",
     "socialTitle": "Folgen Sie uns",
-    "emailPlaceholder": "info@goldhelwah.de",
+    "emailPlaceholder": "service@goldhelwah.de",
     "legalNote": "Besuchen Sie uns in Saarbrücken oder kontaktieren Sie uns für eine persönliche Beratung.",
     "rights": "GoldHelwah GmbH. Alle Rechte vorbehalten.",
     "socials": {
@@ -106,12 +106,12 @@
       "emptyText": "Aktivieren Sie Produkte im Dashboard oder kontaktieren Sie uns fuer eine persoenliche Auswahl."
     },
     "showcase": {
-      "eyebrow": "Neu im Blick",
-      "title": "Aktuelle Stuecke aus der Kollektion.",
-      "description": "Die neuesten aktiven Produkte aus dem Admin-Katalog erscheinen hier ohne statische Platzhalter.",
+      "eyebrow": "Auswahl aus dem Showroom",
+      "title": "Ausgewählte Stücke mit klaren Details",
+      "description": "Entdecken Sie ausgewählte Goldschmuckstücke aus unserer Kollektion mit echten Bildern und klaren Details für eine sichere Auswahl.",
       "sectionCta": "Zur Kollektion",
-      "leadCta": "In dieser Kategorie entdecken",
-      "cardCta": "Kategorie ansehen",
+      "cardCta": "Details ansehen",
+      "leadCta": "Beratung anfragen",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
       "emptyText": "Sobald neue Produkte gespeichert und aktiviert werden, zeigt diese Sektion sie automatisch an."
     },
@@ -269,93 +269,105 @@
   "Impressum": {
     "eyebrow": "Rechtliches",
     "title": "Impressum",
-    "description": "Rechtliche Angaben und Kontaktdaten von GoldHelwah GmbH auf einen Blick.",
-    "complianceNoticeTitle": "Wichtiger Hinweis",
-    "complianceNoticeDescription": "Die folgenden Felder markieren bewusst Angaben, die nicht erfunden werden sollten. Vor der Veröffentlichung müssen Rechtsform, Vertretung und steuerliche Angaben verbindlich ergänzt werden.",
+    "description": "Offizielle Anbieterkennzeichnung und rechtliche Hinweise von Gold Helwah.",
+    "complianceNoticeTitle": "Angaben gemäß § 5 DDG",
+    "complianceNoticeDescription": "Die folgenden Angaben gelten für den Internetauftritt von Gold Helwah.",
     "sections": [
       {
-        "title": "Anbieterkennzeichnung",
+        "title": "Anbieter",
         "lines": [
-          "GoldHelwah GmbH",
+          "Gold Helwah",
+          "Inh. Khaled Helwah",
           "Breite Straße 9, 66115 Saarbrücken",
-          "[Rechtsform ergänzen]",
-          "[Vertretungsberechtigte Person ergänzen]"
+          "Deutschland"
         ]
       },
       {
         "title": "Kontakt",
         "lines": [
-          "+49 173 5371225",
-          "[E-Mail-Adresse ergänzen]",
-          "Showroom: Breite Straße 9, 66115 Saarbrücken"
+          "Wir stehen Ihnen für Rückfragen gerne zur Verfügung:",
+          "Telefon: +49 173 537 1225",
+          "E-Mail: service@goldhelwah.de"
         ]
       },
       {
-        "title": "Register und Steuern",
+        "title": "Umsatzsteuer-ID",
         "lines": [
-          "[Handelsregister und Registergericht ergänzen]",
-          "[Umsatzsteuer-ID oder Steuernummer ergänzen]"
+          "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:",
+          "DE313207537"
         ]
       },
       {
-        "title": "Verantwortlich für Inhalte",
-        "lines": "[Verantwortliche Person gemäß geltendem Medienrecht ergänzen]"
+        "title": "Vertreten durch",
+        "lines": "Khaled Helwah"
       },
       {
-        "title": "Hinweis zur Website",
+        "title": "Haftung für Links",
         "lines": [
-          "Die Website präsentiert Kollektionen, Produktbilder und Kontaktmöglichkeiten von GoldHelwah GmbH.",
-          "Persönliche Beratung und Produktanfragen stehen im Mittelpunkt."
+          "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.",
+          "Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.",
+          "Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar.",
+          "Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen."
+        ]
+      },
+      {
+        "title": "Haftung für Inhalte",
+        "lines": [
+          "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.",
+          "Als Diensteanbieter sind wir gemäß § 5 DDG und den allgemeinen Gesetzen für eigene Inhalte auf diesen Seiten verantwortlich.",
+          "Nach § 5 DDG sind wir jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+          "Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.",
+          "Eine Haftung ist insoweit jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir diese Inhalte umgehend entfernen."
         ]
       }
     ],
-    "disclaimerTitle": "Pflege und Aktualisierung",
-    "disclaimerText": "Bitte prüfen und aktualisieren Sie diese Angaben regelmäßig, damit sie dem aktuellen Unternehmensstand entsprechen."
+    "disclaimerTitle": "Urheberrecht",
+    "disclaimerText": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors beziehungsweise Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet und entsprechend gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen."
   },
   "Privacy": {
     "eyebrow": "Datenschutz",
     "title": "Datenschutzhinweise",
-    "description": "Diese Datenschutzhinweise erläutern, welche Daten beim Besuch der Website und bei Kontaktanfragen verarbeitet werden.",
-    "intro": "Wir verarbeiten Daten nur insoweit, wie es für die Darstellung der Website, die Sprachauswahl und die Bearbeitung von Anfragen erforderlich ist.",
+    "description": "Diese Datenschutzhinweise erläutern, wie personenbezogene Daten beim Besuch der Website und bei Kontaktanfragen verarbeitet werden.",
+    "intro": "Wir verarbeiten personenbezogene Daten nur in dem Umfang, der für den Betrieb der Website, die Speicherung Ihrer Sprachwahl und die Bearbeitung Ihrer Anfragen erforderlich ist.",
     "sections": [
       {
         "title": "1. Verantwortliche Stelle",
         "paragraphs": [
-          "Verantwortlich ist GoldHelwah GmbH, Breite Straße 9, 66115 Saarbrücken, Telefon +49 173 5371225. Eine verbindliche E-Mail-Adresse muss vor dem Produktionsstart ergänzt werden.",
-          "Nach Eintragung der finalen Angaben sollten Impressum und Datenschutz inhaltlich aufeinander abgestimmt werden."
+          "Verantwortlich für die Datenverarbeitung auf dieser Website ist Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, Telefon +49 173 537 1225, E-Mail service@goldhelwah.de.",
+          "Wenn Sie Fragen zum Datenschutz oder zur Ausübung Ihrer Rechte haben, können Sie sich jederzeit an uns wenden."
         ]
       },
       {
         "title": "2. Technische Verbindungsdaten",
         "paragraphs": [
-          "Beim Aufruf der Website können technisch notwendige Daten wie IP-Adresse, Zeitpunkt, Browsertyp und angeforderte Inhalte verarbeitet werden.",
-          "Die Verarbeitung dient der sicheren und stabilen Bereitstellung der Website."
+          "Beim Aufruf der Website können technisch notwendige Daten wie IP-Adresse, Datum und Uhrzeit, Browserinformationen sowie angeforderte Seiten verarbeitet werden.",
+          "Diese Verarbeitung ist erforderlich, um die Website sicher und zuverlässig bereitzustellen."
         ]
       },
       {
-        "title": "3. Kontaktanfragen",
+        "title": "3. Kontakt- und Anfragebearbeitung",
         "paragraphs": [
-          "Wenn Sie das Kontaktformular nutzen oder telefonisch Kontakt aufnehmen, werden Ihre Angaben ausschließlich zur Bearbeitung Ihrer Anfrage verwendet.",
-          "Welche Daten konkret erforderlich sind, hängt vom Anlass und vom Produktinteresse ab."
+          "Wenn Sie uns über das Kontaktformular, per E-Mail, telefonisch oder über WhatsApp kontaktieren, verarbeiten wir Ihre Angaben ausschließlich zur Bearbeitung Ihrer Anfrage.",
+          "Welche Daten konkret verarbeitet werden, hängt vom Inhalt Ihrer Anfrage und den von Ihnen mitgeteilten Informationen ab."
         ]
       },
       {
-        "title": "4. Sprache und Cookies",
+        "title": "4. Sprachwahl und technisch notwendige Cookies",
         "paragraphs": [
-          "Die Website unterstützt mehrere Sprachen. Dabei kann eine Spracheinstellung technisch gespeichert werden.",
-          "Dies dient ausschließlich dazu, die Seite bei späteren Aufrufen in der gewählten Sprache anzuzeigen."
+          "Die Website unterstützt mehrere Sprachen und kann Ihre gewählte Sprache aus technischen Gründen speichern.",
+          "Diese Information wird ausschließlich verwendet, damit die Website bei späteren Besuchen wieder in Ihrer bevorzugten Sprache angezeigt wird."
         ]
       },
       {
-        "title": "5. Produktanfragen und Kommunikation",
+        "title": "5. Ihre Rechte",
         "paragraphs": [
-          "Über die Website können Produktanfragen und Beratungswünsche an GoldHelwah GmbH übermittelt werden.",
-          "Wenn sich Funktionen oder Kommunikationswege ändern, sollte diese Datenschutzerklärung entsprechend aktualisiert werden."
+          "Sie haben das Recht auf Auskunft über Ihre gespeicherten personenbezogenen Daten sowie bei Vorliegen der gesetzlichen Voraussetzungen auf Berichtigung, Löschung oder Einschränkung der Verarbeitung.",
+          "Außerdem können Sie einer Verarbeitung widersprechen oder eine bereits erteilte Einwilligung mit Wirkung für die Zukunft widerrufen."
         ]
       }
     ],
-    "noticeTitle": "Aktualisierungspflicht",
-    "noticeText": "Bitte aktualisieren Sie diese Datenschutzhinweise, sobald sich Kontaktwege, Dienste oder Verarbeitungsprozesse ändern."
+    "noticeTitle": "Aktuelle Fassung",
+    "noticeText": "Wir überprüfen diese Datenschutzhinweise regelmäßig und passen sie an, wenn sich Website, Kommunikationswege oder rechtliche Vorgaben ändern."
   },
   "Admin": {
     "meta": {
@@ -970,8 +982,16 @@
     },
     "publicTrackingStage": {
       "order_in_workshop": "Auftrag in der Werkstatt",
-      "shipping": "Auftrag wird versendet",
-      "ready_for_pickup": "Bereit zur Abholung"
+      "in_production": "In Produktion",
+      "quality_check": "Qualitätskontrolle",
+      "ready_for_pickup": "Bereit zur Abholung",
+      "shipping": "Versand",
+      "delivered": "Zugestellt",
+      "completed": "Abgeschlossen",
+      "cancelled": "Storniert",
+      "on_the_way": "Unterwegs",
+      "delivered_to_store": "Im Geschäft eingetroffen",
+      "picked_up": "Abgeholt"
     },
     "emailLogStatus": {
       "pending": "Ausstehend",
@@ -1005,7 +1025,7 @@
     "instructionsTitle": "So verfolgen Sie Ihren Auftrag",
     "instructionsDescription": "Nutzen Sie Ihre Tracking-Nummer ?ber den Men?punkt der Website statt ?ber einen direkten Tracking-Link.",
     "instructionsStepOne": "?ffnen Sie die Startseite der Website.",
-    "instructionsStepTwo": "Klicken Sie im Men? auf ?Auftrag verfolgen?.",
+    "instructionsStepTwo": "Klicken Sie im Menü auf \"Bestellung verfolgen\".",
     "instructionsStepThree": "Geben Sie Ihre Tracking-Nummer ein.",
     "receivedMessage": "Ihr Auftrag wurde erhalten. Der Status wird bald aktualisiert.",
     "receivedDescription": "Ihr Auftrag ist erfasst und wartet auf den ersten ?ffentlichen Meilenstein.",
@@ -1013,7 +1033,7 @@
     "completedStageDescription": "Diese Phase wurde bereits abgeschlossen.",
     "upcomingStageDescription": "Diese Phase erscheint, sobald Ihr Auftrag sie erreicht.",
     "lookup": {
-      "eyebrow": "Auftrag verfolgen",
+      "eyebrow": "Bestellung verfolgen",
       "title": "Auftrag aufrufen",
       "description": "Geben Sie Ihre Tracking-Nummer ein, um die letzten ?ffentlichen Updates zu Ihrem GoldHelwah Auftrag zu sehen.",
       "helperTitle": "Tracking-Nummer zur Hand?",
@@ -1022,7 +1042,7 @@
       "formDescription": "Wir ?ffnen danach die Live-Ansicht zu diesem Auftrag.",
       "label": "Tracking-Nummer",
       "placeholder": "GH-20260618-0001",
-      "submit": "Auftrag verfolgen",
+      "submit": "Bestellung verfolgen",
       "emptyError": "Bitte geben Sie Ihre Tracking-Nummer ein."
     },
     "support": {

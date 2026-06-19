@@ -29,8 +29,8 @@ const companyPhoneNumber = normalizePhoneNumber("+49 173 5371225");
 export const companyInfo = {
   name: "GoldHelwah GmbH",
   address: "Breite Straße 9, 66115 Saarbrücken",
-  emailDisplay: "info@goldhelwah.de",
-  emailHref: "mailto:info@goldhelwah.de",
+  emailDisplay: "service@goldhelwah.de",
+  emailHref: "mailto:service@goldhelwah.de",
   phoneDisplay: "+49 173 5371225",
   phoneHref: getPhoneHref(companyPhoneNumber),
   instagramHref: "https://instagram.com/goldhelwah",

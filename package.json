@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:messages": "\"%npm_node_execpath%\" scripts/check-messages.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
