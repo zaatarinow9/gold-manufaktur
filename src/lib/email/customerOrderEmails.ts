@@ -72,9 +72,9 @@ type CustomerOrderEmailInput = {
 const germanCopy: CustomerEmailCopy = {
   brandLabel: "GoldHelwah GmbH",
   confirmationLead:
-    "Vielen Dank, dass Sie sich fuer GoldHelwah entschieden haben. Wir haben Ihren Auftrag erhalten und bestaetigt.",
+    "Vielen Dank, dass Sie sich für GoldHelwah entschieden haben. Wir haben Ihren Auftrag erhalten und bestätigt.",
   confirmationNextStep:
-    'Sie koennen Ihren Auftrag ueber den Menuepunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
+    'Sie können Ihren Auftrag über den Menüpunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
   confirmationSubject: "Wir haben Ihren Auftrag erhalten - GoldHelwah",
   confirmationTitle: "Wir haben Ihren Auftrag erhalten",
   customerNoteLabel: "Kundenhinweis",
@@ -83,8 +83,8 @@ const germanCopy: CustomerEmailCopy = {
   menuLabel: "Auftrag verfolgen",
   notProvided: "Nicht angegeben",
   progressDescription:
-    "Oeffentliche Statusupdates werden nur fuer Werkstatt, Versand und Abholung angezeigt.",
-  progressTitle: "Oeffentlicher Status",
+    "Öffentliche Statusupdates werden nur für Werkstatt, Versand und Abholung angezeigt.",
+  progressTitle: "Öffentlicher Status",
   productDetailsTitle: "Produktdetails",
   stages: {
     order_in_workshop: "Auftrag in der Werkstatt",
@@ -96,7 +96,7 @@ const germanCopy: CustomerEmailCopy = {
     shipping: "Ihr Auftrag wird jetzt versendet.",
     ready_for_pickup: "Ihr Auftrag ist jetzt zur Abholung bereit.",
   },
-  stageLeadPrefix: "Aktuelle oeffentliche Phase",
+  stageLeadPrefix: "Aktuelle öffentliche Phase",
   stageSubjects: {
     order_in_workshop: "Ihr Auftrag ist jetzt in der Werkstatt - GoldHelwah",
     shipping: "Ihr Auftrag wird versendet - GoldHelwah",
@@ -108,7 +108,7 @@ const germanCopy: CustomerEmailCopy = {
     karat: "Legierung",
     productName: "Produkt",
     quantity: "Menge",
-    requestedName: "Gewuenschter Name",
+    requestedName: "Gewünschter Name",
     totalPrice: "Gesamtbetrag",
     unitPrice: "Einzelpreis",
     weight: "Gewicht",
@@ -116,7 +116,7 @@ const germanCopy: CustomerEmailCopy = {
   textGreeting: (customerName) =>
     customerName ? `Guten Tag ${customerName},` : "Guten Tag,",
   trackingHelp:
-    'Sie koennen Ihren Auftrag ueber den Menuepunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
+    'Sie können Ihren Auftrag über den Menüpunkt "Auftrag verfolgen" auf unserer Website verfolgen und dort Ihre Tracking-Nummer eingeben.',
   trackingNumberLabel: "Tracking-Nummer",
   totalAmountLabel: "Gesamtbetrag",
 };

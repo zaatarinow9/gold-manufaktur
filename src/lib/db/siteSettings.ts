@@ -17,22 +17,9 @@ const requiredSiteSettingsColumns = [
   "updated_at",
 ] as const;
 
-type SchemaColumnRow = {
-  column_name: string;
-  table_name: string;
-};
-
-type SchemaColumnQueryResult = Promise<{
-  data: SchemaColumnRow[] | null;
-  error: { message: string } | null;
-}>;
-
-type SchemaColumnQueryAfterEq = {
-  eq: (column: string, value: string) => SchemaColumnQueryResult;
-};
-
 type SiteSettingsIssueCode =
   | "column_missing"
+  | "inspection_failed"
   | "service_role_missing"
   | "table_missing";
 
@@ -49,9 +36,13 @@ export class SiteSettingsError extends Error {
 
 export type SiteSettingsDiagnostics = {
   available: boolean;
+  environmentLabel: string;
   issueCode: SiteSettingsIssueCode | null;
   message: string | null;
   missingColumns: string[];
+  missingEnvVars: string[];
+  siteBaseUrl: string;
+  suggestedMigration: string | null;
   tableName: string;
 };
 
@@ -98,12 +89,44 @@ export const siteSettingKeys = {
   supportNotificationEmail: "support_notification_email",
 } as const;
 
+const siteSettingsRequiredEnvVars = [
+  "NEXT_PUBLIC_SUPABASE_URL",
+  "SUPABASE_SERVICE_ROLE_KEY",
+] as const;
+const siteSettingsSuggestedMigration = "0008_admin_workflow_cleanup.sql";
+
 function normalizeSettingText(value: string | null | undefined) {
   return value?.trim() ?? "";
 }
 
 function normalizeBooleanText(value: string | null | undefined) {
   return normalizeSettingText(value).toLowerCase() === "true";
+}
+
+function getSiteSettingsEnvironmentLabel() {
+  const vercelEnv = process.env.VERCEL_ENV?.trim();
+
+  if (vercelEnv === "production") {
+    return "Vercel production";
+  }
+
+  if (vercelEnv === "preview") {
+    return "Vercel preview";
+  }
+
+  if (vercelEnv === "development") {
+    return "Vercel development";
+  }
+
+  return process.env.NODE_ENV === "production"
+    ? "Node production"
+    : "Local development";
+}
+
+function getMissingSiteSettingsEnvVars() {
+  return siteSettingsRequiredEnvVars.filter(
+    (name) => !(process.env[name]?.trim() ?? "")
+  );
 }
 
 export function getSiteBaseUrl() {
@@ -157,83 +180,93 @@ function getSmtpStatus(): SmtpStatus {
   };
 }
 
+function createSiteSettingsDiagnosticsBase() {
+  return {
+    environmentLabel: getSiteSettingsEnvironmentLabel(),
+    missingColumns: [],
+    missingEnvVars: getMissingSiteSettingsEnvVars(),
+    siteBaseUrl: getSiteBaseUrl(),
+    suggestedMigration: null,
+    tableName: siteSettingsTableName,
+  } satisfies Omit<
+    SiteSettingsDiagnostics,
+    "available" | "issueCode" | "message"
+  >;
+}
+
 const getSiteSettingsDiagnostics = cache(
   async (): Promise<SiteSettingsDiagnostics> => {
-    try {
-      const supabase = createSupabaseAdminClient() as unknown as {
-        schema: (schema: string) => {
-          from: (table: string) => {
-            select: (columns: string) => {
-              eq: (column: string, value: string) => SchemaColumnQueryAfterEq;
-            };
-          };
-        };
+    const base = createSiteSettingsDiagnosticsBase();
+
+    if (base.missingEnvVars.length > 0) {
+      return {
+        ...base,
+        available: false,
+        issueCode: "service_role_missing",
+        message: `Admin settings use the server-side Supabase service client. Missing environment variables: ${base.missingEnvVars.join(", ")}.`,
       };
+    }
 
-      const { data, error } = await supabase
-        .schema("information_schema")
-        .from("columns")
-        .select("table_name,column_name")
-        .eq("table_schema", "public")
-        .eq("table_name", siteSettingsTableName);
+    try {
+      const supabase = createSupabaseAdminClient();
+      const { error } = await supabase
+        .from(siteSettingsTableName)
+        .select(requiredSiteSettingsColumns.join(","))
+        .limit(1);
 
-      if (error) {
+      if (!error) {
         return {
-          available: false,
-          issueCode: "service_role_missing",
-          message: `Unable to inspect ${siteSettingsTableName}: ${error.message}`,
-          missingColumns: [],
-          tableName: siteSettingsTableName,
+          ...base,
+          available: true,
+          issueCode: null,
+          message: null,
         };
       }
 
-      if (!data || data.length === 0) {
+      const normalizedMessage = error.message.toLowerCase();
+      const missingColumnMatch =
+        error.message.match(/could not find the '([^']+)' column/i) ??
+        error.message.match(/column ["']?([^"']+)["']? does not exist/i);
+
+      if (
+        normalizedMessage.includes("could not find the table") ||
+        normalizedMessage.includes("relation") && normalizedMessage.includes("does not exist")
+      ) {
         return {
+          ...base,
           available: false,
           issueCode: "table_missing",
-          message:
-            "Required table missing: public.site_settings. Apply migration 0008_admin_workflow_cleanup.sql first.",
-          missingColumns: [],
-          tableName: siteSettingsTableName,
+          message: `public.${siteSettingsTableName} was not found in the Supabase project connected to ${base.environmentLabel}. Apply ${siteSettingsSuggestedMigration} to that project or point this deployment at the migrated database.`,
+          suggestedMigration: siteSettingsSuggestedMigration,
         };
       }
 
-      const missingColumns = requiredSiteSettingsColumns.filter(
-        (columnName) =>
-          !data.some(
-            (column) =>
-              column.table_name === siteSettingsTableName &&
-              column.column_name === columnName
-          )
-      );
-
-      if (missingColumns.length > 0) {
+      if (missingColumnMatch?.[1]) {
         return {
+          ...base,
           available: false,
           issueCode: "column_missing",
-          message: `Missing required columns on public.site_settings: ${missingColumns.join(", ")}. Apply migration 0008_admin_workflow_cleanup.sql first.`,
-          missingColumns,
-          tableName: siteSettingsTableName,
+          message: `public.${siteSettingsTableName} is missing the required column ${missingColumnMatch[1]} in ${base.environmentLabel}. Apply ${siteSettingsSuggestedMigration} to this database.`,
+          missingColumns: [missingColumnMatch[1]],
+          suggestedMigration: siteSettingsSuggestedMigration,
         };
       }
 
       return {
-        available: true,
-        issueCode: null,
-        message: null,
-        missingColumns: [],
-        tableName: siteSettingsTableName,
+        ...base,
+        available: false,
+        issueCode: "inspection_failed",
+        message: `Unable to inspect public.${siteSettingsTableName} for ${base.environmentLabel}: ${error.message}`,
       };
     } catch (error) {
       return {
+        ...base,
         available: false,
-        issueCode: "service_role_missing",
+        issueCode: "inspection_failed",
         message:
           error instanceof Error
-            ? error.message
+            ? `Unable to inspect public.${siteSettingsTableName} for ${base.environmentLabel}: ${error.message}`
             : "Site settings are unavailable because the Supabase admin client could not be created.",
-        missingColumns: [],
-        tableName: siteSettingsTableName,
       };
     }
   }
@@ -246,7 +279,7 @@ async function assertSiteSettingsAvailable() {
     throw new SiteSettingsError(
       diagnostics.issueCode ?? "table_missing",
       diagnostics.message ??
-        "public.site_settings is unavailable. Apply migration 0008_admin_workflow_cleanup.sql first."
+        `public.${siteSettingsTableName} is unavailable for ${diagnostics.environmentLabel}.`
     );
   }
 }
@@ -272,6 +305,24 @@ async function readSiteSettings(keys: string[]) {
       },
     ])
   );
+}
+
+async function ensureSiteSettingsRows(keys: string[]) {
+  const rows = await readSiteSettings(keys);
+  const missingKeys = keys.filter((key) => !rows.has(key));
+
+  if (missingKeys.length === 0) {
+    return rows;
+  }
+
+  await saveSiteSettings(
+    missingKeys.map((key) => ({
+      key,
+      valueText: null,
+    }))
+  );
+
+  return readSiteSettings(keys);
 }
 
 async function upsertSiteSetting(input: UpsertSiteSettingInput) {
@@ -329,7 +380,7 @@ export async function getSiteSettingsAvailability() {
 
 export async function getSiteTextSetting(key: string) {
   try {
-    const rows = await readSiteSettings([key]);
+    const rows = await ensureSiteSettingsRows([key]);
     return normalizeSettingText(rows.get(key)?.valueText);
   } catch (error) {
     if (error instanceof SiteSettingsError) {
@@ -384,7 +435,7 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
     };
   }
 
-  const rows = await readSiteSettings(Object.values(siteSettingKeys));
+  const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
 
   return {
     adminNotificationEmail: normalizeSettingText(

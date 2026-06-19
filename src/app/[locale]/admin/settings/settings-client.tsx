@@ -210,8 +210,8 @@ function getRoleLabel(role: ManagedAdminRole, locale: AppLocale) {
   if (locale === "de") {
     if (role === "super_admin") return "Inhaber";
     if (role === "admin") return "Admin";
-    if (role === "viewer") return "Viewer";
-    return "Worker";
+    if (role === "viewer") return "Beobachter";
+    return "Mitarbeiter";
   }
 
   if (role === "super_admin") return "Owner";
@@ -256,6 +256,30 @@ export function AdminSettingsClient({
   usersWarning,
 }: AdminSettingsClientProps) {
   const copy = getSettingsUiCopy(locale);
+  const userEmailLabel =
+    locale === "ar" ? "البريد الإلكتروني" : locale === "de" ? "E-Mail" : "Email";
+  const userInactiveLabel =
+    locale === "ar" ? "غير نشط" : locale === "de" ? "Inaktiv" : "Inactive";
+  const activateUserLabel =
+    locale === "ar" ? "تفعيل" : locale === "de" ? "Aktivieren" : "Activate";
+  const deactivateUserLabel =
+    locale === "ar" ? "إيقاف" : locale === "de" ? "Deaktivieren" : "Deactivate";
+  const diagnosticsEnvironmentLabel =
+    locale === "ar" ? "البيئة" : locale === "de" ? "Umgebung" : "Environment";
+  const diagnosticsSiteUrlLabel =
+    locale === "ar" ? "رابط الموقع" : locale === "de" ? "Site-URL" : "Site URL";
+  const diagnosticsMissingEnvLabel =
+    locale === "ar"
+      ? "متغيرات البيئة الناقصة"
+      : locale === "de"
+        ? "Fehlende Umgebungsvariablen"
+        : "Missing environment variables";
+  const diagnosticsMigrationLabel =
+    locale === "ar"
+      ? "الهجرة المطلوبة"
+      : locale === "de"
+        ? "Benoetigte Migration"
+        : "Suggested migration";
   const requiredLabel = getRequiredFieldBadge(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -485,7 +509,11 @@ export function AdminSettingsClient({
         description={copy.description}
         actions={
           <>
-            <AdminButton variant="secondary" onClick={handleSaveNotifications} disabled={isPending}>
+            <AdminButton
+              variant="secondary"
+              onClick={handleSaveNotifications}
+              disabled={isPending || !diagnosticsReady}
+            >
               {copy.save}
             </AdminButton>
             <button
@@ -514,6 +542,20 @@ export function AdminSettingsClient({
         <div className="rounded-[1rem] border border-rose-400/25 bg-rose-400/10 px-4 py-4 text-sm text-rose-100">
           <p className="font-semibold">{copy.diagnosticsTitle}</p>
           <p className="mt-2">{initialSettings.diagnostics.message}</p>
+          <div className="mt-3 space-y-1 text-xs text-rose-100/90">
+            <p>{`${diagnosticsEnvironmentLabel}: ${initialSettings.diagnostics.environmentLabel}`}</p>
+            <p>{`${diagnosticsSiteUrlLabel}: ${initialSettings.diagnostics.siteBaseUrl}`}</p>
+            {initialSettings.diagnostics.missingEnvVars.length > 0 ? (
+              <p>
+                {`${diagnosticsMissingEnvLabel}: ${initialSettings.diagnostics.missingEnvVars.join(", ")}`}
+              </p>
+            ) : null}
+            {initialSettings.diagnostics.suggestedMigration ? (
+              <p>
+                {`${diagnosticsMigrationLabel}: ${initialSettings.diagnostics.suggestedMigration}`}
+              </p>
+            ) : null}
+          </div>
         </div>
       ) : null}
 
@@ -738,7 +780,7 @@ export function AdminSettingsClient({
               id="userEmail"
               name="userEmail"
               type="email"
-              label="Email"
+              label={userEmailLabel}
               value={userFormState.email}
               requiredLabel={requiredLabel}
               onChange={(event) =>
@@ -794,7 +836,7 @@ export function AdminSettingsClient({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <AdminBadge variant={user.isActive ? "success" : "danger"}>
-                      {user.isActive ? copy.userActive : "Inactive"}
+                      {user.isActive ? copy.userActive : userInactiveLabel}
                     </AdminBadge>
                     <AdminBadge variant="info">{getRoleLabel(user.role, locale)}</AdminBadge>
                   </div>
@@ -822,7 +864,7 @@ export function AdminSettingsClient({
                     onClick={() => handleUserToggle(user)}
                     disabled={!canManageUsers || isPending}
                   >
-                    {user.isActive ? "Deactivate" : "Activate"}
+                    {user.isActive ? deactivateUserLabel : activateUserLabel}
                   </AdminButton>
                   {user.id !== currentUserId ? (
                     <AdminButton

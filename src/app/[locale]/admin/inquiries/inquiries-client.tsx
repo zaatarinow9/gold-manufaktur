@@ -94,11 +94,68 @@ function getStatusBadgeVariant(status: CustomerInquiryStatus) {
   return "info";
 }
 
+function getInquiryStatusLabel(locale: AppLocale, status: CustomerInquiryStatus) {
+  if (status === "new") {
+    return locale === "ar" ? "جديد" : locale === "de" ? "Neu" : "New";
+  }
+
+  if (status === "read") {
+    return locale === "ar" ? "تمت القراءة" : locale === "de" ? "Gelesen" : "Read";
+  }
+
+  if (status === "in_progress") {
+    return locale === "ar"
+      ? "قيد المتابعة"
+      : locale === "de"
+        ? "In Bearbeitung"
+        : "In progress";
+  }
+
+  if (status === "replied") {
+    return locale === "ar" ? "تم الرد" : locale === "de" ? "Beantwortet" : "Replied";
+  }
+
+  return locale === "ar" ? "أرشفة" : locale === "de" ? "Archiviert" : "Archived";
+}
+
+function getInquirySourceLabel(
+  locale: AppLocale,
+  source: CustomerInquiryRecord["source"]
+) {
+  if (source === "contact") {
+    return locale === "ar" ? "تواصل عام" : locale === "de" ? "Kontakt" : "Contact";
+  }
+
+  if (source === "product") {
+    return locale === "ar" ? "طلب منتج" : locale === "de" ? "Produkt" : "Product";
+  }
+
+  if (source === "order_entry") {
+    return locale === "ar"
+      ? "إدخال طلب خارجي"
+      : locale === "de"
+        ? "Externer Auftrag"
+        : "Order entry";
+  }
+
+  return source;
+}
+
 export function AdminInquiriesClient({
   inquiries,
   locale,
 }: AdminInquiriesClientProps) {
   const copy = getInquiriesUiCopy(locale);
+  const allLabel = locale === "ar" ? "الكل" : locale === "de" ? "Alle" : "All";
+  const createdLabel =
+    locale === "ar" ? "تاريخ الإنشاء" : locale === "de" ? "Erstellt" : "Created";
+  const contactLabel = getInquirySourceLabel(locale, "contact");
+  const inProgressLabel = getInquiryStatusLabel(locale, "in_progress");
+  const localeLabel = locale === "ar" ? "اللغة" : locale === "de" ? "Sprache" : "Locale";
+  const orderEntryLabel = getInquirySourceLabel(locale, "order_entry");
+  const phoneLabel = locale === "ar" ? "الهاتف" : locale === "de" ? "Telefon" : "Phone";
+  const productSourceLabel = getInquirySourceLabel(locale, "product");
+  const searchLabel = locale === "ar" ? "بحث" : locale === "de" ? "Suche" : "Search";
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -172,7 +229,7 @@ export function AdminInquiriesClient({
       <AdminCard title={copy.status} description={copy.filtersDescription}>
         <AdminToolbar>
           <AdminInput
-            label="Search"
+            label={searchLabel}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder={copy.filtersDescription}
@@ -183,22 +240,22 @@ export function AdminInquiriesClient({
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
           >
-            <option value="all">All</option>
-            <option value="new">new</option>
-            <option value="read">read</option>
-            <option value="in_progress">in_progress</option>
-            <option value="replied">replied</option>
-            <option value="archived">archived</option>
+            <option value="all">{allLabel}</option>
+            <option value="new">{getInquiryStatusLabel(locale, "new")}</option>
+            <option value="read">{getInquiryStatusLabel(locale, "read")}</option>
+            <option value="in_progress">{inProgressLabel}</option>
+            <option value="replied">{getInquiryStatusLabel(locale, "replied")}</option>
+            <option value="archived">{getInquiryStatusLabel(locale, "archived")}</option>
           </AdminSelect>
           <AdminSelect
             label={copy.source}
             value={sourceFilter}
             onChange={(event) => setSourceFilter(event.target.value)}
           >
-            <option value="all">All</option>
-            <option value="contact">contact</option>
-            <option value="product">product</option>
-            <option value="order_entry">order_entry</option>
+            <option value="all">{allLabel}</option>
+            <option value="contact">{contactLabel}</option>
+            <option value="product">{productSourceLabel}</option>
+            <option value="order_entry">{orderEntryLabel}</option>
           </AdminSelect>
         </AdminToolbar>
       </AdminCard>
@@ -212,9 +269,11 @@ export function AdminInquiriesClient({
             action={
               <div className="flex flex-wrap gap-2">
                 <AdminBadge variant={getStatusBadgeVariant(inquiry.status)}>
-                  {inquiry.status}
+                  {getInquiryStatusLabel(locale, inquiry.status)}
                 </AdminBadge>
-                <AdminBadge variant="neutral">{inquiry.source}</AdminBadge>
+                <AdminBadge variant="neutral">
+                  {getInquirySourceLabel(locale, inquiry.source)}
+                </AdminBadge>
               </div>
             }
           >
@@ -222,12 +281,12 @@ export function AdminInquiriesClient({
               <div className="grid gap-4 lg:grid-cols-2">
                 <div className="space-y-2 text-sm text-muted">
                   <p>{`${copy.email}: ${inquiry.customerEmail || "-"}`}</p>
-                  <p>{`Phone: ${inquiry.customerPhone || "-"}`}</p>
+                  <p>{`${phoneLabel}: ${inquiry.customerPhone || "-"}`}</p>
                   <p>{`${copy.product}: ${inquiry.productSnapshot?.name || "-"}`}</p>
                 </div>
                 <div className="space-y-2 text-sm text-muted">
-                  <p>{`Created: ${inquiry.createdAt.slice(0, 16).replace("T", " ")}`}</p>
-                  <p>{`Locale: ${inquiry.locale}`}</p>
+                  <p>{`${createdLabel}: ${inquiry.createdAt.slice(0, 16).replace("T", " ")}`}</p>
+                  <p>{`${localeLabel}: ${inquiry.locale}`}</p>
                 </div>
               </div>
 
@@ -264,7 +323,7 @@ export function AdminInquiriesClient({
                   onClick={() => setStatus(inquiry.id, "in_progress")}
                   disabled={isPending}
                 >
-                  in_progress
+                  {inProgressLabel}
                 </AdminButton>
                 <AdminButton
                   size="sm"

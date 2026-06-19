@@ -33,21 +33,21 @@ type PublicCatalogSchemaCapabilities = {
   productsOptionGroupId: boolean;
 };
 
-type SchemaColumnRow = {
-  column_name: string;
-  table_name: string;
-};
-
-type SchemaColumnQueryResult = Promise<{
-  data: SchemaColumnRow[] | null;
-  error: { message: string } | null;
-}>;
-
-type SchemaColumnQueryAfterEq = {
-  in: (column: string, values: string[]) => {
-    in: (column: string, values: string[]) => SchemaColumnQueryResult;
+async function hasPublicCatalogColumn(tableName: string, columnName: string) {
+  const supabase = createSupabaseAdminClient() as unknown as {
+    from: (table: string) => {
+      select: (columns: string) => {
+        limit: (count: number) => Promise<{
+          data: unknown[] | null;
+          error: { message: string } | null;
+        }>;
+      };
+    };
   };
-};
+
+  const { error } = await supabase.from(tableName).select(columnName).limit(1);
+  return !error;
+}
 
 let publicCatalogSchemaCapabilitiesPromise:
   | Promise<PublicCatalogSchemaCapabilities>
@@ -127,49 +127,28 @@ function getProductGallery(product: TableRow<"products">, gallery: string[]) {
 
 async function getPublicCatalogSchemaCapabilities() {
   if (!publicCatalogSchemaCapabilitiesPromise) {
-    const supabase = createSupabaseAdminClient() as unknown as {
-      schema: (schema: string) => {
-        from: (table: string) => {
-          select: (columns: string) => {
-            eq: (column: string, value: string) => SchemaColumnQueryAfterEq;
-          };
-        };
-      };
-    };
-
     publicCatalogSchemaCapabilitiesPromise = (async () => {
-      const { data, error } = await supabase
-        .schema("information_schema")
-        .from("columns")
-        .select("table_name,column_name")
-        .eq("table_schema", "public")
-        .in("table_name", ["categories", "option_groups", "options", "products"])
-        .in("column_name", ["deleted_at", "option_group_id"]);
+      const [
+        categoriesDeletedAt,
+        optionGroupsDeletedAt,
+        optionsDeletedAt,
+        productsDeletedAt,
+        productsOptionGroupId,
+      ] = await Promise.all([
+        hasPublicCatalogColumn("categories", "deleted_at"),
+        hasPublicCatalogColumn("option_groups", "deleted_at"),
+        hasPublicCatalogColumn("options", "deleted_at"),
+        hasPublicCatalogColumn("products", "deleted_at"),
+        hasPublicCatalogColumn("products", "option_group_id"),
+      ]);
 
-        if (error || !data) {
-          return {
-            categoriesDeletedAt: false,
-            optionGroupsDeletedAt: false,
-            optionsDeletedAt: false,
-            productsDeletedAt: false,
-            productsOptionGroupId: false,
-          } satisfies PublicCatalogSchemaCapabilities;
-        }
-
-        const hasColumn = (tableName: string, columnName: string) =>
-          data.some(
-            (column: SchemaColumnRow) =>
-              column.table_name === tableName &&
-              column.column_name === columnName
-          );
-
-        return {
-          categoriesDeletedAt: hasColumn("categories", "deleted_at"),
-          optionGroupsDeletedAt: hasColumn("option_groups", "deleted_at"),
-          optionsDeletedAt: hasColumn("options", "deleted_at"),
-          productsDeletedAt: hasColumn("products", "deleted_at"),
-          productsOptionGroupId: hasColumn("products", "option_group_id"),
-        } satisfies PublicCatalogSchemaCapabilities;
+      return {
+        categoriesDeletedAt,
+        optionGroupsDeletedAt,
+        optionsDeletedAt,
+        productsDeletedAt,
+        productsOptionGroupId,
+      } satisfies PublicCatalogSchemaCapabilities;
       })();
   }
 

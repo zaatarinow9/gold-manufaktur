@@ -63,7 +63,7 @@ type AdminProductsClientProps = {
   products: AdminProductRecord[];
 };
 
-const lastOptionGroupStorageKey = "goldhelwah.admin.last-option-group";
+const lastOptionGroupStorageKey = "goldhelwah:last-option-group-id";
 
 function createEmptyLocalizedText(): LocalizedText {
   return {

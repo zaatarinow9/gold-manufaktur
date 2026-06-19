@@ -62,18 +62,29 @@ type AdminOptionsClientProps = {
 };
 
 type PresetKey = "customer_note" | "karat" | "name_text" | "weight_grams";
+type OptionEditorKind =
+  | "checkbox"
+  | "customer_note"
+  | "karat"
+  | "name_text"
+  | "number"
+  | "select"
+  | "text"
+  | "textarea"
+  | "weight";
 
 const editableLocales = ["de", "ar", "en", "fr", "tr"] as const;
-const optionTypeValues: OptionType[] = [
+const lastOptionGroupStorageKey = "goldhelwah:last-option-group-id";
+const optionEditorKinds: OptionEditorKind[] = [
   "text",
-  "textarea",
   "number",
+  "textarea",
   "select",
-  "multi_select",
-  "boolean",
-  "date",
-  "image",
-  "file",
+  "checkbox",
+  "karat",
+  "weight",
+  "customer_note",
+  "name_text",
 ];
 
 function createEmptyLocalizedText(): LocalizedText {
@@ -105,6 +116,14 @@ function createEditGroupForm(group: AdminOptionGroupRecord): OptionGroupFormStat
   };
 }
 
+function getNextOptionSortOrder(
+  groups: AdminOptionGroupRecord[],
+  groupId?: string
+) {
+  const targetGroup = groups.find((group) => group.id === groupId) ?? groups[0] ?? null;
+  return (targetGroup?.options.length ?? 0) + 1;
+}
+
 function createOptionForm(groups: AdminOptionGroupRecord[], groupId?: string): OptionFormState {
   return {
     groupId: groupId ?? groups[0]?.id ?? "",
@@ -114,7 +133,7 @@ function createOptionForm(groups: AdminOptionGroupRecord[], groupId?: string): O
     key: "",
     label: createEmptyLocalizedText(),
     placeholder: createEmptyLocalizedText(),
-    sortOrder: 1,
+    sortOrder: getNextOptionSortOrder(groups, groupId),
     type: "text",
     valuesText: "",
   };
@@ -168,6 +187,33 @@ function parseOptionValues(valuesText: string) {
       };
     })
     .filter((value) => value.label && value.value);
+}
+
+function getStoredOptionGroupId(groups: AdminOptionGroupRecord[]) {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  const stored = window.localStorage.getItem(lastOptionGroupStorageKey);
+
+  if (!stored) {
+    return "";
+  }
+
+  return groups.some((group) => group.id === stored) ? stored : "";
+}
+
+function saveStoredOptionGroupId(groupId: string) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (!groupId) {
+    window.localStorage.removeItem(lastOptionGroupStorageKey);
+    return;
+  }
+
+  window.localStorage.setItem(lastOptionGroupStorageKey, groupId);
 }
 
 function getOptionsUiCopy(locale: AppLocale) {
@@ -385,8 +431,163 @@ function buildPreset(
   }
 }
 
-function getOptionTypeLabel(type: OptionType) {
-  return type.replace(/_/g, " ");
+function resolveOptionEditorKind(
+  option: Pick<OptionFormState, "key" | "type">
+): OptionEditorKind {
+  if (option.key === "gold-karat") {
+    return "karat";
+  }
+
+  if (option.key === "weight-grams") {
+    return "weight";
+  }
+
+  if (option.key === "name-text") {
+    return "name_text";
+  }
+
+  if (option.key === "customer-note") {
+    return "customer_note";
+  }
+
+  if (option.type === "boolean") {
+    return "checkbox";
+  }
+
+  if (option.type === "number") {
+    return "number";
+  }
+
+  if (option.type === "textarea") {
+    return "textarea";
+  }
+
+  if (option.type === "select") {
+    return "select";
+  }
+
+  return "text";
+}
+
+function applyOptionEditorKind(
+  current: OptionFormState,
+  kind: OptionEditorKind,
+  locale: AppLocale
+): OptionFormState {
+  if (kind === "karat") {
+    return {
+      ...current,
+      ...buildPreset("karat", locale),
+      type: "select",
+    } satisfies OptionFormState;
+  }
+
+  if (kind === "weight") {
+    return {
+      ...current,
+      ...buildPreset("weight_grams", locale),
+      type: "number",
+    } satisfies OptionFormState;
+  }
+
+  if (kind === "name_text") {
+    return {
+      ...current,
+      ...buildPreset("name_text", locale),
+      type: "text",
+    } satisfies OptionFormState;
+  }
+
+  if (kind === "customer_note") {
+    return {
+      ...current,
+      ...buildPreset("customer_note", locale),
+      type: "textarea",
+    } satisfies OptionFormState;
+  }
+
+  if (kind === "checkbox") {
+    return {
+      ...current,
+      type: "boolean",
+      valuesText: "",
+    };
+  }
+
+  return {
+    ...current,
+    type: kind as Extract<OptionType, "number" | "select" | "text" | "textarea">,
+    valuesText: kind === "select" ? current.valuesText : "",
+  };
+}
+
+function getOptionEditorKindLabel(kind: OptionEditorKind, locale: AppLocale) {
+  if (locale === "ar") {
+    switch (kind) {
+      case "checkbox":
+        return "مربع اختيار";
+      case "customer_note":
+        return "ملاحظات الزبون";
+      case "karat":
+        return "عيار";
+      case "name_text":
+        return "اسم";
+      case "number":
+        return "رقم";
+      case "select":
+        return "قائمة اختيار";
+      case "text":
+        return "نص";
+      case "textarea":
+        return "ملاحظات طويلة";
+      case "weight":
+        return "وزن";
+    }
+  }
+
+  if (locale === "de") {
+    switch (kind) {
+      case "checkbox":
+        return "Checkbox";
+      case "customer_note":
+        return "Kundennotiz";
+      case "karat":
+        return "Legierung";
+      case "name_text":
+        return "Namensfeld";
+      case "number":
+        return "Zahl";
+      case "select":
+        return "Auswahl";
+      case "text":
+        return "Text";
+      case "textarea":
+        return "Mehrzeilig";
+      case "weight":
+        return "Gewicht";
+    }
+  }
+
+  switch (kind) {
+    case "checkbox":
+      return "Checkbox";
+    case "customer_note":
+      return "Customer note";
+    case "karat":
+      return "Karat";
+    case "name_text":
+      return "Name field";
+    case "number":
+      return "Number";
+    case "select":
+      return "Select";
+    case "text":
+      return "Text";
+    case "textarea":
+      return "Textarea";
+    case "weight":
+      return "Weight";
+  }
 }
 
 export function AdminOptionsClient({
@@ -396,6 +597,18 @@ export function AdminOptionsClient({
 }: AdminOptionsClientProps) {
   const t = useTranslations("Admin");
   const uiCopy = getOptionsUiCopy(locale);
+  const addFieldLabel =
+    locale === "ar"
+      ? "إضافة خيار"
+      : locale === "de"
+        ? "Option anlegen"
+        : "Add option";
+  const createGroupLabel =
+    locale === "ar"
+      ? "إضافة مجموعة"
+      : locale === "de"
+        ? "Gruppe anlegen"
+        : "Add group";
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
@@ -413,6 +626,27 @@ export function AdminOptionsClient({
   const groupEditorRef = useRef<HTMLDivElement | null>(null);
   const optionEditorRef = useRef<HTMLDivElement | null>(null);
   const requiredLabel = getRequiredFieldBadge(locale);
+  const activeGroupFilter =
+    groupFilter !== "all" && !groups.some((group) => group.id === groupFilter)
+      ? "all"
+      : groupFilter;
+
+  const resolvePreferredGroupId = () => {
+    if (
+      activeGroupFilter !== "all" &&
+      groups.some((group) => group.id === activeGroupFilter)
+    ) {
+      return activeGroupFilter;
+    }
+
+    const rememberedGroupId = getStoredOptionGroupId(groups);
+
+    if (rememberedGroupId) {
+      return rememberedGroupId;
+    }
+
+    return groups[0]?.id ?? "";
+  };
 
   useEffect(() => {
     if (showGroupForm && groupEditorRef.current) {
@@ -430,7 +664,8 @@ export function AdminOptionsClient({
     const normalizedSearch = search.trim().toLowerCase();
 
     return groups.filter((group) => {
-      const matchesGroup = groupFilter === "all" || group.id === groupFilter;
+      const matchesGroup =
+        activeGroupFilter === "all" || group.id === activeGroupFilter;
 
       if (!matchesGroup) {
         return false;
@@ -454,7 +689,7 @@ export function AdminOptionsClient({
 
       return haystack.includes(normalizedSearch);
     });
-  }, [groupFilter, groups, search]);
+  }, [activeGroupFilter, groups, search]);
 
   const clearFieldError = (field: string) => {
     setFieldErrors((current) => {
@@ -480,7 +715,7 @@ export function AdminOptionsClient({
 
   const resetOptionForm = () => {
     setFieldErrors({});
-    setOptionFormState(createOptionForm(groups));
+    setOptionFormState(createOptionForm(groups, resolvePreferredGroupId() || undefined));
     setShowOptionForm(false);
   };
 
@@ -499,15 +734,20 @@ export function AdminOptionsClient({
   };
 
   const openCreateField = (groupId?: string) => {
+    const nextGroupId = groupId || resolvePreferredGroupId();
     setFeedback(null);
     setFieldErrors({});
-    setOptionFormState(createOptionForm(groups, groupId));
+    if (nextGroupId) {
+      saveStoredOptionGroupId(nextGroupId);
+    }
+    setOptionFormState(createOptionForm(groups, nextGroupId || undefined));
     setShowOptionForm(true);
   };
 
   const openEditField = (option: AdminOptionRecord) => {
     setFeedback(null);
     setFieldErrors({});
+    saveStoredOptionGroupId(option.groupId);
     setOptionFormState(createEditOptionForm(option));
     setShowOptionForm(true);
   };
@@ -559,6 +799,7 @@ export function AdminOptionsClient({
         return;
       }
 
+      saveStoredOptionGroupId(optionFormState.groupId);
       resetOptionForm();
       refresh();
     });
@@ -583,6 +824,14 @@ export function AdminOptionsClient({
 
       if (optionFormState.groupId === groupId) {
         resetOptionForm();
+      }
+
+      if (groupFilter === groupId) {
+        setGroupFilter("all");
+      }
+
+      if (getStoredOptionGroupId(groups) === groupId) {
+        saveStoredOptionGroupId("");
       }
 
       refresh();
@@ -632,14 +881,14 @@ export function AdminOptionsClient({
         actions={
           <>
             <AdminButton variant="secondary" onClick={openCreateGroup}>
-              {uiCopy.createGroup}
+              {createGroupLabel}
             </AdminButton>
             <AdminButton
               variant="primary"
               onClick={() => openCreateField()}
               disabled={groups.length === 0}
             >
-              {uiCopy.addField}
+              {addFieldLabel}
             </AdminButton>
           </>
         }
@@ -661,8 +910,17 @@ export function AdminOptionsClient({
             icon={<Search className="h-4 w-4" />}
           />
           <AdminSelect
-            value={groupFilter}
-            onChange={(event) => setGroupFilter(event.target.value)}
+            value={activeGroupFilter}
+            onChange={(event) => {
+              const nextValue = event.target.value;
+              setGroupFilter(nextValue);
+
+              if (nextValue === "all") {
+                return;
+              }
+
+              saveStoredOptionGroupId(nextValue);
+            }}
             label={uiCopy.groupFilter}
           >
             <option value="all">{t("common.all")}</option>
@@ -678,7 +936,7 @@ export function AdminOptionsClient({
       {showGroupForm ? (
         <div ref={groupEditorRef}>
           <AdminCard
-            title={groupFormState.id ? t("buttons.edit") : uiCopy.createGroup}
+            title={groupFormState.id ? t("buttons.edit") : createGroupLabel}
             description={uiCopy.groupHelper}
             action={
               <div className="flex gap-2">
@@ -768,7 +1026,7 @@ export function AdminOptionsClient({
       {showOptionForm ? (
         <div ref={optionEditorRef}>
           <AdminCard
-            title={optionFormState.id ? t("buttons.edit") : uiCopy.addField}
+            title={optionFormState.id ? t("buttons.edit") : addFieldLabel}
             description={uiCopy.groupHelper}
             action={
               <div className="flex gap-2">
@@ -822,10 +1080,12 @@ export function AdminOptionsClient({
                   required
                   requiredLabel={requiredLabel}
                   onChange={(event) => {
+                    const nextValue = event.target.value;
                     clearFieldError("groupId");
+                    saveStoredOptionGroupId(nextValue);
                     setOptionFormState((current) => ({
                       ...current,
-                      groupId: event.target.value,
+                      groupId: nextValue,
                     }));
                   }}
                 >
@@ -839,17 +1099,20 @@ export function AdminOptionsClient({
                   id="type"
                   name="type"
                   label={uiCopy.typeLabel}
-                  value={optionFormState.type}
+                  value={resolveOptionEditorKind(optionFormState)}
                   onChange={(event) =>
-                    setOptionFormState((current) => ({
-                      ...current,
-                      type: event.target.value as OptionType,
-                    }))
+                    setOptionFormState((current) =>
+                      applyOptionEditorKind(
+                        current,
+                        event.target.value as OptionEditorKind,
+                        locale
+                      )
+                    )
                   }
                 >
-                  {optionTypeValues.map((type) => (
-                    <option key={type} value={type}>
-                      {getOptionTypeLabel(type)}
+                  {optionEditorKinds.map((kind) => (
+                    <option key={kind} value={kind}>
+                      {getOptionEditorKindLabel(kind, locale)}
                     </option>
                   ))}
                 </AdminSelect>
@@ -1037,7 +1300,7 @@ export function AdminOptionsClient({
                     variant="primary"
                     onClick={() => openCreateField(group.id)}
                   >
-                    {uiCopy.addField}
+                    {addFieldLabel}
                   </AdminButton>
                   <AdminButton
                     size="sm"
@@ -1069,7 +1332,14 @@ export function AdminOptionsClient({
                                 {option.displayLabel}
                               </p>
                               <p className="text-xs text-muted">
-                                {option.key} {" · "} {getOptionTypeLabel(option.type)}
+                                {option.key} {" / "}{" "}
+                                {getOptionEditorKindLabel(
+                                  resolveOptionEditorKind({
+                                    key: option.key,
+                                    type: option.type,
+                                  }),
+                                  locale
+                                )}
                               </p>
                             </div>
                             <div className="flex flex-wrap gap-2">

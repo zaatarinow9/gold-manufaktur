@@ -511,72 +511,52 @@ let catalogSchemaCapabilitiesPromise:
   | Promise<CatalogSchemaCapabilities>
   | null = null;
 
-async function getCatalogSchemaCapabilities() {
-  if (!catalogSchemaCapabilitiesPromise) {
-    const supabase = createSupabaseAdminClient() as unknown as {
-      schema: (schema: string) => {
-        from: (table: string) => {
-          select: (columns: string) => {
-            eq: (column: string, value: string) => {
-              in: (column: string, values: string[]) => {
-                in: (column: string, values: string[]) => Promise<{
-                  data: Array<{ column_name: string; table_name: string }> | null;
-                  error: { message: string } | null;
-                }>;
-              };
-            };
-          };
-        };
+async function hasPublicColumn(tableName: string, columnName: string) {
+  const supabase = createSupabaseAdminClient() as unknown as {
+    from: (table: string) => {
+      select: (columns: string) => {
+        limit: (count: number) => Promise<{
+          data: unknown[] | null;
+          error: { message: string } | null;
+        }>;
       };
     };
+  };
 
-    catalogSchemaCapabilitiesPromise = supabase
-      .schema("information_schema")
-      .from("columns")
-      .select("table_name,column_name")
-      .eq("table_schema", "public")
-      .in("table_name", ["categories", "option_groups", "options", "products"])
-      .in("column_name", [
-        "deleted_at",
-        "option_group_id",
-        "supports_name_customization",
-      ])
-      .then(({ data, error }) => {
-        if (error || !data) {
-          return {
-            categoriesDeletedAt: false,
-            categoriesSupportsNameCustomization: false,
-            optionGroupsDeletedAt: false,
-            optionsDeletedAt: false,
-            productsDeletedAt: false,
-            productsOptionGroupId: false,
-            productsSupportsNameCustomization: false,
-          } satisfies CatalogSchemaCapabilities;
-        }
+  const { error } = await supabase.from(tableName).select(columnName).limit(1);
+  return !error;
+}
 
-        const hasColumn = (tableName: string, columnName: string) =>
-          data.some(
-            (column) =>
-              column.table_name === tableName &&
-              column.column_name === columnName
-          );
-
-        return {
-          categoriesDeletedAt: hasColumn("categories", "deleted_at"),
-          categoriesSupportsNameCustomization: hasColumn(
-            "categories",
-            "supports_name_customization"
-          ),
-          optionGroupsDeletedAt: hasColumn("option_groups", "deleted_at"),
-          optionsDeletedAt: hasColumn("options", "deleted_at"),
-          productsDeletedAt: hasColumn("products", "deleted_at"),
-          productsOptionGroupId: hasColumn("products", "option_group_id"),
-          productsSupportsNameCustomization: hasColumn(
-            "products",
-            "supports_name_customization"
-          ),
-        } satisfies CatalogSchemaCapabilities;
-      });
+async function getCatalogSchemaCapabilities() {
+  if (!catalogSchemaCapabilitiesPromise) {
+    catalogSchemaCapabilitiesPromise = Promise.all([
+      hasPublicColumn("categories", "deleted_at"),
+      hasPublicColumn("categories", "supports_name_customization"),
+      hasPublicColumn("option_groups", "deleted_at"),
+      hasPublicColumn("options", "deleted_at"),
+      hasPublicColumn("products", "deleted_at"),
+      hasPublicColumn("products", "option_group_id"),
+      hasPublicColumn("products", "supports_name_customization"),
+    ]).then(
+      ([
+        categoriesDeletedAt,
+        categoriesSupportsNameCustomization,
+        optionGroupsDeletedAt,
+        optionsDeletedAt,
+        productsDeletedAt,
+        productsOptionGroupId,
+        productsSupportsNameCustomization,
+      ]) =>
+        ({
+          categoriesDeletedAt,
+          categoriesSupportsNameCustomization,
+          optionGroupsDeletedAt,
+          optionsDeletedAt,
+          productsDeletedAt,
+          productsOptionGroupId,
+          productsSupportsNameCustomization,
+        }) satisfies CatalogSchemaCapabilities
+    );
   }
 
   return catalogSchemaCapabilitiesPromise;
@@ -1818,11 +1798,15 @@ export async function deleteOption(optionId: string) {
     );
   }
 
-  if ((productAssignmentCount ?? 0) > 0 || isUsedInOrders) {
-    if (!capabilities.optionsDeletedAt) {
-      throw new Error("OPTION_DELETE_UNSUPPORTED");
-    }
+  const hasHistoricalUsage = (productAssignmentCount ?? 0) > 0 || isUsedInOrders;
 
+  const { error } = await supabase.from("options").delete().eq("id", optionId);
+
+  if (!error) {
+    return { mode: "deleted" as const };
+  }
+
+  if (hasHistoricalUsage && capabilities.optionsDeletedAt) {
     const { error: softDeleteError } = await supabase
       .from("options")
       .update({
@@ -1832,19 +1816,15 @@ export async function deleteOption(optionId: string) {
       .eq("id", optionId);
 
     if (softDeleteError) {
-      throw new Error(`Unable to soft delete option: ${softDeleteError.message}`);
+      throw new Error(
+        `Unable to delete option: ${error.message}. Soft delete fallback also failed: ${softDeleteError.message}`
+      );
     }
 
     return { mode: "soft_deleted_in_use" as const };
   }
 
-  const { error } = await supabase.from("options").delete().eq("id", optionId);
-
-  if (error) {
-    throw new Error(`Unable to delete option: ${error.message}`);
-  }
-
-  return { mode: "deleted" as const };
+  throw new Error(`Unable to delete option: ${error.message}`);
 }
 
 async function getOptionSettingsForGroup(groupId: string) {
@@ -1927,11 +1907,36 @@ export async function deleteOptionGroup(groupId: string) {
     }
   }
 
-  if (assignedProducts.length > 0 || hasOrderHistory) {
-    if (!capabilities.optionGroupsDeletedAt || !capabilities.optionsDeletedAt) {
-      throw new Error("OPTION_GROUP_DELETE_UNSUPPORTED");
+  const hasHistoricalUsage = assignedProducts.length > 0 || hasOrderHistory;
+  let deleteOptionsErrorMessage: string | null = null;
+
+  if (groupOptionIds.length > 0) {
+    const { error: deleteOptionsError } = await supabase
+      .from("options")
+      .delete()
+      .eq("group_id", groupId);
+
+    if (deleteOptionsError) {
+      deleteOptionsErrorMessage = deleteOptionsError.message;
+    }
+  }
+
+  let deleteGroupErrorMessage: string | null = null;
+
+  if (!deleteOptionsErrorMessage) {
+    const { error } = await supabase
+      .from("option_groups")
+      .delete()
+      .eq("id", groupId);
+
+    if (!error) {
+      return { mode: "deleted" as const };
     }
 
+    deleteGroupErrorMessage = error.message;
+  }
+
+  if (hasHistoricalUsage && capabilities.optionGroupsDeletedAt && capabilities.optionsDeletedAt) {
     const now = new Date().toISOString();
     const { error: groupSoftDeleteError } = await supabase
       .from("option_groups")
@@ -1943,7 +1948,7 @@ export async function deleteOptionGroup(groupId: string) {
 
     if (groupSoftDeleteError) {
       throw new Error(
-        `Unable to soft delete option group: ${groupSoftDeleteError.message}`
+        `Unable to delete option group: ${deleteGroupErrorMessage ?? deleteOptionsErrorMessage ?? "Unknown error"}. Soft delete fallback also failed: ${groupSoftDeleteError.message}`
       );
     }
 
@@ -1966,27 +1971,13 @@ export async function deleteOptionGroup(groupId: string) {
     return { mode: "soft_deleted_in_use" as const };
   }
 
-  if (groupOptionIds.length > 0) {
-    const { error: deleteOptionsError } = await supabase
-      .from("options")
-      .delete()
-      .eq("group_id", groupId);
-
-    if (deleteOptionsError) {
-      throw new Error(
-        `Unable to delete option group fields: ${deleteOptionsError.message}`
-      );
-    }
+  if (deleteOptionsErrorMessage) {
+    throw new Error(
+      `Unable to delete option group fields: ${deleteOptionsErrorMessage}`
+    );
   }
 
-  const { error } = await supabase
-    .from("option_groups")
-    .delete()
-    .eq("id", groupId);
-
-  if (error) {
-    throw new Error(`Unable to delete option group: ${error.message}`);
-  }
-
-  return { mode: "deleted" as const };
+  throw new Error(
+    `Unable to delete option group: ${deleteGroupErrorMessage ?? "Unknown error"}`
+  );
 }

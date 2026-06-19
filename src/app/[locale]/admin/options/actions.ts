@@ -36,11 +36,13 @@ function revalidateOptionViews() {
 }
 
 function getRequiredFieldLabel(locale: AppLocale) {
+  const isArabic = locale === "ar";
+
   if (locale === "de") {
     return "Bitte fuellen Sie dieses Pflichtfeld aus.";
   }
 
-  if (locale === "ar") {
+  if (isArabic) {
     return "يرجى تعبئة هذا الحقل المطلوب.";
   }
 
@@ -56,11 +58,13 @@ function getRequiredFieldLabel(locale: AppLocale) {
 }
 
 function getKeyMessage(locale: AppLocale) {
+  const isArabic = locale === "ar";
+
   if (locale === "de") {
     return "Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.";
   }
 
-  if (locale === "ar") {
+  if (isArabic) {
     return "استخدم أحرفاً صغيرة وأرقاماً وشرطات فقط.";
   }
 
@@ -108,13 +112,21 @@ function getOptionFieldErrors(locale: AppLocale, error: ZodError) {
 }
 
 function getOptionDeleteMessage(locale: AppLocale, mode: "deleted" | "soft_deleted_in_use") {
+  const isArabic = locale === "ar";
+
+  if (isArabic) {
+    return mode === "deleted"
+      ? "تم حذف الخيار من النظام"
+      : "تمت إزالة الخيار من النماذج النشطة وسيبقى فقط ضمن الطلبات السابقة.";
+  }
+
   if (locale === "de") {
     return mode === "deleted"
-      ? "Das Element wurde aus dem System entfernt."
+      ? "Die Option wurde aus dem System entfernt"
       : "Die Option wurde aus aktiven Formularen entfernt und bleibt nur in historischen Auftraegen erhalten.";
   }
 
-  if (locale === "ar") {
+  if ((locale as AppLocale) === "ar") {
     return mode === "deleted"
       ? "تم حذف العنصر من النظام."
       : "تمت إزالة الخيار من النماذج النشطة وسيبقى فقط ضمن الطلبات السابقة.";
@@ -133,7 +145,7 @@ function getOptionDeleteMessage(locale: AppLocale, mode: "deleted" | "soft_delet
   }
 
   return mode === "deleted"
-    ? "The item was removed from the system."
+    ? "The option was removed from the system"
     : "The option was removed from active forms and is only kept for historical orders.";
 }
 
@@ -141,13 +153,21 @@ function getOptionGroupDeleteMessage(
   locale: AppLocale,
   mode: "deleted" | "soft_deleted_in_use"
 ) {
+  const isArabic = locale === "ar";
+
+  if (isArabic) {
+    return mode === "deleted"
+      ? "تم حذف مجموعة الخيارات من النظام"
+      : "تمت إزالة مجموعة الخيارات من النماذج النشطة وستبقى فقط ضمن الطلبات السابقة.";
+  }
+
   if (locale === "de") {
     return mode === "deleted"
-      ? "Die Optionsgruppe wurde aus dem System entfernt."
+      ? "Die Optionsgruppe wurde aus dem System entfernt"
       : "Die Optionsgruppe wurde aus aktiven Formularen entfernt und bleibt nur in historischen Auftraegen erhalten.";
   }
 
-  if (locale === "ar") {
+  if ((locale as AppLocale) === "ar") {
     return mode === "deleted"
       ? "تم حذف مجموعة الخيارات من النظام."
       : "تمت إزالة مجموعة الخيارات من النماذج النشطة وستبقى فقط ضمن الطلبات السابقة.";
@@ -166,7 +186,7 @@ function getOptionGroupDeleteMessage(
   }
 
   return mode === "deleted"
-    ? "The option group was removed from the system."
+    ? "The option group was removed from the system"
     : "The option group was removed from active forms and is only kept for historical orders.";
 }
 
