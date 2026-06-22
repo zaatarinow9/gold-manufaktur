@@ -13,6 +13,10 @@ import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminTabs } from "@/components/admin/AdminTabs";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
+import {
+  useAdminPrivacyMode,
+} from "@/components/admin/AdminPrivacyMode";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
@@ -27,8 +31,6 @@ type AdminOrdersClientProps = {
   employees: EmployeeRecord[];
   locale: AppLocale;
   orders: OrderListRecord[];
-  privacyModeEnabled: boolean;
-  privacyModeReason: string;
 };
 
 type OrderTabKey =
@@ -137,20 +139,22 @@ export function AdminOrdersClient({
   employees,
   locale,
   orders,
-  privacyModeEnabled,
-  privacyModeReason,
 }: AdminOrdersClientProps) {
   const t = useTranslations("Admin");
   const uiCopy = getOrdersUiCopy(locale);
+  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const {
+    enabled: privacyModeEnabled,
+    masked: privacyMasked,
+    setEnabled: setPrivacyModeEnabled,
+  } =
+    useAdminPrivacyMode();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<OrderTabKey>("all");
   const [assignedFilter, setAssignedFilter] = useState("all");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [privacyRevealed, setPrivacyRevealed] = useState(false);
   const selectedCardRef = useRef<HTMLDivElement | null>(null);
-  const detailsHidden =
-    privacyModeEnabled &&
-    (currentUserRole !== "super_admin" || !privacyRevealed);
+  const detailsHidden = privacyMasked;
 
   const workerChoices = useMemo(
     () =>
@@ -239,7 +243,9 @@ export function AdminOrdersClient({
       header: t("orders.table.trackingNumber"),
       cell: (order) => (
         <div className="space-y-1">
-          <p className="font-medium text-foreground">{order.trackingNumber}</p>
+          <p className="font-medium text-foreground">
+            {detailsHidden ? privacyCopy.hidden : order.trackingNumber}
+          </p>
           <p className="text-xs text-muted">{t(`trackingStatus.${order.trackingStatus}`)}</p>
         </div>
       ),
@@ -252,7 +258,9 @@ export function AdminOrdersClient({
           <p className="text-foreground">
             {detailsHidden ? uiCopy.privacyHidden : order.customerName || t("common.noCustomer")}
           </p>
-          <p className="text-xs text-muted">{detailsHidden ? "hidden" : order.customerEmail || "-"}</p>
+          <p className="text-xs text-muted">
+            {detailsHidden ? privacyCopy.hidden : order.customerEmail || "-"}
+          </p>
         </div>
       ),
     },
@@ -266,7 +274,9 @@ export function AdminOrdersClient({
               ? uiCopy.privacyHidden
               : order.assignedWorkerEmail || order.employeeName || uiCopy.noWorker}
           </p>
-          <p className="text-xs text-muted">{detailsHidden ? "hidden" : order.workshopName || "-"}</p>
+          <p className="text-xs text-muted">
+            {detailsHidden ? privacyCopy.hidden : order.workshopName || "-"}
+          </p>
         </div>
       ),
     },
@@ -336,29 +346,18 @@ export function AdminOrdersClient({
 
       {privacyModeEnabled ? (
         <AdminCard
-          title={uiCopy.privacyHidden}
-          description={privacyModeReason || uiCopy.privacyHidden}
+          title={privacyCopy.activeBadge}
+          description={privacyCopy.activeDescription}
           action={
-            currentUserRole === "super_admin" ? (
-              <AdminButton
-                variant="secondary"
-                onClick={() => {
-                  if (!privacyRevealed) {
-                    const confirmed = window.confirm(uiCopy.reveal);
-                    if (!confirmed) {
-                      return;
-                    }
-                  }
-
-                  setPrivacyRevealed((current) => !current);
-                }}
-              >
-                {privacyRevealed ? uiCopy.hideAgain : uiCopy.reveal}
-              </AdminButton>
-            ) : undefined
+            <AdminButton
+              variant="secondary"
+              onClick={() => setPrivacyModeEnabled(false)}
+            >
+              {privacyCopy.deactivate}
+            </AdminButton>
           }
         >
-          <p className="text-sm text-muted">{uiCopy.privacyHidden}</p>
+          <p className="text-sm text-muted">{privacyCopy.shortcut}</p>
         </AdminCard>
       ) : null}
 
@@ -397,10 +396,10 @@ export function AdminOrdersClient({
         <div ref={selectedCardRef}>
           {detailsHidden ? (
             <AdminCard
-              title={uiCopy.privacyHidden}
-              description={privacyModeReason || uiCopy.privacyHidden}
+              title={privacyCopy.activeBadge}
+              description={privacyCopy.activeDescription}
             >
-              <p className="text-sm text-muted">{uiCopy.privacyHidden}</p>
+              <p className="text-sm text-muted">{privacyCopy.shortcut}</p>
             </AdminCard>
           ) : (
             <OrderTrackingCard

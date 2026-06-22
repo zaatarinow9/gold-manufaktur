@@ -40,7 +40,6 @@ export default async function AdminSettingsPage({
 
   return (
     <AdminSettingsClient
-      canManagePrivacy={access.user?.role === "super_admin"}
       canManageUsers={access.user?.role === "super_admin"}
       currentUserId={access.user?.id ?? ""}
       initialSettings={initialSettings}

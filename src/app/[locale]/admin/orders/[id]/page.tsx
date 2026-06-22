@@ -6,14 +6,15 @@ import { AdminBadge } from "@/components/admin/AdminBadge";
 import { getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminPrivacyGuard } from "@/components/admin/AdminPrivacyMode";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { PhoneInline } from "@/components/site/PhoneInline";
 import { Link } from "@/i18n/navigation";
 import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
+import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import { getScopedEmployees } from "@/lib/db/employees";
 import { getScopedOrderDetail } from "@/lib/db/orders";
-import { getAdminSettingsSnapshot } from "@/lib/db/siteSettings";
 import { resolveLocale } from "@/lib/site";
 
 type OrderDetailPageProps = {
@@ -30,9 +31,9 @@ const fieldTranslationKeys: Record<string, string> = {
   goldColor: "newOrder.fields.goldColor",
   goldKarat: "newOrder.fields.goldKarat",
   legacyNotes: "newOrder.fields.internalNotes",
-  nameText: "newOrder.fields.nameText",
-  nameLanguage: "newOrder.fields.nameLanguage",
   nameCustomizationEnabled: "newOrder.fields.nameCustomizationEnabled",
+  nameLanguage: "newOrder.fields.nameLanguage",
+  nameText: "newOrder.fields.nameText",
   packagingNotes: "newOrder.fields.packagingNotes",
   qualityRequirements: "newOrder.fields.qualityRequirements",
   ringSize: "newOrder.fields.ringSize",
@@ -148,6 +149,54 @@ function renderKeyValueRows(
   );
 }
 
+function formatSelectedOptionValue(value: unknown) {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+      .join(", ");
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? String(value) : "";
+  }
+
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function renderSelectedOptionsRows(
+  selectedOptions: Array<{ label: string; value: unknown }>,
+  fallbackValue: string
+) {
+  const rows = selectedOptions
+    .map((option) => ({
+      label: option.label,
+      value: formatSelectedOptionValue(option.value),
+    }))
+    .filter((option) => option.value.length > 0);
+
+  if (rows.length === 0) {
+    return <p className="text-sm text-muted">{fallbackValue}</p>;
+  }
+
+  return (
+    <dl className="grid gap-3 text-sm">
+      {rows.map((option) => (
+        <div
+          key={`${option.label}-${option.value}`}
+          className="flex items-start justify-between gap-4"
+        >
+          <dt className="text-muted">{option.label}</dt>
+          <dd className="max-w-[60%] text-end text-foreground">{option.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 export default async function AdminOrderDetailPage({
   params,
 }: OrderDetailPageProps) {
@@ -155,6 +204,7 @@ export default async function AdminOrderDetailPage({
   const locale = await resolveLocale(Promise.resolve({ locale: localeParam }));
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
+  const privacyCopy = getAdminPrivacyUiCopy(locale);
   const access = await requireAdminAccess(locale, [
     "super_admin",
     "admin",
@@ -170,10 +220,9 @@ export default async function AdminOrderDetailPage({
     );
   }
 
-  const [order, employees, settings] = await Promise.all([
+  const [order, employees] = await Promise.all([
     getScopedOrderDetail(access.user, id),
     getScopedEmployees(access.user),
-    getAdminSettingsSnapshot(),
   ]);
 
   if (!order) {
@@ -185,80 +234,63 @@ export default async function AdminOrderDetailPage({
     );
   }
 
-  if (settings.privacyModeEnabled && access.user.role !== "super_admin") {
-    return (
-      <div className="space-y-6">
-        <AdminPageHeader
-          eyebrow={t("orders.detailEyebrow")}
-          title={t("orders.title")}
-          description={settings.privacyModeReason || "Auftragsdetails sind voruebergehend ausgeblendet"}
-          actions={
-            <Link
-              href="/admin/orders"
-              className={getAdminButtonClassName({ variant: "ghost" })}
-            >
-              {t("buttons.backToOrders")}
-            </Link>
-          }
-        />
-        <AdminCard
-          title={
-            locale === "ar"
-              ? "تم إخفاء تفاصيل الطلبات مؤقتاً"
-              : "Auftragsdetails sind voruebergehend ausgeblendet"
-          }
-          description={settings.privacyModeReason || undefined}
-        >
-          <p className="text-sm text-muted">
-            {locale === "ar"
-              ? "يمكن للمالك أو المدير الأعلى فقط كشف التفاصيل من جديد."
-              : "Nur der Inhaber oder Super-Admin kann die Details erneut sichtbar machen."}
-          </p>
-        </AdminCard>
-      </div>
-    );
-  }
-
   const item = order.items[0];
   const notProvided = t("common.notProvided");
-  const productSpecificationsRows = [
-    { label: t("newOrder.fields.goldKarat"), value: order.productSpecifications.karat },
+  const renderSensitive = (
+    children: React.ReactNode,
+    fallback: React.ReactNode = privacyCopy.hidden
+  ) => <AdminPrivacyGuard fallback={fallback}>{children}</AdminPrivacyGuard>;
+  const renderPrivacyFallbackCard = (title: string, description?: string) => (
+    <AdminCard title={title} description={description}>
+      <p className="text-sm text-muted">{privacyCopy.activeDescription}</p>
+      <p className="mt-2 text-xs text-muted">{privacyCopy.shortcut}</p>
+    </AdminCard>
+  );
+
+  const summaryDetails = [
     {
-      label: t("newOrder.fields.estimatedWeight"),
+      label: t("orders.table.product"),
+      sensitive: false,
+      value: item?.productName || order.previewProductName || notProvided,
+    },
+    {
+      label: t("orders.trackingNumberLabel"),
+      sensitive: true,
+      value: order.trackingNumber,
+    },
+    {
+      label: t("orders.table.workshop"),
+      sensitive: false,
+      value: order.workshopName || notProvided,
+    },
+    {
+      label: t("orders.table.customer"),
+      sensitive: true,
+      value: order.customerName || t("common.noCustomer"),
+    },
+    {
+      label: t("orders.table.employee"),
+      sensitive: false,
       value:
-        typeof order.productSpecifications.weightGrams === "number"
-          ? `${order.productSpecifications.weightGrams} g`
-          : null,
+        order.assignedWorkerEmail || order.employeeName || t("common.unassigned"),
     },
     {
-      label: t("newOrder.fields.nameCustomizationEnabled"),
-      value: order.productSpecifications.nameCustomization.enabled
-        ? t("common.enabled")
-        : t("common.disabled"),
+      label: t("newOrder.fields.totalAmount"),
+      sensitive: false,
+      value: order.totalAmount !== null ? `${order.totalAmount} ${order.currency}` : notProvided,
     },
     {
-      label: t("newOrder.fields.nameLanguage"),
-      value: order.productSpecifications.nameCustomization.language === "ar"
-        ? locale === "ar"
-          ? "عربي"
-          : "Arabisch"
-        : order.productSpecifications.nameCustomization.language === "en"
-          ? locale === "ar"
-            ? "إنجليزي"
-            : "Englisch"
-          : null,
+      label: t("newOrder.fields.dueDate"),
+      sensitive: false,
+      value: order.dueDate || notProvided,
     },
-    {
-      label: t("newOrder.fields.nameText"),
-      value: order.productSpecifications.nameCustomization.text,
-    },
-  ].filter((row) => row.value && String(row.value).trim().length > 0);
+  ];
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         eyebrow={t("orders.detailEyebrow")}
-        title={order.internalOrderNumber}
+        title={renderSensitive(order.internalOrderNumber)}
         description={t("orders.detailDescription")}
         meta={
           <>
@@ -316,38 +348,15 @@ export default async function AdminOrderDetailPage({
                   </p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    { label: t("orders.table.product"), value: item?.productName || notProvided },
-                    {
-                      label: t("orders.trackingNumberLabel"),
-                      value: order.trackingNumber,
-                    },
-                    { label: t("orders.table.workshop"), value: order.workshopName || notProvided },
-                    {
-                      label: t("orders.table.customer"),
-                      value: order.customerName || t("common.noCustomer"),
-                    },
-                    {
-                      label: t("orders.table.employee"),
-                      value:
-                        order.assignedWorkerEmail ||
-                        order.employeeName ||
-                        t("common.unassigned"),
-                    },
-                    {
-                      label: t("newOrder.fields.totalAmount"),
-                      value: order.totalAmount !== null
-                        ? `${order.totalAmount} ${order.currency}`
-                        : notProvided,
-                    },
-                    { label: t("newOrder.fields.dueDate"), value: order.dueDate || notProvided },
-                  ].map((detail) => (
+                  {summaryDetails.map((detail) => (
                     <div
                       key={detail.label}
                       className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3"
                     >
                       <p className="text-sm font-medium text-muted">{detail.label}</p>
-                      <p className="mt-2 text-sm text-foreground">{detail.value}</p>
+                      <p className="mt-2 text-sm text-foreground">
+                        {detail.sensitive ? renderSensitive(detail.value) : detail.value}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -374,6 +383,12 @@ export default async function AdminOrderDetailPage({
                         {t("orders.itemQuantity", { count: orderItem.quantity })}
                       </AdminBadge>
                     </div>
+                    <div className="mt-4">
+                      {renderSensitive(
+                        renderSelectedOptionsRows(orderItem.selectedOptions, notProvided),
+                        <p className="text-sm text-muted">{privacyCopy.activeDescription}</p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -381,170 +396,207 @@ export default async function AdminOrderDetailPage({
           ) : null}
 
           <section className="grid gap-6 xl:grid-cols-2">
-            <AdminCard title={locale === "ar" ? "مواصفات المجوهرات" : "Schmuckspezifikationen"}>
-              {productSpecificationsRows.length === 0 ? (
-                <p className="text-sm text-muted">{notProvided}</p>
-              ) : (
-                <dl className="grid gap-3 text-sm">
-                  {productSpecificationsRows.map((row) => (
-                    <div key={row.label} className="flex items-start justify-between gap-4">
-                      <dt className="text-muted">{row.label}</dt>
-                      <dd className="max-w-[60%] text-end text-foreground">{row.value}</dd>
-                    </div>
-                  ))}
-                </dl>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(
+                t("newOrder.additionalOptionsTitle"),
+                t("newOrder.additionalOptionsDescription")
               )}
-            </AdminCard>
+            >
+              <AdminCard
+                title={t("newOrder.additionalOptionsTitle")}
+                description={t("newOrder.additionalOptionsDescription")}
+              >
+                {item ? (
+                  renderSelectedOptionsRows(item.selectedOptions, notProvided)
+                ) : (
+                  <p className="text-sm text-muted">{notProvided}</p>
+                )}
+              </AdminCard>
+            </AdminPrivacyGuard>
 
-            <AdminCard title={t("orders.goldDetailsTitle")}>
-              {renderKeyValueRows(locale, t, order.goldDetails, notProvided)}
-            </AdminCard>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(t("orders.goldDetailsTitle"))}
+            >
+              <AdminCard title={t("orders.goldDetailsTitle")}>
+                {renderKeyValueRows(locale, t, order.goldDetails, notProvided)}
+              </AdminCard>
+            </AdminPrivacyGuard>
 
-            <AdminCard title={t("orders.measurementsTitle")}>
-              {renderKeyValueRows(locale, t, order.measurements, notProvided)}
-            </AdminCard>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(t("orders.measurementsTitle"))}
+            >
+              <AdminCard title={t("orders.measurementsTitle")}>
+                {renderKeyValueRows(locale, t, order.measurements, notProvided)}
+              </AdminCard>
+            </AdminPrivacyGuard>
 
-            <AdminCard title={t("orders.personalizationTitle")}>
-              {renderKeyValueRows(locale, t, order.personalization, notProvided)}
-            </AdminCard>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(t("orders.personalizationTitle"))}
+            >
+              <AdminCard title={t("orders.personalizationTitle")}>
+                {renderKeyValueRows(locale, t, order.personalization, notProvided)}
+              </AdminCard>
+            </AdminPrivacyGuard>
 
-            <AdminCard title={t("orders.stonesTitle")}>
-              {renderKeyValueRows(locale, t, order.stones, notProvided)}
-            </AdminCard>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(t("orders.stonesTitle"))}
+            >
+              <AdminCard title={t("orders.stonesTitle")}>
+                {renderKeyValueRows(locale, t, order.stones, notProvided)}
+              </AdminCard>
+            </AdminPrivacyGuard>
 
-            <AdminCard title={t("orders.notesTitle")}>
-              {renderKeyValueRows(locale, t, order.notes, notProvided)}
-            </AdminCard>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(t("orders.notesTitle"))}
+            >
+              <AdminCard title={t("orders.notesTitle")}>
+                {renderKeyValueRows(locale, t, order.notes, notProvided)}
+              </AdminCard>
+            </AdminPrivacyGuard>
 
-            <AdminCard title={t("orders.deliveryTitle")}>
-              <div className="space-y-4 text-sm">
-                <div>
-                  <p className="text-muted">{t("newOrder.fields.dueDate")}</p>
-                  <p className="mt-1 text-foreground">{order.dueDate || notProvided}</p>
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(t("orders.deliveryTitle"))}
+            >
+              <AdminCard title={t("orders.deliveryTitle")}>
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <p className="text-muted">{t("newOrder.fields.dueDate")}</p>
+                    <p className="mt-1 text-foreground">{order.dueDate || notProvided}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted">{copy.attachmentsLabel}</p>
+                    <p className="mt-1 text-foreground">
+                      {order.attachments.length > 0
+                        ? order.attachments.join(", ")
+                        : notProvided}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-muted">{copy.attachmentsLabel}</p>
-                  <p className="mt-1 text-foreground">
-                    {order.attachments.length > 0
-                      ? order.attachments.join(", ")
-                      : notProvided}
-                  </p>
-                </div>
-              </div>
-            </AdminCard>
+              </AdminCard>
+            </AdminPrivacyGuard>
           </section>
 
-          <AdminCard title={copy.supportTicketsTitle}>
-            {order.supportTickets.length === 0 ? (
-              <p className="text-sm text-muted">{copy.noSupportTickets}</p>
-            ) : (
-              <div className="space-y-4">
-                {order.supportTickets.map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-foreground">{ticket.subject}</p>
-                        <p className="text-xs text-muted">
-                          {ticket.customerName || ticket.customerEmail || notProvided}
-                        </p>
+          <AdminPrivacyGuard fallback={renderPrivacyFallbackCard(copy.supportTicketsTitle)}>
+            <AdminCard title={copy.supportTicketsTitle}>
+              {order.supportTickets.length === 0 ? (
+                <p className="text-sm text-muted">{copy.noSupportTickets}</p>
+              ) : (
+                <div className="space-y-4">
+                  {order.supportTickets.map((ticket) => (
+                    <div
+                      key={ticket.id}
+                      className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold text-foreground">{ticket.subject}</p>
+                          <p className="text-xs text-muted">
+                            {ticket.customerName || ticket.customerEmail || notProvided}
+                          </p>
+                        </div>
+                        <AdminBadge variant="info">{ticket.status}</AdminBadge>
                       </div>
-                      <AdminBadge variant="info">{ticket.status}</AdminBadge>
+                      <p className="mt-3 text-sm leading-6 text-muted">{ticket.message}</p>
+                      <p className="mt-3 text-xs text-muted">{ticket.createdAt}</p>
                     </div>
-                    <p className="mt-3 text-sm leading-6 text-muted">{ticket.message}</p>
-                    <p className="mt-3 text-xs text-muted">{ticket.createdAt}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </AdminCard>
+                  ))}
+                </div>
+              )}
+            </AdminCard>
+          </AdminPrivacyGuard>
 
-          <AdminCard title={copy.emailLogTitle}>
-            {order.emailLogs.length === 0 ? (
-              <p className="text-sm text-muted">{copy.noEmailLogs}</p>
-            ) : (
-              <div className="space-y-4">
-                {order.emailLogs.map((log) => (
-                  <div
-                    key={log.id}
-                    className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold text-foreground">{log.subject}</p>
-                        <p className="text-xs text-muted">{log.recipientEmail}</p>
-                        <p className="mt-2 text-xs text-muted">
-                          {t("orders.emailTemplateLabel")}:{" "}
-                          {getEmailTemplateLabel(t, log.templateType)}
-                          {" • "}
-                          {t("orders.publicStageLabel")}:{" "}
-                          {log.publicStage
-                            ? t(`publicTrackingStage.${log.publicStage}`)
-                            : t("orders.notStageSpecific")}
-                        </p>
+          <AdminPrivacyGuard fallback={renderPrivacyFallbackCard(copy.emailLogTitle)}>
+            <AdminCard title={copy.emailLogTitle}>
+              {order.emailLogs.length === 0 ? (
+                <p className="text-sm text-muted">{copy.noEmailLogs}</p>
+              ) : (
+                <div className="space-y-4">
+                  {order.emailLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold text-foreground">{log.subject}</p>
+                          <p className="text-xs text-muted">{log.recipientEmail}</p>
+                          <p className="mt-2 text-xs text-muted">
+                            {t("orders.emailTemplateLabel")}:{" "}
+                            {getEmailTemplateLabel(t, log.templateType)}
+                            {" • "}
+                            {t("orders.publicStageLabel")}:{" "}
+                            {log.publicStage
+                              ? t(`publicTrackingStage.${log.publicStage}`)
+                              : t("orders.notStageSpecific")}
+                          </p>
+                        </div>
+                        <AdminBadge variant={getEmailLogVariant(log.status)}>
+                          {t(`emailLogStatus.${log.status}`)}
+                        </AdminBadge>
                       </div>
-                      <AdminBadge
-                        variant={getEmailLogVariant(log.status)}
-                      >
-                        {t(`emailLogStatus.${log.status}`)}
-                      </AdminBadge>
+                      <p className="mt-2 text-xs text-muted">{log.sentAt || log.createdAt}</p>
+                      {log.errorMessage ? (
+                        <p className="mt-3 text-sm text-muted">
+                          {getEmailLogErrorMessage(t, log.errorMessage)}
+                        </p>
+                      ) : null}
                     </div>
-                    <p className="mt-2 text-xs text-muted">
-                      {log.sentAt || log.createdAt}
-                    </p>
-                    {log.errorMessage ? (
-                      <p className="mt-3 text-sm text-muted">
-                        {getEmailLogErrorMessage(t, log.errorMessage)}
-                      </p>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            )}
-          </AdminCard>
+                  ))}
+                </div>
+              )}
+            </AdminCard>
+          </AdminPrivacyGuard>
         </div>
 
         <div className="space-y-6">
-          <AdminCard title={t("orders.customerTitle")} description={t("orders.customerDescription")}>
-            <div className="space-y-4 text-sm">
-              <div>
-                <p className="text-muted">{t("orders.table.customer")}</p>
-                <p className="mt-1 text-foreground">
-                  {order.customerName || t("common.noCustomer")}
-                </p>
+          <AdminPrivacyGuard
+            fallback={renderPrivacyFallbackCard(
+              t("orders.customerTitle"),
+              t("orders.customerDescription")
+            )}
+          >
+            <AdminCard
+              title={t("orders.customerTitle")}
+              description={t("orders.customerDescription")}
+            >
+              <div className="space-y-4 text-sm">
+                <div>
+                  <p className="text-muted">{t("orders.table.customer")}</p>
+                  <p className="mt-1 text-foreground">
+                    {order.customerName || t("common.noCustomer")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted">{t("orders.customerEmailLabel")}</p>
+                  <p className="mt-1 text-foreground">{order.customerEmail || notProvided}</p>
+                </div>
+                <div>
+                  <p className="text-muted">{t("newOrder.fields.customerPhone")}</p>
+                  <p className="mt-1 text-foreground">
+                    {order.customerPhone ? (
+                      <PhoneInline>{order.customerPhone}</PhoneInline>
+                    ) : (
+                      notProvided
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted">{t("newOrder.fields.customerReference")}</p>
+                  <p className="mt-1 text-foreground">{order.customerReference || notProvided}</p>
+                </div>
+                <div>
+                  <p className="text-muted">{copy.customerLanguage}</p>
+                  <p className="mt-1 text-foreground">
+                    {formatDetailValue(locale, "customerLanguage", order.customerLanguage)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-muted">{t("newOrder.fields.workshop")}</p>
+                  <p className="mt-1 text-foreground">{order.workshopName || notProvided}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-muted">{t("orders.customerEmailLabel")}</p>
-                <p className="mt-1 text-foreground">{order.customerEmail || notProvided}</p>
-              </div>
-              <div>
-                <p className="text-muted">{t("newOrder.fields.customerPhone")}</p>
-                <p className="mt-1 text-foreground">
-                  {order.customerPhone ? (
-                    <PhoneInline>{order.customerPhone}</PhoneInline>
-                  ) : (
-                    notProvided
-                  )}
-                </p>
-              </div>
-              <div>
-                <p className="text-muted">{t("newOrder.fields.customerReference")}</p>
-                <p className="mt-1 text-foreground">{order.customerReference || notProvided}</p>
-              </div>
-              <div>
-                <p className="text-muted">{copy.customerLanguage}</p>
-                <p className="mt-1 text-foreground">
-                  {formatDetailValue(locale, "customerLanguage", order.customerLanguage)}
-                </p>
-              </div>
-              <div>
-                <p className="text-muted">{t("newOrder.fields.workshop")}</p>
-                <p className="mt-1 text-foreground">{order.workshopName || notProvided}</p>
-              </div>
-            </div>
-          </AdminCard>
+            </AdminCard>
+          </AdminPrivacyGuard>
 
           <OrderTrackingCard
             currentUserRole={access.user.role}

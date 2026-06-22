@@ -59,6 +59,7 @@ const selectedOptionSchema = z.object({
   key: z.string().trim().min(1).max(120),
   label: z.string().trim().min(1).max(255),
   optionId: z.string().uuid(),
+  type: z.string().trim().min(1).max(80),
   value: selectedOptionValueSchema,
 });
 
@@ -91,7 +92,7 @@ const orderNotesSchema = z.object({
 const orderCreateSchema = z.object({
   attachments: z.array(z.string().trim().min(1).max(500)).default([]),
   currency: z.string().trim().max(12).default("EUR"),
-  customerEmail: z.string().trim().email().max(160),
+  customerEmail: z.string().trim().email().max(160).or(z.literal("")).default(""),
   customerLanguage: localeSchema.default("de"),
   customerName: z.string().trim().min(1).max(160),
   customerPhone: optionalPhoneSchema,
@@ -197,6 +198,7 @@ export type OrderItemRecord = {
     key: string;
     label: string;
     optionId: string;
+    type: string;
     value: Json;
   }>;
 };
@@ -422,6 +424,7 @@ function getSelectedOptions(value: Json | null | undefined) {
       key: typeof item.key === "string" ? item.key : "",
       label: typeof item.label === "string" ? item.label : "",
       optionId: typeof item.optionId === "string" ? item.optionId : "",
+      type: typeof item.type === "string" ? item.type : "text",
       value: item.value ?? null,
     }))
     .filter((item) => item.optionId.length > 0);
@@ -1516,22 +1519,53 @@ export async function createOrder(
   const actorProfileId = normalizeOptionalUuid(viewer.id);
   const customerLocale = parsed.customerLanguage;
   const currency = normalizeCurrency(parsed.currency);
-  const productSpecifications = createProductSpecifications(parsed.productSpecifications);
+  const baseProductSpecifications = createProductSpecifications(parsed.productSpecifications);
   const legacyGoldDetails = {
     ...parsed.goldDetails,
   };
+  let legacyPersonalization: Record<string, string> = {
+    ...parsed.personalization,
+    nameCustomizationEnabled: baseProductSpecifications.nameCustomization.enabled
+      ? "true"
+      : "false",
+  };
+  const orderItemSnapshot = {
+    categoryName: parsed.productCategoryName,
+    categorySlug: parsed.productCategorySlug,
+    id: parsed.productId,
+    notes: parsed.notes.customerNotes,
+    productId: parsed.productId,
+    productImage: parsed.productImage,
+    productName: parsed.productName,
+    productSku: parsed.productSku,
+    productSlug: parsed.productSlug,
+    quantity: parsed.quantity,
+    referenceImages: parsed.referenceImages,
+    selectedOptions: parsed.selectedOptions,
+  } satisfies OrderItemRecord;
+  const productSpecifications = mergeProductSpecifications({
+    goldDetails: legacyGoldDetails,
+    item: orderItemSnapshot,
+    personalization: legacyPersonalization,
+    productSpecifications: baseProductSpecifications,
+  });
   const formattedWeightGrams = formatWeightGrams(productSpecifications.weightGrams);
 
   if (productSpecifications.karat) {
     legacyGoldDetails.goldKarat = productSpecifications.karat;
+  } else {
+    delete legacyGoldDetails.goldKarat;
   }
 
-  if (formattedWeightGrams) {
+  if (formattedWeightGrams && typeof productSpecifications.weightGrams === "number") {
     legacyGoldDetails.estimatedWeight = formattedWeightGrams;
     legacyGoldDetails.weightGrams = String(productSpecifications.weightGrams);
+  } else {
+    delete legacyGoldDetails.estimatedWeight;
+    delete legacyGoldDetails.weightGrams;
   }
 
-  const legacyPersonalization: Record<string, string> = {
+  legacyPersonalization = {
     ...parsed.personalization,
     nameCustomizationEnabled: productSpecifications.nameCustomization.enabled
       ? "true"
@@ -1664,19 +1698,9 @@ export async function createOrder(
     | undefined;
   const orderItemsForEmail = [
     {
-      categoryName: parsed.productCategoryName,
-      categorySlug: parsed.productCategorySlug,
+      ...orderItemSnapshot,
       id: order.id,
-      notes: parsed.notes.customerNotes,
-      productId: parsed.productId,
-      productImage: parsed.productImage,
-      productName: parsed.productName,
-      productSku: parsed.productSku,
-      productSlug: parsed.productSlug,
-      quantity: parsed.quantity,
-      referenceImages: parsed.referenceImages,
-      selectedOptions: parsed.selectedOptions,
-    } satisfies OrderItemRecord,
+    },
   ];
 
   if (parsed.emailUpdatesEnabled && parsed.customerEmail) {

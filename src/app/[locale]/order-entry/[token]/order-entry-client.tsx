@@ -4,10 +4,10 @@ import clsx from "clsx";
 import { LoaderCircle, ShieldCheck } from "lucide-react";
 import { useMemo, useState, useTransition } from "react";
 
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import type { CatalogProduct } from "@/types/catalog";
-import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
 type OrderEntryClientProps = {
   locale: AppLocale;
@@ -25,22 +25,24 @@ function getCopy(locale: AppLocale) {
       customerName: "اسم العميل",
       customerPhone: "رقم الهاتف",
       description:
-        "هذا الرابط مخصص لإدخال الطلبات بشكل خاص. اختر المنتج واملأ البيانات المطلوبة لإرسال الطلب مباشرة إلى لوحة GoldHelwah.",
+        "استخدم هذا الرابط الخاص لإرسال طلب الورشة بشكل منظم وآمن مباشرة إلى لوحة GoldHelwah.",
       emailInvalid: "يرجى إدخال بريد إلكتروني صحيح.",
+      emailUpdates: "إرسال تحديثات البريد الإلكتروني",
+      emailUpdatesHint:
+        "سيتم إرسال التحديثات فقط عند إدخال بريد إلكتروني صالح.",
       message: "ملاحظات الطلب",
+      noOptions: "لا توجد خيارات مخصصة لهذا المنتج.",
+      options: "خيارات المنتج",
       privacy: "رابط خاص ومحمي",
       product: "المنتج",
       productRequired: "يرجى اختيار منتج أولاً.",
       quantity: "الكمية",
       required: "يرجى تعبئة هذا الحقل.",
-      specs: "مواصفات القطعة",
       submit: "إرسال الطلب",
       submitPending: "جارٍ إرسال الطلب...",
       success: "تم إنشاء الطلب بنجاح.",
-      title: "إدخال طلب خاص",
+      title: "طلب من الورشة",
       trackingCta: "عرض التتبع",
-      weight: "الوزن بالغرام",
-      weightInvalid: "يرجى إدخال وزن صحيح بالغرام.",
     };
   }
 
@@ -51,22 +53,24 @@ function getCopy(locale: AppLocale) {
       customerName: "Kundenname",
       customerPhone: "Telefon",
       description:
-        "Dieser Link ist fuer die private Auftragserfassung gedacht. Waehlen Sie ein Produkt und senden Sie den Auftrag direkt an das GoldHelwah-Dashboard.",
+        "Dieser geschuetzte Link erfasst Werkstattauftraege direkt und sicher fuer das GoldHelwah-Dashboard.",
       emailInvalid: "Bitte geben Sie eine gueltige E-Mail-Adresse ein.",
+      emailUpdates: "E-Mail-Updates senden",
+      emailUpdatesHint:
+        "Updates werden nur versendet, wenn eine gueltige E-Mail-Adresse eingetragen ist.",
       message: "Auftragsnotiz",
+      noOptions: "Diesem Produkt sind keine individuellen Optionen zugewiesen.",
+      options: "Produktoptionen",
       privacy: "Privater, geschuetzter Link",
       product: "Produkt",
       productRequired: "Bitte waehlen Sie zuerst ein Produkt aus.",
       quantity: "Menge",
       required: "Bitte fuellen Sie dieses Pflichtfeld aus.",
-      specs: "Schmuckspezifikationen",
       submit: "Auftrag senden",
       submitPending: "Auftrag wird gesendet...",
       success: "Der Auftrag wurde erfolgreich angelegt.",
-      title: "Private Auftragserfassung",
+      title: "Werkstattauftrag",
       trackingCta: "Tracking anzeigen",
-      weight: "Gewicht in Gramm",
-      weightInvalid: "Bitte geben Sie ein gueltiges Gewicht in Gramm ein.",
     };
   }
 
@@ -76,22 +80,24 @@ function getCopy(locale: AppLocale) {
     customerName: "Customer name",
     customerPhone: "Phone",
     description:
-      "This private link is for secure order intake. Choose a product and send the order directly into the GoldHelwah dashboard.",
+      "Use this private link to send a secure workshop order directly into the GoldHelwah dashboard.",
     emailInvalid: "Please enter a valid email address.",
+    emailUpdates: "Send email updates",
+    emailUpdatesHint:
+      "Updates are only sent when a valid customer email address is provided.",
     message: "Order note",
+    noOptions: "No custom options are assigned to this product.",
+    options: "Product options",
     privacy: "Private protected link",
     product: "Product",
     productRequired: "Please choose a product first.",
     quantity: "Quantity",
     required: "Please complete this field.",
-    specs: "Jewelry specifications",
     submit: "Send order",
     submitPending: "Sending order...",
     success: "The order was created successfully.",
-    title: "Private order entry",
+    title: "Workshop order",
     trackingCta: "Open tracking",
-    weight: "Weight in grams",
-    weightInvalid: "Please enter a valid weight in grams.",
   };
 }
 
@@ -127,7 +133,10 @@ function isMissingRequiredValue(type: string, value: OptionFieldValue | undefine
   return typeof value !== "string" || value.trim().length === 0;
 }
 
-function normalizeFieldValue(type: string, value: OptionFieldValue): boolean | number | string | string[] | null {
+function normalizeFieldValue(
+  type: string,
+  value: OptionFieldValue | undefined
+): boolean | number | string | string[] | null {
   if (type === "boolean") {
     return value === true;
   }
@@ -149,6 +158,38 @@ function normalizeFieldValue(type: string, value: OptionFieldValue): boolean | n
   return typeof value === "string" ? value.trim() : value ?? null;
 }
 
+function formatOptionValue(
+  locale: AppLocale,
+  type: string,
+  value: OptionFieldValue | undefined
+) {
+  if (type === "boolean") {
+    if (value !== true && value !== false) {
+      return "";
+    }
+
+    if (locale === "ar") {
+      return value ? "نعم" : "لا";
+    }
+
+    if (locale === "de") {
+      return value ? "Ja" : "Nein";
+    }
+
+    return value ? "Yes" : "No";
+  }
+
+  if (Array.isArray(value)) {
+    return value.join(", ");
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return typeof value === "string" ? value.trim() : "";
+}
+
 export function OrderEntryClient({
   locale,
   products,
@@ -161,13 +202,10 @@ export function OrderEntryClient({
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(true);
   const [message, setMessage] = useState(() =>
     products[0] ? getDefaultMessage(locale, products[0].name) : ""
   );
-  const [karat, setKarat] = useState<"14" | "18" | "21">("21");
-  const [weightGrams, setWeightGrams] = useState("");
-  const [nameLanguage, setNameLanguage] = useState<"ar" | "en">("ar");
-  const [nameText, setNameText] = useState("");
   const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -175,11 +213,31 @@ export function OrderEntryClient({
 
   const selectedProduct =
     products.find((product) => product.id === productId) ?? products[0] ?? null;
-  const productOptions = selectedProduct?.optionGroup?.options ?? [];
+  const productOptions = useMemo(
+    () => selectedProduct?.optionGroup?.options ?? [],
+    [selectedProduct]
+  );
+  const canSendEmailUpdates = customerEmail.trim().length > 0;
+  const emailUpdatesChecked = canSendEmailUpdates ? emailUpdatesEnabled : false;
   const inputClassName =
     "w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
 
-  const hasNameCustomization = selectedProduct?.supportsNameCustomization === true;
+  const summaryRows = useMemo(
+    () => [
+      { label: copy.quantity, value: quantity },
+      {
+        label: copy.options,
+        value:
+          productOptions.length === 0
+            ? copy.noOptions
+            : productOptions
+                .map((field) => formatOptionValue(locale, field.type, optionValues[field.id]))
+                .filter(Boolean)
+                .join(" | ") || "-",
+      },
+    ],
+    [copy.noOptions, copy.options, copy.quantity, locale, optionValues, productOptions, quantity]
+  );
 
   const handleSubmit = () => {
     if (!selectedProduct) {
@@ -193,9 +251,7 @@ export function OrderEntryClient({
       nextErrors.customerName = copy.required;
     }
 
-    if (!customerEmail.trim()) {
-      nextErrors.customerEmail = copy.required;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(customerEmail.trim())) {
+    if (customerEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(customerEmail.trim())) {
       nextErrors.customerEmail = copy.emailInvalid;
     }
 
@@ -205,14 +261,6 @@ export function OrderEntryClient({
 
     if (!quantity.trim() || Number(quantity) < 1) {
       nextErrors.quantity = copy.required;
-    }
-
-    if (!weightGrams.trim() || Number(weightGrams) <= 0) {
-      nextErrors.weightGrams = copy.weightInvalid;
-    }
-
-    if (hasNameCustomization && !nameText.trim()) {
-      nextErrors.nameText = copy.required;
     }
 
     productOptions.forEach((field) => {
@@ -237,25 +285,22 @@ export function OrderEntryClient({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customerEmail,
+          customerEmail: customerEmail.trim(),
           customerName,
           customerPhone,
-          karat,
+          emailUpdatesEnabled: emailUpdatesChecked,
           locale,
           message,
-          nameLanguage: hasNameCustomization ? nameLanguage : null,
-          nameText: hasNameCustomization ? nameText : "",
           optionValues: productOptions.map((field) => ({
             key: field.key,
             label: field.label,
             optionId: field.id,
             type: field.type,
-            value: normalizeFieldValue(field.type, optionValues[field.id] ?? ""),
+            value: normalizeFieldValue(field.type, optionValues[field.id]),
           })),
           productId: selectedProduct.id,
           quantity: Number(quantity),
           token,
-          weightGrams: Number(weightGrams),
         }),
       });
 
@@ -277,13 +322,14 @@ export function OrderEntryClient({
               return;
             }
 
+            if (key === "customerEmail") {
+              nextErrors[key] = copy.emailInvalid;
+              return;
+            }
+
             const firstMessage = messages[0];
             nextErrors[key] =
-              firstMessage === "required"
-                ? copy.required
-                : firstMessage === "product"
-                  ? copy.productRequired
-                  : copy.required;
+              firstMessage === "product" ? copy.productRequired : copy.required;
           });
         }
 
@@ -298,15 +344,6 @@ export function OrderEntryClient({
       setFieldErrors({});
     });
   };
-
-  const summaryRows = useMemo(
-    () => [
-      { label: copy.quantity, value: quantity },
-      { label: "Karat", value: karat },
-      { label: copy.weight, value: weightGrams ? `${weightGrams} g` : "-" },
-    ],
-    [copy.quantity, copy.weight, karat, quantity, weightGrams]
-  );
 
   return (
     <div className="container-shell py-8 sm:py-10">
@@ -355,28 +392,26 @@ export function OrderEntryClient({
                 <label className="flex flex-col gap-2 text-sm text-foreground">
                   <span>{copy.product}</span>
                   <select
-                     className={clsx(
-                       inputClassName,
-                       fieldErrors.productId && "border-rose-400/40 focus:border-rose-300/60"
-                     )}
-                     value={productId}
-                     onChange={(event) => {
-                       const nextProductId = event.target.value;
-                       const nextProduct =
-                         products.find((product) => product.id === nextProductId) ?? null;
+                    className={clsx(
+                      inputClassName,
+                      fieldErrors.productId && "border-rose-400/40 focus:border-rose-300/60"
+                    )}
+                    value={productId}
+                    onChange={(event) => {
+                      const nextProductId = event.target.value;
+                      const nextProduct =
+                        products.find((product) => product.id === nextProductId) ?? null;
 
-                       setProductId(nextProductId);
-                       setMessage(
-                         nextProduct ? getDefaultMessage(locale, nextProduct.name) : ""
-                       );
-                       setOptionValues({});
-                       setFieldErrors({});
-                       setSuccessTrackingNumber(null);
-                     }}
-                   >
+                      setProductId(nextProductId);
+                      setMessage(nextProduct ? getDefaultMessage(locale, nextProduct.name) : "");
+                      setOptionValues({});
+                      setFieldErrors({});
+                      setSuccessTrackingNumber(null);
+                    }}
+                  >
                     {products.map((product) => (
                       <option key={product.id} value={product.id}>
-                        {product.name}
+                        {product.name} - {product.sku}
                       </option>
                     ))}
                   </select>
@@ -394,6 +429,7 @@ export function OrderEntryClient({
                     )}
                     type="number"
                     min="1"
+                    step="1"
                     value={quantity}
                     onChange={(event) => setQuantity(event.target.value)}
                   />
@@ -422,22 +458,39 @@ export function OrderEntryClient({
                     <span className="text-xs text-rose-300">{fieldErrors.customerName}</span>
                   ) : null}
                 </label>
-                <label className="flex flex-col gap-2 text-sm text-foreground">
-                  <span>{copy.customerEmail}</span>
-                  <input
-                    className={clsx(
-                      inputClassName,
-                      fieldErrors.customerEmail &&
-                        "border-rose-400/40 focus:border-rose-300/60"
-                    )}
-                    type="email"
-                    value={customerEmail}
-                    onChange={(event) => setCustomerEmail(event.target.value)}
-                  />
-                  {fieldErrors.customerEmail ? (
-                    <span className="text-xs text-rose-300">{fieldErrors.customerEmail}</span>
-                  ) : null}
-                </label>
+
+                <div className="space-y-3">
+                  <label className="flex flex-col gap-2 text-sm text-foreground">
+                    <span>{copy.customerEmail}</span>
+                    <input
+                      className={clsx(
+                        inputClassName,
+                        fieldErrors.customerEmail &&
+                          "border-rose-400/40 focus:border-rose-300/60"
+                      )}
+                      type="email"
+                      value={customerEmail}
+                      onChange={(event) => setCustomerEmail(event.target.value)}
+                    />
+                    {fieldErrors.customerEmail ? (
+                      <span className="text-xs text-rose-300">{fieldErrors.customerEmail}</span>
+                    ) : null}
+                  </label>
+                  <div className="space-y-2">
+                    <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                      <input
+                        type="checkbox"
+                        checked={emailUpdatesChecked}
+                        disabled={!canSendEmailUpdates}
+                        onChange={(event) => setEmailUpdatesEnabled(event.target.checked)}
+                        className="h-4 w-4 accent-[#c49a52] disabled:cursor-not-allowed disabled:opacity-40"
+                      />
+                      {copy.emailUpdates}
+                    </label>
+                    <p className="text-xs text-muted">{copy.emailUpdatesHint}</p>
+                  </div>
+                </div>
+
                 <label className="flex flex-col gap-2 text-sm text-foreground md:col-span-2">
                   <span>{copy.customerPhone}</span>
                   <input
@@ -459,78 +512,10 @@ export function OrderEntryClient({
             </div>
 
             <div className="rounded-[26px] border border-white/10 bg-black/18 p-4 sm:p-5">
-              <p className="muted-label">{copy.specs}</p>
-              <div className="mt-4 grid gap-4 md:grid-cols-2">
-                <label className="flex flex-col gap-2 text-sm text-foreground">
-                  <span>Karat</span>
-                  <select
-                    className={inputClassName}
-                    value={karat}
-                    onChange={(event) => setKarat(event.target.value as "14" | "18" | "21")}
-                  >
-                    <option value="14">14</option>
-                    <option value="18">18</option>
-                    <option value="21">21</option>
-                  </select>
-                </label>
-                <label className="flex flex-col gap-2 text-sm text-foreground">
-                  <span>{copy.weight}</span>
-                  <input
-                    className={clsx(
-                      inputClassName,
-                      fieldErrors.weightGrams &&
-                        "border-rose-400/40 focus:border-rose-300/60"
-                    )}
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={weightGrams}
-                    onChange={(event) => setWeightGrams(event.target.value)}
-                  />
-                  {fieldErrors.weightGrams ? (
-                    <span className="text-xs text-rose-300">{fieldErrors.weightGrams}</span>
-                  ) : null}
-                </label>
-                {hasNameCustomization ? (
-                  <>
-                    <label className="flex flex-col gap-2 text-sm text-foreground">
-                      <span>Design</span>
-                      <select
-                        className={inputClassName}
-                        value={nameLanguage}
-                        onChange={(event) =>
-                          setNameLanguage(event.target.value as "ar" | "en")
-                        }
-                      >
-                        <option value="ar">Arabic</option>
-                        <option value="en">English</option>
-                      </select>
-                    </label>
-                    <label className="flex flex-col gap-2 text-sm text-foreground">
-                      <span>Name</span>
-                      <input
-                        className={clsx(
-                          inputClassName,
-                          fieldErrors.nameText &&
-                            "border-rose-400/40 focus:border-rose-300/60"
-                        )}
-                        value={nameText}
-                        onChange={(event) => setNameText(event.target.value)}
-                      />
-                      {fieldErrors.nameText ? (
-                        <span className="text-xs text-rose-300">{fieldErrors.nameText}</span>
-                      ) : null}
-                    </label>
-                  </>
-                ) : null}
-              </div>
-            </div>
-
-            {productOptions.length > 0 ? (
-              <div className="rounded-[26px] border border-white/10 bg-black/18 p-4 sm:p-5">
-                <p className="muted-label">
-                  {selectedProduct?.optionGroup?.name ?? copy.product}
-                </p>
+              <p className="muted-label">{copy.options}</p>
+              {productOptions.length === 0 ? (
+                <p className="mt-4 text-sm text-muted">{copy.noOptions}</p>
+              ) : (
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   {productOptions.map((field) => {
                     const currentValue = optionValues[field.id];
@@ -538,7 +523,10 @@ export function OrderEntryClient({
 
                     if (field.type === "textarea") {
                       return (
-                        <label key={field.id} className="flex flex-col gap-2 text-sm text-foreground md:col-span-2">
+                        <label
+                          key={field.id}
+                          className="flex flex-col gap-2 text-sm text-foreground md:col-span-2"
+                        >
                           <span>{field.label}</span>
                           <textarea
                             className={clsx(
@@ -600,7 +588,10 @@ export function OrderEntryClient({
                       const selectedValues = Array.isArray(currentValue) ? currentValue : [];
 
                       return (
-                        <div key={field.id} className="flex flex-col gap-2 text-sm text-foreground md:col-span-2">
+                        <div
+                          key={field.id}
+                          className="flex flex-col gap-2 text-sm text-foreground md:col-span-2"
+                        >
                           <span>{field.label}</span>
                           <div className="rounded-[22px] border border-white/10 bg-black/30 px-4 py-4">
                             <div className="flex flex-wrap gap-3">
@@ -643,7 +634,7 @@ export function OrderEntryClient({
                       return (
                         <label
                           key={field.id}
-                          className="rtl-inline-row flex items-center gap-2 rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-foreground"
+                          className="rtl-inline-row flex items-center gap-2 rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-foreground md:col-span-2"
                         >
                           <input
                             type="checkbox"
@@ -669,8 +660,20 @@ export function OrderEntryClient({
                             inputClassName,
                             errorText && "border-rose-400/40 focus:border-rose-300/60"
                           )}
-                          type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
-                          value={typeof currentValue === "string" ? currentValue : ""}
+                          type={
+                            field.type === "number"
+                              ? "number"
+                              : field.type === "date"
+                                ? "date"
+                                : "text"
+                          }
+                          value={
+                            typeof currentValue === "number"
+                              ? String(currentValue)
+                              : typeof currentValue === "string"
+                                ? currentValue
+                                : ""
+                          }
                           placeholder={field.placeholder}
                           onChange={(event) =>
                             setOptionValues((current) => ({
@@ -689,8 +692,8 @@ export function OrderEntryClient({
                     );
                   })}
                 </div>
-              </div>
-            ) : null}
+              )}
+            </div>
 
             <label className="flex flex-col gap-2 text-sm text-foreground">
               <span>{copy.message}</span>
@@ -722,9 +725,7 @@ export function OrderEntryClient({
               onClick={handleSubmit}
               disabled={isPending}
             >
-              {isPending ? (
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-              ) : null}
+              {isPending ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
               {isPending ? copy.submitPending : copy.submit}
             </button>
 

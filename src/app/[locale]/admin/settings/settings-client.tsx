@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -10,7 +10,7 @@ import {
   rotateOrderEntryAccessAction,
   saveNotificationSettingsAction,
   saveOrderEntrySettingsAction,
-  setPrivacyModeAction,
+  sendOrderEntryLinkEmailAction,
   toggleManagedAdminUserActiveAction,
   updateManagedAdminUserAction,
 } from "@/app/[locale]/admin/settings/actions";
@@ -19,15 +19,15 @@ import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { useAdminPrivacyMode } from "@/components/admin/AdminPrivacyMode";
 import { AdminSelect } from "@/components/admin/AdminSelect";
-import { AdminTextarea } from "@/components/admin/AdminTextarea";
-import type { ManagedAdminRole, ManagedAdminUserRecord } from "@/lib/db/adminUsers";
-import type { AdminSettingsSnapshot } from "@/lib/db/siteSettings";
 import type { AppLocale } from "@/i18n/routing";
 import { getRequiredFieldBadge } from "@/lib/admin/clientForm";
+import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
+import type { ManagedAdminRole, ManagedAdminUserRecord } from "@/lib/db/adminUsers";
+import type { AdminSettingsSnapshot } from "@/lib/db/siteSettings";
 
 type AdminSettingsClientProps = {
-  canManagePrivacy: boolean;
   canManageUsers: boolean;
   currentUserId: string;
   initialSettings: AdminSettingsSnapshot;
@@ -54,35 +54,44 @@ type FeedbackState =
 function getSettingsUiCopy(locale: AppLocale) {
   if (locale === "ar") {
     return {
-      activatePrivacy: "تفعيل وضع الخصوصية",
-      adminEmail: "بريد إشعارات الطلبات",
+      adminEmail: "بريد تنبيهات الطلبات",
       copyLink: "نسخ الرابط",
+      copySuccess: "تم نسخ الرابط الكامل.",
+      copyUnavailable: "لا يوجد رابط كامل متاح للنسخ حالياً.",
       description:
-        "إدارة عناوين الإشعارات، خصوصية الورشة، رابط إنشاء الطلبات الخارجي، والمستخدمين من لوحة واحدة.",
+        "إدارة عناوين الإشعارات، رابط إدخال الطلبات الخارجي، وضع الخصوصية المحلي، والمستخدمين من شاشة واحدة.",
       diagnosticsTitle: "تنبيه الإعدادات",
       expiresAt: "ينتهي في",
-      hiddenHint: "اضغط ثلاث مرات مع Shift لفتح وضع الخصوصية.",
+      fullLinkHelp:
+        "يتم عرض الرابط الكامل كما سيصل إلى العميل، مع استخدام عنوان هذا المتصفح إذا كانت إعدادات الخادم ما تزال على localhost.",
+      fullLinkLabel: "الرابط الكامل",
       inviteAgain: "إرسال رابط جديد",
-      linkDisabled: "الرابط الخارجي معطل حالياً.",
+      linkDisabled: "رابط إدخال الطلبات الخارجي غير مفعل حالياً.",
+      linkRecipient: "إرسال الرابط إلى",
+      linkRecipientHelp: "سيتم إرسال رسالة ألمانية احترافية تحتوي على زر ورابط مباشر.",
       manageUsersHint:
-        "إدارة المستخدمين تتطلب صلاحية المالك أو المدير الأعلى لأن الإنشاء يتم عبر Supabase Auth على الخادم.",
-      notificationTitle: "رسائل الإشعار",
-      orderEntryEnabled: "تفعيل رابط إنشاء الطلبات",
-      orderEntryTitle: "رابط إنشاء الطلبات الخارجي",
+        "إدارة المستخدمين تتطلب صلاحية المالك أو المدير الأعلى لأنها تعمل عبر Supabase Auth على الخادم.",
+      notificationTitle: "الإشعارات",
+      orderEntryDescription:
+        "فعّل الرابط الخارجي، راجع الرابط الكامل، وانسخه أو أرسله بالبريد الإلكتروني مباشرةً من هنا.",
+      orderEntryEnabled: "تفعيل رابط إدخال الطلبات الخارجي",
+      orderEntryTitle: "رابط إدخال الطلبات الخارجي",
       ownerEmail: "بريد المالك",
-      privacyEnabled: "وضع الخصوصية مفعل",
-      privacyInactive: "تفاصيل الطلبات تظهر بشكل طبيعي.",
-      privacyPassphrase: "عبارة التفعيل",
-      privacyReason: "سبب التفعيل",
-      privacyReveal:
-        "سيتم إخفاء تفاصيل الطلبات من شاشات العمل حتى يقوم مالك النظام بالكشف عنها من جديد.",
-      privacyTitle: "وضع الخصوصية",
+      privacyLocalOnly:
+        "يتم حفظ هذا الوضع محلياً في هذا المتصفح فقط، وهو مخصص للاستخدام السريع أثناء العمل أو العرض.",
+      privacyStatusActive: "وضع الخصوصية مفعل في هذا المتصفح.",
+      privacyStatusInactive: "وضع الخصوصية غير مفعل في هذا المتصفح.",
+      privacyTitle: "وضع الخصوصية المحلي",
       role: "الدور",
       rotateLink: "تدوير الرابط",
+      rotatedAt: "آخر تدوير",
       save: "حفظ",
+      sendLink: "إرسال الرابط",
       smtpConfigured: "SMTP مضبوط",
       smtpMissing: "SMTP غير مكتمل",
       smtpTitle: "حالة البريد",
+      statusDisabled: "معطل",
+      statusEnabled: "مفعل",
       supportEmail: "بريد الدعم",
       title: "الإعدادات",
       userActive: "نشط",
@@ -97,35 +106,45 @@ function getSettingsUiCopy(locale: AppLocale) {
 
   if (locale === "de") {
     return {
-      activatePrivacy: "Privatsphaere aktivieren",
       adminEmail: "E-Mail fuer Auftrags- und Anfragehinweise",
       copyLink: "Link kopieren",
+      copySuccess: "Der vollstaendige Link wurde kopiert.",
+      copyUnavailable: "Aktuell ist kein vollstaendiger Link verfuegbar.",
       description:
-        "Verwalten Sie Benachrichtigungen, Werkstatt-Privatsphaere, den externen Auftragserfassungslink und Admin-Benutzer an einem Ort.",
+        "Verwalten Sie Benachrichtigungen, den externen Auftragserfassungslink, den lokalen Privatsphaerenmodus und Admin-Benutzer an einem Ort.",
       diagnosticsTitle: "Einstellungsdiagnose",
       expiresAt: "Laeuft ab am",
-      hiddenHint: "Dreimal mit gedrueckter Umschalttaste klicken, um den Privatsphaerenmodus zu oeffnen.",
+      fullLinkHelp:
+        "Hier sehen Sie immer die vollstaendige URL, wie sie an Kunden verschickt wird. Falls der Server noch localhost meldet, wird die aktuelle Browser-Domain verwendet.",
+      fullLinkLabel: "Vollstaendiger Link",
       inviteAgain: "Neuen Link senden",
       linkDisabled: "Der externe Auftragserfassungslink ist derzeit deaktiviert.",
+      linkRecipient: "Link senden an",
+      linkRecipientHelp:
+        "Es wird eine professionelle deutsche E-Mail mit Schaltflaeche und Direktlink versendet.",
       manageUsersHint:
         "Die Benutzerverwaltung benoetigt Super-Admin-Rechte, da sie serverseitig ueber Supabase Auth arbeitet.",
       notificationTitle: "Benachrichtigungen",
+      orderEntryDescription:
+        "Aktivieren Sie den externen Link, pruefen Sie die vollstaendige URL und kopieren oder versenden Sie ihn direkt von hier.",
       orderEntryEnabled: "Externen Auftragserfassungslink aktivieren",
       orderEntryTitle: "Externer Auftragserfassungslink",
       ownerEmail: "Inhaber / Super-Admin",
-      privacyEnabled: "Der Privatsphaerenmodus ist aktiv.",
-      privacyInactive: "Auftragsdetails werden normal angezeigt.",
-      privacyPassphrase: "Aktivierungs-Passphrase",
-      privacyReason: "Begruendung",
-      privacyReveal:
-        "Aktive Auftragsdetails werden fuer Werkstatt- und Dashboard-Ansichten neutralisiert, bis ein Super-Admin sie wieder freigibt.",
-      privacyTitle: "Privatsphaerenmodus",
+      privacyLocalOnly:
+        "Dieser Modus wird nur in diesem Browser gespeichert und eignet sich fuer schnelle Abschirmung waehrend Arbeit oder Praesentation.",
+      privacyStatusActive: "Der Privatsphaerenmodus ist in diesem Browser aktiv.",
+      privacyStatusInactive: "Der Privatsphaerenmodus ist in diesem Browser aus.",
+      privacyTitle: "Lokaler Privatsphaerenmodus",
       role: "Rolle",
       rotateLink: "Link neu erzeugen",
+      rotatedAt: "Zuletzt rotiert",
       save: "Speichern",
+      sendLink: "Link per E-Mail senden",
       smtpConfigured: "SMTP eingerichtet",
       smtpMissing: "SMTP unvollstaendig",
       smtpTitle: "E-Mail-Status",
+      statusDisabled: "Deaktiviert",
+      statusEnabled: "Aktiv",
       supportEmail: "Support / Kontakt",
       title: "Einstellungen",
       userActive: "Aktiv",
@@ -139,35 +158,45 @@ function getSettingsUiCopy(locale: AppLocale) {
   }
 
   return {
-    activatePrivacy: "Enable privacy mode",
     adminEmail: "Order and inquiry notification email",
     copyLink: "Copy link",
+    copySuccess: "The full link was copied.",
+    copyUnavailable: "No full link is available right now.",
     description:
-      "Manage notifications, workshop privacy, the external order-entry link, and admin users from one place.",
+      "Manage notification addresses, the external order-entry link, local privacy mode, and admin users from one place.",
     diagnosticsTitle: "Settings diagnostics",
     expiresAt: "Expires at",
-    hiddenHint: "Shift-click three times to unlock privacy mode controls.",
+    fullLinkHelp:
+      "This always shows the complete URL exactly as it will be shared. If the server still reports localhost, the current browser origin is used instead.",
+    fullLinkLabel: "Full link",
     inviteAgain: "Send new link",
     linkDisabled: "The external order-entry link is currently disabled.",
+    linkRecipient: "Send link to",
+    linkRecipientHelp:
+      "A professional German email with a button and direct fallback link will be sent.",
     manageUsersHint:
       "User management requires super-admin access because it uses the Supabase Auth admin API server-side.",
     notificationTitle: "Notifications",
+    orderEntryDescription:
+      "Enable the external link, review the full URL, and copy or email it directly from here.",
     orderEntryEnabled: "Enable external order-entry link",
     orderEntryTitle: "External order-entry link",
     ownerEmail: "Owner / super admin",
-    privacyEnabled: "Privacy mode is currently enabled.",
-    privacyInactive: "Order details are shown normally.",
-    privacyPassphrase: "Activation passphrase",
-    privacyReason: "Reason",
-    privacyReveal:
-      "Active order details are masked for workshop and dashboard views until a super admin reveals them again.",
-    privacyTitle: "Privacy mode",
+    privacyLocalOnly:
+      "This mode is stored only in this browser and is meant for quick masking during work or presentations.",
+    privacyStatusActive: "Privacy mode is active in this browser.",
+    privacyStatusInactive: "Privacy mode is off in this browser.",
+    privacyTitle: "Local privacy mode",
     role: "Role",
     rotateLink: "Rotate link",
+    rotatedAt: "Last rotated",
     save: "Save",
+    sendLink: "Send link by email",
     smtpConfigured: "SMTP configured",
     smtpMissing: "SMTP incomplete",
     smtpTitle: "Email status",
+    statusDisabled: "Disabled",
+    statusEnabled: "Enabled",
     supportEmail: "Support / contact",
     title: "Settings",
     userActive: "Active",
@@ -246,8 +275,19 @@ function fromLocalDateTimeInput(value: string) {
   return Number.isNaN(date.getTime()) ? "" : date.toISOString();
 }
 
+function normalizeBaseUrl(value: string) {
+  return value.trim().replace(/\/+$/u, "");
+}
+
+function isLocalBaseUrl(value: string) {
+  return /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/i.test(value.trim());
+}
+
+function extractTokenFromLink(link?: string) {
+  return link?.split("/").at(-1) ?? "";
+}
+
 export function AdminSettingsClient({
-  canManagePrivacy,
   canManageUsers,
   currentUserId,
   initialSettings,
@@ -256,6 +296,8 @@ export function AdminSettingsClient({
   usersWarning,
 }: AdminSettingsClientProps) {
   const copy = getSettingsUiCopy(locale);
+  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const { enabled: privacyEnabled, setEnabled: setPrivacyEnabled } = useAdminPrivacyMode();
   const userEmailLabel =
     locale === "ar" ? "البريد الإلكتروني" : locale === "de" ? "E-Mail" : "Email";
   const userInactiveLabel =
@@ -297,27 +339,36 @@ export function AdminSettingsClient({
   const [orderEntryExpiresAt, setOrderEntryExpiresAt] = useState(
     toLocalDateTimeInput(initialSettings.orderEntryExpiresAt)
   );
-  const [orderEntryToken, setOrderEntryToken] = useState(
-    initialSettings.orderEntryToken
-  );
-  const [privacyEnabled, setPrivacyEnabled] = useState(
-    initialSettings.privacyModeEnabled
-  );
-  const [privacyReason, setPrivacyReason] = useState(
-    initialSettings.privacyModeReason
-  );
-  const [privacyPassphrase, setPrivacyPassphrase] = useState("");
-  const [privacyComposerOpen, setPrivacyComposerOpen] = useState(
-    initialSettings.privacyModeEnabled
-  );
-  const [gestureClicks, setGestureClicks] = useState<number[]>([]);
+  const [orderEntryToken, setOrderEntryToken] = useState(initialSettings.orderEntryToken);
+  const [linkRecipientEmail, setLinkRecipientEmail] = useState("");
   const [userFormState, setUserFormState] = useState<UserFormState>(createUserForm());
   const diagnosticsReady = initialSettings.diagnostics.available;
+  const browserOrigin = useSyncExternalStore(
+    () => () => {},
+    () => (typeof window === "undefined" ? "" : normalizeBaseUrl(window.location.origin)),
+    () => ""
+  );
+
   const orderEntryPath = useMemo(
-    () =>
-      orderEntryToken ? `/${locale}/order-entry/${orderEntryToken}` : "",
+    () => (orderEntryToken ? `/${locale}/order-entry/${orderEntryToken}` : ""),
     [locale, orderEntryToken]
   );
+  const orderEntryBaseUrl = useMemo(() => {
+    const configured = normalizeBaseUrl(initialSettings.diagnostics.siteBaseUrl);
+
+    if (configured && !isLocalBaseUrl(configured)) {
+      return configured;
+    }
+
+    return browserOrigin || configured;
+  }, [browserOrigin, initialSettings.diagnostics.siteBaseUrl]);
+  const orderEntryFullUrl = useMemo(() => {
+    if (!orderEntryPath) {
+      return "";
+    }
+
+    return orderEntryBaseUrl ? `${orderEntryBaseUrl}${orderEntryPath}` : orderEntryPath;
+  }, [orderEntryBaseUrl, orderEntryPath]);
 
   const pushFeedback = (kind: "error" | "success", message: string) => {
     setFeedback({ kind, message });
@@ -325,6 +376,14 @@ export function AdminSettingsClient({
 
   const refreshPage = () => {
     router.refresh();
+  };
+
+  const syncTokenFromLink = (link?: string) => {
+    const nextToken = extractTokenFromLink(link);
+
+    if (nextToken) {
+      setOrderEntryToken(nextToken);
+    }
   };
 
   const handleSaveNotifications = () => {
@@ -351,6 +410,7 @@ export function AdminSettingsClient({
       });
 
       pushFeedback(result.ok ? "success" : "error", result.message);
+      syncTokenFromLink("link" in result ? result.link : undefined);
 
       if (result.ok) {
         refreshPage();
@@ -366,11 +426,7 @@ export function AdminSettingsClient({
       });
 
       pushFeedback(result.ok ? "success" : "error", result.message);
-
-      if (result.ok && result.link) {
-        const token = result.link.split("/").at(-1) ?? "";
-        setOrderEntryToken(token);
-      }
+      syncTokenFromLink(result.link);
 
       if (result.ok) {
         refreshPage();
@@ -379,50 +435,44 @@ export function AdminSettingsClient({
   };
 
   const handleCopyOrderEntryLink = async () => {
-    if (!orderEntryPath || typeof window === "undefined") {
+    if (!orderEntryFullUrl) {
+      pushFeedback("error", copy.copyUnavailable);
       return;
     }
-
-    const link = new URL(orderEntryPath, window.location.origin).toString();
 
     try {
-      await navigator.clipboard.writeText(link);
-      pushFeedback("success", link);
+      await navigator.clipboard.writeText(orderEntryFullUrl);
+      pushFeedback("success", copy.copySuccess);
     } catch {
-      pushFeedback("error", link);
+      pushFeedback("error", orderEntryFullUrl);
     }
   };
 
-  const handlePrivacyGesture = (shiftKey: boolean) => {
-    if (!canManagePrivacy || !shiftKey) {
-      return;
-    }
-
-    const now = Date.now();
-    const nextClicks = [...gestureClicks.filter((time) => now - time < 1800), now];
-    setGestureClicks(nextClicks);
-
-    if (nextClicks.length >= 3) {
-      setPrivacyComposerOpen(true);
-      setGestureClicks([]);
-    }
-  };
-
-  const handlePrivacySave = (nextEnabled = privacyEnabled) => {
+  const handleSendOrderEntryLinkEmail = () => {
     startTransition(async () => {
-      const result = await setPrivacyModeAction(locale, {
-        enabled: nextEnabled,
-        passphrase: privacyPassphrase,
-        reason: privacyReason,
+      const result = await sendOrderEntryLinkEmailAction(locale, {
+        enabled: orderEntryEnabled,
+        expiresAt: fromLocalDateTimeInput(orderEntryExpiresAt),
+        recipientEmail: linkRecipientEmail,
       });
 
       pushFeedback(result.ok ? "success" : "error", result.message);
+      syncTokenFromLink(result.link);
 
       if (result.ok) {
-        setPrivacyPassphrase("");
+        setLinkRecipientEmail("");
         refreshPage();
       }
     });
+  };
+
+  const handlePrivacyToggle = () => {
+    const nextValue = !privacyEnabled;
+    setPrivacyEnabled(nextValue);
+    pushFeedback(
+      "success",
+      nextValue ? copy.privacyStatusActive : copy.privacyStatusInactive
+    );
   };
 
   const handleUserSubmit = () => {
@@ -507,23 +557,6 @@ export function AdminSettingsClient({
         eyebrow={copy.title}
         title={copy.title}
         description={copy.description}
-        actions={
-          <>
-            <AdminButton
-              variant="secondary"
-              onClick={handleSaveNotifications}
-              disabled={isPending || !diagnosticsReady}
-            >
-              {copy.save}
-            </AdminButton>
-            <button
-              type="button"
-              onClick={(event) => handlePrivacyGesture(event.shiftKey)}
-              className="h-3 w-3 rounded-full border border-transparent bg-transparent"
-              aria-label="privacy-gesture"
-            />
-          </>
-        }
       />
 
       {feedback ? (
@@ -616,9 +649,7 @@ export function AdminSettingsClient({
         <AdminCard title={copy.smtpTitle}>
           <div className="space-y-4">
             <AdminBadge variant={initialSettings.smtpStatus.configured ? "success" : "danger"}>
-              {initialSettings.smtpStatus.configured
-                ? copy.smtpConfigured
-                : copy.smtpMissing}
+              {initialSettings.smtpStatus.configured ? copy.smtpConfigured : copy.smtpMissing}
             </AdminBadge>
             <div className="space-y-2 text-sm text-muted">
               <p>{`${initialSettings.smtpStatus.fromName} <${initialSettings.smtpStatus.fromAddress || "-"}>`}</p>
@@ -633,7 +664,7 @@ export function AdminSettingsClient({
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <AdminCard
           title={copy.orderEntryTitle}
-          description={orderEntryEnabled ? orderEntryPath || copy.linkDisabled : copy.linkDisabled}
+          description={copy.orderEntryDescription}
           action={
             <div className="flex gap-2">
               <AdminButton
@@ -663,6 +694,7 @@ export function AdminSettingsClient({
               />
               {copy.orderEntryEnabled}
             </label>
+
             <AdminInput
               id="orderEntryExpiresAt"
               name="orderEntryExpiresAt"
@@ -671,81 +703,87 @@ export function AdminSettingsClient({
               value={orderEntryExpiresAt}
               onChange={(event) => setOrderEntryExpiresAt(event.target.value)}
             />
-            {orderEntryPath ? (
-              <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
-                <p className="text-sm text-foreground">{orderEntryPath}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <AdminButton size="sm" variant="ghost" onClick={handleCopyOrderEntryLink}>
-                    {copy.copyLink}
-                  </AdminButton>
-                  {initialSettings.orderEntryRotatedAt ? (
-                    <AdminBadge variant="info">
-                      {initialSettings.orderEntryRotatedAt.slice(0, 16).replace("T", " ")}
-                    </AdminBadge>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
+
+            {orderEntryFullUrl ? (
+              <AdminInput
+                id="orderEntryFullUrl"
+                name="orderEntryFullUrl"
+                label={copy.fullLinkLabel}
+                value={orderEntryFullUrl}
+                helperText={copy.fullLinkHelp}
+                readOnly
+                className="font-mono text-xs"
+              />
+            ) : (
+              <p className="text-sm text-muted">{copy.linkDisabled}</p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <AdminButton
+                size="sm"
+                variant="ghost"
+                onClick={handleCopyOrderEntryLink}
+                disabled={!orderEntryFullUrl}
+              >
+                {copy.copyLink}
+              </AdminButton>
+              <AdminBadge variant={orderEntryEnabled ? "success" : "neutral"}>
+                {orderEntryEnabled ? copy.statusEnabled : copy.statusDisabled}
+              </AdminBadge>
+              {initialSettings.orderEntryRotatedAt ? (
+                <AdminBadge variant="info">
+                  {copy.rotatedAt}:{" "}
+                  {initialSettings.orderEntryRotatedAt.slice(0, 16).replace("T", " ")}
+                </AdminBadge>
+              ) : null}
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+              <AdminInput
+                id="orderEntryRecipientEmail"
+                name="orderEntryRecipientEmail"
+                type="email"
+                label={copy.linkRecipient}
+                value={linkRecipientEmail}
+                helperText={copy.linkRecipientHelp}
+                placeholder="kunde@example.com"
+                onChange={(event) => setLinkRecipientEmail(event.target.value)}
+              />
+              <AdminButton
+                variant="primary"
+                onClick={handleSendOrderEntryLinkEmail}
+                disabled={
+                  isPending ||
+                  !diagnosticsReady ||
+                  !orderEntryEnabled ||
+                  linkRecipientEmail.trim().length === 0
+                }
+              >
+                {copy.sendLink}
+              </AdminButton>
+            </div>
           </div>
         </AdminCard>
 
         <AdminCard
           title={copy.privacyTitle}
-          description={privacyEnabled ? copy.privacyEnabled : copy.privacyInactive}
+          description={privacyEnabled ? copy.privacyStatusActive : copy.privacyStatusInactive}
           action={
-            canManagePrivacy && privacyEnabled ? (
-              <AdminButton
-                variant="secondary"
-                onClick={() => {
-                  setPrivacyEnabled(false);
-                  handlePrivacySave(false);
-                }}
-                disabled={isPending}
-              >
-                {copy.save}
-              </AdminButton>
-            ) : undefined
+            <AdminButton
+              variant={privacyEnabled ? "secondary" : "primary"}
+              onClick={handlePrivacyToggle}
+            >
+              {privacyEnabled ? privacyCopy.deactivate : privacyCopy.activate}
+            </AdminButton>
           }
         >
           <div className="space-y-4">
-            <p className="text-sm text-muted">{copy.privacyReveal}</p>
-            <p className="text-xs text-muted">{copy.hiddenHint}</p>
-            {privacyComposerOpen && canManagePrivacy ? (
-              <div className="space-y-4 rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
-                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                  <input
-                    type="checkbox"
-                    checked={privacyEnabled}
-                    onChange={(event) => setPrivacyEnabled(event.target.checked)}
-                    className="h-4 w-4 accent-[#c49a52]"
-                  />
-                  {copy.activatePrivacy}
-                </label>
-                <AdminTextarea
-                  id="privacyReason"
-                  name="privacyReason"
-                  label={copy.privacyReason}
-                  value={privacyReason}
-                  onChange={(event) => setPrivacyReason(event.target.value)}
-                />
-                {privacyEnabled ? (
-                  <AdminInput
-                    id="privacyPassphrase"
-                    name="privacyPassphrase"
-                    label={copy.privacyPassphrase}
-                    value={privacyPassphrase}
-                    onChange={(event) => setPrivacyPassphrase(event.target.value)}
-                  />
-                ) : null}
-                <AdminButton
-                  variant="primary"
-                  onClick={() => handlePrivacySave()}
-                  disabled={isPending}
-                >
-                  {copy.save}
-                </AdminButton>
-              </div>
-            ) : null}
+            <AdminBadge variant={privacyEnabled ? "danger" : "neutral"}>
+              {privacyEnabled ? privacyCopy.activeBadge : copy.privacyStatusInactive}
+            </AdminBadge>
+            <p className="text-sm text-muted">{privacyCopy.activeDescription}</p>
+            <p className="text-sm text-muted">{copy.privacyLocalOnly}</p>
+            <p className="text-xs text-muted">{privacyCopy.shortcut}</p>
           </div>
         </AdminCard>
       </section>

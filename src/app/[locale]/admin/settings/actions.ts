@@ -22,6 +22,9 @@ import {
   setPrivacyMode,
   SiteSettingsError,
 } from "@/lib/db/siteSettings";
+import { buildOrderEntryLinkEmail } from "@/lib/email/orderEntryLinkEmail";
+import { sendTransactionalEmail } from "@/lib/email/service";
+import { companyInfo } from "@/lib/site";
 
 const notificationSettingsSchema = z.object({
   adminNotificationEmail: z.string().trim().email().or(z.literal("")),
@@ -47,6 +50,12 @@ const orderEntrySchema = z.object({
   expiresAt: z.string().trim().max(80).default(""),
 });
 
+const sendOrderEntryLinkEmailSchema = z.object({
+  enabled: z.boolean(),
+  expiresAt: z.string().trim().max(80).default(""),
+  recipientEmail: z.string().trim().email().max(160),
+});
+
 const privacyPassphrase = "GOLDHELWAH PRIVACY";
 
 type SettingsActionWithLink = AdminActionResult & {
@@ -60,9 +69,15 @@ function getSettingsActionCopy(locale: AppLocale) {
       invalidName: "يرجى إدخال اسم واضح.",
       noAccess: "لا تملك صلاحية الوصول.",
       orderEntryRotated: "تم تدوير رابط إدخال الطلبات بنجاح.",
+      orderEntrySendDisabled: "فعّل رابط إدخال الطلبات الخارجي قبل إرساله بالبريد الإلكتروني.",
+      orderEntrySendFailed: "تعذر إرسال رابط إدخال الطلبات بالبريد الإلكتروني.",
+      orderEntrySendSavedOnly:
+        "تم تجهيز الرسالة، لكن الإرسال بالبريد الإلكتروني متوقف لأن إعداد SMTP غير مكتمل.",
+      orderEntrySent: "تم إرسال رابط إدخال الطلبات بالبريد الإلكتروني.",
       privacyPhrase: "عبارة التفعيل غير صحيحة.",
       saved: "تم حفظ الإعدادات.",
-      userCreated: "تم إنشاء المستخدم وإرسال رابط الدخول إذا كانت خدمة البريد متاحة.",
+      userCreated:
+        "تم إنشاء المستخدم وإرسال رابط الدخول إذا كانت خدمة البريد متاحة.",
       userDeleted: "تمت إزالة المستخدم من النظام.",
       userInviteSent: "تم إنشاء رابط جديد للمستخدم.",
       userUpdated: "تم تحديث بيانات المستخدم.",
@@ -76,6 +91,13 @@ function getSettingsActionCopy(locale: AppLocale) {
       invalidName: "Bitte geben Sie einen gueltigen Anzeigenamen ein.",
       noAccess: "Kein Zugriff.",
       orderEntryRotated: "Der Auftragserfassungslink wurde neu erzeugt.",
+      orderEntrySendDisabled:
+        "Aktivieren Sie den externen Auftragserfassungslink, bevor Sie ihn per E-Mail versenden.",
+      orderEntrySendFailed:
+        "Der Auftragserfassungslink konnte per E-Mail nicht versendet werden.",
+      orderEntrySendSavedOnly:
+        "Die E-Mail wurde vorbereitet, aber nicht versendet, weil SMTP noch nicht vollstaendig eingerichtet ist.",
+      orderEntrySent: "Der Auftragserfassungslink wurde per E-Mail versendet.",
       privacyPhrase: "Die Schutz-Passphrase ist ungueltig.",
       saved: "Die Einstellungen wurden gespeichert.",
       userCreated:
@@ -92,6 +114,12 @@ function getSettingsActionCopy(locale: AppLocale) {
     invalidName: "Please enter a valid display name.",
     noAccess: "No access.",
     orderEntryRotated: "The external order-entry link was rotated.",
+    orderEntrySendDisabled:
+      "Enable the external order-entry link before sending it by email.",
+    orderEntrySendFailed: "The external order-entry link could not be sent by email.",
+    orderEntrySendSavedOnly:
+      "The email was prepared, but delivery was skipped because SMTP is not fully configured.",
+    orderEntrySent: "The external order-entry link was sent by email.",
     privacyPhrase: "The privacy passphrase is invalid.",
     saved: "Settings saved.",
     userCreated: "The user was created. The access link was sent or logged.",
@@ -177,7 +205,7 @@ export async function saveNotificationSettingsAction(
 export async function saveOrderEntrySettingsAction(
   locale: AppLocale,
   input: z.infer<typeof orderEntrySchema>
-): Promise<AdminActionResult> {
+): Promise<SettingsActionWithLink> {
   const user = await requireSettingsAccess(locale);
   const copy = getSettingsActionCopy(locale);
 
@@ -198,9 +226,10 @@ export async function saveOrderEntrySettingsAction(
   }
 
   try {
-    await saveOrderEntrySettings(parsed.data);
+    const token = await saveOrderEntrySettings(parsed.data);
     revalidateSettingsViews();
     return {
+      link: buildOrderEntryUrl(locale, token),
       message: copy.saved,
       ok: true,
     };
@@ -266,6 +295,93 @@ export async function rotateOrderEntryAccessAction(
   }
 }
 
+export async function sendOrderEntryLinkEmailAction(
+  locale: AppLocale,
+  input: z.infer<typeof sendOrderEntryLinkEmailSchema>
+): Promise<SettingsActionWithLink> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user) {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const parsed = sendOrderEntryLinkEmailSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return getValidationFailure(locale);
+  }
+
+  if (!parsed.data.enabled) {
+    return {
+      message: copy.orderEntrySendDisabled,
+      ok: false,
+    };
+  }
+
+  try {
+    const token = await saveOrderEntrySettings({
+      enabled: parsed.data.enabled,
+      expiresAt: parsed.data.expiresAt,
+    });
+    const link = buildOrderEntryUrl(locale, token);
+    const email = buildOrderEntryLinkEmail({
+      expiresAt: parsed.data.expiresAt,
+      link,
+    });
+    const emailResult = await sendTransactionalEmail({
+      html: email.html,
+      metadata: {
+        actorEmail: user.email,
+        expiresAt: parsed.data.expiresAt || null,
+        kind: "order_entry_link_email",
+        link,
+      },
+      recipientEmail: parsed.data.recipientEmail,
+      replyTo: companyInfo.emailDisplay,
+      subject: email.subject,
+      text: email.text,
+    });
+
+    revalidateSettingsViews();
+
+    if (!emailResult.ok) {
+      return {
+        link,
+        message: copy.orderEntrySendFailed,
+        ok: false,
+      };
+    }
+
+    if (emailResult.status !== "sent") {
+      return {
+        link,
+        message: copy.orderEntrySendSavedOnly,
+        ok: false,
+      };
+    }
+
+    return {
+      link,
+      message: copy.orderEntrySent,
+      ok: true,
+    };
+  } catch (error) {
+    return {
+      message:
+        error instanceof SiteSettingsError
+          ? error.messageForUi
+          : error instanceof Error
+            ? error.message
+            : copy.orderEntrySendFailed,
+      ok: false,
+    };
+  }
+}
+
 export async function setPrivacyModeAction(
   locale: AppLocale,
   input: z.infer<typeof privacyModeSchema>
@@ -296,10 +412,7 @@ export async function setPrivacyModeAction(
     };
   }
 
-  if (
-    parsed.data.enabled &&
-    parsed.data.passphrase.trim() !== privacyPassphrase
-  ) {
+  if (parsed.data.enabled && parsed.data.passphrase.trim() !== privacyPassphrase) {
     return {
       message: copy.privacyPhrase,
       ok: false,

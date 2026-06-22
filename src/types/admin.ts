@@ -203,6 +203,7 @@ export type WorkshopOrderSelectedOption = {
   optionId: string;
   key: string;
   label: string;
+  type?: string;
   value: SelectedOptionValue;
   groupKey: OptionGroupKey;
 };

@@ -135,7 +135,7 @@ function getInquirySourceLabel(
       ? "إدخال طلب خارجي"
       : locale === "de"
         ? "Externer Auftrag"
-        : "Order entry";
+        : "Workshop order";
   }
 
   return source;

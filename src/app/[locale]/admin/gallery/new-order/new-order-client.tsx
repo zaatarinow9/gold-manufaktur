@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
 import Image from "next/image";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import type { AppLocale } from "@/i18n/routing";
 import { createOrderAction } from "@/app/[locale]/admin/orders/actions";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
@@ -13,6 +12,7 @@ import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
+import type { AppLocale } from "@/i18n/routing";
 import {
   focusFirstInvalidField,
   getRequiredFieldBadge,
@@ -28,6 +28,11 @@ type NewOrderClientProps = {
   locale: AppLocale;
   preselectedProductId?: string;
   products: AdminProductRecord[];
+};
+
+type CategoryChoice = {
+  id: string;
+  label: string;
 };
 
 type FieldErrors = Record<string, string>;
@@ -57,6 +62,16 @@ function getInitialProductId(
   return products[0]?.id ?? "";
 }
 
+function getInitialCategoryId(products: AdminProductRecord[], productId: string) {
+  const selectedProduct = products.find((product) => product.id === productId);
+
+  if (selectedProduct?.categoryId) {
+    return selectedProduct.categoryId;
+  }
+
+  return "all";
+}
+
 function resolveLocalizedText(fields: LocalizedText, locale: AppLocale) {
   const preferred = fields[locale].trim();
 
@@ -70,93 +85,92 @@ function resolveLocalizedText(fields: LocalizedText, locale: AppLocale) {
 function getNewOrderUiCopy(locale: AppLocale) {
   if (locale === "ar") {
     return {
-      customerSectionDescription: "بيانات العميل الأساسية لإنشاء الطلب.",
-      customerSectionTitle: "العميل",
+      allCategories: "كل التصنيفات",
+      categoryEmpty: "لا توجد منتجات ضمن هذا التصنيف.",
+      customerSectionDescription: "أدخل بيانات العميل ثم اختر إن كانت تحديثات البريد مطلوبة.",
+      customerSectionTitle: "بيانات العميل",
       customerNote: "ملاحظة العميل",
-      designLanguage: "لغة التصميم",
-      designLanguageArabic: "عربي",
-      designLanguageEnglish: "إنجليزي",
-      helper:
-        "اختر لغة التصميم المطلوبة، ويمكن كتابة الاسم بأي أحرف أو رموز.",
+      emailUpdatesHint:
+        "سيتم إرسال التحديثات فقط عند إدخال بريد إلكتروني صالح.",
       internalNote: "ملاحظة داخلية",
-      jewelrySectionDescription: "تفاصيل الذهب الأساسية لهذا الطلب.",
-      jewelrySectionTitle: "مواصفات المجوهرات",
-      karat: "العيار",
+      noOptionGroup: "لا توجد خيارات مخصصة لهذا المنتج.",
       optionDetailsDescription:
-        "هذه الحقول تأتي مباشرة من مجموعة الخيارات المرتبطة بالمنتج المختار.",
-      optionDetailsTitle: "تفاصيل الطلب",
+        "تظهر فقط الحقول القادمة من مجموعة الخيارات المرتبطة بالمنتج المحدد.",
+      optionDetailsTitle: "خيارات المنتج",
       optionRequired: "يرجى تعبئة هذا الحقل.",
-      requestedName: "الاسم المطلوب",
-      summaryCustomization: "تخصيص الاسم",
-      summaryLanguage: "لغة التصميم",
-      summaryNo: "لا",
-      summaryWeight: "الوزن",
-      summaryYes: "نعم",
-      totalAmount: "المبلغ الإجمالي",
-      trackingSectionDescription: "تفعيل إشعارات البريد الإلكتروني عند الحاجة.",
-      trackingSectionTitle: "التتبع والإشعارات",
-      weight: "الوزن بالغرام",
+      previewCategory: "التصنيف",
+      previewGroup: "مجموعة الخيارات",
+      previewSku: "رمز المنتج",
+      previewValues: "القيم المحددة",
+      productSectionDescription:
+        "اختر التصنيف أولاً ثم حدد المنتج المرتبط به لإظهار خياراته فقط.",
+      summaryActionDescription:
+        "راجع المعاينة ثم أنشئ طلب الورشة عند اكتمال البيانات.",
+      summaryActionTitle: "الإنشاء والمتابعة",
+      summaryDescription:
+        "تتحدث بطاقة المعاينة فوراً مع تغيير المنتج أو تعبئة الخيارات.",
+      trackingSectionTitle: "التحديثات البريدية",
     };
   }
 
   if (locale === "de") {
     return {
-      customerSectionDescription: "Grundlegende Kundendaten fuer den Auftrag.",
-      customerSectionTitle: "Kunde",
+      allCategories: "Alle Kategorien",
+      categoryEmpty: "Fuer diese Kategorie sind keine Produkte verfuegbar.",
+      customerSectionDescription:
+        "Pflegen Sie die Kundendaten und aktivieren Sie E-Mail-Updates nur bei Bedarf.",
+      customerSectionTitle: "Kundendaten",
       customerNote: "Kundennotiz",
-      designLanguage: "Designsprache",
-      designLanguageArabic: "Arabisch",
-      designLanguageEnglish: "Englisch",
-      helper:
-        "Waehlen Sie die gewuenschte Designsprache. Der Name kann in beliebigen Zeichen eingegeben werden.",
+      emailUpdatesHint:
+        "Updates werden nur versendet, wenn eine gueltige E-Mail-Adresse eingetragen ist.",
       internalNote: "Interne Notiz",
-      jewelrySectionDescription: "Die relevanten Schmuckdaten fuer diesen Auftrag.",
-      jewelrySectionTitle: "Schmuckspezifikationen",
-      karat: "Legierung",
+      noOptionGroup: "Diesem Produkt ist keine eigene Optionsgruppe zugewiesen.",
       optionDetailsDescription:
-        "Diese Felder stammen direkt aus der dem Produkt zugewiesenen Optionsgruppe.",
-      optionDetailsTitle: "Auftragsdetails",
+        "Es werden nur die Felder aus der zugewiesenen Optionsgruppe des Produkts angezeigt.",
+      optionDetailsTitle: "Produktoptionen",
       optionRequired: "Bitte fuellen Sie dieses Pflichtfeld aus.",
-      requestedName: "Gewuenschter Name",
-      summaryCustomization: "Namenspersonalisierung",
-      summaryLanguage: "Designsprache",
-      summaryNo: "Nein",
-      summaryWeight: "Gewicht",
-      summaryYes: "Ja",
-      totalAmount: "Gesamtbetrag",
-      trackingSectionDescription: "Kunden-E-Mails bei Bedarf aktivieren.",
-      trackingSectionTitle: "Tracking & Benachrichtigung",
-      weight: "Gewicht in Gramm",
+      previewCategory: "Kategorie",
+      previewGroup: "Optionsgruppe",
+      previewSku: "SKU",
+      previewValues: "Ausgewaehlte Werte",
+      productSectionDescription:
+        "Waehlen Sie zuerst eine Kategorie und danach nur ein passendes Produkt aus dieser Kategorie.",
+      summaryActionDescription:
+        "Die Auftragsvorschau bleibt sichtbar, waehrend wir die Werkstattanfrage vorbereiten.",
+      summaryActionTitle: "Auftrag anlegen",
+      summaryDescription:
+        "Produktbild, Kategorie, SKU und gewaehlte Optionen bleiben hier im Blick.",
+      trackingSectionTitle: "E-Mail-Updates",
     };
   }
 
   return {
-    customerSectionDescription: "Basic customer information for the order.",
-    customerSectionTitle: "Customer",
+    allCategories: "All categories",
+    categoryEmpty: "No products are available in this category.",
+    customerSectionDescription:
+      "Capture customer details and enable email updates only when they make sense.",
+    customerSectionTitle: "Customer details",
     customerNote: "Customer note",
-    designLanguage: "Design language",
-    designLanguageArabic: "Arabic",
-    designLanguageEnglish: "English",
-    helper:
-      "Choose the intended design language. The requested name can use any characters or symbols.",
+    emailUpdatesHint:
+      "Updates are only sent when a valid customer email address is provided.",
     internalNote: "Internal note",
-    jewelrySectionDescription: "The relevant jewelry specifications for this order.",
-    jewelrySectionTitle: "Jewelry specifications",
-    karat: "Karat",
+    noOptionGroup: "No custom options are assigned to this product.",
     optionDetailsDescription:
-      "These fields come directly from the option group assigned to the selected product.",
-    optionDetailsTitle: "Order details",
+      "Only fields from the selected product's assigned option group appear here.",
+    optionDetailsTitle: "Product options",
     optionRequired: "Please complete this required field.",
-    requestedName: "Requested name",
-    summaryCustomization: "Name personalization",
-    summaryLanguage: "Design language",
-    summaryNo: "No",
-    summaryWeight: "Weight",
-    summaryYes: "Yes",
-    totalAmount: "Total amount",
-    trackingSectionDescription: "Enable customer emails when needed.",
-    trackingSectionTitle: "Tracking & notifications",
-    weight: "Weight in grams",
+    previewCategory: "Category",
+    previewGroup: "Option group",
+    previewSku: "SKU",
+    previewValues: "Selected values",
+    productSectionDescription:
+      "Choose a category first, then pick one product from that filtered list.",
+    summaryActionDescription:
+      "Review the live snapshot, then create the workshop order once everything looks right.",
+    summaryActionTitle: "Create workshop order",
+    summaryDescription:
+      "The preview updates immediately as the product and option values change.",
+    trackingSectionTitle: "Email updates",
   };
 }
 
@@ -240,6 +254,10 @@ function formatOptionValue(
   return typeof value === "string" ? value.trim() : "";
 }
 
+function formatProductLabel(product: AdminProductRecord) {
+  return `${product.displayName} - ${product.sku}`;
+}
+
 export function NewOrderClient({
   groups,
   locale,
@@ -255,20 +273,17 @@ export function NewOrderClient({
   const [productId, setProductId] = useState(() =>
     getInitialProductId(products, preselectedProductId)
   );
+  const [selectedCategoryId, setSelectedCategoryId] = useState(() =>
+    getInitialCategoryId(products, getInitialProductId(products, preselectedProductId))
+  );
   const [quantity, setQuantity] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerReference, setCustomerReference] = useState("");
-  const [karat, setKarat] = useState<"14" | "18" | "21">("21");
-  const [weightGrams, setWeightGrams] = useState("");
-  const [nameLanguage, setNameLanguage] = useState<"ar" | "en">("ar");
-  const [requestedName, setRequestedName] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
-  const [totalAmount, setTotalAmount] = useState("");
-  const [currency, setCurrency] = useState("EUR");
-  const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(false);
+  const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(true);
   const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const requiredLabel = getRequiredFieldBadge(locale);
   const productRequiredMessage =
@@ -277,48 +292,63 @@ export function NewOrderClient({
       : locale === "ar"
         ? "يرجى اختيار منتج أولاً."
         : "Please choose a product first.";
+  const emailInvalidMessage =
+    locale === "de"
+      ? "Bitte geben Sie eine gueltige E-Mail-Adresse ein."
+      : locale === "ar"
+        ? "يرجى إدخال بريد إلكتروني صالح."
+        : "Please enter a valid email address.";
+
+  const categoryChoices = useMemo<CategoryChoice[]>(() => {
+    const seen = new Set<string>();
+
+    return products.flatMap((product) => {
+      if (!product.categoryId || seen.has(product.categoryId)) {
+        return [];
+      }
+
+      seen.add(product.categoryId);
+      return [
+        {
+          id: product.categoryId,
+          label: product.categoryName,
+        },
+      ];
+    });
+  }, [products]);
+
+  const filteredProducts = useMemo(
+    () =>
+      selectedCategoryId === "all"
+        ? products
+        : products.filter((product) => product.categoryId === selectedCategoryId),
+    [products, selectedCategoryId]
+  );
 
   const selectedProduct =
-    products.find((product) => product.id === productId) ?? products[0];
-  const supportsNameCustomization =
-    selectedProduct?.effectiveSupportsNameCustomization ?? false;
+    products.find((product) => product.id === productId) ?? filteredProducts[0] ?? null;
   const selectedGroup =
     selectedProduct?.optionGroupId
       ? groups.find((group) => group.id === selectedProduct.optionGroupId) ?? null
       : null;
   const productOptions = useMemo<OrderFormOptionField[]>(() => {
-    if (!selectedProduct) {
+    if (!selectedGroup) {
       return [];
     }
 
-    if (selectedGroup) {
-      return selectedGroup.options.map((field) => ({
-        groupKey: field.groupKey,
-        groupName: selectedGroup.displayName,
-        helpText: resolveLocalizedText(field.helpText, locale),
-        id: field.id,
-        isRequired: field.isRequired,
-        key: field.key,
-        label: field.displayLabel,
-        placeholder: resolveLocalizedText(field.placeholder, locale),
-        type: field.type,
-        values: field.values,
-      }));
-    }
-
-    return selectedProduct.optionSettings.map((field) => ({
+    return selectedGroup.options.map((field) => ({
       groupKey: field.groupKey,
-      groupName: field.groupName,
-      helpText: "",
+      groupName: selectedGroup.displayName,
+      helpText: resolveLocalizedText(field.helpText, locale),
       id: field.id,
       isRequired: field.isRequired,
       key: field.key,
       label: field.displayLabel,
-      placeholder: "",
+      placeholder: resolveLocalizedText(field.placeholder, locale),
       type: field.type,
       values: field.values,
     }));
-  }, [locale, selectedGroup, selectedProduct]);
+  }, [locale, selectedGroup]);
   const optionSummaryRows = useMemo(
     () =>
       productOptions
@@ -337,6 +367,8 @@ export function NewOrderClient({
         .filter((entry): entry is { label: string; value: string } => entry !== null),
     [locale, optionValues, productOptions]
   );
+  const canSendEmailUpdates = customerEmail.trim().length > 0;
+  const emailUpdatesChecked = canSendEmailUpdates ? emailUpdatesEnabled : false;
 
   const clearFieldError = (field: string) => {
     setFieldErrors((current) => {
@@ -350,6 +382,13 @@ export function NewOrderClient({
     });
   };
 
+  const handleProductChange = (nextProductId: string) => {
+    setOptionValues({});
+    setFieldErrors({});
+    setFeedback(null);
+    setProductId(nextProductId);
+  };
+
   const submitForm = () => {
     if (!selectedProduct) {
       const nextErrors = { productId: productRequiredMessage };
@@ -359,6 +398,28 @@ export function NewOrderClient({
     }
 
     const nextErrors: FieldErrors = {};
+
+    if (!customerName.trim()) {
+      nextErrors.customerName =
+        locale === "ar"
+          ? "يرجى إدخال اسم العميل."
+          : locale === "de"
+            ? "Bitte geben Sie den Kundennamen ein."
+            : "Please enter the customer name.";
+    }
+
+    if (customerEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(customerEmail.trim())) {
+      nextErrors.customerEmail = emailInvalidMessage;
+    }
+
+    if (!Number.isFinite(quantity) || quantity < 1) {
+      nextErrors.quantity =
+        locale === "ar"
+          ? "يرجى إدخال كمية صحيحة."
+          : locale === "de"
+            ? "Bitte geben Sie eine gueltige Menge ein."
+            : "Please enter a valid quantity.";
+    }
 
     productOptions.forEach((field) => {
       if (field.isRequired && isMissingRequiredValue(field.type, optionValues[field.id])) {
@@ -376,20 +437,17 @@ export function NewOrderClient({
     setFeedback(null);
     setFieldErrors({});
 
-    const parsedTotalAmount = totalAmount.trim().length > 0 ? Number(totalAmount) : null;
-    const parsedWeightGrams = Number(weightGrams);
-
     startTransition(async () => {
       const result = await createOrderAction(locale, {
         attachments: [],
-        currency,
-        customerEmail,
+        currency: "EUR",
+        customerEmail: customerEmail.trim(),
         customerLanguage: locale,
         customerName,
         customerPhone,
         customerReference,
         dueDate: "",
-        emailUpdatesEnabled,
+        emailUpdatesEnabled: emailUpdatesChecked,
         goldDetails: {},
         measurements: {},
         notes: {
@@ -411,16 +469,13 @@ export function NewOrderClient({
         productSku: selectedProduct.sku,
         productSlug: selectedProduct.slug,
         productSpecifications: {
-          karat,
+          karat: null,
           nameCustomization: {
-            enabled: supportsNameCustomization,
-            language: supportsNameCustomization ? nameLanguage : null,
-            text:
-              supportsNameCustomization && requestedName.trim().length > 0
-                ? requestedName
-                : null,
+            enabled: false,
+            language: null,
+            text: null,
           },
-          weightGrams: parsedWeightGrams,
+          weightGrams: null,
         },
         quantity,
         referenceImages: [],
@@ -429,13 +484,11 @@ export function NewOrderClient({
           key: field.key,
           label: field.label,
           optionId: field.id,
+          type: field.type,
           value: normalizeFieldValue(field.type, optionValues[field.id]),
         })),
         stones: {},
-        totalAmount:
-          parsedTotalAmount !== null && Number.isFinite(parsedTotalAmount)
-            ? parsedTotalAmount
-            : null,
+        totalAmount: null,
       });
 
       setFeedback(result.message);
@@ -470,9 +523,39 @@ export function NewOrderClient({
         <div className="space-y-6">
           <AdminCard
             title={t("newOrder.sections.product")}
-            description={t("newOrder.productDescription")}
+            description={uiCopy.productSectionDescription}
           >
-            <div className="grid gap-4 xl:grid-cols-2">
+            <div className="grid gap-4 xl:grid-cols-3">
+              <AdminSelect
+                id="categoryId"
+                name="categoryId"
+                label={t("newOrder.fields.category")}
+                value={selectedCategoryId}
+                onChange={(event) => {
+                  const nextCategoryId = event.target.value;
+                  const nextFilteredProducts =
+                    nextCategoryId === "all"
+                      ? products
+                      : products.filter((product) => product.categoryId === nextCategoryId);
+
+                  setSelectedCategoryId(nextCategoryId);
+                  setFeedback(null);
+                  setFieldErrors({});
+                  setOptionValues({});
+
+                  if (!nextFilteredProducts.some((product) => product.id === productId)) {
+                    setProductId(nextFilteredProducts[0]?.id ?? "");
+                  }
+                }}
+              >
+                <option value="all">{uiCopy.allCategories}</option>
+                {categoryChoices.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.label}
+                  </option>
+                ))}
+              </AdminSelect>
+
               <AdminSelect
                 id="productId"
                 name="productId"
@@ -481,25 +564,26 @@ export function NewOrderClient({
                 requiredLabel={requiredLabel}
                 value={productId}
                 errorText={fieldErrors.productId}
-                onChange={(event) => {
-                  const nextProductId = event.target.value;
-                  setOptionValues({});
-                  setFieldErrors({});
-                  setFeedback(null);
-                  setProductId(nextProductId);
-                }}
+                wrapperClassName="xl:col-span-2"
+                onChange={(event) => handleProductChange(event.target.value)}
               >
-                {products.map((product) => (
+                {filteredProducts.length === 0 ? (
+                  <option value="">{uiCopy.categoryEmpty}</option>
+                ) : null}
+                {filteredProducts.map((product) => (
                   <option key={product.id} value={product.id}>
-                    {product.displayName}
+                    {formatProductLabel(product)}
                   </option>
                 ))}
               </AdminSelect>
+
               <AdminInput
                 id="quantity"
                 name="quantity"
                 label={t("newOrder.fields.quantity")}
                 type="number"
+                min="1"
+                step="1"
                 required
                 requiredLabel={requiredLabel}
                 value={String(quantity)}
@@ -530,20 +614,35 @@ export function NewOrderClient({
                   setCustomerName(event.target.value);
                 }}
               />
-              <AdminInput
-                id="customerEmail"
-                name="customerEmail"
-                label={t("newOrder.fields.customerEmail")}
-                type="email"
-                required
-                requiredLabel={requiredLabel}
-                value={customerEmail}
-                errorText={fieldErrors.customerEmail}
-                onChange={(event) => {
-                  clearFieldError("customerEmail");
-                  setCustomerEmail(event.target.value);
-                }}
-              />
+
+              <div className="space-y-3">
+                <AdminInput
+                  id="customerEmail"
+                  name="customerEmail"
+                  label={t("newOrder.fields.customerEmail")}
+                  type="email"
+                  value={customerEmail}
+                  errorText={fieldErrors.customerEmail}
+                  onChange={(event) => {
+                    clearFieldError("customerEmail");
+                    setCustomerEmail(event.target.value);
+                  }}
+                />
+                <div className="space-y-2">
+                  <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={emailUpdatesChecked}
+                      disabled={!canSendEmailUpdates}
+                      onChange={(event) => setEmailUpdatesEnabled(event.target.checked)}
+                      className="h-4 w-4 accent-[#c49a52] disabled:cursor-not-allowed disabled:opacity-40"
+                    />
+                    {t("newOrder.fields.emailUpdatesEnabled")}
+                  </label>
+                  <p className="text-xs text-muted">{uiCopy.emailUpdatesHint}</p>
+                </div>
+              </div>
+
               <AdminInput
                 id="customerPhone"
                 name="customerPhone"
@@ -558,6 +657,7 @@ export function NewOrderClient({
                   setCustomerPhone(event.target.value);
                 }}
               />
+
               <AdminInput
                 id="customerReference"
                 name="customerReference"
@@ -572,122 +672,12 @@ export function NewOrderClient({
           </AdminCard>
 
           <AdminCard
-            title={uiCopy.jewelrySectionTitle}
-            description={uiCopy.jewelrySectionDescription}
+            title={selectedGroup?.displayName || uiCopy.optionDetailsTitle}
+            description={uiCopy.optionDetailsDescription}
           >
-            <div className="grid gap-4 xl:grid-cols-2">
-              <AdminSelect
-                id="productSpecifications.karat"
-                name="productSpecifications.karat"
-                label={uiCopy.karat}
-                required
-                requiredLabel={requiredLabel}
-                value={karat}
-                errorText={fieldErrors["productSpecifications.karat"]}
-                onChange={(event) => {
-                  clearFieldError("productSpecifications.karat");
-                  setKarat(event.target.value as "14" | "18" | "21");
-                }}
-              >
-                {["14", "18", "21"].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </AdminSelect>
-              <AdminInput
-                id="productSpecifications.weightGrams"
-                name="productSpecifications.weightGrams"
-                label={uiCopy.weight}
-                type="number"
-                min="0"
-                step="0.01"
-                required
-                requiredLabel={requiredLabel}
-                value={weightGrams}
-                errorText={fieldErrors["productSpecifications.weightGrams"]}
-                onChange={(event) => {
-                  clearFieldError("productSpecifications.weightGrams");
-                  setWeightGrams(event.target.value);
-                }}
-              />
-              {supportsNameCustomization ? (
-                <>
-                  <AdminSelect
-                    id="productSpecifications.nameCustomization.language"
-                    name="productSpecifications.nameCustomization.language"
-                    label={uiCopy.designLanguage}
-                    required
-                    requiredLabel={requiredLabel}
-                    value={nameLanguage}
-                    errorText={
-                      fieldErrors["productSpecifications.nameCustomization.language"]
-                    }
-                    onChange={(event) => {
-                      clearFieldError("productSpecifications.nameCustomization.language");
-                      setNameLanguage(event.target.value as "ar" | "en");
-                    }}
-                  >
-                    <option value="ar">{uiCopy.designLanguageArabic}</option>
-                    <option value="en">{uiCopy.designLanguageEnglish}</option>
-                  </AdminSelect>
-                  <AdminInput
-                    id="productSpecifications.nameCustomization.text"
-                    name="productSpecifications.nameCustomization.text"
-                    label={uiCopy.requestedName}
-                    required
-                    requiredLabel={requiredLabel}
-                    value={requestedName}
-                    errorText={fieldErrors["productSpecifications.nameCustomization.text"]}
-                    helperText={
-                      !fieldErrors["productSpecifications.nameCustomization.text"]
-                        ? uiCopy.helper
-                        : undefined
-                    }
-                    onChange={(event) => {
-                      clearFieldError("productSpecifications.nameCustomization.text");
-                      setRequestedName(event.target.value);
-                    }}
-                  />
-                </>
-              ) : null}
-              <AdminInput
-                id="totalAmount"
-                name="totalAmount"
-                label={uiCopy.totalAmount}
-                type="number"
-                min="0"
-                step="0.01"
-                value={totalAmount}
-                onChange={(event) => {
-                  clearFieldError("totalAmount");
-                  setTotalAmount(event.target.value);
-                }}
-              />
-              <AdminSelect
-                id="currency"
-                name="currency"
-                label={t("newOrder.fields.currency")}
-                value={currency}
-                onChange={(event) => {
-                  clearFieldError("currency");
-                  setCurrency(event.target.value);
-                }}
-              >
-                {["EUR", "USD", "TRY"].map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </AdminSelect>
-            </div>
-          </AdminCard>
-
-          {productOptions.length > 0 ? (
-            <AdminCard
-              title={selectedGroup?.displayName || selectedProduct?.optionGroupName || uiCopy.optionDetailsTitle}
-              description={uiCopy.optionDetailsDescription}
-            >
+            {selectedProduct && productOptions.length === 0 ? (
+              <p className="text-sm text-muted">{uiCopy.noOptionGroup}</p>
+            ) : (
               <div className="grid gap-4 xl:grid-cols-2">
                 {productOptions.map((field) => {
                   const errorText = fieldErrors[field.id];
@@ -875,8 +865,8 @@ export function NewOrderClient({
                   );
                 })}
               </div>
-            </AdminCard>
-          ) : null}
+            )}
+          </AdminCard>
 
           <AdminCard
             title={t("newOrder.sections.notes")}
@@ -912,7 +902,7 @@ export function NewOrderClient({
         <div className="space-y-6">
           <AdminCard
             title={t("newOrder.summaryTitle")}
-            description={t("newOrder.summaryDescription")}
+            description={uiCopy.summaryDescription}
           >
             {selectedProduct ? (
               <div className="space-y-4">
@@ -934,79 +924,63 @@ export function NewOrderClient({
                 </div>
                 <div className="grid gap-3 text-sm">
                   <div className="flex items-start justify-between gap-4">
+                    <span className="text-muted">{uiCopy.previewCategory}</span>
+                    <span className="text-end text-foreground">
+                      {selectedProduct.categoryName || t("common.notProvided")}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-muted">{uiCopy.previewSku}</span>
+                    <span className="text-end text-foreground">
+                      {selectedProduct.sku || t("common.notProvided")}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="text-muted">{uiCopy.previewGroup}</span>
+                    <span className="text-end text-foreground">
+                      {selectedGroup?.displayName || t("common.notProvided")}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
                     <span className="text-muted">{t("newOrder.fields.quantity")}</span>
-                    <span className="text-foreground">{quantity}</span>
+                    <span className="text-end text-foreground">{quantity}</span>
                   </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{uiCopy.karat}</span>
-                    <span className="text-foreground">{karat}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{uiCopy.summaryWeight}</span>
-                    <span className="text-foreground">
-                      {weightGrams.trim().length > 0
-                        ? `${weightGrams} g`
-                        : t("common.notProvided")}
-                    </span>
-                  </div>
-                  {supportsNameCustomization ? (
-                    <>
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-muted">{uiCopy.summaryCustomization}</span>
-                        <span className="text-foreground">
-                          {requestedName.trim().length > 0
-                            ? requestedName
-                            : t("common.notProvided")}
-                        </span>
+                  {optionSummaryRows.length > 0 ? (
+                    optionSummaryRows.map((row) => (
+                      <div
+                        key={row.label}
+                        className="flex items-start justify-between gap-4"
+                      >
+                        <span className="text-muted">{row.label}</span>
+                        <span className="text-end text-foreground">{row.value}</span>
                       </div>
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-muted">{uiCopy.summaryLanguage}</span>
-                        <span className="text-foreground">
-                          {nameLanguage === "ar"
-                            ? uiCopy.designLanguageArabic
-                            : uiCopy.designLanguageEnglish}
-                        </span>
-                      </div>
-                    </>
-                  ) : null}
-                  {optionSummaryRows.map((row) => (
-                    <div
-                      key={row.label}
-                      className="flex items-start justify-between gap-4"
-                    >
-                      <span className="text-muted">{row.label}</span>
-                      <span className="text-end text-foreground">{row.value}</span>
+                    ))
+                  ) : (
+                    <div className="flex items-start justify-between gap-4">
+                      <span className="text-muted">{uiCopy.previewValues}</span>
+                      <span className="text-end text-foreground">
+                        {productOptions.length === 0
+                          ? uiCopy.noOptionGroup
+                          : t("common.notProvided")}
+                      </span>
                     </div>
-                  ))}
-                  <div className="flex items-start justify-between gap-4">
-                    <span className="text-muted">{uiCopy.totalAmount}</span>
-                    <span className="text-foreground">
-                      {totalAmount.trim().length > 0
-                        ? `${totalAmount} ${currency}`
-                        : t("common.notProvided")}
-                    </span>
-                  </div>
+                  )}
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted">{t("orders.empty")}</p>
+              <p className="text-sm text-muted">{uiCopy.categoryEmpty}</p>
             )}
           </AdminCard>
 
           <AdminCard
-            title={uiCopy.trackingSectionTitle}
-            description={uiCopy.trackingSectionDescription}
+            title={uiCopy.summaryActionTitle}
+            description={uiCopy.summaryActionDescription}
           >
             <div className="space-y-4">
-              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                <input
-                  type="checkbox"
-                  checked={emailUpdatesEnabled}
-                  onChange={(event) => setEmailUpdatesEnabled(event.target.checked)}
-                  className="h-4 w-4 accent-[#c49a52]"
-                />
-                {t("newOrder.fields.emailUpdatesEnabled")}
-              </label>
+              <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
+                {uiCopy.trackingSectionTitle}:{" "}
+                {emailUpdatesChecked ? t("common.enabled") : t("common.disabled")}
+              </div>
               <AdminButton
                 block
                 variant="primary"

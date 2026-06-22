@@ -8,7 +8,7 @@ type AdminPageHeaderProps = {
   description?: string;
   eyebrow?: string;
   meta?: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
 };
 
 export function AdminPageHeader({
@@ -30,7 +30,7 @@ export function AdminPageHeader({
         {eyebrow ? <p className="admin-page-kicker">{eyebrow}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="admin-heading text-foreground">
-            {trimDisplayHeading(title)}
+            {typeof title === "string" ? trimDisplayHeading(title) : title}
           </h1>
           {meta}
         </div>

@@ -16,6 +16,7 @@ import {
   focusFirstInvalidField,
   getRequiredFieldBadge,
 } from "@/lib/admin/clientForm";
+import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import type { EmployeeRecord } from "@/lib/db/employees";
 import type { AppLocale } from "@/i18n/routing";
 import type {
@@ -30,6 +31,7 @@ import { AdminBadge } from "./AdminBadge";
 import { AdminButton } from "./AdminButton";
 import { AdminCard } from "./AdminCard";
 import { AdminInput } from "./AdminInput";
+import { useAdminPrivacyMode } from "./AdminPrivacyMode";
 import { AdminSelect } from "./AdminSelect";
 import { AdminTextarea } from "./AdminTextarea";
 import { OrderTrackingTimeline } from "./OrderTrackingTimeline";
@@ -129,6 +131,8 @@ export function OrderTrackingCard({
   const t = useTranslations("Admin");
   const copy = getOrderWorkflowCopy(locale);
   const uiCopy = getOrderCardUiCopy(locale);
+  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const { masked: privacyModeMasked } = useAdminPrivacyMode();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<FeedbackState>(null);
@@ -177,6 +181,11 @@ export function OrderTrackingCard({
   };
 
   const handleCopyTrackingLink = async () => {
+    if (privacyModeMasked) {
+      setFeedback({ kind: "error", message: privacyCopy.activeDescription });
+      return;
+    }
+
     const trackingLink =
       typeof window === "undefined"
         ? trackingPath
@@ -299,12 +308,16 @@ export function OrderTrackingCard({
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
             <p className="text-xs text-muted">{t("orders.trackingNumberLabel")}</p>
-            <p className="mt-2 text-sm font-semibold text-foreground">{trackingNumber}</p>
+            <p className="mt-2 text-sm font-semibold text-foreground">
+              {privacyModeMasked ? privacyCopy.hidden : trackingNumber}
+            </p>
           </div>
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
             <p className="text-xs text-muted">{t("orders.customerEmailLabel")}</p>
             <p className="mt-2 text-sm text-foreground">
-              {customerEmail || t("common.notProvided")}
+              {privacyModeMasked
+                ? privacyCopy.hidden
+                : customerEmail || t("common.notProvided")}
             </p>
           </div>
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
@@ -326,7 +339,12 @@ export function OrderTrackingCard({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <AdminButton size="sm" variant="secondary" onClick={handleCopyTrackingLink}>
+          <AdminButton
+            size="sm"
+            variant="secondary"
+            onClick={handleCopyTrackingLink}
+            disabled={privacyModeMasked}
+          >
             {t("buttons.copyTrackingLink")}
           </AdminButton>
           {canManageAssignment && savedState.workerEmail ? (

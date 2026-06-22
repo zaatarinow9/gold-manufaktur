@@ -24,6 +24,19 @@ export default async function OrderEntryPage({
   const products = await getPublicProducts(locale);
 
   if (products.length === 0) {
+    const unavailableTitle =
+      locale === "ar"
+        ? "طلب الورشة غير متاح حالياً"
+        : locale === "de"
+          ? "Werkstattauftrag derzeit nicht verfuegbar"
+          : "Workshop order currently unavailable";
+    const unavailableDescription =
+      locale === "ar"
+        ? "لا توجد منتجات نشطة مرتبطة بهذا الرابط حالياً."
+        : locale === "de"
+          ? "Es sind aktuell keine aktiven Produkte fuer diesen Link hinterlegt."
+          : "There are currently no active products assigned to this link.";
+
     return (
       <div className="container-shell py-16">
         <div className="content-shell rounded-[32px] border border-white/10 bg-black/30 px-6 py-10 text-center sm:px-8">
@@ -31,10 +44,10 @@ export default async function OrderEntryPage({
             GoldHelwah
           </p>
           <h1 className="mt-4 text-3xl font-semibold text-foreground">
-            Auftragserfassung derzeit nicht verfuegbar
+            {unavailableTitle}
           </h1>
           <p className="mt-4 text-base leading-7 text-muted">
-            Es sind aktuell keine aktiven Produkte fuer diesen Link hinterlegt.
+            {unavailableDescription}
           </p>
         </div>
       </div>

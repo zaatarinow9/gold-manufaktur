@@ -17,7 +17,7 @@ export const publicOrderEntryOptionValueSchema = z.object({
 });
 
 export const publicOrderEntryRequestSchema = z.object({
-  customerEmail: z.string().trim().email().max(160),
+  customerEmail: z.string().trim().email().max(160).or(z.literal("")).default(""),
   customerName: z.string().trim().min(2).max(160),
   customerPhone: z
     .string()
@@ -26,16 +26,13 @@ export const publicOrderEntryRequestSchema = z.object({
     .refine((value) => value.length >= 6 && value.length <= 80, {
       message: "phone",
     }),
-  karat: z.enum(["14", "18", "21"]),
+  emailUpdatesEnabled: z.boolean().default(true),
   locale: z.string().trim().min(2).max(12).default("de"),
   message: z.string().trim().max(2000).default(""),
-  nameLanguage: z.enum(["ar", "en"]).nullable().default(null),
-  nameText: z.string().trim().max(255).default(""),
   optionValues: z.array(publicOrderEntryOptionValueSchema).default([]),
   productId: z.string().trim().min(1).max(120),
   quantity: z.number().int().min(1).max(99).default(1),
   token: z.string().trim().min(16).max(255),
-  weightGrams: z.number().finite().positive(),
 });
 
 export type PublicOrderEntryRequestInput = z.infer<

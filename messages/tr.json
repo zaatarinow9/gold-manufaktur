@@ -392,7 +392,7 @@
       "overview": "Genel bakis",
       "products": "Urunler",
       "categories": "Kategoriler",
-      "gallery": "Admin galerisi",
+      "gallery": "Atölye Siparişi",
       "options": "Secenekler",
       "orders": "Siparisler",
       "workshops": "Atolyeler",
@@ -606,9 +606,9 @@
       "emptyDescription": "Aramayi veya kategoriyi degistirin."
     },
     "newOrder": {
-      "eyebrow": "Yeni atolye siparisi",
-      "title": "Siparis olustur",
-      "description": "Urunu secin, takibi hazirlayin ve atolyeye gonderin.",
+      "eyebrow": "Yeni atölye siparişi",
+      "title": "Atölye Siparişi",
+      "description": "Once kategoriyi, sonra urunu secin ve atolyeye gondermeden once yalnizca bu urune atanmis secenekleri doldurun.",
       "productSelectionTitle": "Urun ve referanslar",
       "productSelectionDescription": "Dahili galeri, urun referansi, gorseller ve temel verileri saglar.",
       "summaryTitle": "Ozet",

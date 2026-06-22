@@ -136,7 +136,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const requiresNameCustomization = product.supportsNameCustomization === true;
   const productOptions = product.optionGroup?.options ?? [];
   const productOptionById = new Map(
     productOptions.map((option) => [option.id, option])
@@ -149,23 +148,6 @@ export async function POST(request: Request) {
     }
   >();
   const optionFieldErrors: Record<string, string[]> = {};
-
-  if (
-    requiresNameCustomization &&
-    (!result.data.nameLanguage || !result.data.nameText.trim())
-  ) {
-    return Response.json(
-      {
-        error: "INVALID_INPUT",
-        fieldErrors: {
-          nameLanguage: result.data.nameLanguage ? [] : ["required"],
-          nameText: result.data.nameText.trim() ? [] : ["required"],
-        },
-        success: false,
-      },
-      { status: 400 }
-    );
-  }
 
   for (const option of result.data.optionValues) {
     const field = productOptionById.get(option.optionId);
@@ -236,7 +218,8 @@ export async function POST(request: Request) {
         customerPhone: result.data.customerPhone,
         customerReference: "",
         dueDate: "",
-        emailUpdatesEnabled: false,
+        emailUpdatesEnabled:
+          result.data.customerEmail.length > 0 && result.data.emailUpdatesEnabled,
         goldDetails: {},
         measurements: {},
         notes: {
@@ -258,16 +241,13 @@ export async function POST(request: Request) {
         productSku: product.sku,
         productSlug: product.slug,
         productSpecifications: {
-          karat: result.data.karat,
+          karat: null,
           nameCustomization: {
-            enabled: requiresNameCustomization,
-            language: requiresNameCustomization ? result.data.nameLanguage : null,
-            text:
-              requiresNameCustomization && result.data.nameText.trim().length > 0
-                ? result.data.nameText.trim()
-                : null,
+            enabled: false,
+            language: null,
+            text: null,
           },
-          weightGrams: result.data.weightGrams,
+          weightGrams: null,
         },
         quantity: result.data.quantity,
         referenceImages: [],
@@ -277,6 +257,7 @@ export async function POST(request: Request) {
             key: field.key,
             label: field.label,
             optionId: field.id,
+            type: field.type,
             value,
           })
         ),

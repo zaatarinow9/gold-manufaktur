@@ -14,10 +14,12 @@ import { AdminBadge } from "@/components/admin/AdminBadge";
 import { getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminPrivacyGuard } from "@/components/admin/AdminPrivacyMode";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { Link } from "@/i18n/navigation";
 import { requireAdminAccess } from "@/lib/admin/auth";
+import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import { getScopedAdminNotifications } from "@/lib/db/notifications";
 import { getScopedOrders, type OrderListRecord } from "@/lib/db/orders";
 import { getAdminCategories, getAdminProducts } from "@/lib/db/adminCatalog";
@@ -62,6 +64,11 @@ export default async function AdminDashboardPage({
   }
 
   const currentUser = access.user;
+  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const renderSensitive = (
+    children: React.ReactNode,
+    fallback: React.ReactNode = privacyCopy.hidden
+  ) => <AdminPrivacyGuard fallback={fallback}>{children}</AdminPrivacyGuard>;
   const [orders, workshops, employees, categories, products, notifications] =
     await Promise.all([
       getScopedOrders(currentUser),
@@ -135,8 +142,12 @@ export default async function AdminDashboardPage({
       header: t("orders.table.order"),
       cell: (order) => (
         <div className="space-y-1">
-          <p className="font-semibold text-foreground">{order.internalOrderNumber}</p>
-          <p className="text-xs text-muted">{order.previewProductName || "-"}</p>
+          <p className="font-semibold text-foreground">
+            {renderSensitive(order.internalOrderNumber)}
+          </p>
+          <p className="text-xs text-muted">
+            {renderSensitive(order.previewProductName || "-", privacyCopy.hidden)}
+          </p>
         </div>
       ),
     },
@@ -146,7 +157,9 @@ export default async function AdminDashboardPage({
       cell: (order) => (
         <div className="space-y-1">
           <p className="text-foreground">{order.workshopName || "-"}</p>
-          <p className="text-xs text-muted">{order.customerName || t("common.noCustomer")}</p>
+          <p className="text-xs text-muted">
+            {renderSensitive(order.customerName || t("common.noCustomer"))}
+          </p>
         </div>
       ),
     },
@@ -207,14 +220,14 @@ export default async function AdminDashboardPage({
           title={t("overview.recentOrdersTitle")}
           description={t("overview.recentOrdersDescription")}
         >
-          <AdminTable
-            columns={recentOrderColumns}
-            rows={recentOrders}
-            getRowKey={(order) => order.id}
-            cardTitle={(order) => order.internalOrderNumber}
-            emptyState={t("orders.empty")}
-          />
-        </AdminCard>
+        <AdminTable
+          columns={recentOrderColumns}
+          rows={recentOrders}
+          getRowKey={(order) => order.id}
+          cardTitle={(order) => renderSensitive(order.internalOrderNumber)}
+          emptyState={t("orders.empty")}
+        />
+      </AdminCard>
 
         <div className="space-y-6">
           <AdminCard

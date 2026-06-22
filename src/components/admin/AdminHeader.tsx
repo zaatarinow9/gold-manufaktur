@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
+import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import { getBrandLogoAlt } from "@/lib/site";
 import type { AdminUser } from "@/types/admin";
 import { AdminBrand } from "./AdminBrand";
@@ -12,6 +13,7 @@ import { AdminBadge } from "./AdminBadge";
 import { getAdminButtonClassName } from "./AdminButton";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
 import { AdminLogoutButton } from "./AdminLogoutButton";
+import { useAdminPrivacyMode } from "./AdminPrivacyMode";
 import {
   adminNavItems,
   getAdminNavLabel,
@@ -33,6 +35,8 @@ export function AdminHeader({
   const pathname = usePathname() ?? "/admin";
   const locale = useLocale() as AppLocale;
   const t = useTranslations("Admin");
+  const { enabled: privacyModeEnabled } = useAdminPrivacyMode();
+  const privacyCopy = getAdminPrivacyUiCopy(locale);
   const visibleItems = getVisibleAdminNavItems(currentUser.role);
   const currentItem =
     visibleItems.find((item) =>
@@ -68,6 +72,11 @@ export function AdminHeader({
               >
                 {t(`roles.${currentUser.role}`)}
               </AdminBadge>
+              {privacyModeEnabled ? (
+                <AdminBadge variant="danger" className="px-2 py-0.5 text-[0.68rem]">
+                  {privacyCopy.activeBadge}
+                </AdminBadge>
+              ) : null}
               <p className="truncate text-sm font-semibold text-foreground">
                 {getAdminNavLabel(currentItem.key, locale)}
               </p>

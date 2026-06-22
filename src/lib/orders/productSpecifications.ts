@@ -21,13 +21,13 @@ export type ProductSpecifications = {
 
 export const productSpecificationsSchema = z
   .object({
-    karat: z.enum(jewelryKaratValues),
+    karat: z.enum(jewelryKaratValues).nullable().default(null),
     nameCustomization: z.object({
       enabled: z.boolean(),
       language: z.enum(nameCustomizationLanguageValues).nullable(),
       text: z.string().trim().max(255).nullable(),
     }),
-    weightGrams: z.number().finite().positive(),
+    weightGrams: z.number().finite().positive().nullable().default(null),
   })
   .superRefine((value, context) => {
     if (!value.nameCustomization.enabled) {

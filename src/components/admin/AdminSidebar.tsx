@@ -55,66 +55,60 @@ export function getVisibleAdminNavItems(role: AdminRole) {
 }
 
 export function getAdminNavLabel(key: AdminNavKey, locale: AppLocale) {
-  if (locale === "ar") {
-    switch (key) {
-      case "gallery":
-        return "إدخال الطلبات";
-      case "inquiries":
-        return "طلبات العملاء";
-      case "overview":
-        return "لوحة التحكم";
-      case "products":
-        return "المنتجات";
-      case "categories":
-        return "التصنيفات";
-      case "options":
-        return "الخيارات";
-      case "orders":
-        return "الطلبات";
-      case "settings":
-        return "الإعدادات";
-    }
-  }
+  const labels: Record<AppLocale, Record<AdminNavKey, string>> = {
+    ar: {
+      categories: "التصنيفات",
+      gallery: "طلب من الورشة",
+      inquiries: "طلبات العملاء",
+      options: "الخيارات",
+      orders: "الطلبات",
+      overview: "لوحة التحكم",
+      products: "المنتجات",
+      settings: "الإعدادات",
+    },
+    de: {
+      categories: "Kategorien",
+      gallery: "Werkstattauftrag",
+      inquiries: "Kundenanfragen",
+      options: "Optionen",
+      orders: "Auftraege",
+      overview: "Uebersicht",
+      products: "Produkte",
+      settings: "Einstellungen",
+    },
+    en: {
+      categories: "Categories",
+      gallery: "Workshop Order",
+      inquiries: "Customer inquiries",
+      options: "Options",
+      orders: "Orders",
+      overview: "Overview",
+      products: "Products",
+      settings: "Settings",
+    },
+    fr: {
+      categories: "Categories",
+      gallery: "Commande atelier",
+      inquiries: "Demandes clients",
+      options: "Options",
+      orders: "Commandes",
+      overview: "Vue d'ensemble",
+      products: "Produits",
+      settings: "Parametres",
+    },
+    tr: {
+      categories: "Kategoriler",
+      gallery: "Atölye Siparişi",
+      inquiries: "Müşteri talepleri",
+      options: "Seçenekler",
+      orders: "Siparişler",
+      overview: "Genel bakış",
+      products: "Ürünler",
+      settings: "Ayarlar",
+    },
+  };
 
-  if (locale === "de") {
-    switch (key) {
-      case "gallery":
-        return "Auftragserfassung";
-      case "inquiries":
-        return "Kundenanfragen";
-      case "overview":
-        return "Uebersicht";
-      case "products":
-        return "Produkte";
-      case "categories":
-        return "Kategorien";
-      case "options":
-        return "Optionen";
-      case "orders":
-        return "Auftraege";
-      case "settings":
-        return "Einstellungen";
-    }
-  }
-
-  switch (key) {
-    case "gallery":
-      return "Order entry";
-    case "inquiries":
-      return "Customer inquiries";
-    case "overview":
-      return "Overview";
-    case "products":
-      return "Products";
-    case "categories":
-      return "Categories";
-    case "options":
-      return "Options";
-    case "orders":
-      return "Orders";
-    case "settings":
-      return "Settings";
-  }
+  return labels[locale][key];
 }
 
 type AdminSidebarProps = {
