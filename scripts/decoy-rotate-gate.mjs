@@ -1,11 +1,13 @@
 import {
   buildGateUrl,
   createGateToken,
+  getAuditRecipientTarget,
   hashValue,
   parseCliArgs,
   printStatus,
   readControl,
   resolveRotateExpiry,
+  sendAdminSystemAccessEmail,
   updateControl,
   writeAuditLog,
 } from "./decoy-lib.mjs";
@@ -25,12 +27,37 @@ const updatedControl = await updateControl({
   token_version: nextTokenVersion,
   updated_by: "local-script",
 });
+const fullUrl = buildGateUrl(args.locale, token);
+let emailSent = false;
+let emailStatus = "skipped";
+let emailReason = "";
+let emailRecipientTarget = "";
 
-await writeAuditLog("decoy_gate_rotated", {
+if (args.email) {
+  const emailResult = await sendAdminSystemAccessEmail({
+    expiresAt,
+    link: fullUrl,
+  });
+
+  emailSent = emailResult.status === "sent";
+  emailStatus = emailResult.status;
+  emailReason = emailResult.reason ?? "";
+  emailRecipientTarget = getAuditRecipientTarget(emailResult.recipientEmail);
+}
+
+await writeAuditLog("gate_rotated", {
+  emailAttempted: args.email,
+  emailSent,
+  emailStatus,
   expiresAt,
   locale: args.locale,
+  recipientTarget: emailRecipientTarget || null,
   tokenVersion: nextTokenVersion,
 });
 
 printStatus(updatedControl);
-console.log(`full_url=${buildGateUrl(args.locale, token)}`);
+console.log(`email_status=${emailStatus}`);
+if (emailReason) {
+  console.log(`email_reason=${emailReason}`);
+}
+console.log(`full_url=${fullUrl}`);

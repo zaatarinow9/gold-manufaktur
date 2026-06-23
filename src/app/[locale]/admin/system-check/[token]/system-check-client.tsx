@@ -68,6 +68,7 @@ export function SystemCheckClient({
   const [expiresAt, setExpiresAt] = useState(
     toLocalDateTimeInput(initialControl.expiresAt)
   );
+  const [latestEmailSent, setLatestEmailSent] = useState<boolean | null>(null);
   const [latestLink, setLatestLink] = useState("");
   const syncLabel = currentControl.isDecoyEnabled
     ? t("statusEnabled")
@@ -110,7 +111,11 @@ export function SystemCheckClient({
       }
 
       if (result.link) {
+        setLatestEmailSent(result.emailSent ?? null);
         setLatestLink(result.link);
+      } else if (intent !== "rotate") {
+        setLatestEmailSent(null);
+        setLatestLink("");
       }
 
       if (result.ok && result.refresh !== false) {
@@ -174,6 +179,43 @@ export function SystemCheckClient({
         </div>
       ) : null}
 
+      {latestLink ? (
+        <AdminCard
+          title={t("linkReadyTitle")}
+          description={t("linkReadyDescription")}
+        >
+          <div className="space-y-4">
+            <div className="rounded-[0.95rem] border border-gold/18 bg-gold/10 px-4 py-3">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted">
+                {t("deliveryStatusLabel")}
+              </p>
+              <div className="mt-2">
+                <AdminBadge variant={latestEmailSent ? "gold" : "neutral"}>
+                  {latestEmailSent ? t("deliverySent") : t("deliveryFailed")}
+                </AdminBadge>
+              </div>
+            </div>
+
+            <AdminInput
+              id="systemCheckLink"
+              name="systemCheckLink"
+              label={t("newLinkLabel")}
+              value={latestLink}
+              readOnly
+              className="font-mono text-xs"
+            />
+
+            <p className="text-sm text-muted">{t("linkShownOnce")}</p>
+
+            <div className="flex flex-wrap gap-2">
+              <AdminButton variant="primary" onClick={handleCopyLink} disabled={isPending}>
+                {t("copyLink")}
+              </AdminButton>
+            </div>
+          </div>
+        </AdminCard>
+      ) : null}
+
       <AdminCard title={t("statusTitle")} description={t("statusDescription")}>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
@@ -232,17 +274,6 @@ export function SystemCheckClient({
             onChange={(event) => setExpiresAt(event.target.value)}
           />
 
-          {latestLink ? (
-            <AdminInput
-              id="systemCheckLink"
-              name="systemCheckLink"
-              label={t("newLinkLabel")}
-              value={latestLink}
-              readOnly
-              className="font-mono text-xs"
-            />
-          ) : null}
-
           <div className="flex flex-wrap gap-2">
             <AdminButton
               variant="primary"
@@ -279,11 +310,6 @@ export function SystemCheckClient({
             >
               {t("disableGate")}
             </AdminButton>
-            {latestLink ? (
-              <AdminButton variant="ghost" onClick={handleCopyLink} disabled={isPending}>
-                {t("copyLink")}
-              </AdminButton>
-            ) : null}
             <AdminButton variant="ghost" onClick={() => router.refresh()} disabled={isPending}>
               {t("refresh")}
             </AdminButton>

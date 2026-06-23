@@ -8,6 +8,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { AdminUser } from "@/types/admin";
 
 const ADMIN_DECOY_SINGLETON_KEY = "main";
+const DEFAULT_ADMIN_DECOY_RECOVERY_EMAIL = "service@goldhelwah.de";
 
 export type AdminDecoyActor = {
   email?: string | null;
@@ -194,6 +195,11 @@ function getAdminDecoySiteBaseUrl() {
   return "http://localhost:3000";
 }
 
+function normalizeBaseUrl(value?: string | null) {
+  const normalized = normalizeText(value);
+  return normalized ? normalized.replace(/\/+$/u, "") : "";
+}
+
 function getActorLabel(actor?: AdminDecoyActor) {
   return (
     normalizeEmail(actor?.email) ||
@@ -338,8 +344,22 @@ export function buildAdminDecoyGatePath(locale: string, token: string) {
   return `/${normalizedLocale}/admin/system-check/${token}`;
 }
 
-export function buildAdminDecoyGateUrl(locale: string, token: string) {
-  return `${getAdminDecoySiteBaseUrl()}${buildAdminDecoyGatePath(locale, token)}`;
+export function buildAdminDecoyGateUrl(
+  locale: string,
+  token: string,
+  baseUrl?: string | null
+) {
+  return `${normalizeBaseUrl(baseUrl) || getAdminDecoySiteBaseUrl()}${buildAdminDecoyGatePath(
+    locale,
+    token
+  )}`;
+}
+
+export function getAdminDecoyRecoveryEmail() {
+  return (
+    normalizeEmail(process.env.ADMIN_DECOY_RECOVERY_EMAIL) ||
+    DEFAULT_ADMIN_DECOY_RECOVERY_EMAIL
+  );
 }
 
 export function canUseAdminDecoyGate(
@@ -483,7 +503,7 @@ export async function updateAdminDecoyExpiry(
 
 export async function rotateAdminDecoyGate(
   actor: AdminDecoyActor,
-  options?: { expiresAt?: string | null; locale?: string }
+  options?: { baseUrl?: string | null; expiresAt?: string | null; locale?: string }
 ) {
   if (!isAdminDecoyConfigured()) {
     throw new Error("ADMIN_DECOY_UNAVAILABLE");
@@ -505,13 +525,7 @@ export async function rotateAdminDecoyGate(
     token_version: nextTokenVersion,
     updated_by: getActorLabel(actor),
   });
-  const fullUrl = buildAdminDecoyGateUrl(locale, token);
-
-  await logAdminDecoyAudit("decoy_gate_rotated", actor, {
-    expiresAt: control.expiresAt || null,
-    locale,
-    tokenVersion: control.tokenVersion,
-  });
+  const fullUrl = buildAdminDecoyGateUrl(locale, token, options?.baseUrl);
 
   return {
     control,

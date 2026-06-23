@@ -6,6 +6,9 @@ import { sendViaSmtp, type SmtpTransportConfig } from "./smtp";
 
 export type TransactionalEmailInput = {
   html?: string;
+  logHtml?: string | null;
+  logMetadata?: Json;
+  logText?: string;
   metadata?: Json;
   notificationId?: string | null;
   orderId?: string | null;
@@ -179,6 +182,10 @@ export async function sendTransactionalEmail(
   input: TransactionalEmailInput
 ): Promise<EmailDispatchResult> {
   const recipientEmail = input.recipientEmail.trim();
+  const logHtml =
+    input.logHtml === undefined ? input.html ?? null : input.logHtml;
+  const logMetadata = input.logMetadata ?? input.metadata ?? {};
+  const logText = input.logText ?? input.text;
 
   if (!recipientEmail) {
     return {
@@ -195,7 +202,7 @@ export async function sendTransactionalEmail(
   if (input.skipDeliveryReason) {
     const logId = await createEmailLog({
       errorMessage: input.skipDeliveryReason,
-      metadata: input.metadata ?? {},
+      metadata: logMetadata,
       notificationId: input.notificationId ?? null,
       orderId: input.orderId ?? null,
       provider: "log_only",
@@ -203,7 +210,7 @@ export async function sendTransactionalEmail(
       status: "skipped",
       subject: input.subject,
       supportTicketId: input.supportTicketId ?? null,
-      text: input.text,
+      text: logText,
     });
 
     return {
@@ -220,7 +227,7 @@ export async function sendTransactionalEmail(
   const smtpState = getSmtpState();
   const logId = await createEmailLog({
     errorMessage: smtpState.ready ? null : smtpState.reason,
-    metadata: input.metadata ?? {},
+    metadata: logMetadata,
     notificationId: input.notificationId ?? null,
     orderId: input.orderId ?? null,
     provider: smtpState.ready ? "smtp" : "log_only",
@@ -228,7 +235,7 @@ export async function sendTransactionalEmail(
     status: smtpState.ready ? "pending" : "skipped",
     subject: input.subject,
     supportTicketId: input.supportTicketId ?? null,
-    text: input.text,
+    text: logText,
   });
 
   if (!smtpState.ready) {
@@ -257,7 +264,7 @@ export async function sendTransactionalEmail(
     });
 
     await updateEmailLog(logId, {
-      html: input.html,
+      html: logHtml ?? undefined,
       provider: "smtp",
       status: "sent",
     });
@@ -275,7 +282,7 @@ export async function sendTransactionalEmail(
 
     await updateEmailLog(logId, {
       errorMessage: reason,
-      html: input.html,
+      html: logHtml ?? undefined,
       provider: "smtp",
       status: "failed",
     });

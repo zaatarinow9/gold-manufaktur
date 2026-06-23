@@ -17,6 +17,7 @@ import {
   disableAdminDecoyMode,
   enableAdminDecoyMode,
   getAdminDecoyControl,
+  getAdminDecoyRecoveryEmail,
   isAdminDecoyConfigured,
   logAdminDecoyAudit,
   rotateAdminDecoyGate,
@@ -26,9 +27,14 @@ import {
   type AdminDecoyActor,
   type AdminDecoyControlRecord,
 } from "@/lib/db/adminDecoy";
+import { buildAdminSystemAccessEmail } from "@/lib/email/adminSystemAccessEmail";
+import { sendTransactionalEmail } from "@/lib/email/service";
+import { companyInfo } from "@/lib/site";
 
 type SystemCheckActionResult = {
   control?: AdminDecoyControlRecord;
+  emailSent?: boolean;
+  emailTried?: boolean;
   link?: string;
   message: string;
   ok: boolean;
@@ -74,6 +80,17 @@ async function getActionCopy(locale: AppLocale) {
   return getTranslations({ locale, namespace: "Admin.systemCheck" });
 }
 
+function getAuditRecipientTarget(value: string) {
+  const normalized = value.trim().toLowerCase();
+
+  if (!normalized) {
+    return "";
+  }
+
+  const atIndex = normalized.lastIndexOf("@");
+  return atIndex === -1 ? normalized : normalized.slice(atIndex + 1);
+}
+
 async function getActor(user: { email: string; id: string }): Promise<AdminDecoyActor> {
   const requestHeaders = await headers();
   return {
@@ -83,6 +100,23 @@ async function getActor(user: { email: string; id: string }): Promise<AdminDecoy
     userAgent: requestHeaders.get("user-agent") ?? "",
     userId: user.id,
   };
+}
+
+async function getRequestBaseUrl() {
+  const requestHeaders = await headers();
+  const host =
+    requestHeaders.get("x-forwarded-host")?.split(",")[0]?.trim() ??
+    requestHeaders.get("host")?.trim() ??
+    "";
+
+  if (!host) {
+    return "";
+  }
+
+  const protocol =
+    requestHeaders.get("x-forwarded-proto")?.split(",")[0]?.trim() || "https";
+
+  return `${protocol}://${host}`.replace(/\/+$/u, "");
 }
 
 async function requireSystemCheckAccess(
@@ -262,14 +296,56 @@ export async function runSystemCheckAction(
         };
       }
       case "rotate": {
+        const baseUrl = await getRequestBaseUrl();
         const result = await rotateAdminDecoyGate(access.actor, {
+          baseUrl,
           expiresAt: input.expiresAt ?? "",
           locale,
+        });
+        const recoveryEmail = getAdminDecoyRecoveryEmail();
+        const auditRecipient = getAuditRecipientTarget(recoveryEmail);
+        const email = buildAdminSystemAccessEmail({
+          expiresAt: result.control.expiresAt,
+          link: result.fullUrl,
+        });
+        const emailResult = await sendTransactionalEmail({
+          html: email.html,
+          logHtml: "<p>[redacted system access link]</p>",
+          logMetadata: {
+            emailKind: "admin_system_access_rotation",
+            expiresAt: result.control.expiresAt || null,
+            recipientTarget: auditRecipient || null,
+            tokenVersion: result.control.tokenVersion,
+          },
+          logText: "[redacted system access link]",
+          metadata: {
+            emailKind: "admin_system_access_rotation",
+            expiresAt: result.control.expiresAt || null,
+            recipientTarget: auditRecipient || null,
+            tokenVersion: result.control.tokenVersion,
+          },
+          recipientEmail: recoveryEmail,
+          replyTo: companyInfo.emailDisplay,
+          subject: email.subject,
+          text: email.text,
+        });
+        const emailSent = emailResult.status === "sent";
+
+        await logAdminDecoyAudit("gate_rotated", access.actor, {
+          emailAttempted: true,
+          emailSent,
+          emailStatus: emailResult.status,
+          expiresAt: result.control.expiresAt || null,
+          locale,
+          recipientTarget: auditRecipient || null,
+          tokenVersion: result.control.tokenVersion,
         });
         await clearAdminDecoySession();
         revalidateAdminViews();
         return {
           control: result.control,
+          emailSent,
+          emailTried: true,
           link: result.fullUrl,
           message: t("newLinkCreated"),
           ok: true,
