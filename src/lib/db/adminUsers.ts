@@ -4,8 +4,10 @@ import { randomBytes } from "node:crypto";
 
 import type { User } from "@supabase/supabase-js";
 
+import { getDecoyManagedUsers } from "@/lib/admin/decoyData";
 import { sendTransactionalEmail } from "@/lib/email/service";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 
 import { createAuditLog } from "./auditLogs";
 import { getSiteBaseUrl } from "./siteSettings";
@@ -199,6 +201,10 @@ async function upsertManagedProfile(input: {
 }
 
 export async function listManagedAdminUsers(): Promise<ManagedAdminUserRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyManagedUsers();
+  }
+
   const supabase = getManagedProfilesClient();
   const [{ data: profiles, error: profilesError }, authUsers] = await Promise.all([
     supabase.from("profiles").select("*").order("created_at", { ascending: false }),

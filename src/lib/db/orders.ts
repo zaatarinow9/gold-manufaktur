@@ -2,6 +2,10 @@ import "server-only";
 
 import { z } from "zod";
 
+import {
+  getDecoyOrderDetail,
+  getDecoyOrders,
+} from "@/lib/admin/decoyData";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import {
   canAccessOrder,
@@ -37,6 +41,7 @@ import {
   resolvePublicTrackingStage,
 } from "@/lib/orderTracking/publicStages";
 import { normalizePhoneNumber } from "@/lib/phone";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Json, TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
 import type {
@@ -1100,6 +1105,10 @@ async function loadScopedOrderBundle(viewer: AdminViewer) {
 export async function getScopedOrders(
   viewer: AdminViewer
 ): Promise<OrderListRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyOrders(viewer.role);
+  }
+
   const bundle = await loadScopedOrderBundle(viewer);
   const itemsByOrderId = new Map<string, OrderItemRecord[]>();
   const ticketsByOrderId = new Map<string, SupportTicketRecord[]>();
@@ -1160,6 +1169,10 @@ export async function getScopedOrderDetail(
   viewer: AdminViewer,
   orderId: string
 ): Promise<OrderDetailRecord | null> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyOrderDetail(orderId);
+  }
+
   const bundle = await loadScopedOrderBundle(viewer);
   const order = bundle.orders.find((entry) => entry.id === orderId);
 

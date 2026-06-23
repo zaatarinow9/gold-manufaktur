@@ -7,7 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:messages": "\"%npm_node_execpath%\" scripts/check-messages.mjs"
+    "check:messages": "\"%npm_node_execpath%\" scripts/check-messages.mjs",
+    "decoy:hash": "\"%npm_node_execpath%\" scripts/decoy-hash.mjs",
+    "decoy:rotate": "\"%npm_node_execpath%\" scripts/decoy-rotate-gate.mjs",
+    "decoy:disable-gate": "\"%npm_node_execpath%\" scripts/decoy-disable-gate.mjs",
+    "decoy:status": "\"%npm_node_execpath%\" scripts/decoy-status.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -22,6 +26,7 @@
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.79.0",
     "tailwind-merge": "^3.6.0",
+    "ws": "^8.21.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

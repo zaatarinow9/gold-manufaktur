@@ -19,11 +19,9 @@ import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { useAdminPrivacyMode } from "@/components/admin/AdminPrivacyMode";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import type { AppLocale } from "@/i18n/routing";
 import { getRequiredFieldBadge } from "@/lib/admin/clientForm";
-import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import type { ManagedAdminRole, ManagedAdminUserRecord } from "@/lib/db/adminUsers";
 import type { AdminSettingsSnapshot } from "@/lib/db/siteSettings";
 
@@ -59,7 +57,7 @@ function getSettingsUiCopy(locale: AppLocale) {
       copySuccess: "تم نسخ الرابط الكامل.",
       copyUnavailable: "لا يوجد رابط كامل متاح للنسخ حالياً.",
       description:
-        "إدارة عناوين الإشعارات، رابط إدخال الطلبات الخارجي، وضع الخصوصية المحلي، والمستخدمين من شاشة واحدة.",
+        "إدارة عناوين الإشعارات، رابط إدخال الطلبات الخارجي، والمستخدمين من شاشة واحدة.",
       diagnosticsTitle: "تنبيه الإعدادات",
       expiresAt: "ينتهي في",
       fullLinkHelp:
@@ -77,11 +75,10 @@ function getSettingsUiCopy(locale: AppLocale) {
       orderEntryEnabled: "تفعيل رابط إدخال الطلبات الخارجي",
       orderEntryTitle: "رابط إدخال الطلبات الخارجي",
       ownerEmail: "بريد المالك",
-      privacyLocalOnly:
-        "يتم حفظ هذا الوضع محلياً في هذا المتصفح فقط، وهو مخصص للاستخدام السريع أثناء العمل أو العرض.",
-      privacyStatusActive: "وضع الخصوصية مفعل في هذا المتصفح.",
-      privacyStatusInactive: "وضع الخصوصية غير مفعل في هذا المتصفح.",
-      privacyTitle: "وضع الخصوصية المحلي",
+      privacyLocalOnly: "",
+      privacyStatusActive: "",
+      privacyStatusInactive: "",
+      privacyTitle: "",
       role: "الدور",
       rotateLink: "تدوير الرابط",
       rotatedAt: "آخر تدوير",
@@ -111,7 +108,7 @@ function getSettingsUiCopy(locale: AppLocale) {
       copySuccess: "Der vollstaendige Link wurde kopiert.",
       copyUnavailable: "Aktuell ist kein vollstaendiger Link verfuegbar.",
       description:
-        "Verwalten Sie Benachrichtigungen, den externen Auftragserfassungslink, den lokalen Privatsphaerenmodus und Admin-Benutzer an einem Ort.",
+        "Verwalten Sie Benachrichtigungen, den externen Auftragserfassungslink und Admin-Benutzer an einem Ort.",
       diagnosticsTitle: "Einstellungsdiagnose",
       expiresAt: "Laeuft ab am",
       fullLinkHelp:
@@ -130,11 +127,10 @@ function getSettingsUiCopy(locale: AppLocale) {
       orderEntryEnabled: "Externen Auftragserfassungslink aktivieren",
       orderEntryTitle: "Externer Auftragserfassungslink",
       ownerEmail: "Inhaber / Super-Admin",
-      privacyLocalOnly:
-        "Dieser Modus wird nur in diesem Browser gespeichert und eignet sich fuer schnelle Abschirmung waehrend Arbeit oder Praesentation.",
-      privacyStatusActive: "Der Privatsphaerenmodus ist in diesem Browser aktiv.",
-      privacyStatusInactive: "Der Privatsphaerenmodus ist in diesem Browser aus.",
-      privacyTitle: "Lokaler Privatsphaerenmodus",
+      privacyLocalOnly: "",
+      privacyStatusActive: "",
+      privacyStatusInactive: "",
+      privacyTitle: "",
       role: "Rolle",
       rotateLink: "Link neu erzeugen",
       rotatedAt: "Zuletzt rotiert",
@@ -163,7 +159,7 @@ function getSettingsUiCopy(locale: AppLocale) {
     copySuccess: "The full link was copied.",
     copyUnavailable: "No full link is available right now.",
     description:
-      "Manage notification addresses, the external order-entry link, local privacy mode, and admin users from one place.",
+      "Manage notification addresses, the external order-entry link, and admin users from one place.",
     diagnosticsTitle: "Settings diagnostics",
     expiresAt: "Expires at",
     fullLinkHelp:
@@ -182,11 +178,10 @@ function getSettingsUiCopy(locale: AppLocale) {
     orderEntryEnabled: "Enable external order-entry link",
     orderEntryTitle: "External order-entry link",
     ownerEmail: "Owner / super admin",
-    privacyLocalOnly:
-      "This mode is stored only in this browser and is meant for quick masking during work or presentations.",
-    privacyStatusActive: "Privacy mode is active in this browser.",
-    privacyStatusInactive: "Privacy mode is off in this browser.",
-    privacyTitle: "Local privacy mode",
+    privacyLocalOnly: "",
+    privacyStatusActive: "",
+    privacyStatusInactive: "",
+    privacyTitle: "",
     role: "Role",
     rotateLink: "Rotate link",
     rotatedAt: "Last rotated",
@@ -296,8 +291,6 @@ export function AdminSettingsClient({
   usersWarning,
 }: AdminSettingsClientProps) {
   const copy = getSettingsUiCopy(locale);
-  const privacyCopy = getAdminPrivacyUiCopy(locale);
-  const { enabled: privacyEnabled, setEnabled: setPrivacyEnabled } = useAdminPrivacyMode();
   const userEmailLabel =
     locale === "ar" ? "البريد الإلكتروني" : locale === "de" ? "E-Mail" : "Email";
   const userInactiveLabel =
@@ -464,15 +457,6 @@ export function AdminSettingsClient({
         refreshPage();
       }
     });
-  };
-
-  const handlePrivacyToggle = () => {
-    const nextValue = !privacyEnabled;
-    setPrivacyEnabled(nextValue);
-    pushFeedback(
-      "success",
-      nextValue ? copy.privacyStatusActive : copy.privacyStatusInactive
-    );
   };
 
   const handleUserSubmit = () => {
@@ -661,7 +645,7 @@ export function AdminSettingsClient({
         </AdminCard>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <section className="space-y-6">
         <AdminCard
           title={copy.orderEntryTitle}
           description={copy.orderEntryDescription}
@@ -765,27 +749,6 @@ export function AdminSettingsClient({
           </div>
         </AdminCard>
 
-        <AdminCard
-          title={copy.privacyTitle}
-          description={privacyEnabled ? copy.privacyStatusActive : copy.privacyStatusInactive}
-          action={
-            <AdminButton
-              variant={privacyEnabled ? "secondary" : "primary"}
-              onClick={handlePrivacyToggle}
-            >
-              {privacyEnabled ? privacyCopy.deactivate : privacyCopy.activate}
-            </AdminButton>
-          }
-        >
-          <div className="space-y-4">
-            <AdminBadge variant={privacyEnabled ? "danger" : "neutral"}>
-              {privacyEnabled ? privacyCopy.activeBadge : copy.privacyStatusInactive}
-            </AdminBadge>
-            <p className="text-sm text-muted">{privacyCopy.activeDescription}</p>
-            <p className="text-sm text-muted">{copy.privacyLocalOnly}</p>
-            <p className="text-xs text-muted">{privacyCopy.shortcut}</p>
-          </div>
-        </AdminCard>
       </section>
 
       <AdminCard

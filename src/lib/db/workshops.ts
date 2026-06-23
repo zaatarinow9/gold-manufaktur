@@ -2,6 +2,8 @@ import "server-only";
 
 import { z } from "zod";
 
+import { getDecoyWorkshops } from "@/lib/admin/decoyData";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { canAccessWorkshop, logAdminReadError } from "@/lib/db/adminScope";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -175,6 +177,10 @@ async function loadWorkshopEmployees() {
 export async function getScopedWorkshops(
   viewer: AdminViewer
 ): Promise<WorkshopRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyWorkshops(viewer.role);
+  }
+
   const [workshops, orders, employees] = await Promise.all([
     loadWorkshopRows(),
     loadWorkshopOrders(),

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getDecoyNotifications } from "@/lib/admin/decoyData";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -68,6 +70,10 @@ export async function getScopedAdminNotifications(
   viewer: AdminViewer,
   limit = 6
 ): Promise<AdminNotificationRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyNotifications().slice(0, limit);
+  }
+
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("admin_notifications")

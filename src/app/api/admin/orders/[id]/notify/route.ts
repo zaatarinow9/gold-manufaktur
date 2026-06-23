@@ -1,6 +1,7 @@
 import { getPublicTrackingStageFromStatus } from "@/lib/orderTracking/publicStages";
 import { getAdminSessionContext } from "@/lib/admin/auth";
 import { orderNotificationSchema } from "@/lib/admin/tracking";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import { getScopedOrderDetail } from "@/lib/db/orders";
 import { sendTransactionalEmail } from "@/lib/email/service";
 
@@ -21,6 +22,13 @@ export async function POST(
 
   if (session.state !== "authenticated" || !session.user) {
     return Response.json({ error: "FORBIDDEN", success: false }, { status: 403 });
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return Response.json(
+      { error: "SYNC_UNAVAILABLE", success: false },
+      { status: 423 }
+    );
   }
 
   const order = await getScopedOrderDetail(session.user, id);

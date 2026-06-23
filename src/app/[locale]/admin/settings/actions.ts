@@ -19,9 +19,12 @@ import {
   rotateOrderEntryAccess,
   saveNotificationSettings,
   saveOrderEntrySettings,
-  setPrivacyMode,
   SiteSettingsError,
 } from "@/lib/db/siteSettings";
+import {
+  getAdminDecoyUnavailableMessage,
+  isAdminDecoyEnabled,
+} from "@/lib/db/adminDecoy";
 import { buildOrderEntryLinkEmail } from "@/lib/email/orderEntryLinkEmail";
 import { sendTransactionalEmail } from "@/lib/email/service";
 import { companyInfo } from "@/lib/site";
@@ -39,12 +42,6 @@ const managedUserSchema = z.object({
   role: z.enum(["super_admin", "admin", "employee", "viewer"]),
 });
 
-const privacyModeSchema = z.object({
-  enabled: z.boolean(),
-  passphrase: z.string().trim().max(120).default(""),
-  reason: z.string().trim().max(400).default(""),
-});
-
 const orderEntrySchema = z.object({
   enabled: z.boolean(),
   expiresAt: z.string().trim().max(80).default(""),
@@ -55,8 +52,6 @@ const sendOrderEntryLinkEmailSchema = z.object({
   expiresAt: z.string().trim().max(80).default(""),
   recipientEmail: z.string().trim().email().max(160),
 });
-
-const privacyPassphrase = "GOLDHELWAH PRIVACY";
 
 type SettingsActionWithLink = AdminActionResult & {
   link?: string;
@@ -137,6 +132,19 @@ function revalidateSettingsViews() {
   });
 }
 
+async function getDecoyBlockedResult(
+  locale: AppLocale
+): Promise<SettingsActionWithLink | null> {
+  if (!(await isAdminDecoyEnabled())) {
+    return null;
+  }
+
+  return {
+    message: getAdminDecoyUnavailableMessage(locale),
+    ok: false,
+  };
+}
+
 async function requireSettingsAccess(locale: AppLocale) {
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
@@ -174,6 +182,12 @@ export async function saveNotificationSettingsAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   const parsed = notificationSettingsSchema.safeParse(input);
@@ -214,6 +228,12 @@ export async function saveOrderEntrySettingsAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   const parsed = orderEntrySchema.safeParse(input);
@@ -258,6 +278,12 @@ export async function rotateOrderEntryAccessAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   const parsed = orderEntrySchema.safeParse(input);
@@ -307,6 +333,12 @@ export async function sendOrderEntryLinkEmailAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   const parsed = sendOrderEntryLinkEmailSchema.safeParse(input);
@@ -382,67 +414,6 @@ export async function sendOrderEntryLinkEmailAction(
   }
 }
 
-export async function setPrivacyModeAction(
-  locale: AppLocale,
-  input: z.infer<typeof privacyModeSchema>
-): Promise<AdminActionResult> {
-  const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
-
-  if (!user) {
-    return {
-      message: copy.noAccess,
-      ok: false,
-    };
-  }
-
-  if (user.role !== "super_admin") {
-    return {
-      message: copy.noAccess,
-      ok: false,
-    };
-  }
-
-  const parsed = privacyModeSchema.safeParse(input);
-
-  if (!parsed.success) {
-    return {
-      message: copy.saved,
-      ok: false,
-    };
-  }
-
-  if (parsed.data.enabled && parsed.data.passphrase.trim() !== privacyPassphrase) {
-    return {
-      message: copy.privacyPhrase,
-      ok: false,
-    };
-  }
-
-  try {
-    await setPrivacyMode({
-      actorEmail: user.email,
-      enabled: parsed.data.enabled,
-      reason: parsed.data.reason,
-    });
-    revalidateSettingsViews();
-    return {
-      message: copy.saved,
-      ok: true,
-    };
-  } catch (error) {
-    return {
-      message:
-        error instanceof SiteSettingsError
-          ? error.messageForUi
-          : error instanceof Error
-            ? error.message
-            : copy.saved,
-      ok: false,
-    };
-  }
-}
-
 export async function createManagedAdminUserAction(
   locale: AppLocale,
   input: z.infer<typeof managedUserSchema>
@@ -455,6 +426,12 @@ export async function createManagedAdminUserAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   const parsed = managedUserSchema.safeParse(input);
@@ -494,6 +471,12 @@ export async function updateManagedAdminUserAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   const parsed = managedUserSchema.safeParse(input);
@@ -546,6 +529,12 @@ export async function resendManagedAdminInviteAction(
     };
   }
 
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
+  }
+
   try {
     await resendManagedAdminInvite(
       user.email,
@@ -582,6 +571,12 @@ export async function toggleManagedAdminUserActiveAction(
     };
   }
 
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
+  }
+
   try {
     await setManagedAdminUserActive(user.email, userId, nextState);
     revalidateSettingsViews();
@@ -609,6 +604,12 @@ export async function deleteManagedAdminUserAction(
       message: copy.noAccess,
       ok: false,
     };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
   }
 
   if (user.id === userId) {

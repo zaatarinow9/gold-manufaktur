@@ -3,6 +3,8 @@ import "server-only";
 import { cache } from "react";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 
+import { getDecoySettingsSnapshot } from "@/lib/admin/decoyData";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { Json } from "@/lib/supabase/types";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -415,6 +417,10 @@ export async function saveAdminNotificationEmail(email: string) {
 }
 
 export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoySettingsSnapshot();
+  }
+
   const diagnostics = await getSiteSettingsDiagnostics();
 
   if (!diagnostics.available) {

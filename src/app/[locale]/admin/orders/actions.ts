@@ -11,6 +11,10 @@ import {
 } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
+  getAdminDecoyUnavailableMessage,
+  isAdminDecoyEnabled,
+} from "@/lib/db/adminDecoy";
+import {
   archiveOrder,
   createOrder,
   deleteOrder,
@@ -373,6 +377,13 @@ export async function createOrderAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     const result = await createOrder(access.user, input, locale);
     revalidateOrderViews(result.orderId, result.trackingNumber);
@@ -415,6 +426,13 @@ export async function updateOrderWorkflowAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     const result = await updateOrderWorkflow(access.user, input, locale);
     revalidateOrderViews(input.orderId, result.trackingNumber);
@@ -453,6 +471,13 @@ export async function archiveOrderAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     const result = await archiveOrder(access.user, orderId);
     revalidateOrderViews(orderId, result.trackingNumber);
@@ -480,6 +505,13 @@ export async function deleteOrderAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     const result = await deleteOrder(access.user, orderId);
     revalidateOrderViews(orderId, result.trackingNumber);
@@ -503,6 +535,13 @@ export async function withdrawOrderAssignmentAction(
   if (access.state !== "authenticated" || !access.user) {
     return {
       message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false,
     };
   }

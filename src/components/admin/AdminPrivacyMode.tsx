@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useSyncExternalStore,
-} from "react";
-
-import {
-  ADMIN_PRIVACY_STORAGE_KEY,
-  getAdminPrivacyUiCopy,
-} from "@/lib/admin/privacy";
+import { createContext, useContext } from "react";
 
 type AdminPrivacyContextValue = {
   enabled: boolean;
@@ -21,104 +10,28 @@ type AdminPrivacyContextValue = {
   toggle: () => void;
 };
 
-const AdminPrivacyContext = createContext<AdminPrivacyContextValue | null>(null);
-const ADMIN_PRIVACY_CHANGE_EVENT = "goldhelwah-admin-privacy-change";
+const defaultPrivacyContextValue: AdminPrivacyContextValue = {
+  enabled: false,
+  masked: false,
+  ready: true,
+  setEnabled: () => {},
+  toggle: () => {},
+};
 
-function readStoredPrivacyMode() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return window.localStorage.getItem(ADMIN_PRIVACY_STORAGE_KEY) === "true";
-}
-
-function subscribeToPrivacyMode(onStoreChange: () => void) {
-  if (typeof window === "undefined") {
-    return () => {};
-  }
-
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key && event.key !== ADMIN_PRIVACY_STORAGE_KEY) {
-      return;
-    }
-
-    onStoreChange();
-  };
-  const handlePrivacyChange = () => {
-    onStoreChange();
-  };
-
-  window.addEventListener("storage", handleStorage);
-  window.addEventListener(ADMIN_PRIVACY_CHANGE_EVENT, handlePrivacyChange);
-
-  return () => {
-    window.removeEventListener("storage", handleStorage);
-    window.removeEventListener(ADMIN_PRIVACY_CHANGE_EVENT, handlePrivacyChange);
-  };
-}
-
-function writeStoredPrivacyMode(enabled: boolean) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  window.localStorage.setItem(ADMIN_PRIVACY_STORAGE_KEY, enabled ? "true" : "false");
-  window.dispatchEvent(new Event(ADMIN_PRIVACY_CHANGE_EVENT));
-}
+const AdminPrivacyContext = createContext<AdminPrivacyContextValue>(
+  defaultPrivacyContextValue
+);
 
 export function AdminPrivacyProvider({ children }: { children: React.ReactNode }) {
-  const enabled = useSyncExternalStore(
-    subscribeToPrivacyMode,
-    readStoredPrivacyMode,
-    () => false
-  );
-  const ready = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!event.ctrlKey || !event.shiftKey || event.key.toLowerCase() !== "h") {
-        return;
-      }
-
-      event.preventDefault();
-      writeStoredPrivacyMode(!readStoredPrivacyMode());
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  const value = useMemo<AdminPrivacyContextValue>(
-    () => ({
-      enabled,
-      masked: !ready || enabled,
-      ready,
-      setEnabled: writeStoredPrivacyMode,
-      toggle: () => writeStoredPrivacyMode(!readStoredPrivacyMode()),
-    }),
-    [enabled, ready]
-  );
-
   return (
-    <AdminPrivacyContext.Provider value={value}>{children}</AdminPrivacyContext.Provider>
+    <AdminPrivacyContext.Provider value={defaultPrivacyContextValue}>
+      {children}
+    </AdminPrivacyContext.Provider>
   );
 }
 
 export function useAdminPrivacyMode() {
-  const context = useContext(AdminPrivacyContext);
-
-  if (!context) {
-    throw new Error("useAdminPrivacyMode must be used inside AdminPrivacyProvider.");
-  }
-
-  return context;
+  return useContext(AdminPrivacyContext);
 }
 
 export function AdminPrivacyGuard({
@@ -138,5 +51,3 @@ export function AdminPrivacyGuard({
 
   return <>{children}</>;
 }
-
-export { getAdminPrivacyUiCopy };

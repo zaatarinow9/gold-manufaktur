@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getDecoyAdminNavCounts } from "@/lib/admin/decoyData";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TableRow } from "@/lib/supabase/types";
@@ -105,6 +107,10 @@ function belongsToWorker(viewer: AdminViewer, order: Partial<TableRow<"orders">>
 }
 
 export async function getAdminNavCounts(viewer: AdminViewer): Promise<AdminNavCounts> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyAdminNavCounts(viewer.role);
+  }
+
   const supabase = await createSupabaseServerClient();
   const [
     { data: orders, error: ordersError },

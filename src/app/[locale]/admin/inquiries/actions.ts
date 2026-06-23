@@ -6,6 +6,10 @@ import type { AppLocale } from "@/i18n/routing";
 import type { AdminActionResult } from "@/lib/admin/actionResult";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
+  getAdminDecoyUnavailableMessage,
+  isAdminDecoyEnabled,
+} from "@/lib/db/adminDecoy";
+import {
   type CustomerInquiryStatus,
   deleteCustomerInquiry,
   updateCustomerInquiryStatus,
@@ -57,6 +61,13 @@ export async function updateInquiryStatusAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     await updateCustomerInquiryStatus(inquiryId, status);
     revalidateInquiryViews();
@@ -82,6 +93,13 @@ export async function deleteInquiryAction(
   if (access.state !== "authenticated") {
     return {
       message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false,
     };
   }

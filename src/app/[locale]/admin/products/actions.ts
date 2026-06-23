@@ -12,6 +12,10 @@ import {
 } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
+  getAdminDecoyUnavailableMessage,
+  isAdminDecoyEnabled,
+} from "@/lib/db/adminDecoy";
+import {
   createProduct,
   deleteProduct,
   duplicateProduct,
@@ -244,6 +248,13 @@ export async function saveProductAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     const isUpdate = "id" in input && typeof input.id === "string";
 
@@ -302,6 +313,13 @@ export async function duplicateProductAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     await duplicateProduct(productId);
     revalidateProductViews();
@@ -330,6 +348,13 @@ export async function toggleProductActiveAction(
   if (access.state !== "authenticated") {
     return {
       message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false,
     };
   }
@@ -366,6 +391,13 @@ export async function toggleProductFeaturedAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     await setProductFeatured(productId, isFeatured);
     revalidateProductViews();
@@ -393,6 +425,13 @@ export async function deleteProductAction(
   if (access.state !== "authenticated") {
     return {
       message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false,
     };
   }

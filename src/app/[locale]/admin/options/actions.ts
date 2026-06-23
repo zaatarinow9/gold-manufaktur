@@ -12,6 +12,10 @@ import {
 } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
+  getAdminDecoyUnavailableMessage,
+  isAdminDecoyEnabled,
+} from "@/lib/db/adminDecoy";
+import {
   createOption,
   createOptionGroup,
   deleteOptionGroup,
@@ -205,6 +209,13 @@ export async function saveOptionGroupAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     if ("id" in input && typeof input.id === "string") {
       await updateOptionGroup(input as OptionGroupUpdateInput);
@@ -249,6 +260,13 @@ export async function deleteOptionGroupAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     const result = await deleteOptionGroup(groupId);
     revalidateOptionViews();
@@ -276,6 +294,13 @@ export async function saveOptionAction(
   if (access.state !== "authenticated") {
     return {
       message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false,
     };
   }
@@ -326,6 +351,13 @@ export async function toggleOptionActiveAction(
     };
   }
 
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
   try {
     await setOptionActive(optionId, isActive);
     revalidateOptionViews();
@@ -353,6 +385,13 @@ export async function deleteOptionAction(
   if (access.state !== "authenticated") {
     return {
       message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false,
     };
   }

@@ -1,39 +1,65 @@
 import type { AppLocale } from "@/i18n/routing";
 
-export const ADMIN_PRIVACY_STORAGE_KEY = "goldhelwah-admin-privacy-mode";
+type AdminPrivacyUiCopy = {
+  activeBadge: string;
+  activeDescription: string;
+  activate: string;
+  deactivate: string;
+  hidden: string;
+  shortcut: string;
+};
 
-export function getAdminPrivacyUiCopy(locale: AppLocale) {
+export function getAdminPrivacyUiCopy(locale: AppLocale): AdminPrivacyUiCopy {
   if (locale === "ar") {
     return {
-      activeBadge: "وضع الخصوصية مفعل",
-      activeDescription:
-        "يتم إخفاء أسماء العملاء وأرقام الهواتف والبريد الإلكتروني وملاحظات الطلب وروابط التتبع مؤقتًا على هذا المتصفح.",
-      activate: "تفعيل وضع الخصوصية",
-      deactivate: "إيقاف وضع الخصوصية",
+      activeBadge: "الوصول مقيد",
+      activeDescription: "بعض التفاصيل غير متاحة حاليا.",
+      activate: "غير متاح",
+      deactivate: "غير متاح",
       hidden: "مخفي",
-      shortcut: "يمكنك أيضًا استخدام الاختصار Ctrl + Shift + H.",
+      shortcut: "",
     };
   }
 
   if (locale === "de") {
     return {
-      activeBadge: "Privatsphaerenmodus aktiv",
-      activeDescription:
-        "Kundennamen, Telefon, E-Mail, Notizen und Tracking-Links werden in diesem Browser voruebergehend ausgeblendet.",
-      activate: "Privatsphaerenmodus aktivieren",
-      deactivate: "Privatsphaerenmodus deaktivieren",
-      hidden: "Versteckt",
-      shortcut: "Alternativ koennen Sie auch Strg + Umschalt + H verwenden.",
+      activeBadge: "Zugriff eingeschraenkt",
+      activeDescription: "Einige Details sind derzeit nicht verfuegbar.",
+      activate: "Nicht verfuegbar",
+      deactivate: "Nicht verfuegbar",
+      hidden: "Ausgeblendet",
+      shortcut: "",
+    };
+  }
+
+  if (locale === "fr") {
+    return {
+      activeBadge: "Acces limite",
+      activeDescription: "Certains details sont indisponibles pour le moment.",
+      activate: "Indisponible",
+      deactivate: "Indisponible",
+      hidden: "Masque",
+      shortcut: "",
+    };
+  }
+
+  if (locale === "tr") {
+    return {
+      activeBadge: "Erisim sinirli",
+      activeDescription: "Bazi ayrintilar su anda kullanilamiyor.",
+      activate: "Kullanilamiyor",
+      deactivate: "Kullanilamiyor",
+      hidden: "Gizli",
+      shortcut: "",
     };
   }
 
   return {
-    activeBadge: "Privacy mode enabled",
-    activeDescription:
-      "Customer names, phone numbers, email addresses, notes, and tracking links are temporarily hidden in this browser.",
-    activate: "Enable privacy mode",
-    deactivate: "Disable privacy mode",
+    activeBadge: "Restricted",
+    activeDescription: "Some details are unavailable right now.",
+    activate: "Unavailable",
+    deactivate: "Unavailable",
     hidden: "Hidden",
-    shortcut: "You can also use the Ctrl + Shift + H shortcut.",
+    shortcut: "",
   };
 }

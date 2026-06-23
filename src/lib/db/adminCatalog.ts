@@ -6,9 +6,16 @@ import type { AppLocale } from "@/i18n/routing";
 import type { OptionType } from "@/types/admin";
 
 import {
+  getDecoyAdminCategories,
+  getDecoyAdminOptions,
+  getDecoyAdminProducts,
+  getDecoyOptionGroups,
+} from "@/lib/admin/decoyData";
+import {
   getNameCustomizationMode,
   resolveSupportsNameCustomization,
 } from "@/lib/catalog/nameCustomization";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import { deleteProductImageObjects } from "@/lib/storage/productImages";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -725,6 +732,10 @@ export async function getAdminCategories(
     includeDeleted?: boolean;
   }
 ): Promise<AdminCategoryRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyAdminCategories(locale);
+  }
+
   const [categories, products, productOptions] = await Promise.all([
     loadCategoryRows(),
     loadProductRows(),
@@ -792,6 +803,13 @@ export async function getAdminProducts(
     includeDeleted?: boolean;
   }
 ): Promise<AdminProductRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    const decoyProducts = getDecoyAdminProducts(locale);
+    return options?.activeOnly
+      ? decoyProducts.filter((product) => product.isActive)
+      : decoyProducts;
+  }
+
   const capabilities = await getCatalogSchemaCapabilities();
   const [products, categories, images, productOptions, optionRows, optionGroupRows] =
     await Promise.all([
@@ -1012,6 +1030,10 @@ export async function getAdminOptions(
     includeDeleted?: boolean;
   }
 ): Promise<AdminOptionRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyAdminOptions(locale);
+  }
+
   const [options, groups, products, productOptions] = await Promise.all([
     loadOptionRows(),
     loadOptionGroupRows(),
@@ -1101,6 +1123,10 @@ export async function getAdminOptions(
 export async function getOptionGroups(
   locale: AppLocale = "de"
 ): Promise<AdminOptionGroupRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyOptionGroups(locale);
+  }
+
   const [groups, options] = await Promise.all([
     loadOptionGroupRows(),
     getAdminOptions(locale),

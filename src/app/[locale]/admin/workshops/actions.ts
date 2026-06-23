@@ -10,6 +10,10 @@ import {
 } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
+  getAdminDecoyUnavailableMessage,
+  isAdminDecoyEnabled,
+} from "@/lib/db/adminDecoy";
+import {
   createWorkshop,
   setWorkshopActive,
   updateWorkshop,
@@ -35,6 +39,13 @@ export async function saveWorkshopAction(
   if (access.state !== "authenticated") {
     return {
       message: t("common.noAccessText"),
+      ok: false as const,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false as const,
     };
   }
@@ -72,6 +83,13 @@ export async function toggleWorkshopActiveAction(
   if (access.state !== "authenticated") {
     return {
       message: t("common.noAccessText"),
+      ok: false as const,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
       ok: false as const,
     };
   }

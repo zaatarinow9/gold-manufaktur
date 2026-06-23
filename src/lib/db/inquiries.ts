@@ -2,6 +2,8 @@ import "server-only";
 
 import { z } from "zod";
 
+import { getDecoyInquiries } from "@/lib/admin/decoyData";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { Json } from "@/lib/supabase/types";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendTransactionalEmail } from "@/lib/email/service";
@@ -331,6 +333,10 @@ export async function createCustomerInquiry(input: CustomerInquiryInput) {
 }
 
 export async function listCustomerInquiries(): Promise<CustomerInquiryRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyInquiries();
+  }
+
   const supabase = getInquiryTableClient();
   const { data, error } = await supabase
     .from("customer_inquiries")

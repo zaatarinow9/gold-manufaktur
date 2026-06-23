@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getAdminSessionContext } from "@/lib/admin/auth";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import {
   buildProductImageObjectPath,
   PRODUCT_IMAGE_ALLOWED_MIME_TYPES,
@@ -29,6 +30,13 @@ export async function POST(request: Request) {
     !["super_admin", "admin"].includes(session.user.role)
   ) {
     return NextResponse.json({ error: "FORBIDDEN", success: false }, { status: 403 });
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return NextResponse.json(
+      { error: "SYNC_UNAVAILABLE", success: false },
+      { status: 423 }
+    );
   }
 
   const formData = await request.formData();
