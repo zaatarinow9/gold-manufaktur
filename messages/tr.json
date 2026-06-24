@@ -400,7 +400,9 @@
       "attendance": "Mesai",
       "reports": "Raporlar",
       "archive": "Arsiv",
-      "settings": "Ayarlar"
+      "settings": "Ayarlar",
+      "myTasks": "Gorevlerim",
+      "inquiries": "Musteri talepleri"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1044,6 +1046,14 @@
     "emailTemplateType": {
       "orderConfirmation": "Siparis onayi",
       "publicStageUpdate": "Genel asama guncellemesi"
+    },
+    "assignmentStatus": {
+      "assigned": "Atandi",
+      "accepted": "Kabul edildi",
+      "in_progress": "Islemde",
+      "waiting": "Bekliyor",
+      "completed": "Tamamlandi",
+      "returned": "Geri verildi"
     }
   },
   "Tracking": {

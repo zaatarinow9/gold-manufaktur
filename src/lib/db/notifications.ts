@@ -55,6 +55,10 @@ function canViewNotification(
     return notification.profile_id === viewer.id;
   }
 
+  if (viewer.role === "admin") {
+    return true;
+  }
+
   if (notification.employee_id && viewer.linkedEmployeeId) {
     return notification.employee_id === viewer.linkedEmployeeId;
   }

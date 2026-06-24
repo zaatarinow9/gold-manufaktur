@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import type { AppLocale } from "@/i18n/routing";
+import { getRoleDashboardPath } from "@/lib/admin/access";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type LoginActionState = {
@@ -57,6 +58,7 @@ export async function loginAction(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const fieldErrors: Record<string, string> = {};
+  const redirectTo = String(formData.get("redirectTo") ?? "").trim();
 
   if (!email) {
     fieldErrors.email = getLoginValidationCopy(locale, "emailRequired");
@@ -114,7 +116,13 @@ export async function loginAction(
     };
   }
 
-  redirect(`/${locale}/admin`);
+  const safeRedirect =
+    redirectTo.startsWith(`/${locale}/admin`) &&
+    !redirectTo.startsWith(`/${locale}/admin/login`)
+      ? redirectTo
+      : getRoleDashboardPath(locale, profile.role);
+
+  redirect(safeRedirect);
 }
 
 export async function logoutAction(locale: AppLocale) {

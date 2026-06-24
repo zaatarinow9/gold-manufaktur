@@ -5,6 +5,7 @@ import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
+import { EmployeeTaskCard } from "@/components/admin/EmployeeTaskCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminPrivacyGuard } from "@/components/admin/AdminPrivacyMode";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
@@ -205,11 +206,11 @@ export default async function AdminOrderDetailPage({
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
   const privacyCopy = getAdminPrivacyUiCopy(locale);
-  const access = await requireAdminAccess(locale, [
-    "super_admin",
-    "admin",
-    "employee",
-  ]);
+  const access = await requireAdminAccess(
+    locale,
+    ["super_admin", "admin", "employee"],
+    `/${locale}/admin/orders/${id}`
+  );
 
   if (access.state !== "authenticated" || !access.user) {
     return (
@@ -220,6 +221,7 @@ export default async function AdminOrderDetailPage({
     );
   }
 
+  const isEmployeeView = access.user.role === "employee";
   const [order, employees] = await Promise.all([
     getScopedOrderDetail(access.user, id),
     getScopedEmployees(access.user),
@@ -263,11 +265,15 @@ export default async function AdminOrderDetailPage({
       sensitive: false,
       value: order.workshopName || notProvided,
     },
-    {
-      label: t("orders.table.customer"),
-      sensitive: true,
-      value: order.customerName || t("common.noCustomer"),
-    },
+    ...(!isEmployeeView
+      ? [
+          {
+            label: t("orders.table.customer"),
+            sensitive: true,
+            value: order.customerName || t("common.noCustomer"),
+          },
+        ]
+      : []),
     {
       label: t("orders.table.employee"),
       sensitive: false,
@@ -277,7 +283,8 @@ export default async function AdminOrderDetailPage({
     {
       label: t("newOrder.fields.totalAmount"),
       sensitive: false,
-      value: order.totalAmount !== null ? `${order.totalAmount} ${order.currency}` : notProvided,
+      value:
+        order.totalAmount !== null ? `${order.totalAmount} ${order.currency}` : notProvided,
     },
     {
       label: t("newOrder.fields.dueDate"),
@@ -308,10 +315,16 @@ export default async function AdminOrderDetailPage({
         }
         actions={
           <Link
-            href="/admin/orders"
+            href={isEmployeeView ? "/admin/my-tasks" : "/admin/orders"}
             className={getAdminButtonClassName({ variant: "ghost" })}
           >
-            {t("buttons.backToOrders")}
+            {isEmployeeView
+              ? locale === "de"
+                ? "Zurueck zu meinen Aufgaben"
+                : locale === "ar"
+                  ? "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0645\u0647\u0627\u0645\u064a"
+                  : "Back to my tasks"
+              : t("buttons.backToOrders")}
           </Link>
         }
       />
@@ -476,141 +489,161 @@ export default async function AdminOrderDetailPage({
             </AdminPrivacyGuard>
           </section>
 
-          <AdminPrivacyGuard fallback={renderPrivacyFallbackCard(copy.supportTicketsTitle)}>
-            <AdminCard title={copy.supportTicketsTitle}>
-              {order.supportTickets.length === 0 ? (
-                <p className="text-sm text-muted">{copy.noSupportTickets}</p>
-              ) : (
-                <div className="space-y-4">
-                  {order.supportTickets.map((ticket) => (
-                    <div
-                      key={ticket.id}
-                      className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
-                    >
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold text-foreground">{ticket.subject}</p>
-                          <p className="text-xs text-muted">
-                            {ticket.customerName || ticket.customerEmail || notProvided}
-                          </p>
+          {!isEmployeeView ? (
+            <AdminPrivacyGuard fallback={renderPrivacyFallbackCard(copy.supportTicketsTitle)}>
+              <AdminCard title={copy.supportTicketsTitle}>
+                {order.supportTickets.length === 0 ? (
+                  <p className="text-sm text-muted">{copy.noSupportTickets}</p>
+                ) : (
+                  <div className="space-y-4">
+                    {order.supportTickets.map((ticket) => (
+                      <div
+                        key={ticket.id}
+                        className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <p className="font-semibold text-foreground">{ticket.subject}</p>
+                            <p className="text-xs text-muted">
+                              {ticket.customerName || ticket.customerEmail || notProvided}
+                            </p>
+                          </div>
+                          <AdminBadge variant="info">{ticket.status}</AdminBadge>
                         </div>
-                        <AdminBadge variant="info">{ticket.status}</AdminBadge>
+                        <p className="mt-3 text-sm leading-6 text-muted">{ticket.message}</p>
+                        <p className="mt-3 text-xs text-muted">{ticket.createdAt}</p>
                       </div>
-                      <p className="mt-3 text-sm leading-6 text-muted">{ticket.message}</p>
-                      <p className="mt-3 text-xs text-muted">{ticket.createdAt}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </AdminCard>
-          </AdminPrivacyGuard>
+                    ))}
+                  </div>
+                )}
+              </AdminCard>
+            </AdminPrivacyGuard>
+          ) : null}
 
-          <AdminPrivacyGuard fallback={renderPrivacyFallbackCard(copy.emailLogTitle)}>
-            <AdminCard title={copy.emailLogTitle}>
-              {order.emailLogs.length === 0 ? (
-                <p className="text-sm text-muted">{copy.noEmailLogs}</p>
-              ) : (
-                <div className="space-y-4">
-                  {order.emailLogs.map((log) => (
-                    <div
-                      key={log.id}
-                      className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
-                    >
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold text-foreground">{log.subject}</p>
-                          <p className="text-xs text-muted">{log.recipientEmail}</p>
-                          <p className="mt-2 text-xs text-muted">
-                            {t("orders.emailTemplateLabel")}:{" "}
-                            {getEmailTemplateLabel(t, log.templateType)}
-                            {" • "}
-                            {t("orders.publicStageLabel")}:{" "}
-                            {log.publicStage
-                              ? t(`publicTrackingStage.${log.publicStage}`)
-                              : t("orders.notStageSpecific")}
-                          </p>
+          {!isEmployeeView ? (
+            <AdminPrivacyGuard fallback={renderPrivacyFallbackCard(copy.emailLogTitle)}>
+              <AdminCard title={copy.emailLogTitle}>
+                {order.emailLogs.length === 0 ? (
+                  <p className="text-sm text-muted">{copy.noEmailLogs}</p>
+                ) : (
+                  <div className="space-y-4">
+                    {order.emailLogs.map((log) => (
+                      <div
+                        key={log.id}
+                        className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <p className="font-semibold text-foreground">{log.subject}</p>
+                            <p className="text-xs text-muted">{log.recipientEmail}</p>
+                            <p className="mt-2 text-xs text-muted">
+                              {t("orders.emailTemplateLabel")}:{" "}
+                              {getEmailTemplateLabel(t, log.templateType)}
+                              {" | "}
+                              {t("orders.publicStageLabel")}:{" "}
+                              {log.publicStage
+                                ? t(`publicTrackingStage.${log.publicStage}`)
+                                : t("orders.notStageSpecific")}
+                            </p>
+                          </div>
+                          <AdminBadge variant={getEmailLogVariant(log.status)}>
+                            {t(`emailLogStatus.${log.status}`)}
+                          </AdminBadge>
                         </div>
-                        <AdminBadge variant={getEmailLogVariant(log.status)}>
-                          {t(`emailLogStatus.${log.status}`)}
-                        </AdminBadge>
+                        <p className="mt-2 text-xs text-muted">{log.sentAt || log.createdAt}</p>
+                        {log.errorMessage ? (
+                          <p className="mt-3 text-sm text-muted">
+                            {getEmailLogErrorMessage(t, log.errorMessage)}
+                          </p>
+                        ) : null}
                       </div>
-                      <p className="mt-2 text-xs text-muted">{log.sentAt || log.createdAt}</p>
-                      {log.errorMessage ? (
-                        <p className="mt-3 text-sm text-muted">
-                          {getEmailLogErrorMessage(t, log.errorMessage)}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </AdminCard>
-          </AdminPrivacyGuard>
+                    ))}
+                  </div>
+                )}
+              </AdminCard>
+            </AdminPrivacyGuard>
+          ) : null}
         </div>
 
         <div className="space-y-6">
-          <AdminPrivacyGuard
-            fallback={renderPrivacyFallbackCard(
-              t("orders.customerTitle"),
-              t("orders.customerDescription")
-            )}
-          >
-            <AdminCard
-              title={t("orders.customerTitle")}
-              description={t("orders.customerDescription")}
+          {!isEmployeeView ? (
+            <AdminPrivacyGuard
+              fallback={renderPrivacyFallbackCard(
+                t("orders.customerTitle"),
+                t("orders.customerDescription")
+              )}
             >
-              <div className="space-y-4 text-sm">
-                <div>
-                  <p className="text-muted">{t("orders.table.customer")}</p>
-                  <p className="mt-1 text-foreground">
-                    {order.customerName || t("common.noCustomer")}
-                  </p>
+              <AdminCard
+                title={t("orders.customerTitle")}
+                description={t("orders.customerDescription")}
+              >
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <p className="text-muted">{t("orders.table.customer")}</p>
+                    <p className="mt-1 text-foreground">
+                      {order.customerName || t("common.noCustomer")}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted">{t("orders.customerEmailLabel")}</p>
+                    <p className="mt-1 text-foreground">{order.customerEmail || notProvided}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted">{t("newOrder.fields.customerPhone")}</p>
+                    <p className="mt-1 text-foreground">
+                      {order.customerPhone ? (
+                        <PhoneInline>{order.customerPhone}</PhoneInline>
+                      ) : (
+                        notProvided
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted">{t("newOrder.fields.customerReference")}</p>
+                    <p className="mt-1 text-foreground">{order.customerReference || notProvided}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted">{copy.customerLanguage}</p>
+                    <p className="mt-1 text-foreground">
+                      {formatDetailValue(locale, "customerLanguage", order.customerLanguage)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted">{t("newOrder.fields.workshop")}</p>
+                    <p className="mt-1 text-foreground">{order.workshopName || notProvided}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-muted">{t("orders.customerEmailLabel")}</p>
-                  <p className="mt-1 text-foreground">{order.customerEmail || notProvided}</p>
-                </div>
-                <div>
-                  <p className="text-muted">{t("newOrder.fields.customerPhone")}</p>
-                  <p className="mt-1 text-foreground">
-                    {order.customerPhone ? (
-                      <PhoneInline>{order.customerPhone}</PhoneInline>
-                    ) : (
-                      notProvided
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted">{t("newOrder.fields.customerReference")}</p>
-                  <p className="mt-1 text-foreground">{order.customerReference || notProvided}</p>
-                </div>
-                <div>
-                  <p className="text-muted">{copy.customerLanguage}</p>
-                  <p className="mt-1 text-foreground">
-                    {formatDetailValue(locale, "customerLanguage", order.customerLanguage)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-muted">{t("newOrder.fields.workshop")}</p>
-                  <p className="mt-1 text-foreground">{order.workshopName || notProvided}</p>
-                </div>
-              </div>
-            </AdminCard>
-          </AdminPrivacyGuard>
+              </AdminCard>
+            </AdminPrivacyGuard>
+          ) : null}
 
-          <OrderTrackingCard
-            currentUserRole={access.user.role}
-            customerEmail={order.customerEmail}
-            emailUpdatesEnabled={order.emailUpdatesEnabled}
-            employees={employees}
-            initialAssignedWorkerEmail={order.assignedWorkerEmail}
-            initialEvents={order.trackingEvents}
-            initialPublicStage={order.publicTrackingStage}
-            initialStatus={order.trackingStatus}
-            locale={locale}
-            orderId={order.id}
-            trackingNumber={order.trackingNumber}
-          />
+          {isEmployeeView ? (
+            <EmployeeTaskCard
+              assignmentNote={order.assignmentNote}
+              dueDate={order.dueDate}
+              initialEmployeeNote={order.employeeNote}
+              initialStatus={order.assignmentStatus}
+              locale={locale}
+              orderId={order.id}
+            />
+          ) : (
+            <OrderTrackingCard
+              currentUserRole={access.user.role}
+              customerEmail={order.customerEmail}
+              emailUpdatesEnabled={order.emailUpdatesEnabled}
+              employees={employees}
+              initialAssignmentNote={order.assignmentNote}
+              initialAssignmentStatus={order.assignmentStatus}
+              initialEmployeeId={order.employeeId}
+              initialEmployeeNote={order.employeeNote}
+              initialEvents={order.trackingEvents}
+              initialPublicStage={order.publicTrackingStage}
+              initialStatus={order.trackingStatus}
+              locale={locale}
+              orderId={order.id}
+              trackingNumber={order.trackingNumber}
+            />
+          )}
         </div>
       </section>
     </div>

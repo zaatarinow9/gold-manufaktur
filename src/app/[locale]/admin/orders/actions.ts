@@ -23,6 +23,10 @@ import {
   type OrderCreatePayload,
   type OrderWorkflowUpdatePayload,
 } from "@/lib/db/orders";
+import {
+  assignOrderToEmployee,
+  updateMyAssignmentStatus,
+} from "@/lib/db/orderAssignments";
 
 type OrderActionResult =
   | {
@@ -257,6 +261,54 @@ function getLifecycleMessage(
   }
 }
 
+function getAssignmentEmailMessage(
+  locale: AppLocale,
+  key: "fallback" | "failed" | "saved"
+) {
+  if (locale === "ar") {
+    switch (key) {
+      case "fallback":
+        return "\u062a\u0645 \u0625\u0633\u0646\u0627\u062f \u0627\u0644\u0645\u0647\u0645\u0629\u060c \u062a\u0645 \u062a\u0633\u062c\u064a\u0644 \u0625\u0634\u0639\u0627\u0631 \u0627\u0644\u0645\u0648\u0638\u0641 \u062f\u0648\u0646 \u0625\u0631\u0633\u0627\u0644 \u0644\u0623\u0646 \u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0627\u0644\u0628\u0631\u064a\u062f \u063a\u064a\u0631 \u0645\u0643\u062a\u0645\u0644\u0629.";
+      case "failed":
+        return "\u062a\u0645 \u0625\u0633\u0646\u0627\u062f \u0627\u0644\u0645\u0647\u0645\u0629\u060c \u0644\u0643\u0646 \u062a\u0639\u0630\u0631 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0625\u0634\u0639\u0627\u0631 \u0628\u0627\u0644\u0628\u0631\u064a\u062f.";
+      case "saved":
+        return "\u062a\u0645 \u0625\u0633\u0646\u0627\u062f \u0627\u0644\u0645\u0647\u0645\u0629.";
+    }
+  }
+
+  if (locale === "de") {
+    switch (key) {
+      case "fallback":
+        return "Die Aufgabe wurde zugewiesen. Die Mitarbeiter-E-Mail wurde nur protokolliert, weil die Mail-Konfiguration noch unvollstaendig ist.";
+      case "failed":
+        return "Die Aufgabe wurde zugewiesen, aber die Mitarbeiter-Benachrichtigung konnte nicht gesendet werden.";
+      case "saved":
+        return "Die Aufgabe wurde zugewiesen.";
+    }
+  }
+
+  switch (key) {
+    case "fallback":
+      return "The task was assigned. The employee email was logged only because mail delivery is not fully configured yet.";
+    case "failed":
+      return "The task was assigned, but the employee notification email could not be delivered right now.";
+    case "saved":
+      return "The task was assigned.";
+  }
+}
+
+function getTaskSavedMessage(locale: AppLocale) {
+  if (locale === "ar") {
+    return "\u062a\u0645 \u062a\u062d\u062f\u064a\u062b \u0627\u0644\u0645\u0647\u0645\u0629 \u0628\u0646\u062c\u0627\u062d.";
+  }
+
+  if (locale === "de") {
+    return "Die Aufgabe wurde aktualisiert.";
+  }
+
+  return "Task updated successfully.";
+}
+
 async function getOrderFailure(
   locale: AppLocale,
   error: unknown,
@@ -413,11 +465,7 @@ export async function updateOrderWorkflowAction(
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, [
-    "super_admin",
-    "admin",
-    "employee",
-  ]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {
@@ -457,12 +505,98 @@ export async function updateOrderWorkflowAction(
   }
 }
 
+export async function assignOrderToEmployeeAction(
+  locale: AppLocale,
+  input: {
+    assignmentNote: string;
+    employeeId: string;
+    orderId: string;
+  }
+): Promise<OrderActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+
+  if (access.state !== "authenticated" || !access.user) {
+    return {
+      message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await assignOrderToEmployee(access.user, input);
+    revalidateOrderViews(input.orderId, result.trackingNumber);
+
+    let message = getAssignmentEmailMessage(locale, "saved");
+
+    if (result.emailResult?.fallback) {
+      message = getAssignmentEmailMessage(locale, "fallback");
+    } else if (result.emailResult && !result.emailResult.ok) {
+      message = getAssignmentEmailMessage(locale, "failed");
+    }
+
+    return {
+      message,
+      ok: true,
+      trackingNumber: result.trackingNumber,
+    };
+  } catch (error) {
+    return getOrderFailure(locale, error, "update");
+  }
+}
+
+export async function updateMyTaskAction(
+  locale: AppLocale,
+  input: {
+    employeeNote: string;
+    orderId: string;
+    status: "assigned" | "accepted" | "in_progress" | "waiting" | "completed";
+  }
+): Promise<OrderActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["employee"]);
+
+  if (access.state !== "authenticated" || !access.user) {
+    return {
+      message: t("common.noAccessText"),
+      ok: false,
+    };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return {
+      message: getAdminDecoyUnavailableMessage(locale),
+      ok: false,
+    };
+  }
+
+  try {
+    const result = await updateMyAssignmentStatus(access.user, input);
+    revalidateOrderViews(input.orderId, result.trackingNumber);
+
+    return {
+      message: getTaskSavedMessage(locale),
+      ok: true,
+      trackingNumber: result.trackingNumber,
+    };
+  } catch (error) {
+    return getOrderFailure(locale, error, "update");
+  }
+}
+
 export async function archiveOrderAction(
   locale: AppLocale,
   orderId: string
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {
@@ -496,7 +630,7 @@ export async function deleteOrderAction(
   orderId: string
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {

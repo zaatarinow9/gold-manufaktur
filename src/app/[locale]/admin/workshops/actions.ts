@@ -34,7 +34,7 @@ export async function saveWorkshopAction(
 ) {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -78,7 +78,7 @@ export async function toggleWorkshopActiveAction(
 ) {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {

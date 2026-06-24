@@ -146,7 +146,7 @@ async function getDecoyBlockedResult(
 }
 
 async function requireSettingsAccess(locale: AppLocale) {
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return null;

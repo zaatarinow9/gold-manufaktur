@@ -82,6 +82,10 @@ export function AdminEmployeesClient({
 }: AdminEmployeesClientProps) {
   const t = useTranslations("Admin");
   const router = useRouter();
+  const staffEmployees = useMemo(
+    () => employees.filter((employee) => employee.role === "employee"),
+    [employees]
+  );
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -95,7 +99,7 @@ export function AdminEmployeesClient({
   const filteredEmployees = useMemo(() => {
     const normalizedSearch = search.toLowerCase();
 
-    return employees.filter((employee) => {
+    return staffEmployees.filter((employee) => {
       const matchesSearch =
         search.length === 0 ||
         employee.fullName.toLowerCase().includes(normalizedSearch) ||
@@ -107,7 +111,7 @@ export function AdminEmployeesClient({
 
       return matchesSearch && matchesRole && matchesWorkshop;
     });
-  }, [employees, roleFilter, search, workshopFilter]);
+  }, [roleFilter, search, staffEmployees, workshopFilter]);
 
   const resetForm = () => {
     setEditorOpen(false);
@@ -124,7 +128,7 @@ export function AdminEmployeesClient({
         notes: formState.notes,
         phone: formState.phone,
         profileId: formState.profileId,
-        role: formState.role,
+        role: "employee" as const,
         shiftLabel: formState.shiftLabel,
         workshopId: formState.workshopId,
       };
@@ -274,19 +278,6 @@ export function AdminEmployeesClient({
               }
             />
             <AdminSelect
-              label={t("employees.table.role")}
-              value={formState.role}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  role: event.target.value as EmployeeFormState["role"],
-                }))
-              }
-            >
-              <option value="admin">{t("roles.admin")}</option>
-              <option value="employee">{t("roles.employee")}</option>
-            </AdminSelect>
-            <AdminSelect
               label={t("employees.table.workshop")}
               value={formState.workshopId}
               onChange={(event) =>
@@ -396,7 +387,6 @@ export function AdminEmployeesClient({
             label={t("filters.role")}
           >
             <option value="all">{t("common.all")}</option>
-            <option value="admin">{t("roles.admin")}</option>
             <option value="employee">{t("roles.employee")}</option>
           </AdminSelect>
           <AdminSelect

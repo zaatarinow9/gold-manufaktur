@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
+import { redirect } from "next/navigation";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
+import { getRoleDashboardPath } from "@/lib/admin/access";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import { getScopedEmployees } from "@/lib/db/employees";
 import { getScopedOrders } from "@/lib/db/orders";
@@ -32,6 +34,10 @@ export default async function AdminOrdersPage({
     );
   }
 
+  if (access.user.role === "employee") {
+    redirect(getRoleDashboardPath(locale, access.user.role));
+  }
+
   const [orders, employees] = await Promise.all([
     getScopedOrders(access.user),
     getScopedEmployees(access.user),
@@ -39,7 +45,7 @@ export default async function AdminOrdersPage({
 
   return (
     <AdminOrdersClient
-      canCreate={access.user.role !== "employee"}
+      canCreate
       currentUserRole={access.user.role}
       employees={employees}
       locale={locale}

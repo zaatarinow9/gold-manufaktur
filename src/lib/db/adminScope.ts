@@ -31,7 +31,7 @@ export function canAccessWorkshop(
   viewer: AdminViewer,
   workshopId?: string | null
 ) {
-  if (viewer.role === "super_admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin") {
     return true;
   }
 
@@ -47,12 +47,8 @@ export function canAccessEmployee(
   employeeId?: string | null,
   workshopId?: string | null
 ) {
-  if (viewer.role === "super_admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin") {
     return true;
-  }
-
-  if (viewer.role === "admin") {
-    return canAccessWorkshop(viewer, workshopId);
   }
 
   if (!viewer.linkedEmployeeId) {

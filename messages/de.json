@@ -400,7 +400,9 @@
       "attendance": "Arbeitszeiten",
       "reports": "Berichte",
       "archive": "Archiv",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "myTasks": "Meine Aufgaben",
+      "inquiries": "Kundenanfragen"
     },
     "buttons": {
       "openMenu": "Menü",
@@ -1044,6 +1046,14 @@
     "emailTemplateType": {
       "orderConfirmation": "Auftragsbest?tigung",
       "publicStageUpdate": "?ffentliches Statusupdate"
+    },
+    "assignmentStatus": {
+      "assigned": "Zugewiesen",
+      "accepted": "Angenommen",
+      "in_progress": "In Bearbeitung",
+      "waiting": "Wartet",
+      "completed": "Abgeschlossen",
+      "returned": "Zurueckgegeben"
     }
   },
   "Tracking": {

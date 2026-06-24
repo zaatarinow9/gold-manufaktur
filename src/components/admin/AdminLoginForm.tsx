@@ -18,6 +18,7 @@ import { AdminInput } from "./AdminInput";
 
 type AdminLoginFormProps = {
   locale: AppLocale;
+  redirectTo?: string;
 };
 
 const initialState: LoginActionState = {
@@ -25,7 +26,7 @@ const initialState: LoginActionState = {
   message: "",
 };
 
-export function AdminLoginForm({ locale }: AdminLoginFormProps) {
+export function AdminLoginForm({ locale, redirectTo }: AdminLoginFormProps) {
   const t = useTranslations("Admin");
   const requiredLabel = getRequiredFieldBadge(locale);
   const [state, formAction, isPending] = useActionState(
@@ -43,6 +44,7 @@ export function AdminLoginForm({ locale }: AdminLoginFormProps) {
 
   return (
     <form action={formAction} className="space-y-4">
+      <input type="hidden" name="redirectTo" value={redirectTo ?? ""} />
       <AdminInput
         id="email"
         name="email"

@@ -15,6 +15,10 @@ import { AdminTabs } from "@/components/admin/AdminTabs";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import {
+  getAssignmentStatusMessageKey,
+  getAssignmentStatusVariant,
+} from "@/lib/admin/assignmentStatus";
+import {
   useAdminPrivacyMode,
 } from "@/components/admin/AdminPrivacyMode";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
@@ -42,6 +46,10 @@ type OrderTabKey =
   | "completed"
   | "cancelled"
   | "archived";
+
+function getOrderWorkerFilterValue(order: OrderListRecord) {
+  return order.employeeName.trim() || order.assignedWorkerEmail.trim();
+}
 
 function getOrderTabKey(order: OrderListRecord): Exclude<OrderTabKey, "all"> {
   if (order.cancelledAt || order.trackingStatus === "cancelled") {
@@ -133,6 +141,28 @@ function getOrdersUiCopy(locale: AppLocale) {
   };
 }
 
+function getQueueLabel(
+  key: Exclude<OrderTabKey, "all">,
+  uiCopy: ReturnType<typeof getOrdersUiCopy>
+) {
+  switch (key) {
+    case "pending":
+      return uiCopy.pending;
+    case "assigned":
+      return uiCopy.assigned;
+    case "in_progress":
+      return uiCopy.inProgress;
+    case "shipped":
+      return uiCopy.shipped;
+    case "completed":
+      return uiCopy.completed;
+    case "cancelled":
+      return uiCopy.cancelled;
+    case "archived":
+      return uiCopy.archived;
+  }
+}
+
 export function AdminOrdersClient({
   canCreate,
   currentUserRole,
@@ -161,9 +191,9 @@ export function AdminOrdersClient({
       Array.from(
         new Set(
           [
-            ...employees.map((employee) => employee.email.trim()),
-            ...orders.map((order) => order.assignedWorkerEmail.trim()),
-          ].filter((email) => email.length > 0)
+            ...employees.map((employee) => employee.fullName.trim() || employee.email.trim()),
+            ...orders.map((order) => getOrderWorkerFilterValue(order)),
+          ].filter((value) => value.length > 0)
         )
       ).sort((left, right) => left.localeCompare(right, locale)),
     [employees, locale, orders]
@@ -177,7 +207,7 @@ export function AdminOrdersClient({
       const matchesTab = tab === "all" || orderTab === tab;
       const matchesAssignment =
         assignedFilter === "all" ||
-        order.assignedWorkerEmail.toLowerCase() === assignedFilter.toLowerCase();
+        getOrderWorkerFilterValue(order).toLowerCase() === assignedFilter.toLowerCase();
       const matchesSearch =
         normalizedSearch.length === 0 ||
         order.internalOrderNumber.toLowerCase().includes(normalizedSearch) ||
@@ -185,7 +215,7 @@ export function AdminOrdersClient({
         order.previewProductName.toLowerCase().includes(normalizedSearch) ||
         order.customerName.toLowerCase().includes(normalizedSearch) ||
         order.customerEmail.toLowerCase().includes(normalizedSearch) ||
-        order.assignedWorkerEmail.toLowerCase().includes(normalizedSearch) ||
+        getOrderWorkerFilterValue(order).toLowerCase().includes(normalizedSearch) ||
         order.employeeName.toLowerCase().includes(normalizedSearch);
 
       return matchesTab && matchesAssignment && matchesSearch;
@@ -291,8 +321,11 @@ export function AdminOrdersClient({
               : t("orders.noPublicStage")}
           </AdminBadge>
           <AdminBadge variant="info">{t(`trackingStatus.${order.trackingStatus}`)}</AdminBadge>
+          <AdminBadge variant={getAssignmentStatusVariant(order.assignmentStatus)}>
+            {t(getAssignmentStatusMessageKey(order.assignmentStatus))}
+          </AdminBadge>
           <AdminBadge variant={getOrderTabKey(order) === "pending" ? "danger" : "neutral"}>
-            {getOrderTabKey(order).replace("_", " ")}
+            {getQueueLabel(getOrderTabKey(order), uiCopy)}
           </AdminBadge>
         </div>
       ),
@@ -408,7 +441,10 @@ export function AdminOrdersClient({
               customerEmail={selectedOrder.customerEmail}
               emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
               employees={employees}
-              initialAssignedWorkerEmail={selectedOrder.assignedWorkerEmail}
+              initialAssignmentNote={selectedOrder.assignmentNote}
+              initialAssignmentStatus={selectedOrder.assignmentStatus}
+              initialEmployeeId={selectedOrder.employeeId}
+              initialEmployeeNote={selectedOrder.employeeNote}
               initialPublicStage={selectedOrder.publicTrackingStage}
               initialStatus={selectedOrder.trackingStatus}
               locale={locale}

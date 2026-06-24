@@ -400,7 +400,9 @@
       "attendance": "Presences",
       "reports": "Rapports",
       "archive": "Archive",
-      "settings": "Paramètres"
+      "settings": "Paramètres",
+      "myTasks": "Mes taches",
+      "inquiries": "Demandes clients"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1044,6 +1046,14 @@
     "emailTemplateType": {
       "orderConfirmation": "Confirmation de commande",
       "publicStageUpdate": "Mise a jour de l etape publique"
+    },
+    "assignmentStatus": {
+      "assigned": "Attribue",
+      "accepted": "Accepte",
+      "in_progress": "En cours",
+      "waiting": "En attente",
+      "completed": "Termine",
+      "returned": "Retourne"
     }
   },
   "Tracking": {

@@ -1,13 +1,12 @@
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
-import { AdminCard } from "@/components/admin/AdminCard";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import {
-  getAdminDecoyUnavailableMessage,
-  isAdminDecoyEnabled,
-} from "@/lib/db/adminDecoy";
+import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
+import { requireAdminAccess } from "@/lib/admin/auth";
+import { getScopedEmployees } from "@/lib/db/employees";
+import { getScopedWorkshops } from "@/lib/db/workshops";
 import { resolveLocale } from "@/lib/site";
+
+import { AdminEmployeesClient } from "./employees-client";
 
 type AdminEmployeesPageProps = {
   params: Promise<{ locale: string }>;
@@ -17,24 +16,29 @@ export default async function AdminEmployeesPage({
   params,
 }: AdminEmployeesPageProps) {
   const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
-  if (await isAdminDecoyEnabled()) {
-    const t = await getTranslations({ locale, namespace: "Admin" });
-    const message = getAdminDecoyUnavailableMessage(locale);
-
+  if (access.state !== "authenticated" || !access.user) {
     return (
-      <div className="space-y-6">
-        <AdminPageHeader
-          eyebrow={t("employees.eyebrow")}
-          title={t("employees.title")}
-          description={t("employees.description")}
-        />
-        <AdminCard title={message}>
-          <p className="text-sm text-muted">{message}</p>
-        </AdminCard>
-      </div>
+      <AdminAccessDenied
+        title={t("common.noAccessTitle")}
+        description={t("common.noAccessText")}
+      />
     );
   }
 
-  redirect(`/${locale}/admin/orders`);
+  const [employees, workshops] = await Promise.all([
+    getScopedEmployees(access.user),
+    getScopedWorkshops(access.user),
+  ]);
+
+  return (
+    <AdminEmployeesClient
+      defaultWorkshopId={workshops[0]?.id ?? access.user.workshopId}
+      employees={employees}
+      locale={locale}
+      workshops={workshops}
+    />
+  );
 }

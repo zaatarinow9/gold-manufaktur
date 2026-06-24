@@ -546,6 +546,8 @@ export type Database = {
           assigned_at: string | null;
           assigned_admin_id: string | null;
           assigned_worker_email: string | null;
+          assignment_note: string | null;
+          assignment_status: Database["public"]["Enums"]["order_assignment_status"];
           attachments_json: Json;
           cancelled_at: string | null;
           currency: string;
@@ -557,6 +559,7 @@ export type Database = {
           deleted_at: string | null;
           due_date: string | null;
           employee_id: string | null;
+          employee_note: string | null;
           email_updates_enabled: boolean;
           gold_details_json: Json;
           id: string;
@@ -594,6 +597,7 @@ export type Database = {
           deleted_at?: string | null;
           due_date?: string | null;
           employee_id?: string | null;
+          employee_note?: string | null;
           email_updates_enabled?: boolean;
           gold_details_json?: Json;
           id?: string;
@@ -606,6 +610,8 @@ export type Database = {
           completed_at?: string | null;
           product_specifications?: Json;
           public_tracking_stage?: string | null;
+          assignment_note?: string | null;
+          assignment_status?: Database["public"]["Enums"]["order_assignment_status"];
           status: Database["public"]["Enums"]["workshop_order_status"];
           stones_json?: Json;
           total_amount?: number | null;
@@ -620,6 +626,8 @@ export type Database = {
           assigned_at?: string | null;
           assigned_admin_id?: string | null;
           assigned_worker_email?: string | null;
+          assignment_note?: string | null;
+          assignment_status?: Database["public"]["Enums"]["order_assignment_status"];
           attachments_json?: Json;
           cancelled_at?: string | null;
           currency?: string;
@@ -631,6 +639,7 @@ export type Database = {
           deleted_at?: string | null;
           due_date?: string | null;
           employee_id?: string | null;
+          employee_note?: string | null;
           email_updates_enabled?: boolean;
           gold_details_json?: Json;
           id?: string;
@@ -1037,6 +1046,13 @@ export type Database = {
       attendance_status: "present" | "absent" | "vacation" | "sick" | "late";
       email_log_status: "pending" | "sent" | "failed" | "skipped";
       employee_role: "admin" | "employee";
+      order_assignment_status:
+        | "assigned"
+        | "accepted"
+        | "in_progress"
+        | "waiting"
+        | "completed"
+        | "returned";
       option_type:
         | "text"
         | "textarea"

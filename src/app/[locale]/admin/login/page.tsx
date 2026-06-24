@@ -7,6 +7,7 @@ import { AdminBrand } from "@/components/admin/AdminBrand";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminLoginForm } from "@/components/admin/AdminLoginForm";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
+import { getRoleDashboardPath } from "@/lib/admin/access";
 import { resolveLocale } from "@/lib/site";
 import { trimDisplayHeading } from "@/lib/displayText";
 import { getBrandLogoAlt } from "@/lib/site";
@@ -14,18 +15,26 @@ import { getAdminSessionContext } from "@/lib/admin/auth";
 
 type AdminLoginPageProps = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ next?: string }>;
 };
 
 export default async function AdminLoginPage({
   params,
+  searchParams,
 }: AdminLoginPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin" });
   const brandLogoAlt = getBrandLogoAlt(locale);
   const access = await getAdminSessionContext();
+  const resolvedSearchParams = await searchParams;
+  const redirectTo =
+    resolvedSearchParams.next?.startsWith(`/${locale}/admin`) &&
+    !resolvedSearchParams.next.startsWith(`/${locale}/admin/login`)
+      ? resolvedSearchParams.next
+      : "";
 
-  if (access.state === "authenticated") {
-    redirect(`/${locale}/admin`);
+  if (access.state === "authenticated" && access.user) {
+    redirect(redirectTo || getRoleDashboardPath(locale, access.user.role));
   }
 
   if (access.state === "denied") {
@@ -102,7 +111,7 @@ export default async function AdminLoginPage({
           description={t("login.formDescription")}
           action={<AdminBadge variant="info">{t("header.adminArea")}</AdminBadge>}
         >
-          <AdminLoginForm locale={locale} />
+          <AdminLoginForm locale={locale} redirectTo={redirectTo} />
 
           <div className="mt-6 space-y-3 rounded-[1.4rem] border border-white/8 bg-white/4 px-4 py-4">
             <p className="text-sm font-semibold text-foreground">

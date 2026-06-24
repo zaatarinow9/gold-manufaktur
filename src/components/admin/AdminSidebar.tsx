@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import {
+  BriefcaseBusiness,
   Gem,
   Home,
   ImageIcon,
@@ -10,6 +11,7 @@ import {
   Package,
   Settings2,
   ShoppingBag,
+  Users,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -17,17 +19,20 @@ import { useLocale, useTranslations } from "next-intl";
 import { AdminBrand } from "@/components/admin/AdminBrand";
 import { Link, usePathname } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
+import { canViewAdminSection, type AdminSection } from "@/lib/admin/roleAccess";
 import { getBrandLogoAlt } from "@/lib/site";
-import type { AdminRole, AdminUser } from "@/types/admin";
+import type { AdminUser } from "@/types/admin";
 
 export type AdminNavKey =
-  | "overview"
-  | "products"
   | "categories"
+  | "employees"
   | "gallery"
   | "inquiries"
+  | "myTasks"
   | "options"
   | "orders"
+  | "overview"
+  | "products"
   | "settings";
 
 export type AdminNavCounts = Partial<Record<AdminNavKey, number>>;
@@ -36,79 +41,46 @@ export type AdminNavItem = {
   href: string;
   icon: LucideIcon;
   key: AdminNavKey;
-  roles: AdminRole[];
+  section: AdminSection;
+};
+
+const adminNavLabelKeys: Record<AdminNavKey, string> = {
+  categories: "nav.categories",
+  employees: "nav.employees",
+  gallery: "nav.gallery",
+  inquiries: "nav.inquiries",
+  myTasks: "nav.myTasks",
+  options: "nav.options",
+  orders: "nav.orders",
+  overview: "nav.overview",
+  products: "nav.products",
+  settings: "nav.settings",
 };
 
 export const adminNavItems: AdminNavItem[] = [
-  { href: "/admin", icon: Home, key: "overview", roles: ["super_admin", "admin"] },
-  { href: "/admin/products", icon: Package, key: "products", roles: ["super_admin", "admin"] },
-  { href: "/admin/categories", icon: Layers3, key: "categories", roles: ["super_admin", "admin"] },
-  { href: "/admin/gallery", icon: ImageIcon, key: "gallery", roles: ["super_admin", "admin"] },
-  { href: "/admin/options", icon: Gem, key: "options", roles: ["super_admin", "admin"] },
-  { href: "/admin/orders", icon: ShoppingBag, key: "orders", roles: ["super_admin", "admin", "employee"] },
-  { href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", roles: ["super_admin", "admin"] },
-  { href: "/admin/settings", icon: Settings2, key: "settings", roles: ["super_admin", "admin"] },
+  { href: "/admin", icon: Home, key: "overview", section: "overview" },
+  { href: "/admin/gallery", icon: ImageIcon, key: "gallery", section: "gallery" },
+  { href: "/admin/orders", icon: ShoppingBag, key: "orders", section: "orders" },
+  {
+    href: "/admin/my-tasks",
+    icon: BriefcaseBusiness,
+    key: "myTasks",
+    section: "my_tasks",
+  },
+  { href: "/admin/employees", icon: Users, key: "employees", section: "employees" },
+  { href: "/admin/products", icon: Package, key: "products", section: "products" },
+  { href: "/admin/categories", icon: Layers3, key: "categories", section: "categories" },
+  { href: "/admin/options", icon: Gem, key: "options", section: "options" },
+  { href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", section: "inquiries" },
+  { href: "/admin/settings", icon: Settings2, key: "settings", section: "settings" },
 ];
 
-export function getVisibleAdminNavItems(role: AdminRole) {
-  return adminNavItems.filter((item) => item.roles.includes(role));
+export function getVisibleAdminNavItems(role: AdminUser["role"]) {
+  return adminNavItems.filter((item) => canViewAdminSection(role, item.section));
 }
 
-export function getAdminNavLabel(key: AdminNavKey, locale: AppLocale) {
-  const labels: Record<AppLocale, Record<AdminNavKey, string>> = {
-    ar: {
-      categories: "التصنيفات",
-      gallery: "طلب من الورشة",
-      inquiries: "طلبات العملاء",
-      options: "الخيارات",
-      orders: "الطلبات",
-      overview: "لوحة التحكم",
-      products: "المنتجات",
-      settings: "الإعدادات",
-    },
-    de: {
-      categories: "Kategorien",
-      gallery: "Werkstattauftrag",
-      inquiries: "Kundenanfragen",
-      options: "Optionen",
-      orders: "Auftraege",
-      overview: "Uebersicht",
-      products: "Produkte",
-      settings: "Einstellungen",
-    },
-    en: {
-      categories: "Categories",
-      gallery: "Workshop Order",
-      inquiries: "Customer inquiries",
-      options: "Options",
-      orders: "Orders",
-      overview: "Overview",
-      products: "Products",
-      settings: "Settings",
-    },
-    fr: {
-      categories: "Categories",
-      gallery: "Commande atelier",
-      inquiries: "Demandes clients",
-      options: "Options",
-      orders: "Commandes",
-      overview: "Vue d'ensemble",
-      products: "Produits",
-      settings: "Parametres",
-    },
-    tr: {
-      categories: "Kategoriler",
-      gallery: "Atölye Siparişi",
-      inquiries: "Müşteri talepleri",
-      options: "Seçenekler",
-      orders: "Siparişler",
-      overview: "Genel bakış",
-      products: "Ürünler",
-      settings: "Ayarlar",
-    },
-  };
-
-  return labels[locale][key];
+export function getAdminNavLabelKey(key: AdminNavKey) {
+  return adminNavLabelKeys[key];
 }
 
 type AdminSidebarProps = {
@@ -155,7 +127,7 @@ export function AdminSidebar({ currentUser, navCounts }: AdminSidebarProps) {
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{getAdminNavLabel(item.key, locale)}</span>
+                <span className="truncate">{t(getAdminNavLabelKey(item.key))}</span>
                 {navCounts?.[item.key] ? (
                   <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
                     {navCounts[item.key]}

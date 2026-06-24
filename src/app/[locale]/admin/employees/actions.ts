@@ -50,6 +50,13 @@ export async function saveEmployeeAction(
     };
   }
 
+  if ("role" in input && input.role !== "employee") {
+    return {
+      message: t("common.noAccessText"),
+      ok: false as const,
+    };
+  }
+
   try {
     if ("id" in input && typeof input.id === "string") {
       await updateEmployee(input as EmployeeUpdateInput);

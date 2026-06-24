@@ -14,7 +14,7 @@ import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
 import { AdminLogoutButton } from "./AdminLogoutButton";
 import {
   adminNavItems,
-  getAdminNavLabel,
+  getAdminNavLabelKey,
   getVisibleAdminNavItems,
   type AdminNavCounts,
 } from "./AdminSidebar";
@@ -69,7 +69,7 @@ export function AdminHeader({
                 {t(`roles.${currentUser.role}`)}
               </AdminBadge>
               <p className="truncate text-sm font-semibold text-foreground">
-                {getAdminNavLabel(currentItem.key, locale)}
+                {t(getAdminNavLabelKey(currentItem.key))}
               </p>
               {navCounts?.[currentItem.key] ? (
                 <AdminBadge variant="danger" className="px-2 py-0.5 text-[0.68rem]">

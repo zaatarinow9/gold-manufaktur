@@ -18,6 +18,7 @@ import { AdminPrivacyGuard } from "@/components/admin/AdminPrivacyMode";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { Link } from "@/i18n/navigation";
+import { getRoleDashboardPath } from "@/lib/admin/access";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import { getScopedAdminNotifications } from "@/lib/db/notifications";
@@ -60,7 +61,7 @@ export default async function AdminDashboardPage({
   }
 
   if (access.user.role === "employee") {
-    redirect(`/${locale}/admin/orders`);
+    redirect(getRoleDashboardPath(locale, access.user.role));
   }
 
   const currentUser = access.user;
@@ -135,6 +136,47 @@ export default async function AdminDashboardPage({
       value: employees.length,
     },
   ];
+  const quickActions =
+    currentUser.role === "super_admin"
+      ? [
+          {
+            href: "/admin/gallery/new-order",
+            label: t("overview.actions.createOrder"),
+            variant: "primary" as const,
+          },
+          {
+            href: "/admin/products",
+            label: t("overview.actions.addProduct"),
+            variant: "secondary" as const,
+          },
+          {
+            href: "/admin/options",
+            label: t("overview.actions.manageOptions"),
+            variant: "secondary" as const,
+          },
+          {
+            href: "/admin/employees",
+            label: t("overview.actions.addEmployee"),
+            variant: "secondary" as const,
+          },
+        ]
+      : [
+          {
+            href: "/admin/gallery/new-order",
+            label: t("overview.actions.createOrder"),
+            variant: "primary" as const,
+          },
+          {
+            href: "/admin/orders",
+            label: t("orders.title"),
+            variant: "secondary" as const,
+          },
+          {
+            href: "/admin/employees",
+            label: t("overview.actions.addEmployee"),
+            variant: "secondary" as const,
+          },
+        ];
 
   const recentOrderColumns: AdminTableColumn<OrderListRecord>[] = [
     {
@@ -235,33 +277,18 @@ export default async function AdminDashboardPage({
             description={t("overview.quickActionsDescription")}
           >
             <div className="grid gap-3">
-              <Link
-                href="/admin/gallery/new-order"
-                className={getAdminButtonClassName({
-                  block: true,
-                  variant: "primary",
-                })}
-              >
-                {t("overview.actions.createOrder")}
-              </Link>
-              <Link
-                href="/admin/products"
-                className={getAdminButtonClassName({ block: true, variant: "secondary" })}
-              >
-                {t("overview.actions.addProduct")}
-              </Link>
-              <Link
-                href="/admin/options"
-                className={getAdminButtonClassName({ block: true, variant: "secondary" })}
-              >
-                {t("overview.actions.manageOptions")}
-              </Link>
-              <Link
-                href="/admin/orders"
-                className={getAdminButtonClassName({ block: true, variant: "secondary" })}
-              >
-                {t("orders.title")}
-              </Link>
+              {quickActions.map((action) => (
+                <Link
+                  key={action.href}
+                  href={action.href}
+                  className={getAdminButtonClassName({
+                    block: true,
+                    variant: action.variant,
+                  })}
+                >
+                  {action.label}
+                </Link>
+              ))}
             </div>
           </AdminCard>
 

@@ -130,7 +130,7 @@ export async function saveCategoryAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -192,7 +192,7 @@ export async function toggleCategoryActiveAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -230,7 +230,7 @@ export async function deleteCategoryAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {

@@ -120,12 +120,17 @@ export async function getAdminShellUser() {
 
 export async function requireAdminAccess(
   locale: AppLocale,
-  allowedRoles?: AdminRole[]
+  allowedRoles?: AdminRole[],
+  redirectToPath?: string
 ) {
   const context = await getAdminSessionContext();
 
   if (context.state === "anonymous") {
-    redirect(`/${locale}/admin/login`);
+    const next =
+      redirectToPath && redirectToPath.startsWith(`/${locale}/admin`)
+        ? `?next=${encodeURIComponent(redirectToPath)}`
+        : "";
+    redirect(`/${locale}/admin/login${next}`);
   }
 
   if (

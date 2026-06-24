@@ -239,7 +239,7 @@ export async function saveProductAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -304,7 +304,7 @@ export async function duplicateProductAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -343,7 +343,7 @@ export async function toggleProductActiveAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -382,7 +382,7 @@ export async function toggleProductFeaturedAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -420,7 +420,7 @@ export async function deleteProductAction(
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
     return {

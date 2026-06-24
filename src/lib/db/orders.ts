@@ -18,7 +18,10 @@ import {
   normalizeOptionalUuid,
 } from "@/lib/admin/orderWorkflow";
 import { createAdminNotification } from "@/lib/db/notifications";
-import { getAdminNotificationEmail } from "@/lib/db/siteSettings";
+import {
+  getAdminNotificationEmail,
+  getSiteBaseUrl,
+} from "@/lib/db/siteSettings";
 import {
   buildCustomerOrderEmail,
   getEmailPublicStageFromMetadata,
@@ -45,6 +48,7 @@ import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Json, TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
 import type {
+  OrderAssignmentStatus,
   PublicTrackingStage,
   TrackingStatus,
   WorkshopOrderStatus,
@@ -236,6 +240,8 @@ export type OrderListRecord = {
   archivedAt: string;
   assignedAt: string;
   assignedWorkerEmail: string;
+  assignmentNote: string;
+  assignmentStatus: OrderAssignmentStatus;
   createdAt: string;
   currency: string;
   deletedAt: string;
@@ -244,6 +250,7 @@ export type OrderListRecord = {
   dueDate: string;
   emailUpdatesEnabled: boolean;
   employeeId: string | null;
+  employeeNote: string;
   employeeName: string;
   id: string;
   internalOrderNumber: string;
@@ -476,6 +483,19 @@ function normalizePriority(value?: string | null): "express" | "normal" | "urgen
   }
 
   return "normal";
+}
+
+function normalizeAssignmentStatus(value?: string | null): OrderAssignmentStatus {
+  switch (value) {
+    case "accepted":
+    case "in_progress":
+    case "waiting":
+    case "completed":
+    case "returned":
+      return value;
+    default:
+      return "assigned";
+  }
 }
 
 function normalizeLocale(value?: string | null): AppLocale {
@@ -1132,6 +1152,8 @@ export async function getScopedOrders(
       archivedAt: order.archived_at ?? "",
       assignedAt: order.assigned_at ?? "",
       assignedWorkerEmail: order.assigned_worker_email ?? "",
+      assignmentNote: order.assignment_note ?? "",
+      assignmentStatus: normalizeAssignmentStatus(order.assignment_status),
       cancelledAt: order.cancelled_at ?? "",
       completedAt: order.completed_at ?? "",
       createdAt: order.created_at,
@@ -1142,6 +1164,7 @@ export async function getScopedOrders(
       dueDate: order.due_date ?? "",
       emailUpdatesEnabled: order.email_updates_enabled ?? false,
       employeeId: order.employee_id ?? null,
+      employeeNote: order.employee_note ?? "",
       employeeName: bundle.employeeMap.get(order.employee_id ?? "")?.name ?? "",
       id: order.id,
       internalOrderNumber: fallbackInternalOrderNumber(order),
@@ -1210,6 +1233,8 @@ export async function getScopedOrderDetail(
     archivedAt: order.archived_at ?? "",
     assignedAt: order.assigned_at ?? "",
     assignedWorkerEmail: order.assigned_worker_email ?? "",
+    assignmentNote: order.assignment_note ?? "",
+    assignmentStatus: normalizeAssignmentStatus(order.assignment_status),
     cancelledAt: order.cancelled_at ?? "",
     completedAt: order.completed_at ?? "",
     createdAt: order.created_at,
@@ -1224,6 +1249,7 @@ export async function getScopedOrderDetail(
     emailLogs,
     emailUpdatesEnabled: order.email_updates_enabled ?? false,
     employeeId: order.employee_id ?? null,
+    employeeNote: order.employee_note ?? "",
     employeeName: bundle.employeeMap.get(order.employee_id ?? "")?.name ?? "",
     goldDetails,
     id: order.id,
@@ -1444,42 +1470,93 @@ async function dispatchAdminOrderNotificationEmail(input: {
   productSpecifications: ProductSpecifications;
   trackingNumber: string;
 }) {
-  const configuredRecipient = await getAdminNotificationEmail();
-  const fallbackRecipient =
-    process.env.EMAIL_FROM_ADDRESS?.trim() ?? process.env.SMTP_USER?.trim() ?? "";
-  const recipientEmail = configuredRecipient || fallbackRecipient;
+  const configuredRecipient = normalizeEmail(await getAdminNotificationEmail());
+  const fallbackRecipient = normalizeEmail(
+    process.env.EMAIL_FROM_ADDRESS?.trim() ?? process.env.SMTP_USER?.trim() ?? ""
+  );
+  const recipients = new Set<string>();
 
-  if (!recipientEmail) {
-    return null;
+  if (configuredRecipient) {
+    recipients.add(configuredRecipient);
   }
 
-  return sendTransactionalEmail({
-    metadata: {
-      kind: "admin_order_notification",
-      trackingNumber: input.trackingNumber,
-    },
-    orderId: input.orderId,
-    recipientEmail,
-    subject: "Neuer Auftrag eingegangen - GoldHelwah",
-    text: [
-      "Guten Tag,",
-      "",
-      "Ein neuer Auftrag ist eingegangen.",
-      "",
-      `Tracking-Nummer: ${input.trackingNumber}`,
-      `Kunde: ${input.customerName || "Nicht angegeben"}`,
-      `Produkt: ${input.productName}`,
-      `Legierung: ${input.productSpecifications.karat ?? "Nicht angegeben"}`,
-      `Gewicht: ${formatWeightGrams(input.productSpecifications.weightGrams) ?? "Nicht angegeben"}`,
-      `Namenspersonalisierung: ${
-        input.productSpecifications.nameCustomization.enabled
-          ? input.productSpecifications.nameCustomization.text ?? "Aktiv"
-          : "Nein"
-      }`,
-      `Kundennotiz: ${input.customerNote?.trim() || "Nicht angegeben"}`,
-      `Eingegangen am: ${new Date(input.createdAt).toLocaleString("de-DE")}`,
-    ].join("\n"),
-  });
+  const supabase = createSupabaseAdminClient();
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("email, is_active, role")
+    .eq("is_active", true)
+    .in("role", ["super_admin", "admin"]);
+
+  for (const profile of profiles ?? []) {
+    const email = normalizeEmail(profile.email);
+
+    if (email) {
+      recipients.add(email);
+    }
+  }
+
+  if (recipients.size === 0 && fallbackRecipient) {
+    recipients.add(fallbackRecipient);
+  }
+
+  if (recipients.size === 0) {
+    return [];
+  }
+
+  const orderUrl = `${getSiteBaseUrl()}/de/admin/orders/${input.orderId}`;
+  const subject = "Neuer Werkstattauftrag - Gold Helwah";
+  const text = [
+    "Guten Tag,",
+    "",
+    "Ein neuer Werkstattauftrag ist eingegangen.",
+    "",
+    `Auftragsreferenz: ${input.trackingNumber}`,
+    `Produkt: ${input.productName}`,
+    `Kunde: ${input.customerName || "Nicht angegeben"}`,
+    `Eingegangen am: ${new Date(input.createdAt).toLocaleString("de-DE")}`,
+    `Legierung: ${input.productSpecifications.karat ?? "Nicht angegeben"}`,
+    `Gewicht: ${formatWeightGrams(input.productSpecifications.weightGrams) ?? "Nicht angegeben"}`,
+    input.customerNote?.trim()
+      ? `Kundennotiz: ${input.customerNote.trim()}`
+      : "",
+    "",
+    "Auftrag oeffnen:",
+    orderUrl,
+    "",
+    "GoldHelwah GmbH",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const html = [
+    "<div style=\"font-family:Arial,sans-serif;color:#111;line-height:1.6\">",
+    "<p>Guten Tag,</p>",
+    "<p>Ein neuer Werkstattauftrag ist eingegangen.</p>",
+    "<table style=\"border-collapse:collapse;margin:16px 0\">",
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Auftragsreferenz</td><td>${input.trackingNumber}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Produkt</td><td>${input.productName}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Kunde</td><td>${input.customerName || "Nicht angegeben"}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Eingegangen am</td><td>${new Date(input.createdAt).toLocaleString("de-DE")}</td></tr>`,
+    "</table>",
+    `<p><a href="${orderUrl}" style="display:inline-block;background:#c49a52;color:#111;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">Auftrag oeffnen</a></p>`,
+    "<p>GoldHelwah GmbH</p>",
+    "</div>",
+  ].join("");
+
+  const deliveries = Array.from(recipients).map((recipientEmail) =>
+    sendTransactionalEmail({
+      html,
+      metadata: {
+        kind: "admin_order_notification",
+        trackingNumber: input.trackingNumber,
+      },
+      orderId: input.orderId,
+      recipientEmail,
+      subject,
+      text,
+    })
+  );
+
+  return Promise.allSettled(deliveries);
 }
 
 export async function createOrder(
@@ -2114,7 +2191,9 @@ export async function withdrawOrderAssignment(viewer: AdminViewer, orderId: stri
   const supabase = createSupabaseAdminClient();
   const now = new Date().toISOString();
   const payload: TableUpdate<"orders"> = {
+    assignment_status: "returned",
     employee_id: null,
+    employee_note: null,
     workshop_id: null,
   };
 
@@ -2131,6 +2210,31 @@ export async function withdrawOrderAssignment(viewer: AdminViewer, orderId: stri
   if (error) {
     throw new Error(`Unable to withdraw order assignment: ${error.message}`);
   }
+
+  const { error: eventError } = await supabase.from("order_status_events").insert({
+    actor_name: viewer.name,
+    created_by: viewer.id,
+    description: "Assignment withdrawn and returned to the admin queue.",
+    is_public: false,
+    notify_customer: false,
+    order_id: orderId,
+    status: order.trackingStatus,
+    title: "Assignment withdrawn",
+  } satisfies TableInsert<"order_status_events">);
+
+  if (eventError) {
+    throw new Error(`Unable to log assignment withdrawal: ${eventError.message}`);
+  }
+
+  await createAdminNotification({
+    entityId: order.id,
+    entityType: "order",
+    linkPath: `/admin/orders/${order.id}`,
+    message: `${order.internalOrderNumber} wurde in die Admin-Warteschlange zurueckgegeben.`,
+    title: "Zuweisung zurueckgezogen",
+    type: "order_updated",
+    workshopId: order.workshopId,
+  });
 
   if (normalizeEmail(order.assignedWorkerEmail)) {
     await dispatchWorkerAssignmentEmail({

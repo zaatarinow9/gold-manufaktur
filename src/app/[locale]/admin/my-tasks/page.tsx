@@ -2,23 +2,23 @@ import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import { listCustomerInquiries } from "@/lib/db/inquiries";
+import { getScopedOrders } from "@/lib/db/orders";
 import { resolveLocale } from "@/lib/site";
 
-import { AdminInquiriesClient } from "./inquiries-client";
+import { AdminMyTasksClient } from "./my-tasks-client";
 
-type AdminInquiriesPageProps = {
+type AdminMyTasksPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function AdminInquiriesPage({
+export default async function AdminMyTasksPage({
   params,
-}: AdminInquiriesPageProps) {
+}: AdminMyTasksPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["employee"]);
 
-  if (access.state !== "authenticated") {
+  if (access.state !== "authenticated" || !access.user) {
     return (
       <AdminAccessDenied
         title={t("common.noAccessTitle")}
@@ -27,7 +27,7 @@ export default async function AdminInquiriesPage({
     );
   }
 
-  const inquiries = await listCustomerInquiries().catch(() => []);
+  const orders = await getScopedOrders(access.user);
 
-  return <AdminInquiriesClient inquiries={inquiries} locale={locale} />;
+  return <AdminMyTasksClient locale={locale} orders={orders} />;
 }

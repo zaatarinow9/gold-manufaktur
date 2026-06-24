@@ -400,7 +400,9 @@
       "attendance": "Attendance",
       "reports": "Reports",
       "archive": "Archive",
-      "settings": "Settings"
+      "settings": "Settings",
+      "myTasks": "My Tasks",
+      "inquiries": "Customer inquiries"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1044,6 +1046,14 @@
     "emailTemplateType": {
       "orderConfirmation": "Order confirmation",
       "publicStageUpdate": "Public stage update"
+    },
+    "assignmentStatus": {
+      "assigned": "Assigned",
+      "accepted": "Accepted",
+      "in_progress": "In progress",
+      "waiting": "Waiting",
+      "completed": "Completed",
+      "returned": "Returned"
     }
   },
   "Tracking": {

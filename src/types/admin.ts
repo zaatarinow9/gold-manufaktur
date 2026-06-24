@@ -20,6 +20,18 @@ export type OptionGroupKey =
 
 export type OrderPriority = "normal" | "urgent" | "express";
 
+export const orderAssignmentStatusValues = [
+  "assigned",
+  "accepted",
+  "in_progress",
+  "waiting",
+  "completed",
+  "returned",
+] as const;
+
+export type OrderAssignmentStatus =
+  (typeof orderAssignmentStatusValues)[number];
+
 export const workshopOrderStatusValues = [
   "draft",
   "sent_to_workshop",
