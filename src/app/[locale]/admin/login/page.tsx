@@ -15,8 +15,26 @@ import { getAdminSessionContext } from "@/lib/admin/auth";
 
 type AdminLoginPageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; notice?: string }>;
 };
+
+function getLoginNoticeCopy(
+  notice: string | undefined,
+  t: Awaited<ReturnType<typeof getTranslations>>
+) {
+  switch (notice) {
+    case "account_inactive":
+      return t("login.notices.accountInactive");
+    case "account_not_configured":
+      return t("login.notices.accountNotConfigured");
+    case "invalid_link":
+      return t("login.notices.invalidLink");
+    case "password_updated":
+      return t("login.notices.passwordUpdated");
+    default:
+      return "";
+  }
+}
 
 export default async function AdminLoginPage({
   params,
@@ -32,12 +50,18 @@ export default async function AdminLoginPage({
     !resolvedSearchParams.next.startsWith(`/${locale}/admin/login`)
       ? resolvedSearchParams.next
       : "";
+  const noticeCopy = getLoginNoticeCopy(resolvedSearchParams.notice, t);
 
   if (access.state === "authenticated" && access.user) {
     redirect(redirectTo || getRoleDashboardPath(locale, access.user.role));
   }
 
   if (access.state === "denied") {
+    const description =
+      access.deniedReason === "inactive"
+        ? t("login.notices.accountInactive")
+        : t("login.notices.accountNotConfigured");
+
     return (
       <div className="space-y-8">
         <AdminBrand
@@ -49,7 +73,7 @@ export default async function AdminLoginPage({
         />
         <AdminCard
           title={t("common.noAccessTitle")}
-          description={t("common.noAccessText")}
+          description={description}
           action={
             <AdminLogoutButton className="admin-button-secondary">
               {t("buttons.demoLogin")}
@@ -111,6 +135,12 @@ export default async function AdminLoginPage({
           description={t("login.formDescription")}
           action={<AdminBadge variant="info">{t("header.adminArea")}</AdminBadge>}
         >
+          {noticeCopy ? (
+            <div className="mb-4 rounded-[1.4rem] border border-gold/18 bg-gold/10 px-4 py-4 text-sm text-foreground">
+              {noticeCopy}
+            </div>
+          ) : null}
+
           <AdminLoginForm locale={locale} redirectTo={redirectTo} />
 
           <div className="mt-6 space-y-3 rounded-[1.4rem] border border-white/8 bg-white/4 px-4 py-4">

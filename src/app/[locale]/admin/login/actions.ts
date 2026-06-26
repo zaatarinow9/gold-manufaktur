@@ -86,7 +86,7 @@ export async function loginAction(
   if (error) {
     return {
       fieldErrors: {},
-      message: t("common.noAccessText"),
+      message: t("login.invalidCredentials"),
     };
   }
 
@@ -97,7 +97,7 @@ export async function loginAction(
   if (!user) {
     return {
       fieldErrors: {},
-      message: t("common.noAccessText"),
+      message: t("login.invalidCredentials"),
     };
   }
 
@@ -107,12 +107,36 @@ export async function loginAction(
     .eq("id", user.id)
     .maybeSingle();
 
-  if (!profile?.is_active || !profile.role) {
+  if (!profile) {
+    console.error(
+      `[admin-login] Auth user ${user.id} (${user.email ?? "unknown_email"}) signed in without a profile row.`
+    );
     await supabase.auth.signOut();
 
     return {
       fieldErrors: {},
-      message: t("common.noAccessText"),
+      message: t("login.notices.accountNotConfigured"),
+    };
+  }
+
+  if (!profile.is_active) {
+    await supabase.auth.signOut();
+
+    return {
+      fieldErrors: {},
+      message: t("login.notices.accountInactive"),
+    };
+  }
+
+  if (!profile.role) {
+    console.error(
+      `[admin-login] Profile ${user.id} (${user.email ?? "unknown_email"}) is missing a role.`
+    );
+    await supabase.auth.signOut();
+
+    return {
+      fieldErrors: {},
+      message: t("login.notices.accountNotConfigured"),
     };
   }
 

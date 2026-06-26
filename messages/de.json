@@ -550,7 +550,36 @@
       "email": "E-Mail",
       "password": "Passwort",
       "demoHint": "Aktiver Zugriff: {role}.",
-      "demoUsersTitle": "Teamkonten"
+      "demoUsersTitle": "Teamkonten",
+      "invalidCredentials": "E-Mail-Adresse oder Passwort sind nicht korrekt.",
+      "notices": {
+        "accountInactive": "Dieses Konto ist derzeit deaktiviert. Bitte wenden Sie sich an einen Super Admin.",
+        "accountNotConfigured": "Dieses Konto ist fuer den Adminbereich noch nicht eingerichtet.",
+        "invalidLink": "Dieser Zugangslink ist ungueltig oder bereits abgelaufen.",
+        "passwordUpdated": "Ihr Passwort wurde erfolgreich aktualisiert. Sie koennen jetzt fortfahren."
+      }
+    },
+    "accountSetup": {
+      "title": "Zugang einrichten",
+      "description": "Legen Sie ein Passwort fuer Ihr internes GoldHelwah Konto fest, damit Sie in den richtigen Adminbereich gelangen.",
+      "resetTitle": "Neues Passwort festlegen",
+      "resetDescription": "Waehlen Sie ein neues Passwort fuer Ihr internes GoldHelwah Konto.",
+      "securityTitle": "Geschuetzter interner Zugang",
+      "securityText": "Verwenden Sie ein sicheres Passwort und teilen Sie diesen Zugangslink nicht mit anderen Personen.",
+      "formTitle": "Passwort erstellen",
+      "formDescription": "Legen Sie Ihr Passwort einmal fest, um das Konto zu aktivieren.",
+      "resetFormTitle": "Passwort zuruecksetzen",
+      "resetFormDescription": "Geben Sie ein neues Passwort ein, um den Zugriff auf Ihr Konto wiederherzustellen.",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestaetigen",
+      "submit": "Passwort speichern",
+      "resetSubmit": "Passwort aktualisieren",
+      "errors": {
+        "passwordLength": "Bitte waehlen Sie ein Passwort mit mindestens 8 Zeichen.",
+        "passwordMismatch": "Die Passwortbestaetigung stimmt nicht ueberein.",
+        "sessionExpired": "Ihre Sitzung ist nicht mehr gueltig. Bitte fordern Sie einen neuen Link an.",
+        "updateFailed": "Das Passwort konnte gerade nicht aktualisiert werden. Bitte versuchen Sie es erneut."
+      }
     },
     "products": {
       "eyebrow": "Produktverwaltung",
@@ -856,10 +885,57 @@
         "role": "Rolle",
         "workshop": "Werkstatt",
         "workload": "Auslastung",
+        "accountStatus": "Konto",
         "status": "Status",
         "activeTasks": "Aktive Aufgaben",
         "attendance": "Anwesenheit",
         "actions": "Aktionen"
+      },
+      "account": {
+        "create": "Mitarbeiter anlegen",
+        "edit": "Mitarbeiter bearbeiten",
+        "formDescription": "Pflegen Sie Mitarbeiterdaten und Kontozugriff an einem Ort.",
+        "saved": "Der Mitarbeiter wurde gespeichert.",
+        "inviteSent": "Die Zugangs-E-Mail wurde versendet.",
+        "inviteDeliveryFailed": "Das Konto wurde gespeichert, aber die Zugangs-E-Mail konnte nicht zugestellt werden.",
+        "passwordResetSent": "Die Passwort-E-Mail wurde versendet.",
+        "passwordResetDeliveryFailed": "Der Passwort-Link wurde erstellt, aber die E-Mail konnte nicht zugestellt werden.",
+        "linked": "Der Mitarbeiter wurde mit dem bestehenden Konto verknuepft.",
+        "notLinked": "Fuer diesen Mitarbeiter ist noch kein passendes Auth-Konto verknuepft.",
+        "duplicateEmail": "Diese E-Mail-Adresse ist bereits einem anderen Mitarbeiter zugeordnet.",
+        "emailRequired": "Fuer den Kontozugang ist eine E-Mail-Adresse erforderlich.",
+        "linkInUse": "Dieses Auth-Konto ist bereits mit einem anderen Mitarbeiter verknuepft.",
+        "roleConflict": "Das verknuepfte Auth-Konto gehoert bereits zu einer anderen internen Rolle.",
+        "roleNotAllowed": "Sie duerfen dieses Mitarbeiterkonto nicht verwalten.",
+        "notFound": "Der Mitarbeiter konnte nicht mehr gefunden werden.",
+        "reactivated": "Das Mitarbeiterkonto wurde reaktiviert.",
+        "deactivated": "Das Mitarbeiterkonto wurde deaktiviert.",
+        "noEmail": "Keine E-Mail hinterlegt",
+        "lastInvite": "Letzte Einladung",
+        "lastLogin": "Letzte Anmeldung",
+        "lastPasswordReset": "Letzte Passwort-E-Mail",
+        "status": {
+          "active": "Aktiv",
+          "disabled": "Deaktiviert",
+          "invited": "Eingeladen",
+          "missing_auth_user": "Nicht verknuepft"
+        },
+        "actions": {
+          "sendInvite": "Einladung senden",
+          "resendInvite": "Einladung erneut senden",
+          "linkAccount": "Konto verknuepfen",
+          "resetPassword": "Passwort zuruecksetzen"
+        }
+      },
+      "form": {
+        "fullName": "Vollstaendiger Name",
+        "attendance": "Anwesenheit",
+        "phone": "Telefon",
+        "email": "E-Mail",
+        "emailHint": "Wird fuer Login, Einladungen und Passwort-Links verwendet.",
+        "shift": "Schicht",
+        "notes": "Notizen",
+        "active": "Mitarbeiter ist aktiv"
       }
     },
     "attendance": {

@@ -10,6 +10,7 @@ import {
   rotateOrderEntryAccessAction,
   saveNotificationSettingsAction,
   saveOrderEntrySettingsAction,
+  sendManagedAdminPasswordResetAction,
   sendOrderEntryLinkEmailAction,
   toggleManagedAdminUserActiveAction,
   updateManagedAdminUserAction,
@@ -227,20 +228,17 @@ function getRoleLabel(role: ManagedAdminRole, locale: AppLocale) {
   if (locale === "ar") {
     if (role === "super_admin") return "المالك";
     if (role === "admin") return "مدير";
-    if (role === "viewer") return "مشاهد";
     return "عامل";
   }
 
   if (locale === "de") {
     if (role === "super_admin") return "Inhaber";
     if (role === "admin") return "Admin";
-    if (role === "viewer") return "Beobachter";
     return "Mitarbeiter";
   }
 
   if (role === "super_admin") return "Owner";
   if (role === "admin") return "Admin";
-  if (role === "viewer") return "Viewer";
   return "Worker";
 }
 
@@ -299,6 +297,12 @@ export function AdminSettingsClient({
     locale === "ar" ? "تفعيل" : locale === "de" ? "Aktivieren" : "Activate";
   const deactivateUserLabel =
     locale === "ar" ? "إيقاف" : locale === "de" ? "Deaktivieren" : "Deactivate";
+  const resetPasswordLabel =
+    locale === "ar"
+      ? "إرسال رابط كلمة المرور"
+      : locale === "de"
+        ? "Passwort-Link senden"
+        : "Send password link";
   const diagnosticsEnvironmentLabel =
     locale === "ar" ? "البيئة" : locale === "de" ? "Umgebung" : "Environment";
   const diagnosticsSiteUrlLabel =
@@ -477,7 +481,7 @@ export function AdminSettingsClient({
 
       pushFeedback(result.ok ? "success" : "error", result.message);
 
-      if (result.ok) {
+      if (result.ok || result.shouldRefresh) {
         setUserFormState(createUserForm());
         refreshPage();
       }
@@ -494,7 +498,23 @@ export function AdminSettingsClient({
 
       pushFeedback(result.ok ? "success" : "error", result.message);
 
-      if (result.ok) {
+      if (result.ok || result.shouldRefresh) {
+        refreshPage();
+      }
+    });
+  };
+
+  const handleUserPasswordReset = (user: ManagedAdminUserRecord) => {
+    startTransition(async () => {
+      const result = await sendManagedAdminPasswordResetAction(locale, user.id, {
+        displayName: user.displayName,
+        email: user.email,
+        role: user.role,
+      });
+
+      pushFeedback(result.ok ? "success" : "error", result.message);
+
+      if (result.ok || result.shouldRefresh) {
         refreshPage();
       }
     });
@@ -806,7 +826,6 @@ export function AdminSettingsClient({
               <option value="super_admin">{getRoleLabel("super_admin", locale)}</option>
               <option value="admin">{getRoleLabel("admin", locale)}</option>
               <option value="employee">{getRoleLabel("employee", locale)}</option>
-              <option value="viewer">{getRoleLabel("viewer", locale)}</option>
             </AdminSelect>
             <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
               <input
@@ -858,6 +877,14 @@ export function AdminSettingsClient({
                     disabled={!canManageUsers || isPending}
                   >
                     {copy.inviteAgain}
+                  </AdminButton>
+                  <AdminButton
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleUserPasswordReset(user)}
+                    disabled={!canManageUsers || !user.isActive || isPending}
+                  >
+                    {resetPasswordLabel}
                   </AdminButton>
                   <AdminButton
                     size="sm"

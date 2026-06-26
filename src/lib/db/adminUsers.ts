@@ -1,22 +1,24 @@
 import "server-only";
 
-import { randomBytes } from "node:crypto";
-
-import type { User } from "@supabase/supabase-js";
-
 import { getDecoyManagedUsers } from "@/lib/admin/decoyData";
-import { sendTransactionalEmail } from "@/lib/email/service";
+import type { AppLocale } from "@/i18n/routing";
+import {
+  generateStaffAccessLink,
+  listAllAuthUsers,
+  normalizeStaffEmail,
+  normalizeStaffText,
+  sendStaffAccessEmail,
+  setStaffProfileActive,
+  type StaffProfileRow,
+  upsertStaffProfile,
+} from "@/lib/admin/staffAuth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
+import type { AdminRole } from "@/types/admin";
 
 import { createAuditLog } from "./auditLogs";
-import { getSiteBaseUrl } from "./siteSettings";
 
-export type ManagedAdminRole =
-  | "super_admin"
-  | "admin"
-  | "employee"
-  | "viewer";
+export type ManagedAdminRole = AdminRole;
 
 export type ManagedAdminUserRecord = {
   createdAt: string;
@@ -37,17 +39,8 @@ export type ManagedAdminUserInput = {
   role: ManagedAdminRole;
 };
 
-type ManagedProfileRow = {
-  created_at: string;
+type ManagedProfileRow = StaffProfileRow & {
   deleted_at: string | null;
-  email: string | null;
-  full_name: string | null;
-  id: string;
-  invited_at: string | null;
-  is_active: boolean;
-  last_login_at: string | null;
-  role: ManagedAdminRole | null;
-  updated_at: string;
 };
 
 type ManagedProfilesClient = ReturnType<typeof createSupabaseAdminClient> & {
@@ -77,94 +70,16 @@ type ManagedProfilesClient = ReturnType<typeof createSupabaseAdminClient> & {
   };
 };
 
-function normalizeEmail(value: string) {
-  return value.trim().toLowerCase();
-}
-
-function normalizeText(value: string) {
-  return value.trim();
-}
-
 function normalizeRole(value: string | null | undefined): ManagedAdminRole {
-  if (
-    value === "super_admin" ||
-    value === "admin" ||
-    value === "employee" ||
-    value === "viewer"
-  ) {
+  if (value === "super_admin" || value === "admin" || value === "employee") {
     return value;
   }
 
   return "employee";
 }
 
-function buildRedirectToPath() {
-  return `${getSiteBaseUrl()}/de/admin/login`;
-}
-
 function getManagedProfilesClient() {
   return createSupabaseAdminClient() as unknown as ManagedProfilesClient;
-}
-
-async function listAllAuthUsers() {
-  const supabase = createSupabaseAdminClient();
-  const users: User[] = [];
-  let page = 1;
-
-  while (true) {
-    const { data, error } = await supabase.auth.admin.listUsers({
-      page,
-      perPage: 200,
-    });
-
-    if (error) {
-      throw new Error(`Unable to list auth users: ${error.message}`);
-    }
-
-    users.push(...(data.users ?? []));
-
-    if (!data.nextPage) {
-      break;
-    }
-
-    page = data.nextPage;
-  }
-
-  return users;
-}
-
-async function sendAdminAccessEmail(input: {
-  actionLink: string;
-  displayName: string;
-  email: string;
-  type: "invite" | "recovery";
-}) {
-  const isInvite = input.type === "invite";
-  const subject = isInvite
-    ? "Einladung zum GoldHelwah Adminbereich"
-    : "Passwort-Link fuer den GoldHelwah Adminbereich";
-  const text = [
-    `Guten Tag ${input.displayName || input.email},`,
-    "",
-    isInvite
-      ? "Sie wurden zum GoldHelwah Adminbereich eingeladen."
-      : "Hier ist Ihr neuer Link zum Zuruecksetzen des Passworts fuer den GoldHelwah Adminbereich.",
-    "",
-    "Link:",
-    input.actionLink,
-    "",
-    "Wenn Sie diese Nachricht nicht erwartet haben, ignorieren Sie sie bitte.",
-  ].join("\n");
-
-  return sendTransactionalEmail({
-    metadata: {
-      email: input.email,
-      kind: isInvite ? "admin_user_invite" : "admin_user_recovery",
-    },
-    recipientEmail: input.email,
-    subject,
-    text,
-  });
 }
 
 async function upsertManagedProfile(input: {
@@ -177,26 +92,28 @@ async function upsertManagedProfile(input: {
   lastLoginAt?: string | null;
   role: ManagedAdminRole;
 }) {
-  const supabase = getManagedProfilesClient();
-  const { error } = await supabase.from("profiles").upsert(
-    {
-      deleted_at: input.deletedAt ?? null,
-      email: normalizeEmail(input.email),
-      full_name: normalizeText(input.displayName) || null,
-      id: input.authUserId,
-      invited_at: input.invitedAt ?? null,
-      is_active: input.isActive,
-      last_login_at: input.lastLoginAt ?? null,
-      role: input.role,
-      updated_at: new Date().toISOString(),
-    },
-    {
-      onConflict: "id",
-    }
-  );
+  await upsertStaffProfile({
+    authUserId: input.authUserId,
+    displayName: input.displayName,
+    email: input.email,
+    invitedAt: input.invitedAt,
+    isActive: input.isActive,
+    lastLoginAt: input.lastLoginAt,
+    role: input.role,
+  });
 
-  if (error) {
-    throw new Error(`Unable to save user profile: ${error.message}`);
+  if (input.deletedAt !== undefined) {
+    const supabase = getManagedProfilesClient();
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        deleted_at: input.deletedAt ?? null,
+      })
+      .eq("id", input.authUserId);
+
+    if (error) {
+      throw new Error(`Unable to archive user profile: ${error.message}`);
+    }
   }
 }
 
@@ -270,31 +187,20 @@ export async function listManagedAdminUsers(): Promise<ManagedAdminUserRecord[]>
 
 export async function createManagedAdminUser(
   actorEmail: string,
+  locale: AppLocale,
   input: ManagedAdminUserInput
 ) {
-  const supabase = getManagedProfilesClient();
-  const normalizedEmail = normalizeEmail(input.email);
-  const displayName = normalizeText(input.displayName);
-
-  const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+  const normalizedEmail = normalizeStaffEmail(input.email);
+  const displayName = normalizeStaffText(input.displayName);
+  const accessLink = await generateStaffAccessLink({
+    displayName,
     email: normalizedEmail,
-    options: {
-      data: {
-        full_name: displayName,
-      },
-      redirectTo: buildRedirectToPath(),
-    },
-    type: "invite",
+    kind: "invite",
+    locale,
   });
 
-  if (linkError || !linkData.user || !linkData.properties.action_link) {
-    throw new Error(
-      `Unable to create invited admin user: ${linkError?.message ?? "missing_invite_link"}`
-    );
-  }
-
   await upsertManagedProfile({
-    authUserId: linkData.user.id,
+    authUserId: accessLink.authUser.id,
     displayName,
     email: normalizedEmail,
     invitedAt: new Date().toISOString(),
@@ -302,11 +208,16 @@ export async function createManagedAdminUser(
     role: input.role,
   });
 
-  const emailResult = await sendAdminAccessEmail({
-    actionLink: linkData.properties.action_link,
+  const emailResult = await sendStaffAccessEmail({
+    actorEmail,
+    authUserId: accessLink.authUser.id,
+    callbackUrl: accessLink.callbackUrl,
     displayName,
-    email: normalizedEmail,
-    type: "invite",
+    kind: "invite",
+    metadataKind: "admin_user_invite",
+    recipientEmail: normalizedEmail,
+    redactedCallbackUrl: accessLink.redactedCallbackUrl,
+    role: input.role,
   });
 
   await createAuditLog({
@@ -317,13 +228,13 @@ export async function createManagedAdminUser(
       inviteFallback: emailResult.fallback,
       inviteSent: emailResult.delivered,
       role: input.role,
-      userId: linkData.user.id,
+      userId: accessLink.authUser.id,
     },
   });
 
   return {
     emailResult,
-    userId: linkData.user.id,
+    userId: accessLink.authUser.id,
   };
 }
 
@@ -333,8 +244,8 @@ export async function updateManagedAdminUser(
   input: ManagedAdminUserInput
 ) {
   const supabase = getManagedProfilesClient();
-  const normalizedEmail = normalizeEmail(input.email);
-  const displayName = normalizeText(input.displayName);
+  const normalizedEmail = normalizeStaffEmail(input.email);
+  const displayName = normalizeStaffText(input.displayName);
   const { error: authError } = await supabase.auth.admin.updateUserById(userId, {
     email: normalizedEmail,
     user_metadata: {
@@ -367,37 +278,36 @@ export async function updateManagedAdminUser(
 
 export async function resendManagedAdminInvite(
   actorEmail: string,
+  locale: AppLocale,
   userId: string,
   email: string,
   displayName: string,
   role: ManagedAdminRole
 ) {
-  const supabase = getManagedProfilesClient();
-  const normalizedEmail = normalizeEmail(email);
-  const { data, error } = await supabase.auth.admin.generateLink({
+  const normalizedEmail = normalizeStaffEmail(email);
+  const normalizedDisplayName = normalizeStaffText(displayName);
+  const accessLink = await generateStaffAccessLink({
+    authUserId: userId,
+    displayName: normalizedDisplayName,
     email: normalizedEmail,
-    options: {
-      redirectTo: buildRedirectToPath(),
-    },
-    type: "recovery",
+    kind: "invite",
+    locale,
   });
-
-  if (error || !data.properties.action_link) {
-    throw new Error(
-      `Unable to generate recovery link: ${error?.message ?? "missing_recovery_link"}`
-    );
-  }
-
-  const emailResult = await sendAdminAccessEmail({
-    actionLink: data.properties.action_link,
-    displayName: normalizeText(displayName),
-    email: normalizedEmail,
-    type: "recovery",
+  const emailResult = await sendStaffAccessEmail({
+    actorEmail,
+    authUserId: userId,
+    callbackUrl: accessLink.callbackUrl,
+    displayName: normalizedDisplayName,
+    kind: "invite",
+    metadataKind: "admin_user_invite",
+    recipientEmail: normalizedEmail,
+    redactedCallbackUrl: accessLink.redactedCallbackUrl,
+    role,
   });
 
   await upsertManagedProfile({
     authUserId: userId,
-    displayName: normalizeText(displayName),
+    displayName: normalizedDisplayName,
     email: normalizedEmail,
     invitedAt: new Date().toISOString(),
     isActive: true,
@@ -418,23 +328,55 @@ export async function resendManagedAdminInvite(
   return emailResult;
 }
 
+export async function sendManagedAdminPasswordReset(
+  actorEmail: string,
+  locale: AppLocale,
+  userId: string,
+  email: string,
+  displayName: string,
+  role: ManagedAdminRole
+) {
+  const normalizedEmail = normalizeStaffEmail(email);
+  const normalizedDisplayName = normalizeStaffText(displayName);
+  const accessLink = await generateStaffAccessLink({
+    authUserId: userId,
+    displayName: normalizedDisplayName,
+    email: normalizedEmail,
+    kind: "password_reset",
+    locale,
+  });
+  const emailResult = await sendStaffAccessEmail({
+    actorEmail,
+    authUserId: userId,
+    callbackUrl: accessLink.callbackUrl,
+    displayName: normalizedDisplayName,
+    kind: "password_reset",
+    metadataKind: "admin_user_password_reset",
+    recipientEmail: normalizedEmail,
+    redactedCallbackUrl: accessLink.redactedCallbackUrl,
+    role,
+  });
+
+  await createAuditLog({
+    action: "admin_user_password_reset_sent",
+    actorEmail,
+    metadata: {
+      email: normalizedEmail,
+      resetFallback: emailResult.fallback,
+      resetSent: emailResult.delivered,
+      userId,
+    },
+  });
+
+  return emailResult;
+}
+
 export async function setManagedAdminUserActive(
   actorEmail: string,
   userId: string,
   isActive: boolean
 ) {
-  const supabase = getManagedProfilesClient();
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      is_active: isActive,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", userId);
-
-  if (error) {
-    throw new Error(`Unable to update user activity: ${error.message}`);
-  }
+  await setStaffProfileActive(userId, isActive);
 
   await createAuditLog({
     action: isActive ? "admin_user_activated" : "admin_user_deactivated",
@@ -479,8 +421,4 @@ export async function deleteManagedAdminUser(
       userId,
     },
   });
-}
-
-export function createTemporaryPassword() {
-  return randomBytes(18).toString("base64url");
 }

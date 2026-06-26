@@ -550,7 +550,14 @@
       "email": "E-mail",
       "password": "Mot de passe",
       "demoHint": "Accès actuel : {role}.",
-      "demoUsersTitle": "Comptes d'équipe"
+      "demoUsersTitle": "Comptes d'équipe",
+      "invalidCredentials": "L'adresse e-mail ou le mot de passe est incorrect.",
+      "notices": {
+        "accountInactive": "Ce compte est actuellement desactive. Veuillez contacter un super administrateur.",
+        "accountNotConfigured": "Ce compte n'est pas encore configure pour l'espace admin.",
+        "invalidLink": "Ce lien d'acces est invalide ou deja expire.",
+        "passwordUpdated": "Votre mot de passe a ete mis a jour avec succes. Vous pouvez continuer maintenant."
+      }
     },
     "products": {
       "eyebrow": "Gestion des produits",
@@ -859,7 +866,54 @@
         "status": "Statut",
         "activeTasks": "Taches actives",
         "attendance": "Presence",
-        "actions": "Actions"
+        "actions": "Actions",
+        "accountStatus": "Compte"
+      },
+      "account": {
+        "create": "Ajouter un employe",
+        "edit": "Modifier l'employe",
+        "formDescription": "Gerez les donnees de l'employe et l'acces au compte au meme endroit.",
+        "saved": "Le dossier employe a ete enregistre.",
+        "inviteSent": "L'e-mail d'acces a ete envoye.",
+        "inviteDeliveryFailed": "Le compte a ete enregistre, mais l'e-mail d'acces n'a pas pu etre livre.",
+        "passwordResetSent": "L'e-mail de reinitialisation a ete envoye.",
+        "passwordResetDeliveryFailed": "Le lien de reinitialisation a ete cree, mais l'e-mail n'a pas pu etre livre.",
+        "linked": "L'employe a ete lie au compte existant.",
+        "notLinked": "Aucun compte d'authentification correspondant n'est encore lie a cet employe.",
+        "duplicateEmail": "Cette adresse e-mail est deja utilisee par un autre employe.",
+        "emailRequired": "Une adresse e-mail est requise pour l'acces au compte.",
+        "linkInUse": "Ce compte d'authentification est deja lie a un autre employe.",
+        "roleConflict": "Le compte lie appartient deja a un autre role interne.",
+        "roleNotAllowed": "Vous n'etes pas autorise a gerer ce compte employe.",
+        "notFound": "L'employe est introuvable.",
+        "reactivated": "Le compte employe a ete reactive.",
+        "deactivated": "Le compte employe a ete desactive.",
+        "noEmail": "Aucune adresse e-mail enregistree",
+        "lastInvite": "Derniere invitation",
+        "lastLogin": "Derniere connexion",
+        "lastPasswordReset": "Dernier e-mail de reinitialisation",
+        "status": {
+          "active": "Actif",
+          "disabled": "Desactive",
+          "invited": "Invite",
+          "missing_auth_user": "Non lie"
+        },
+        "actions": {
+          "sendInvite": "Envoyer l'invitation",
+          "resendInvite": "Renvoyer l'invitation",
+          "linkAccount": "Lier le compte",
+          "resetPassword": "Reinitialiser le mot de passe"
+        }
+      },
+      "form": {
+        "fullName": "Nom complet",
+        "attendance": "Presence",
+        "phone": "Telephone",
+        "email": "E-mail",
+        "emailHint": "Utilise pour la connexion, les invitations et les liens de reinitialisation.",
+        "shift": "Shift",
+        "notes": "Notes",
+        "active": "L'employe est actif"
       }
     },
     "attendance": {
@@ -1054,6 +1108,28 @@
       "waiting": "En attente",
       "completed": "Termine",
       "returned": "Retourne"
+    },
+    "accountSetup": {
+      "title": "Configurer votre acces",
+      "description": "Creez un mot de passe pour votre compte interne GoldHelwah afin d'acceder au bon espace admin.",
+      "resetTitle": "Definir un nouveau mot de passe",
+      "resetDescription": "Choisissez un nouveau mot de passe pour votre compte interne GoldHelwah.",
+      "securityTitle": "Acces interne protege",
+      "securityText": "Utilisez un mot de passe fort et ne partagez ce lien d'acces avec personne.",
+      "formTitle": "Creer le mot de passe",
+      "formDescription": "Definissez votre mot de passe une fois pour terminer l'activation du compte.",
+      "resetFormTitle": "Reinitialiser le mot de passe",
+      "resetFormDescription": "Saisissez un nouveau mot de passe pour restaurer l'acces a votre compte.",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Enregistrer le mot de passe",
+      "resetSubmit": "Mettre a jour le mot de passe",
+      "errors": {
+        "passwordLength": "Veuillez choisir un mot de passe d'au moins 8 caracteres.",
+        "passwordMismatch": "La confirmation du mot de passe ne correspond pas.",
+        "sessionExpired": "Votre session n'est plus valide. Veuillez demander un nouveau lien.",
+        "updateFailed": "Le mot de passe ne peut pas etre mis a jour pour le moment. Veuillez reessayer."
+      }
     }
   },
   "Tracking": {

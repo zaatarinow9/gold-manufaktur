@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import { getScopedEmployees } from "@/lib/db/employees";
+import { getScopedEmployeeAccounts } from "@/lib/db/employeeAccounts";
 import { getScopedWorkshops } from "@/lib/db/workshops";
 import { resolveLocale } from "@/lib/site";
 
@@ -29,7 +29,7 @@ export default async function AdminEmployeesPage({
   }
 
   const [employees, workshops] = await Promise.all([
-    getScopedEmployees(access.user),
+    getScopedEmployeeAccounts(access.user),
     getScopedWorkshops(access.user),
   ]);
 

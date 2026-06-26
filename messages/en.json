@@ -550,7 +550,36 @@
       "email": "Email",
       "password": "Password",
       "demoHint": "Current access: {role}.",
-      "demoUsersTitle": "Team accounts"
+      "demoUsersTitle": "Team accounts",
+      "invalidCredentials": "The email address or password is incorrect.",
+      "notices": {
+        "accountInactive": "This account is currently inactive. Please contact a super admin.",
+        "accountNotConfigured": "This account is not configured for the admin area yet.",
+        "invalidLink": "This access link is invalid or has already expired.",
+        "passwordUpdated": "Your password was updated successfully. You can continue now."
+      }
+    },
+    "accountSetup": {
+      "title": "Set up your access",
+      "description": "Create a password for your internal GoldHelwah account so you can enter the correct admin area.",
+      "resetTitle": "Set a new password",
+      "resetDescription": "Choose a new password for your internal GoldHelwah account.",
+      "securityTitle": "Protected internal access",
+      "securityText": "Use a strong password and do not share this access link with anyone else.",
+      "formTitle": "Create password",
+      "formDescription": "Set your password once to finish activating the account.",
+      "resetFormTitle": "Reset password",
+      "resetFormDescription": "Enter a new password to restore access to your account.",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Save password",
+      "resetSubmit": "Update password",
+      "errors": {
+        "passwordLength": "Please choose a password with at least 8 characters.",
+        "passwordMismatch": "The password confirmation does not match.",
+        "sessionExpired": "Your session is no longer valid. Please request a new link.",
+        "updateFailed": "The password could not be updated right now. Please try again."
+      }
     },
     "products": {
       "eyebrow": "Product management",
@@ -856,10 +885,57 @@
         "role": "Role",
         "workshop": "Workshop",
         "workload": "Workload",
+        "accountStatus": "Account",
         "status": "Status",
         "activeTasks": "Active tasks",
         "attendance": "Attendance",
         "actions": "Actions"
+      },
+      "account": {
+        "create": "Create employee",
+        "edit": "Edit employee",
+        "formDescription": "Maintain employee details and account access in one place.",
+        "saved": "The employee record was saved.",
+        "inviteSent": "The access email was sent.",
+        "inviteDeliveryFailed": "The account was saved, but the access email could not be delivered.",
+        "passwordResetSent": "The password reset email was sent.",
+        "passwordResetDeliveryFailed": "The reset link was created, but the email could not be delivered.",
+        "linked": "The employee was linked to the existing account.",
+        "notLinked": "No matching auth account is linked to this employee yet.",
+        "duplicateEmail": "This email address is already assigned to another employee.",
+        "emailRequired": "An email address is required for account access.",
+        "linkInUse": "This auth account is already linked to another employee.",
+        "roleConflict": "The linked auth account already belongs to a different internal role.",
+        "roleNotAllowed": "You are not allowed to manage this employee account.",
+        "notFound": "The employee could not be found anymore.",
+        "reactivated": "The employee account was reactivated.",
+        "deactivated": "The employee account was deactivated.",
+        "noEmail": "No email address saved",
+        "lastInvite": "Last invite",
+        "lastLogin": "Last login",
+        "lastPasswordReset": "Last password reset",
+        "status": {
+          "active": "Active",
+          "disabled": "Disabled",
+          "invited": "Invited",
+          "missing_auth_user": "Not linked"
+        },
+        "actions": {
+          "sendInvite": "Send invite",
+          "resendInvite": "Resend invite",
+          "linkAccount": "Link account",
+          "resetPassword": "Reset password"
+        }
+      },
+      "form": {
+        "fullName": "Full name",
+        "attendance": "Attendance",
+        "phone": "Phone",
+        "email": "Email",
+        "emailHint": "Used for login, invites, and password resets.",
+        "shift": "Shift",
+        "notes": "Notes",
+        "active": "Employee is active"
       }
     },
     "attendance": {

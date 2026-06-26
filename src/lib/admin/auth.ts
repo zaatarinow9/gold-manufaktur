@@ -11,9 +11,11 @@ import type { AdminRole, AdminUser } from "@/types/admin";
 import { createSupabaseServerClient } from "../supabase/server";
 
 type AdminAccessState = "anonymous" | "authenticated" | "denied";
+export type AdminDeniedReason = "inactive" | "not_allowed" | "not_configured";
 
 type AdminSessionContext = {
   authUserId: string | null;
+  deniedReason: AdminDeniedReason | null;
   state: AdminAccessState;
   user: AdminUser | null;
 };
@@ -87,6 +89,7 @@ export const getAdminSessionContext = cache(async (): Promise<AdminSessionContex
   if (!authUser) {
     return {
       authUserId: null,
+      deniedReason: null,
       state: "anonymous",
       user: null,
     };
@@ -98,16 +101,44 @@ export const getAdminSessionContext = cache(async (): Promise<AdminSessionContex
     .eq("id", authUser.id)
     .maybeSingle();
 
-  if (!profile || !profile.is_active || !profile.role) {
+  if (!profile) {
+    console.error(
+      `[admin-auth] Auth user ${authUser.id} (${authUser.email ?? "unknown_email"}) is missing a profile row.`
+    );
+
     return {
       authUserId: authUser.id,
+      deniedReason: "not_configured",
       state: "denied",
-      user: profile ? buildAdminUser(authUser, profile) : null,
+      user: null,
+    };
+  }
+
+  if (!profile.role) {
+    console.error(
+      `[admin-auth] Profile ${authUser.id} (${profile.email ?? authUser.email ?? "unknown_email"}) is missing a role.`
+    );
+
+    return {
+      authUserId: authUser.id,
+      deniedReason: "not_configured",
+      state: "denied",
+      user: buildAdminUser(authUser, profile),
+    };
+  }
+
+  if (!profile.is_active) {
+    return {
+      authUserId: authUser.id,
+      deniedReason: "inactive",
+      state: "denied",
+      user: buildAdminUser(authUser, profile),
     };
   }
 
   return {
     authUserId: authUser.id,
+    deniedReason: null,
     state: "authenticated",
     user: buildAdminUser(authUser, profile),
   };
@@ -140,6 +171,9 @@ export async function requireAdminAccess(
   ) {
     return {
       ...context,
+      deniedReason:
+        context.deniedReason ??
+        (allowedRoles && context.user ? "not_allowed" : context.deniedReason),
       state: "denied" as const,
     };
   }

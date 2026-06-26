@@ -10,6 +10,7 @@ import {
   createManagedAdminUser,
   deleteManagedAdminUser,
   resendManagedAdminInvite,
+  sendManagedAdminPasswordReset,
   type ManagedAdminRole,
   setManagedAdminUserActive,
   updateManagedAdminUser,
@@ -39,7 +40,7 @@ const managedUserSchema = z.object({
   displayName: z.string().trim().min(2).max(160),
   email: z.string().trim().email().max(160),
   isActive: z.boolean().default(true),
-  role: z.enum(["super_admin", "admin", "employee", "viewer"]),
+  role: z.enum(["super_admin", "admin", "employee"]),
 });
 
 const orderEntrySchema = z.object({
@@ -75,6 +76,8 @@ function getSettingsActionCopy(locale: AppLocale) {
         "تم إنشاء المستخدم وإرسال رابط الدخول إذا كانت خدمة البريد متاحة.",
       userDeleted: "تمت إزالة المستخدم من النظام.",
       userInviteSent: "تم إنشاء رابط جديد للمستخدم.",
+      userPasswordResetSent:
+        "تم إنشاء رابط جديد لإعادة تعيين كلمة المرور.",
       userUpdated: "تم تحديث بيانات المستخدم.",
       userVisibilityChanged: "تم تحديث حالة المستخدم.",
     };
@@ -99,6 +102,7 @@ function getSettingsActionCopy(locale: AppLocale) {
         "Der Benutzer wurde angelegt. Der Zugangslink wurde versendet oder protokolliert.",
       userDeleted: "Der Benutzer wurde aus dem System entfernt.",
       userInviteSent: "Ein neuer Zugangslink wurde erstellt.",
+      userPasswordResetSent: "Der Passwort-Link wurde erstellt.",
       userUpdated: "Die Benutzerdaten wurden aktualisiert.",
       userVisibilityChanged: "Der Benutzerstatus wurde aktualisiert.",
     };
@@ -120,6 +124,7 @@ function getSettingsActionCopy(locale: AppLocale) {
     userCreated: "The user was created. The access link was sent or logged.",
     userDeleted: "The user was removed from the system.",
     userInviteSent: "A new access link was generated.",
+    userPasswordResetSent: "A password reset link was generated.",
     userUpdated: "The user was updated.",
     userVisibilityChanged: "The user status was updated.",
   };
@@ -444,11 +449,15 @@ export async function createManagedAdminUserAction(
   }
 
   try {
-    await createManagedAdminUser(user.email, parsed.data);
+    const result = await createManagedAdminUser(user.email, locale, parsed.data);
     revalidateSettingsViews();
     return {
-      message: copy.userCreated,
-      ok: true,
+      message:
+        result.emailResult.status === "sent"
+          ? copy.userCreated
+          : copy.orderEntrySendSavedOnly,
+      ok: result.emailResult.status === "sent",
+      shouldRefresh: true,
     };
   } catch (error) {
     return {
@@ -536,8 +545,9 @@ export async function resendManagedAdminInviteAction(
   }
 
   try {
-    await resendManagedAdminInvite(
+    const result = await resendManagedAdminInvite(
       user.email,
+      locale,
       userId,
       input.email,
       input.displayName,
@@ -545,12 +555,68 @@ export async function resendManagedAdminInviteAction(
     );
     revalidateSettingsViews();
     return {
-      message: copy.userInviteSent,
-      ok: true,
+      message:
+        result.status === "sent"
+          ? copy.userInviteSent
+          : copy.orderEntrySendSavedOnly,
+      ok: result.status === "sent",
+      shouldRefresh: true,
     };
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : copy.userInviteSent,
+      ok: false,
+    };
+  }
+}
+
+export async function sendManagedAdminPasswordResetAction(
+  locale: AppLocale,
+  userId: string,
+  input: {
+    displayName: string;
+    email: string;
+    role: ManagedAdminRole;
+  }
+): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  const copy = getSettingsActionCopy(locale);
+
+  if (!user || user.role !== "super_admin") {
+    return {
+      message: copy.noAccess,
+      ok: false,
+    };
+  }
+
+  const blockedResult = await getDecoyBlockedResult(locale);
+
+  if (blockedResult) {
+    return blockedResult;
+  }
+
+  try {
+    const result = await sendManagedAdminPasswordReset(
+      user.email,
+      locale,
+      userId,
+      input.email,
+      input.displayName,
+      input.role
+    );
+    revalidateSettingsViews();
+    return {
+      message:
+        result.status === "sent"
+          ? copy.userPasswordResetSent
+          : copy.orderEntrySendSavedOnly,
+      ok: result.status === "sent",
+      shouldRefresh: true,
+    };
+  } catch (error) {
+    return {
+      message:
+        error instanceof Error ? error.message : copy.userPasswordResetSent,
       ok: false,
     };
   }

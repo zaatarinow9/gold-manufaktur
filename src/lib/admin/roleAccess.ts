@@ -41,5 +41,13 @@ export function canViewAdminSection(role: AdminRole, section: AdminSection) {
 }
 
 export function getRoleDashboardPath(locale: AppLocale, role: AdminRole) {
-  return role === "employee" ? `/${locale}/admin/my-tasks` : `/${locale}/admin`;
+  if (role === "employee") {
+    return `/${locale}/admin/my-tasks`;
+  }
+
+  if (role === "admin") {
+    return `/${locale}/admin/orders`;
+  }
+
+  return `/${locale}/admin`;
 }

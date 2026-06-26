@@ -550,7 +550,14 @@
       "email": "E-posta",
       "password": "Sifre",
       "demoHint": "Geçerli erişim: {role}.",
-      "demoUsersTitle": "Ekip hesapları"
+      "demoUsersTitle": "Ekip hesapları",
+      "invalidCredentials": "E-posta adresi veya sifre hatali.",
+      "notices": {
+        "accountInactive": "Bu hesap su anda pasif. Lutfen bir super admin ile iletisime gecin.",
+        "accountNotConfigured": "Bu hesap henuz admin alani icin yapilandirilmadi.",
+        "invalidLink": "Bu erisim baglantisi gecersiz veya suresi dolmus.",
+        "passwordUpdated": "Sifreniz basariyla guncellendi. Artik devam edebilirsiniz."
+      }
     },
     "products": {
       "eyebrow": "Urun yonetimi",
@@ -859,7 +866,54 @@
         "status": "Durum",
         "activeTasks": "Aktif gorevler",
         "attendance": "Devam durumu",
-        "actions": "Islemler"
+        "actions": "Islemler",
+        "accountStatus": "Hesap"
+      },
+      "account": {
+        "create": "Calisan ekle",
+        "edit": "Calisani duzenle",
+        "formDescription": "Calisan bilgilerini ve hesap erisimini tek yerde yonetin.",
+        "saved": "Calisan kaydi kaydedildi.",
+        "inviteSent": "Erisim e-postasi gonderildi.",
+        "inviteDeliveryFailed": "Hesap kaydedildi ancak erisim e-postasi teslim edilemedi.",
+        "passwordResetSent": "Sifre sifirlama e-postasi gonderildi.",
+        "passwordResetDeliveryFailed": "Sifirlama baglantisi olusturuldu ancak e-posta teslim edilemedi.",
+        "linked": "Calisan mevcut hesapla baglandi.",
+        "notLinked": "Bu calisana bagli eslesen bir auth hesabi henuz yok.",
+        "duplicateEmail": "Bu e-posta adresi baska bir calisana ait.",
+        "emailRequired": "Hesap erisimi icin bir e-posta adresi gerekli.",
+        "linkInUse": "Bu auth hesabi zaten baska bir calisana bagli.",
+        "roleConflict": "Bagli auth hesabi zaten farkli bir dahili role ait.",
+        "roleNotAllowed": "Bu calisan hesabini yonetme izniniz yok.",
+        "notFound": "Calisan artik bulunamiyor.",
+        "reactivated": "Calisan hesabi yeniden etkinlestirildi.",
+        "deactivated": "Calisan hesabi devre disi birakildi.",
+        "noEmail": "Kayitli e-posta yok",
+        "lastInvite": "Son davet",
+        "lastLogin": "Son giris",
+        "lastPasswordReset": "Son sifre sifirlama",
+        "status": {
+          "active": "Etkin",
+          "disabled": "Pasif",
+          "invited": "Davet edildi",
+          "missing_auth_user": "Bagli degil"
+        },
+        "actions": {
+          "sendInvite": "Davet gonder",
+          "resendInvite": "Daveti yeniden gonder",
+          "linkAccount": "Hesabi bagla",
+          "resetPassword": "Sifreyi sifirla"
+        }
+      },
+      "form": {
+        "fullName": "Tam ad",
+        "attendance": "Devam durumu",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "emailHint": "Giris, davet ve sifre sifirlama baglantilari icin kullanilir.",
+        "shift": "Vardiya",
+        "notes": "Notlar",
+        "active": "Calisan aktif"
       }
     },
     "attendance": {
@@ -1054,6 +1108,28 @@
       "waiting": "Bekliyor",
       "completed": "Tamamlandi",
       "returned": "Geri verildi"
+    },
+    "accountSetup": {
+      "title": "Erisiminizi hazirlayin",
+      "description": "Dogru admin alanina girebilmek icin dahili GoldHelwah hesabiniz icin bir sifre olusturun.",
+      "resetTitle": "Yeni sifre belirleyin",
+      "resetDescription": "Dahili GoldHelwah hesabinizi icin yeni bir sifre secin.",
+      "securityTitle": "Korumali dahili erisim",
+      "securityText": "Guclu bir sifre kullanin ve bu erisim baglantisini baska kimseyle paylasmayin.",
+      "formTitle": "Sifre olustur",
+      "formDescription": "Hesap etkinlestirmesini tamamlamak icin sifrenizi bir kez belirleyin.",
+      "resetFormTitle": "Sifreyi sifirla",
+      "resetFormDescription": "Hesabiniza erisimi geri kazanmak icin yeni bir sifre girin.",
+      "password": "Sifre",
+      "confirmPassword": "Sifreyi onayla",
+      "submit": "Sifreyi kaydet",
+      "resetSubmit": "Sifreyi guncelle",
+      "errors": {
+        "passwordLength": "Lutfen en az 8 karakterli bir sifre secin.",
+        "passwordMismatch": "Sifre onayi eslesmiyor.",
+        "sessionExpired": "Oturumunuz artik gecerli degil. Lutfen yeni bir baglanti isteyin.",
+        "updateFailed": "Sifre su anda guncellenemedi. Lutfen tekrar deneyin."
+      }
     }
   },
   "Tracking": {
