@@ -538,28 +538,18 @@
       "workshopLoadDescription": "تحليل توزيع أعباء العمل على جهات التصنيع."
     },
     "login": {
-      "title": "بوابة الإدارة - مجوهرات حلوة",
-      "description": "منصة الدخول الآمن للتحكم الشامل بمسارات العمل والمخزون الداخلي.",
-      "cards": {
-        "securityTitle": "بيئة عمل منظمة",
-        "securityText": "واجهة مركزية تجمع بين الكفاءة والوضوح لإدارة دورة حياة المنتج والطلبات.",
-        "rolesTitle": "نظام الصلاحيات المتقدم",
-        "rolesText": "تخصيص دقيق لواجهات العمل تضمن لكل مستخدم تركيزاً كاملاً على مهامه الموكلة.",
-        "catalogTitle": "التحكم بالكتالوج",
-        "catalogText": "إدارة مرنة للمنتجات والتصنيفات، تعكس مستوى عالياً من الاحترافية في العرض."
-      },
+      "title": "بوابة إدارة Gold Helwah",
+      "description": "وصول داخلي آمن لإدارة الطلبات والمنتجات وسير العمل.",
       "formTitle": "تسجيل الدخول",
-      "formDescription": "يرجى اختيار الحساب المخول للوصول إلى لوحة التحكم.",
+      "formDescription": "استخدم حساب الإدارة المخصص لك.",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
-      "demoHint": "تم تسجيل الدخول بصلاحيات: {role}.",
-      "demoUsersTitle": "قائمة الحسابات التجريبية",
-      "invalidCredentials": "The email address or password is incorrect.",
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
       "notices": {
-        "accountInactive": "This account is currently inactive. Please contact a super admin.",
-        "accountNotConfigured": "This account is not configured for the admin area yet.",
-        "invalidLink": "This access link is invalid or has already expired.",
-        "passwordUpdated": "Your password was updated successfully. You can continue now."
+        "accountInactive": "هذا الحساب غير نشط حاليًا. يرجى مراجعة الإدارة.",
+        "accountNotConfigured": "هذا الحساب غير مهيأ بعد للوصول إلى لوحة الإدارة.",
+        "invalidLink": "رابط الوصول غير صالح أو انتهت صلاحيته.",
+        "passwordUpdated": "تم تحديث كلمة المرور بنجاح. يمكنك المتابعة الآن."
       }
     },
     "products": {

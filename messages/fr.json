@@ -535,22 +535,12 @@
       "workshopLoadDescription": "Charge actuelle par atelier."
     },
     "login": {
-      "title": "Accès admin GoldHelwah GmbH",
-      "description": "Accès interne pour le catalogue, les commandes et les ateliers.",
-      "cards": {
-        "securityTitle": "Séparation propre",
-        "securityText": "Cet accès réunit catalogue, ateliers et commandes dans une interface claire.",
-        "rolesTitle": "Prêt pour les rôles",
-        "rolesText": "Chaque rôle dispose d’une vue ciblée sur les produits, les tâches et le suivi atelier.",
-        "catalogTitle": "Catalogue d'abord",
-        "catalogText": "Le focus porte sur les produits, les commandes et un flux interne bien organisé."
-      },
+      "title": "Admin GoldHelwah",
+      "description": "Acces interne securise pour les commandes, le catalogue et les operations.",
       "formTitle": "Connexion",
-      "formDescription": "Choisissez un compte utilisateur pour l'espace interne.",
+      "formDescription": "Utilisez votre compte admin attribue.",
       "email": "E-mail",
       "password": "Mot de passe",
-      "demoHint": "Accès actuel : {role}.",
-      "demoUsersTitle": "Comptes d'équipe",
       "invalidCredentials": "L'adresse e-mail ou le mot de passe est incorrect.",
       "notices": {
         "accountInactive": "Ce compte est actuellement desactive. Veuillez contacter un super administrateur.",

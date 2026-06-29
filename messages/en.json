@@ -535,22 +535,12 @@
       "workshopLoadDescription": "Current workload by workshop."
     },
     "login": {
-      "title": "Admin access for GoldHelwah GmbH",
-      "description": "Internal access for catalog, orders, and workshops.",
-      "cards": {
-        "securityTitle": "Clean separation",
-        "securityText": "This access point brings catalog, workshop, and order management together in one clear interface.",
-        "rolesTitle": "Role-ready",
-        "rolesText": "Each role receives a focused view of products, tasks, and workshop flow.",
-        "catalogTitle": "Catalog first",
-        "catalogText": "The focus is on product management, orders, and a well-structured internal workflow."
-      },
+      "title": "Gold Helwah Admin",
+      "description": "Secure internal access for orders, catalog, and workflow operations.",
       "formTitle": "Sign in",
-      "formDescription": "Choose a user account for the internal area.",
+      "formDescription": "Use your assigned admin account.",
       "email": "Email",
       "password": "Password",
-      "demoHint": "Current access: {role}.",
-      "demoUsersTitle": "Team accounts",
       "invalidCredentials": "The email address or password is incorrect.",
       "notices": {
         "accountInactive": "This account is currently inactive. Please contact a super admin.",

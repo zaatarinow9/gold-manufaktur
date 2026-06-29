@@ -535,22 +535,12 @@
       "workshopLoadDescription": "Aktive Werkstattlast im Vergleich."
     },
     "login": {
-      "title": "Admin-Zugang für GoldHelwah GmbH",
-      "description": "Interner Zugang für Katalog, Aufträge und Werkstätten.",
-      "cards": {
-        "securityTitle": "Saubere Trennung",
-        "securityText": "Der Zugang bündelt die wichtigsten Bereiche für Katalog, Werkstatt und Aufträge in einer klaren Oberfläche.",
-        "rolesTitle": "Rollenbereit",
-        "rolesText": "Jede Rolle erhält einen passenden Überblick über Aufgaben, Produkte und Werkstattabläufe.",
-        "catalogTitle": "Katalog zuerst",
-        "catalogText": "Der Fokus liegt auf Produktpflege, Aufträgen und einem geordneten internen Ablauf."
-      },
+      "title": "GoldHelwah Admin",
+      "description": "Sicherer interner Zugang fuer Auftraege, Katalog und Ablaeufe.",
       "formTitle": "Anmeldung",
-      "formDescription": "Wählen Sie ein Benutzerkonto für den internen Bereich.",
+      "formDescription": "Melden Sie sich mit Ihrem zugewiesenen Admin-Konto an.",
       "email": "E-Mail",
       "password": "Passwort",
-      "demoHint": "Aktiver Zugriff: {role}.",
-      "demoUsersTitle": "Teamkonten",
       "invalidCredentials": "E-Mail-Adresse oder Passwort sind nicht korrekt.",
       "notices": {
         "accountInactive": "Dieses Konto ist derzeit deaktiviert. Bitte wenden Sie sich an einen Super Admin.",

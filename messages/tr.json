@@ -535,22 +535,12 @@
       "workshopLoadDescription": "Atolye bazinda guncel yuk."
     },
     "login": {
-      "title": "GoldHelwah GmbH admin girisi",
-      "description": "Katalog, siparisler ve atolyeler icin dahili erisim.",
-      "cards": {
-        "securityTitle": "Temiz ayrim",
-        "securityText": "Bu giris; katalog, atolyeler ve siparisleri tek bir net arayuzde toplar.",
-        "rolesTitle": "Role hazir",
-        "rolesText": "Her rol; urunler, gorevler ve atolye akisi icin odakli bir gorunum alir.",
-        "catalogTitle": "Once katalog",
-        "catalogText": "Odak; urunler, siparisler ve duzenli ic operasyon akisindadir."
-      },
+      "title": "Gold Helwah Admin",
+      "description": "Siparisler, katalog ve operasyon akisi icin guvenli dahili erisim.",
       "formTitle": "Giris",
-      "formDescription": "Dahili alan icin bir kullanici hesabi secin.",
+      "formDescription": "Atanmis admin hesabinizi kullanin.",
       "email": "E-posta",
       "password": "Sifre",
-      "demoHint": "Geçerli erişim: {role}.",
-      "demoUsersTitle": "Ekip hesapları",
       "invalidCredentials": "E-posta adresi veya sifre hatali.",
       "notices": {
         "accountInactive": "Bu hesap su anda pasif. Lutfen bir super admin ile iletisime gecin.",

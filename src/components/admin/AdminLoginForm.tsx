@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
+import { LoaderCircle, LockKeyhole, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
@@ -43,7 +44,7 @@ export function AdminLoginForm({ locale, redirectTo }: AdminLoginFormProps) {
   }, [state.fieldErrors]);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="admin-login-form">
       <input type="hidden" name="redirectTo" value={redirectTo ?? ""} />
       <AdminInput
         id="email"
@@ -51,10 +52,14 @@ export function AdminLoginForm({ locale, redirectTo }: AdminLoginFormProps) {
         type="email"
         label={t("login.email")}
         autoComplete="email"
-        placeholder={t("login.email")}
+        placeholder="name@company.com"
         required
         requiredLabel={requiredLabel}
         errorText={state.fieldErrors?.email}
+        icon={<Mail className="h-4 w-4" />}
+        wrapperClassName="admin-login-field"
+        className="text-base"
+        autoFocus
       />
       <AdminInput
         id="password"
@@ -62,18 +67,31 @@ export function AdminLoginForm({ locale, redirectTo }: AdminLoginFormProps) {
         type="password"
         label={t("login.password")}
         autoComplete="current-password"
-        placeholder={t("login.password")}
+        placeholder="********"
         required
         requiredLabel={requiredLabel}
         errorText={state.fieldErrors?.password}
+        icon={<LockKeyhole className="h-4 w-4" />}
+        wrapperClassName="admin-login-field"
+        className="text-base"
       />
       {state.message ? (
-        <div className="rounded-[1.4rem] border border-rose-400/24 bg-rose-400/10 px-4 py-4 text-sm text-rose-100">
+        <div
+          aria-live="polite"
+          className="admin-login-notice border border-rose-400/24 bg-rose-400/10 text-rose-100"
+        >
           {state.message}
         </div>
       ) : null}
-      <AdminButton type="submit" variant="primary" block disabled={isPending}>
-        {t("buttons.next")}
+      <AdminButton
+        type="submit"
+        variant="primary"
+        block
+        disabled={isPending}
+        className="admin-login-submit"
+      >
+        {isPending ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
+        {t("login.formTitle")}
       </AdminButton>
     </form>
   );
