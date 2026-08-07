@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { appLocaleValues } from "@/i18n/routing";
 import { normalizePhoneNumber } from "@/lib/phone";
 
 export const publicOrderEntryOptionValueSchema = z.object({
@@ -27,7 +28,7 @@ export const publicOrderEntryRequestSchema = z.object({
       message: "phone",
     }),
   emailUpdatesEnabled: z.boolean().default(true),
-  locale: z.string().trim().min(2).max(12).default("de"),
+  locale: z.enum(appLocaleValues).default("de"),
   message: z.string().trim().max(2000).default(""),
   optionValues: z.array(publicOrderEntryOptionValueSchema).default([]),
   productId: z.string().trim().min(1).max(120),

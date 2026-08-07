@@ -1,6 +1,8 @@
 import type { AppLocale } from "@/i18n/routing";
 import type { AdminRole } from "@/types/admin";
 
+export const adminRoles = ["super_admin", "admin", "employee"] as const;
+
 export type AdminSection =
   | "archive"
   | "attendance"
@@ -36,11 +38,15 @@ const sectionAccess: Record<AdminSection, AdminRole[]> = {
   workshops: ["super_admin"],
 };
 
+export function isAdminRole(value: string | null | undefined): value is AdminRole {
+  return adminRoles.includes(value as AdminRole);
+}
+
 export function canViewAdminSection(role: AdminRole, section: AdminSection) {
   return sectionAccess[section].includes(role);
 }
 
-export function getRoleDashboardPath(locale: AppLocale, role: AdminRole) {
+export function getPostLoginRedirectForRole(locale: AppLocale, role: AdminRole) {
   if (role === "employee") {
     return `/${locale}/admin/my-tasks`;
   }
@@ -51,3 +57,5 @@ export function getRoleDashboardPath(locale: AppLocale, role: AdminRole) {
 
   return `/${locale}/admin`;
 }
+
+export const getRoleDashboardPath = getPostLoginRedirectForRole;

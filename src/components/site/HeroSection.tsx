@@ -47,6 +47,9 @@ export function HeroSection({
             <p className="hero-subtitle-reveal section-copy balanced-copy mt-6 max-w-3xl text-base sm:text-lg">
               {t("subtitle")}
             </p>
+            <p className="hero-subtitle-reveal balanced-copy mt-3 max-w-3xl text-sm text-foreground/75 sm:text-base">
+              {t("description")}
+            </p>
 
             <div className="hero-actions hero-actions-reveal rtl-inline-row mt-8 flex flex-wrap justify-center gap-3 sm:mt-10">
               <Link href="/shop" className="gold-button">

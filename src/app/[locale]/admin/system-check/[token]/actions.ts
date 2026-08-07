@@ -29,6 +29,7 @@ import {
 } from "@/lib/db/adminDecoy";
 import { buildAdminSystemAccessEmail } from "@/lib/email/adminSystemAccessEmail";
 import { sendTransactionalEmail } from "@/lib/email/service";
+import { consumeRateLimit } from "@/lib/security/rateLimit";
 import { companyInfo } from "@/lib/site";
 
 type SystemCheckActionResult = {
@@ -210,6 +211,22 @@ export async function unlockSystemCheckAction(
 
   if (!access.ok) {
     return access;
+  }
+
+  const rateLimit = consumeRateLimit({
+    key: `system-check:${access.user.id}:${access.actor.ip || "unknown"}:${access.control.tokenVersion}`,
+    limit: 6,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (!rateLimit.allowed) {
+    await logAdminDecoyAudit("decoy_gate_pin_rate_limited", access.actor, {
+      tokenVersion: access.control.tokenVersion,
+    });
+    return {
+      message: t("pinInvalid"),
+      ok: false,
+    };
   }
 
   if (!verifyAdminDecoyPin(pin)) {

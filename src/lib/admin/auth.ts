@@ -8,6 +8,7 @@ import type { User } from "@supabase/supabase-js";
 import type { AppLocale } from "@/i18n/routing";
 import type { AdminRole, AdminUser } from "@/types/admin";
 
+import { isAdminRole } from "./roleAccess";
 import { createSupabaseServerClient } from "../supabase/server";
 
 type AdminAccessState = "anonymous" | "authenticated" | "denied";
@@ -54,7 +55,7 @@ function buildAdminUser(
     email: string | null;
     full_name: string | null;
     is_active: boolean;
-    role: AdminRole | null;
+    role: string | null;
     workshop_id?: string | null;
   }
 ): AdminUser {
@@ -72,7 +73,7 @@ function buildAdminUser(
     name,
     email,
     phone: authUser.phone ?? "",
-    role: profile.role ?? "employee",
+    role: isAdminRole(profile.role) ? profile.role : "employee",
     avatarLabel: getAvatarLabel(name, email),
     isActive: profile.is_active,
     linkedEmployeeId: profile.employee_id ?? undefined,
@@ -117,6 +118,19 @@ export const getAdminSessionContext = cache(async (): Promise<AdminSessionContex
   if (!profile.role) {
     console.error(
       `[admin-auth] Profile ${authUser.id} (${profile.email ?? authUser.email ?? "unknown_email"}) is missing a role.`
+    );
+
+    return {
+      authUserId: authUser.id,
+      deniedReason: "not_configured",
+      state: "denied",
+      user: buildAdminUser(authUser, profile),
+    };
+  }
+
+  if (!isAdminRole(profile.role)) {
+    console.error(
+      `[admin-auth] Profile ${authUser.id} (${profile.email ?? authUser.email ?? "unknown_email"}) has an unsupported role value.`
     );
 
     return {

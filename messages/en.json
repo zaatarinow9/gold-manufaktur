@@ -69,8 +69,9 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "Gold jewelry with presence.",
-      "subtitle": "Real product imagery, personal consultation, and selected pieces for meaningful moments.",
+      "title": "GoldHelwah GmbH",
+      "subtitle": "We craft beauty",
+      "description": "We reflect the precision of detail and the elegance of design, with personal consultation that guides you toward the gold piece that suits your presence and the value of the occasion.",
       "primaryCta": "Discover products",
       "secondaryCta": "Request consultation",
       "backgroundAlt": "GoldHelwah GmbH hero composition",

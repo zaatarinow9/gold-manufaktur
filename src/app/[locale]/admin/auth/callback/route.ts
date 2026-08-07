@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { isAdminRole } from "@/lib/admin/roleAccess";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 function getSafeNextPath(locale: string, nextPath: string | null) {
@@ -66,6 +67,14 @@ export async function GET(
   if (!profile || !profile.role) {
     console.error(
       `[admin-auth-callback] Verified auth user ${data.user.id} (${data.user.email ?? "unknown_email"}) has no configured profile.`
+    );
+    await supabase.auth.signOut();
+    return buildLoginRedirect(request, locale, "account_not_configured");
+  }
+
+  if (!isAdminRole(profile.role)) {
+    console.error(
+      `[admin-auth-callback] Verified auth user ${data.user.id} (${data.user.email ?? "unknown_email"}) has an unsupported role value.`
     );
     await supabase.auth.signOut();
     return buildLoginRedirect(request, locale, "account_not_configured");

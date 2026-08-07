@@ -1,17 +1,19 @@
 import { createOrder } from "@/lib/db/orders";
 import { getPublicProductByIdOrSlug } from "@/lib/db/catalog";
+import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import { validateOrderEntryToken } from "@/lib/db/siteSettings";
 import { publicOrderEntryRequestSchema } from "@/lib/orderEntry";
-import type { AppLocale } from "@/i18n/routing";
+import {
+  getClientIp,
+  getContentLength,
+  hasTrustedOrigin,
+} from "@/lib/security/http";
+import { consumeRateLimit } from "@/lib/security/rateLimit";
 import type { CatalogProductOptionField } from "@/types/catalog";
-
-const supportedLocales = new Set<AppLocale>(["de", "ar", "en", "fr", "tr"]);
+ 
+const ORDER_ENTRY_REQUEST_MAX_BYTES = 64 * 1024;
 
 type OptionFieldValue = boolean | number | string | string[] | null;
-
-function normalizeLocale(value: string): AppLocale {
-  return supportedLocales.has(value as AppLocale) ? (value as AppLocale) : "de";
-}
 
 function isMissingRequiredValue(type: string, value: OptionFieldValue | undefined) {
   if (type === "boolean") {
@@ -89,6 +91,45 @@ function isValidFieldValue(
 }
 
 export async function POST(request: Request) {
+  if (!hasTrustedOrigin(request, { allowMissing: true })) {
+    return Response.json({ error: "FORBIDDEN", success: false }, { status: 403 });
+  }
+
+  const contentLength = getContentLength(request.headers);
+
+  if (contentLength !== null && contentLength > ORDER_ENTRY_REQUEST_MAX_BYTES) {
+    return Response.json(
+      { error: "PAYLOAD_TOO_LARGE", success: false },
+      { status: 413 }
+    );
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return Response.json(
+      { error: "ORDER_ENTRY_UNAVAILABLE", success: false },
+      { status: 404 }
+    );
+  }
+
+  const clientIp = getClientIp(request.headers);
+  const ipRateLimit = consumeRateLimit({
+    key: `order-entry:${clientIp}`,
+    limit: 8,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (!ipRateLimit.allowed) {
+    return Response.json(
+      { error: "RATE_LIMITED", success: false },
+      {
+        headers: {
+          "Retry-After": String(ipRateLimit.retryAfterSeconds),
+        },
+        status: 429,
+      }
+    );
+  }
+
   let body: unknown;
 
   try {
@@ -113,7 +154,25 @@ export async function POST(request: Request) {
     );
   }
 
-  const locale = normalizeLocale(result.data.locale);
+  const tokenRateLimit = consumeRateLimit({
+    key: `order-entry-token:${result.data.token.length}:${result.data.token.slice(-8)}`,
+    limit: 20,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (!tokenRateLimit.allowed) {
+    return Response.json(
+      { error: "RATE_LIMITED", success: false },
+      {
+        headers: {
+          "Retry-After": String(tokenRateLimit.retryAfterSeconds),
+        },
+        status: 429,
+      }
+    );
+  }
+
+  const locale = result.data.locale;
   const tokenValid = await validateOrderEntryToken(result.data.token);
 
   if (!tokenValid) {

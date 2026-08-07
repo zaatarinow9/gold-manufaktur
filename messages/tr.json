@@ -69,8 +69,9 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "Bakislari uzerine ceken altin takilar.",
-      "subtitle": "Gercek gorseller, kisisel danismanlik ve ozel anlar icin secilmis parcalar.",
+      "title": "GoldHelwah GmbH",
+      "subtitle": "Güzelliği işliyoruz",
+      "description": "Detayların inceliğini ve tasarımın zarafetini yansıtır; kişisel danışmanlıkla, duruşunuza ve özel anınızın değerine yakışan altın parçayı seçmenizde size rehberlik ederiz.",
       "primaryCta": "ürünleri kesfet",
       "secondaryCta": "Danismanlik isteyin",
       "backgroundAlt": "GoldHelwah GmbH hero kompozisyonu",

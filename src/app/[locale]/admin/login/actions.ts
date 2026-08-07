@@ -1,11 +1,15 @@
 "use server";
 
+import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import type { AppLocale } from "@/i18n/routing";
 import { getRoleDashboardPath } from "@/lib/admin/access";
+import { isAdminRole } from "@/lib/admin/roleAccess";
+import { getClientIp } from "@/lib/security/http";
+import { consumeRateLimit } from "@/lib/security/rateLimit";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type LoginActionState = {
@@ -77,6 +81,20 @@ export async function loginAction(
     };
   }
 
+  const requestHeaders = await headers();
+  const rateLimit = consumeRateLimit({
+    key: `admin-login:${getClientIp(requestHeaders)}:${email.toLowerCase()}`,
+    limit: 10,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (!rateLimit.allowed) {
+    return {
+      fieldErrors: {},
+      message: t("login.invalidCredentials"),
+    };
+  }
+
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -131,6 +149,18 @@ export async function loginAction(
   if (!profile.role) {
     console.error(
       `[admin-login] Profile ${user.id} (${user.email ?? "unknown_email"}) is missing a role.`
+    );
+    await supabase.auth.signOut();
+
+    return {
+      fieldErrors: {},
+      message: t("login.notices.accountNotConfigured"),
+    };
+  }
+
+  if (!isAdminRole(profile.role)) {
+    console.error(
+      `[admin-login] Profile ${user.id} (${user.email ?? "unknown_email"}) has an unsupported role value.`
     );
     await supabase.auth.signOut();
 

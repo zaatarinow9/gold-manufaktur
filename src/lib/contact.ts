@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { appLocaleValues } from "@/i18n/routing";
 import { normalizePhoneNumber } from "@/lib/phone";
 
 export const contactInquirySchema = z.object({
@@ -37,7 +38,7 @@ export const publicInquiryOptionValueSchema = z.object({
 });
 
 export const publicInquiryRequestSchema = contactInquirySchema.extend({
-  locale: z.string().trim().min(2).max(12).default("de"),
+  locale: z.enum(appLocaleValues).default("de"),
   optionValues: z.array(publicInquiryOptionValueSchema).default([]),
   productSnapshot: z
     .object({

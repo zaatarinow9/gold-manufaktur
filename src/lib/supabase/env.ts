@@ -8,16 +8,26 @@ function requireEnv(name: string) {
   return value;
 }
 
+function requireFirstEnv(names: string[]) {
+  for (const name of names) {
+    const value = process.env[name];
+
+    if (value) {
+      return value;
+    }
+  }
+
+  throw new Error(
+    `Missing required Supabase environment variable: ${names.join(" or ")}`
+  );
+}
+
 export function getSupabasePublicEnv() {
   return {
     url: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    publishableKey: requireEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
-  };
-}
-
-export function getSupabaseServiceEnv() {
-  return {
-    url: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    serviceRoleKey: requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
+    publishableKey: requireFirstEnv([
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    ]),
   };
 }

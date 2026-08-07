@@ -69,8 +69,9 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "Des bijoux en or qui attirent le regard.",
-      "subtitle": "Visuels réels, conseil personnalisé et pièces choisies pour les moments importants.",
+      "title": "GoldHelwah GmbH",
+      "subtitle": "Nous façonnons la beauté",
+      "description": "Nous révélons la précision des détails et l’élégance du design, avec un accompagnement personnalisé pour vous guider vers la pièce en or qui correspond à votre présence et à la valeur de l’occasion.",
       "primaryCta": "Découvrir les produits",
       "secondaryCta": "Demander un conseil",
       "backgroundAlt": "Composition hero GoldHelwah GmbH",

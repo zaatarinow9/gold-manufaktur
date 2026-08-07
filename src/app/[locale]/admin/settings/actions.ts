@@ -369,13 +369,20 @@ export async function sendOrderEntryLinkEmailAction(
       expiresAt: parsed.data.expiresAt,
       link,
     });
+    const redactedLink = "[redacted order entry link]";
     const emailResult = await sendTransactionalEmail({
       html: email.html,
+      logHtml: email.html.replaceAll(link, redactedLink),
+      logMetadata: {
+        actorEmail: user.email,
+        expiresAt: parsed.data.expiresAt || null,
+        kind: "order_entry_link_email",
+      },
+      logText: email.text.replaceAll(link, redactedLink),
       metadata: {
         actorEmail: user.email,
         expiresAt: parsed.data.expiresAt || null,
         kind: "order_entry_link_email",
-        link,
       },
       recipientEmail: parsed.data.recipientEmail,
       replyTo: companyInfo.emailDisplay,

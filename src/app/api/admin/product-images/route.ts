@@ -8,8 +8,12 @@ import {
   PRODUCT_IMAGE_BUCKET,
   PRODUCT_IMAGE_MAX_BYTES,
 } from "@/lib/product-images";
+import { getContentLength, hasTrustedOrigin } from "@/lib/security/http";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { ensureProductImagesBucket } from "@/lib/storage/productImages";
+
+const PRODUCT_IMAGE_MULTIPART_MAX_BYTES =
+  PRODUCT_IMAGE_MAX_BYTES + 64 * 1024;
 
 function isAllowedMimeType(value: string) {
   return PRODUCT_IMAGE_ALLOWED_MIME_TYPES.includes(
@@ -18,6 +22,31 @@ function isAllowedMimeType(value: string) {
 }
 
 export async function POST(request: Request) {
+  if (!hasTrustedOrigin(request)) {
+    return NextResponse.json({ error: "FORBIDDEN", success: false }, { status: 403 });
+  }
+
+  const contentLength = getContentLength(request.headers);
+
+  if (
+    contentLength !== null &&
+    contentLength > PRODUCT_IMAGE_MULTIPART_MAX_BYTES
+  ) {
+    return NextResponse.json(
+      { error: "FILE_TOO_LARGE", success: false },
+      { status: 413 }
+    );
+  }
+
+  const contentType = request.headers.get("content-type")?.toLowerCase() ?? "";
+
+  if (!contentType.startsWith("multipart/form-data")) {
+    return NextResponse.json(
+      { error: "INVALID_FORM_DATA", success: false },
+      { status: 400 }
+    );
+  }
+
   const session = await getAdminSessionContext();
 
   if (session.state === "anonymous" || !session.authUserId) {

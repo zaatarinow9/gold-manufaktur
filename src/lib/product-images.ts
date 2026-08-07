@@ -43,7 +43,7 @@ export function buildProductImageObjectPath(input: {
     "catalog";
   const baseName =
     sanitizeSegment(input.fileName.replace(/\.[^.]+$/u, "")) || "product-image";
-  const token = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const token = globalThis.crypto.randomUUID();
   const extension = getProductImageExtension(input.mimeType);
 
   return `products/${folder}/${token}-${baseName}.${extension}`;

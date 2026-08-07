@@ -1,7 +1,13 @@
 import "server-only";
 
 import { cache } from "react";
-import { randomBytes, timingSafeEqual } from "node:crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  randomBytes,
+  timingSafeEqual,
+} from "node:crypto";
 
 import { getDecoySettingsSnapshot } from "@/lib/admin/decoyData";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
@@ -81,6 +87,8 @@ export const siteSettingKeys = {
   adminNotificationEmail: "admin_notification_email",
   orderEntryEnabled: "order_entry_enabled",
   orderEntryExpiresAt: "order_entry_expires_at",
+  orderEntryTokenHash: "order_entry_token_hash",
+  orderEntryTokenSealed: "order_entry_token_sealed",
   orderEntryToken: "order_entry_token",
   orderEntryTokenHint: "order_entry_token_hint",
   orderEntryRotatedAt: "order_entry_rotated_at",
@@ -365,15 +373,229 @@ function getTokenHint(token: string) {
   return token.slice(-8);
 }
 
-function tokensMatch(expectedToken: string, providedToken: string) {
-  const expected = Buffer.from(expectedToken);
-  const provided = Buffer.from(providedToken);
+function stringsMatch(expectedValue: string, providedValue: string) {
+  const expected = Buffer.from(expectedValue, "utf8");
+  const provided = Buffer.from(providedValue, "utf8");
 
   if (expected.length !== provided.length) {
     return false;
   }
 
   return timingSafeEqual(expected, provided);
+}
+
+function getOrderEntryTokenSecret() {
+  const secret =
+    process.env.ORDER_ENTRY_TOKEN_SECRET?.trim() ??
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ??
+    "";
+
+  if (!secret) {
+    throw new Error("Missing order-entry token secret.");
+  }
+
+  return secret;
+}
+
+function getOrderEntryTokenEncryptionKey() {
+  return createHash("sha256")
+    .update(getOrderEntryTokenSecret(), "utf8")
+    .digest();
+}
+
+function hashOrderEntryToken(token: string) {
+  return createHash("sha256").update(token, "utf8").digest("hex");
+}
+
+function sealOrderEntryToken(token: string) {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv(
+    "aes-256-gcm",
+    getOrderEntryTokenEncryptionKey(),
+    iv
+  );
+  const encrypted = Buffer.concat([
+    cipher.update(token, "utf8"),
+    cipher.final(),
+  ]);
+  const authTag = cipher.getAuthTag();
+
+  return Buffer.concat([iv, authTag, encrypted]).toString("base64url");
+}
+
+function unsealOrderEntryToken(sealedToken: string) {
+  const payload = Buffer.from(sealedToken, "base64url");
+
+  if (payload.length <= 28) {
+    throw new Error("Malformed sealed order-entry token payload.");
+  }
+
+  const iv = payload.subarray(0, 12);
+  const authTag = payload.subarray(12, 28);
+  const encrypted = payload.subarray(28);
+  const decipher = createDecipheriv(
+    "aes-256-gcm",
+    getOrderEntryTokenEncryptionKey(),
+    iv
+  );
+
+  decipher.setAuthTag(authTag);
+
+  return Buffer.concat([
+    decipher.update(encrypted),
+    decipher.final(),
+  ]).toString("utf8");
+}
+
+type SiteSettingRowMap = Map<
+  string,
+  {
+    valueJson: Json | null;
+    valueText: string | null;
+  }
+>;
+
+type OrderEntryTokenState = {
+  token: string;
+  tokenHash: string;
+  tokenHint: string;
+};
+
+async function getOrderEntryTokenState(
+  rows: SiteSettingRowMap
+): Promise<OrderEntryTokenState> {
+  const legacyToken = normalizeSettingText(
+    rows.get(siteSettingKeys.orderEntryToken)?.valueText
+  );
+  const sealedToken = normalizeSettingText(
+    rows.get(siteSettingKeys.orderEntryTokenSealed)?.valueText
+  );
+  const storedTokenHash = normalizeSettingText(
+    rows.get(siteSettingKeys.orderEntryTokenHash)?.valueText
+  );
+  const storedTokenHint = normalizeSettingText(
+    rows.get(siteSettingKeys.orderEntryTokenHint)?.valueText
+  );
+
+  if (sealedToken) {
+    try {
+      const token = unsealOrderEntryToken(sealedToken);
+      const tokenHash = hashOrderEntryToken(token);
+      const tokenHint = storedTokenHint || getTokenHint(token);
+
+      if (
+        legacyToken ||
+        !storedTokenHash ||
+        !stringsMatch(storedTokenHash, tokenHash) ||
+        storedTokenHint !== tokenHint
+      ) {
+        await saveSiteSettings([
+          {
+            key: siteSettingKeys.orderEntryToken,
+            valueText: null,
+          },
+          {
+            key: siteSettingKeys.orderEntryTokenHash,
+            valueText: tokenHash,
+          },
+          {
+            key: siteSettingKeys.orderEntryTokenHint,
+            valueText: tokenHint,
+          },
+        ]);
+      }
+
+      return {
+        token,
+        tokenHash,
+        tokenHint,
+      };
+    } catch (error) {
+      console.error(
+        `[site-settings] Unable to read sealed order-entry token: ${
+          error instanceof Error ? error.message : "unknown_error"
+        }`
+      );
+    }
+  }
+
+  if (legacyToken) {
+    const tokenHash = hashOrderEntryToken(legacyToken);
+    const tokenHint = storedTokenHint || getTokenHint(legacyToken);
+
+    await saveSiteSettings([
+      {
+        key: siteSettingKeys.orderEntryToken,
+        valueText: null,
+      },
+      {
+        key: siteSettingKeys.orderEntryTokenHash,
+        valueText: tokenHash,
+      },
+      {
+        key: siteSettingKeys.orderEntryTokenHint,
+        valueText: tokenHint,
+      },
+      {
+        key: siteSettingKeys.orderEntryTokenSealed,
+        valueText: sealOrderEntryToken(legacyToken),
+      },
+    ]);
+
+    return {
+      token: legacyToken,
+      tokenHash,
+      tokenHint,
+    };
+  }
+
+  return {
+    token: "",
+    tokenHash: storedTokenHash,
+    tokenHint: storedTokenHint,
+  };
+}
+
+async function persistOrderEntryToken(input: {
+  enabled: boolean;
+  expiresAt: string;
+  rotatedAt: string;
+  token: string;
+}) {
+  const normalizedExpiresAt = normalizeSettingText(input.expiresAt) || null;
+  const tokenHash = hashOrderEntryToken(input.token);
+  const tokenHint = getTokenHint(input.token);
+
+  await saveSiteSettings([
+    {
+      key: siteSettingKeys.orderEntryEnabled,
+      valueText: input.enabled ? "true" : "false",
+    },
+    {
+      key: siteSettingKeys.orderEntryExpiresAt,
+      valueText: normalizedExpiresAt,
+    },
+    {
+      key: siteSettingKeys.orderEntryToken,
+      valueText: null,
+    },
+    {
+      key: siteSettingKeys.orderEntryTokenHash,
+      valueText: tokenHash,
+    },
+    {
+      key: siteSettingKeys.orderEntryTokenHint,
+      valueText: tokenHint,
+    },
+    {
+      key: siteSettingKeys.orderEntryTokenSealed,
+      valueText: sealOrderEntryToken(input.token),
+    },
+    {
+      key: siteSettingKeys.orderEntryRotatedAt,
+      valueText: input.rotatedAt,
+    },
+  ]);
 }
 
 export async function getSiteSettingsAvailability() {
@@ -442,6 +664,7 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
   }
 
   const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
+  const tokenState = await getOrderEntryTokenState(rows);
 
   return {
     adminNotificationEmail: normalizeSettingText(
@@ -454,12 +677,8 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
     orderEntryExpiresAt: normalizeSettingText(
       rows.get(siteSettingKeys.orderEntryExpiresAt)?.valueText
     ),
-    orderEntryToken: normalizeSettingText(
-      rows.get(siteSettingKeys.orderEntryToken)?.valueText
-    ),
-    orderEntryTokenHint: normalizeSettingText(
-      rows.get(siteSettingKeys.orderEntryTokenHint)?.valueText
-    ),
+    orderEntryToken: tokenState.token,
+    orderEntryTokenHint: tokenState.tokenHint,
     orderEntryRotatedAt: normalizeSettingText(
       rows.get(siteSettingKeys.orderEntryRotatedAt)?.valueText
     ),
@@ -538,33 +757,19 @@ export async function saveOrderEntrySettings(input: {
   enabled: boolean;
   expiresAt: string;
 }) {
-  const snapshot = await getAdminSettingsSnapshot();
-  const currentToken = snapshot.orderEntryToken || generateOrderEntryToken();
+  const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
+  const tokenState = await getOrderEntryTokenState(rows);
+  const currentToken = tokenState.token || generateOrderEntryToken();
   const rotatedAt =
-    snapshot.orderEntryRotatedAt || new Date().toISOString();
+    normalizeSettingText(rows.get(siteSettingKeys.orderEntryRotatedAt)?.valueText) ||
+    new Date().toISOString();
 
-  await saveSiteSettings([
-    {
-      key: siteSettingKeys.orderEntryEnabled,
-      valueText: input.enabled ? "true" : "false",
-    },
-    {
-      key: siteSettingKeys.orderEntryExpiresAt,
-      valueText: normalizeSettingText(input.expiresAt) || null,
-    },
-    {
-      key: siteSettingKeys.orderEntryToken,
-      valueText: currentToken,
-    },
-    {
-      key: siteSettingKeys.orderEntryTokenHint,
-      valueText: getTokenHint(currentToken),
-    },
-    {
-      key: siteSettingKeys.orderEntryRotatedAt,
-      valueText: rotatedAt,
-    },
-  ]);
+  await persistOrderEntryToken({
+    enabled: input.enabled,
+    expiresAt: input.expiresAt,
+    rotatedAt,
+    token: currentToken,
+  });
 
   return currentToken;
 }
@@ -576,28 +781,12 @@ export async function rotateOrderEntryAccess(input: {
 }) {
   const token = generateOrderEntryToken();
   const rotatedAt = new Date().toISOString();
-  await saveSiteSettings([
-    {
-      key: siteSettingKeys.orderEntryEnabled,
-      valueText: input.enabled === false ? "false" : "true",
-    },
-    {
-      key: siteSettingKeys.orderEntryExpiresAt,
-      valueText: normalizeSettingText(input.expiresAt) || null,
-    },
-    {
-      key: siteSettingKeys.orderEntryToken,
-      valueText: token,
-    },
-    {
-      key: siteSettingKeys.orderEntryTokenHint,
-      valueText: getTokenHint(token),
-    },
-    {
-      key: siteSettingKeys.orderEntryRotatedAt,
-      valueText: rotatedAt,
-    },
-  ]);
+  await persistOrderEntryToken({
+    enabled: input.enabled !== false,
+    expiresAt: input.expiresAt ?? "",
+    rotatedAt,
+    token,
+  });
 
   await createAuditLog({
     action: "order_entry_token_rotated",
@@ -626,15 +815,32 @@ export function buildOrderEntryUrl(locale: string, token: string) {
 
 export async function getOrderEntryAccessState() {
   const snapshot = await getAdminSettingsSnapshot();
+
+  if (!snapshot.orderEntryEnabled) {
+    return {
+      enabled: false,
+      expiresAt: snapshot.orderEntryExpiresAt,
+      rotatedAt: snapshot.orderEntryRotatedAt,
+      token: "",
+      tokenHash: "",
+      tokenHint: snapshot.orderEntryTokenHint,
+    };
+  }
+
+  const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
+  const tokenState = await getOrderEntryTokenState(rows);
+
   return {
     enabled: snapshot.orderEntryEnabled,
     expiresAt: snapshot.orderEntryExpiresAt,
     rotatedAt: snapshot.orderEntryRotatedAt,
-    token: snapshot.orderEntryToken,
+    token: tokenState.token,
+    tokenHash: tokenState.tokenHash,
     tokenHint:
       snapshot.orderEntryTokenHint ||
-      (snapshot.orderEntryToken
-        ? getTokenHint(snapshot.orderEntryToken)
+      tokenState.tokenHint ||
+      (tokenState.token
+        ? getTokenHint(tokenState.token)
         : ""),
   };
 }
@@ -642,7 +848,7 @@ export async function getOrderEntryAccessState() {
 export async function validateOrderEntryToken(token: string) {
   const access = await getOrderEntryAccessState();
 
-  if (!access.enabled || !access.token) {
+  if (!access.enabled || !access.tokenHash) {
     return false;
   }
 
@@ -654,5 +860,5 @@ export async function validateOrderEntryToken(token: string) {
     }
   }
 
-  return tokensMatch(access.token, token);
+  return stringsMatch(access.tokenHash, hashOrderEntryToken(token));
 }

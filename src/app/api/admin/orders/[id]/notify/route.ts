@@ -4,6 +4,7 @@ import { orderNotificationSchema } from "@/lib/admin/tracking";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import { getScopedOrderDetail } from "@/lib/db/orders";
 import { sendTransactionalEmail } from "@/lib/email/service";
+import { getContentLength, hasTrustedOrigin } from "@/lib/security/http";
 
 type AdminOrderNotifyRouteContext = {
   params: Promise<{ id: string }>;
@@ -14,6 +15,20 @@ export async function POST(
   context: AdminOrderNotifyRouteContext
 ) {
   const { id } = await context.params;
+
+  if (!hasTrustedOrigin(request)) {
+    return Response.json({ error: "FORBIDDEN", success: false }, { status: 403 });
+  }
+
+  const contentLength = getContentLength(request.headers);
+
+  if (contentLength !== null && contentLength > 16 * 1024) {
+    return Response.json(
+      { error: "PAYLOAD_TOO_LARGE", success: false },
+      { status: 413 }
+    );
+  }
+
   const session = await getAdminSessionContext();
 
   if (session.state === "anonymous") {
@@ -62,7 +77,14 @@ export async function POST(
     return Response.json({ error: "MISMATCHED_ORDER", success: false }, { status: 400 });
   }
 
-  if (order.customerEmail && result.data.customerEmail !== order.customerEmail) {
+  if (!order.customerEmail) {
+    return Response.json(
+      { error: "MISSING_CUSTOMER_EMAIL", success: false },
+      { status: 400 }
+    );
+  }
+
+  if (result.data.customerEmail !== order.customerEmail) {
     return Response.json({ error: "MISMATCHED_CUSTOMER", success: false }, { status: 400 });
   }
 
@@ -75,7 +97,7 @@ export async function POST(
       trackingStatus: result.data.trackingStatus,
     },
     orderId: order.id,
-    recipientEmail: result.data.customerEmail,
+    recipientEmail: order.customerEmail,
     replyTo: process.env.CONTACT_RECEIVER_EMAIL?.trim() || undefined,
     subject: `Aktualisierung zu Ihrem Auftrag ${order.trackingNumber}`,
     text: [

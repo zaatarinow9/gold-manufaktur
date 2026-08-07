@@ -31,6 +31,19 @@ function normalizeText(value?: string | null) {
   return value?.trim() ?? "";
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function escapeHtmlAttribute(value: string) {
+  return escapeHtml(value);
+}
+
 function buildTaskPath(orderId: string) {
   return `/admin/orders/${orderId}`;
 }
@@ -112,21 +125,29 @@ function buildEmployeeAssignmentEmail(input: {
   ]
     .filter(Boolean)
     .join("\n");
+  const escapedEmployeeName = escapeHtml(input.employeeName);
+  const escapedOrderNumber = escapeHtml(input.orderNumber);
+  const escapedTrackingNumber = escapeHtml(input.trackingNumber);
+  const escapedProductName = escapeHtml(input.productName);
+  const escapedAssignedAt = escapeHtml(assignedAt);
+  const escapedAssignmentNote = escapeHtml(input.assignmentNote);
+  const escapedTaskUrl = escapeHtmlAttribute(taskUrl);
+  const escapedLoginUrl = escapeHtmlAttribute(loginUrl);
   const html = [
     "<div style=\"font-family:Arial,sans-serif;color:#111;line-height:1.6\">",
-    `<p>Guten Tag ${input.employeeName},</p>`,
+    `<p>Guten Tag ${escapedEmployeeName},</p>`,
     "<p>Ihnen wurde ein neuer Werkstattauftrag zugewiesen.</p>",
     "<table style=\"border-collapse:collapse;margin:16px 0\">",
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Auftragsreferenz</td><td>${input.orderNumber}</td></tr>`,
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Tracking-Nummer</td><td>${input.trackingNumber}</td></tr>`,
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Produkt</td><td>${input.productName}</td></tr>`,
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Zugewiesen am</td><td>${assignedAt}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Auftragsreferenz</td><td>${escapedOrderNumber}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Tracking-Nummer</td><td>${escapedTrackingNumber}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Produkt</td><td>${escapedProductName}</td></tr>`,
+    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Zugewiesen am</td><td>${escapedAssignedAt}</td></tr>`,
     input.assignmentNote
-      ? `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Hinweis</td><td>${input.assignmentNote}</td></tr>`
+      ? `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Hinweis</td><td>${escapedAssignmentNote}</td></tr>`
       : "",
     "</table>",
-    `<p><a href="${taskUrl}" style="display:inline-block;background:#c49a52;color:#111;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">Auftrag ansehen</a></p>`,
-    `<p style="font-size:13px;color:#555">Falls Sie sich erst anmelden muessen, verwenden Sie diesen Link: <a href="${loginUrl}">${loginUrl}</a></p>`,
+    `<p><a href="${escapedTaskUrl}" style="display:inline-block;background:#c49a52;color:#111;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">Auftrag ansehen</a></p>`,
+    `<p style="font-size:13px;color:#555">Falls Sie sich erst anmelden muessen, verwenden Sie diesen Link: <a href="${escapedLoginUrl}">${escapeHtml(loginUrl)}</a></p>`,
     "<p>GoldHelwah GmbH</p>",
     "</div>",
   ]
