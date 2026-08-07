@@ -13,6 +13,7 @@ export const siteNavigation = [
   { href: "/contact", key: "contact" },
   { href: "/impressum", key: "impressum" },
   { href: "/datenschutz", key: "privacy" },
+  { href: "/agb", key: "agb" },
 ] as const;
 
 export const localeLabels: Record<AppLocale, string> = {
@@ -36,6 +37,7 @@ export const companyInfo = {
   instagramHref: "https://instagram.com/goldhelwah",
   facebookHref: "https://facebook.com/goldhelwah",
   tiktokHref: "https://tiktok.com/@goldhelwah",
+  snapchatHref: "https://www.snapchat.com/add/goldhelwah",
   whatsappHref: getWhatsAppHref(companyPhoneNumber),
 } as const;
 

@@ -48,7 +48,8 @@
                               "contact":  "Kontakt",
                               "tracking":  "Auftrag verfolgen",
                               "impressum":  "Impressum",
-                              "privacy":  "Datenschutz"
+                              "privacy":  "Datenschutz",
+                              "agb":  "AGB"
                           }
             },
     "Footer":  {
@@ -63,6 +64,7 @@
                                    "instagram":  "Instagram folgt",
                                    "facebook":  "Facebook folgt",
                                    "tiktok":  "TikTok folgt",
+                                   "snapchat":  "Snapchat",
                                    "whatsapp":  "WhatsApp öffnen"
                                }
                },
@@ -148,8 +150,8 @@
                                                  "description":  "Die Auswahl zeigt reale Modelle."
                                              },
                                              {
-                                                 "title":  "Goldschmuck nach Maß",
-                                                 "description":  "Sonderwünsche bleiben möglich."
+                                                 "title":  "Designs nach Wunsch",
+                                                 "description":  "Jede Idee, die Ihnen in den Sinn kommt, können wir in ein besonderes Goldstück mit schönen Details verwandeln – von Namensgravuren und Größenanpassungen bis hin zu persönlichen Akzenten, die Ihren Stil widerspiegeln."
                                              },
                                              {
                                                  "title":  "Abholung in Saarbrücken",
@@ -1163,5 +1165,6 @@
                        "shipping": "Auftrag wird versendet",
                        "ready_for_pickup": "Bereit zur Abholung"
                      }
-                 }
+                 },
+    "AGB": {"eyebrow":"Rechtliches","title":"Allgemeine Geschäftsbedingungen","description":"Entwurf für die Bedingungen der GoldHelwah-Showroom- und Beratungswebsite.","sections":[{"title":"Geltungsbereich","text":"Diese Bedingungen gelten für Beratungen, Anfragen und individuell vereinbarte Leistungen."},{"title":"Produkte und Verfügbarkeit","text":"Darstellungen sind unverbindlich und stehen unter dem Vorbehalt der Bestätigung."},{"title":"Sonderanfertigungen","text":"Individuelle Arbeiten erfordern korrekte Anforderungen und die Freigabe durch Kunden."},{"title":"Preise, Abholung und Lieferung","text":"Bedingungen gelten nur, soweit sie individuell schriftlich vereinbart wurden."},{"title":"Haftung und Urheberrecht","text":"Die Haftung ist im gesetzlich zulässigen Rahmen beschränkt; Bilder und Inhalte sind geschützt."},{"title":"Datenschutz und Schlussbestimmungen","text":"Es gilt unsere Datenschutzerklärung. Soweit zulässig gilt deutsches Recht."}]}
 }

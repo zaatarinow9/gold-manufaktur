@@ -48,6 +48,7 @@
       "contact": "Contact",
       "impressum": "Legal Notice",
       "privacy": "Privacy",
+      "agb": "Terms & Conditions",
       "tracking": "Track order"
     }
   },
@@ -63,6 +64,7 @@
       "instagram": "Instagram",
       "facebook": "Facebook",
       "tiktok": "TikTok",
+      "snapchat": "Snapchat",
       "whatsapp": "WhatsApp"
     }
   },
@@ -148,8 +150,8 @@
           "description": "The selection shows real pieces."
         },
         {
-          "title": "Custom gold jewelry",
-          "description": "Special requests remain possible."
+          "title": "Custom Designs",
+          "description": "Any idea you have can be transformed into a unique gold piece with beautiful details, from name engraving and size adjustments to personal touches that reflect your style."
         },
         {
           "title": "Pickup in Saarbruecken",
@@ -1185,5 +1187,6 @@
       "shipping": "Order is being shipped",
       "ready_for_pickup": "Ready for pickup"
     }
-  }
+  },
+  "AGB": {"eyebrow":"Legal","title":"Terms & Conditions","description":"Draft terms for the GoldHelwah showroom and consultation website.","sections":[{"title":"Scope","text":"These terms apply to consultations, requests and individually agreed services."},{"title":"Products and availability","text":"Presentations are non-binding and subject to confirmation."},{"title":"Custom designs","text":"Custom work requires accurate requirements and approval by the customer."},{"title":"Prices, pickup and delivery","text":"Terms apply only as individually agreed in writing."},{"title":"Liability and copyright","text":"Liability is limited as permitted by law; images and content are protected."},{"title":"Privacy and final provisions","text":"Our privacy notice applies. German law applies where permitted."}]}
 }

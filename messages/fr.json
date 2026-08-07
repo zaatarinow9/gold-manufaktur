@@ -48,6 +48,7 @@
       "contact": "Contact",
       "impressum": "Mentions légales",
       "privacy": "Confidentialité",
+      "agb": "Conditions générales",
       "tracking": "Suivi de commande"
     }
   },
@@ -63,6 +64,7 @@
       "instagram": "Instagram",
       "facebook": "Facebook",
       "tiktok": "TikTok",
+      "snapchat": "Snapchat",
       "whatsapp": "WhatsApp"
     }
   },
@@ -148,8 +150,8 @@
           "description": "La sélection montre de vraies pièces."
         },
         {
-          "title": "Bijoux sur mesure",
-          "description": "Les demandes spéciales restent possibles."
+          "title": "Créations sur mesure",
+          "description": "Toute idée qui vous vient à l’esprit peut être transformée en une pièce en or unique aux détails raffinés, de la gravure des noms aux ajustements de taille, jusqu’aux touches personnelles qui reflètent votre style."
         },
         {
           "title": "Retrait à Saarbruecken",
@@ -1185,5 +1187,6 @@
       "shipping": "Commande en cours d expedition",
       "ready_for_pickup": "Prete au retrait"
     }
-  }
+  },
+  "AGB": {"eyebrow":"Mentions légales","title":"Conditions générales","description":"Projet de conditions pour le showroom et les conseils GoldHelwah.","sections":[{"title":"Champ d’application","text":"Ces conditions s’appliquent aux conseils, demandes et services convenus individuellement."},{"title":"Produits et disponibilité","text":"Les présentations sont non contraignantes et soumises à confirmation."},{"title":"Créations sur mesure","text":"Les travaux sur mesure exigent des indications exactes et l’accord du client."},{"title":"Prix, retrait et livraison","text":"Les conditions ne s’appliquent que si elles sont convenues par écrit."},{"title":"Responsabilité et droits","text":"La responsabilité est limitée dans la mesure permise par la loi; images et contenus sont protégés."},{"title":"Confidentialité et dispositions finales","text":"Notre politique de confidentialité s’applique. Le droit allemand s’applique lorsque permis."}]}
 }

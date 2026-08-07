@@ -1,5 +1,6 @@
 import {
   Camera,
+  Ghost,
   Mail,
   MapPin,
   MessageCircle,
@@ -37,6 +38,11 @@ export function SiteFooter() {
       href: companyInfo.tiktokHref,
       icon: Music2,
       label: t("socials.tiktok"),
+    },
+    {
+      href: companyInfo.snapchatHref,
+      icon: Ghost,
+      label: t("socials.snapchat"),
     },
     {
       href: companyInfo.whatsappHref,

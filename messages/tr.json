@@ -48,6 +48,7 @@
       "contact": "İletişim",
       "impressum": "Yasal Bilgiler",
       "privacy": "Gizlilik",
+      "agb": "Genel Koşullar",
       "tracking": "Sipariş Takibi"
     }
   },
@@ -63,6 +64,7 @@
       "instagram": "Instagram",
       "facebook": "Facebook",
       "tiktok": "TikTok",
+      "snapchat": "Snapchat",
       "whatsapp": "WhatsApp"
     }
   },
@@ -148,8 +150,8 @@
           "description": "Seçim gercek modelleri gösterir."
         },
         {
-          "title": "Ozel uretim altin taki",
-          "description": "Ozel istekler mumkundur."
+          "title": "Kişiye Özel Tasarımlar",
+          "description": "Aklınıza gelen her fikir, isim işlemelerinden ölçü ayarlamalarına ve tarzınızı yansıtan özel dokunuşlara kadar güzel detaylarla benzersiz bir altın parçaya dönüştürülebilir."
         },
         {
           "title": "Saarbruecken'de teslim",
@@ -1185,5 +1187,6 @@
       "shipping": "Siparis kargoya veriliyor",
       "ready_for_pickup": "Teslime hazir"
     }
-  }
+  },
+  "AGB": {"eyebrow":"Yasal","title":"Genel Koşullar","description":"GoldHelwah showroom ve danışmanlık sitesi için taslak koşullar.","sections":[{"title":"Kapsam","text":"Bu koşullar danışmanlıklar, talepler ve ayrı kararlaştırılan hizmetler için geçerlidir."},{"title":"Ürünler ve uygunluk","text":"Sunumlar bağlayıcı değildir ve onaya tabidir."},{"title":"Kişiye özel tasarımlar","text":"Özel çalışmalar doğru gereksinimler ve müşteri onayı gerektirir."},{"title":"Fiyat, teslim alma ve teslimat","text":"Koşullar yalnızca yazılı olarak ayrı kararlaştırıldığında geçerlidir."},{"title":"Sorumluluk ve telif","text":"Sorumluluk kanunun izin verdiği ölçüde sınırlıdır; görseller ve içerik korunur."},{"title":"Gizlilik ve son hükümler","text":"Gizlilik politikamız geçerlidir. İzin verilen hallerde Alman hukuku uygulanır."}]}
 }
