@@ -46,6 +46,7 @@
                               "home":  "Startseite",
                               "shop":  "Shop",
                               "contact":  "Kontakt",
+                              "tracking":  "Auftrag verfolgen",
                               "impressum":  "Impressum",
                               "privacy":  "Datenschutz"
                           }
@@ -92,15 +93,48 @@
                  "categories":  {
                                     "eyebrow":  "Ausgewählte Kategorien",
                                     "title":  "Ausgewählte Linien und Kollektionen.",
-                                    "description":  "Sechs Kategorien führen direkt in den Showroom."
+                                    "description":  "Sechs Kategorien führen direkt in den Showroom.",
+                                    "emptyTitle":  "Derzeit sind keine Produkte sichtbar",
+                                    "emptyText":  "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch."
                                 },
                  "products":  {
                                   "eyebrow":  "Ausgewählte Produkte",
                                   "title":  "Bilderstark und bewusst reduziert.",
                                   "description":  "Vier ausgewählte Modelle zeigen den Charakter der Kollektion.",
                                   "sectionCta":  "Zum Showroom",
-                                  "cardCta":  "Details ansehen"
+                                  "cardCta":  "Details ansehen",
+                                  "emptyTitle":  "Derzeit sind keine Produkte sichtbar",
+                                  "emptyText":  "Aktivieren Sie Produkte im Dashboard oder kontaktieren Sie uns für eine persönliche Auswahl."
                               },
+                 "showcase":  {
+                                  "eyebrow":  "Auswahl aus dem Showroom",
+                                  "title":  "Ausgewählte Stücke mit klaren Details",
+                                  "description":  "Entdecken Sie ausgewählte Goldschmuckstücke aus unserer Kollektion mit echten Bildern und klaren Details für eine sichere Auswahl.",
+                                  "sectionCta":  "Zur Kollektion",
+                                  "cardCta":  "Details ansehen",
+                                  "leadCta":  "Beratung anfragen",
+                                  "emptyTitle":  "Derzeit sind keine Produkte sichtbar",
+                                  "emptyText":  "Sobald neue Produkte gespeichert und aktiviert werden, zeigt diese Sektion sie automatisch an."
+                              },
+                 "aboutGold":  {
+                                   "eyebrow":  "Über Gold",
+                                   "title":  "Gold, das bleibt.",
+                                   "description":  "Gold steht für Wert, Erinnerung und besondere Momente. Bei GoldHelwah GmbH finden Sie Stücke, die sichtbar wirken und persönlich Bedeutung tragen.",
+                                   "imageAlt":  "Goldschmuck von GoldHelwah GmbH in warmer Nahaufnahme",
+                                   "points":  [
+                                                  "Bleibender Wert",
+                                                  "Persönliche Bedeutung",
+                                                  "Sichtbare Handwerksqualität"
+                                              ]
+                               },
+                 "aboutCompany":  {
+                                      "eyebrow":  "Über uns",
+                                      "title":  "Über GoldHelwah GmbH",
+                                      "description":  "In Saarbrücken verbinden wir ausgewählten Goldschmuck mit persönlicher Beratung und einer klaren, vertrauensvollen Präsentation.",
+                                      "teamLabel":  "Unser Ansatz",
+                                      "story":  "Das Team und die Geschäftsführung von GoldHelwah GmbH setzen auf persönliche Beratung, eine klare Auswahl und Stücke, die zu Anlass und Träger passen.",
+                                      "locationLabel":  "Vor Ort"
+                                  },
                  "trust":  {
                                "eyebrow":  "Warum Gold Helwah",
                                "title":  "Klar, persönlich und nah am Produkt.",
@@ -355,7 +389,9 @@
                               "attendance":  "Arbeitszeiten",
                               "reports":  "Berichte",
                               "archive":  "Archiv",
-                              "settings":  "Einstellungen"
+                              "settings":  "Einstellungen",
+                              "myTasks":  "Meine Aufgaben",
+                              "inquiries":  "Kundenanfragen"
                           },
                   "buttons":  {
                                   "openMenu":  "Menü",
@@ -422,7 +458,8 @@
                                  "yes":  "Ja",
                                  "no":  "Nein",
                                  "enabled":  "Aktiviert",
-                                 "disabled":  "Deaktiviert"
+                                 "disabled":  "Deaktiviert",
+                                 "notProvided":  "Nicht angegeben"
                              },
                   "filters":  {
                                   "category":  "Kategorie",
@@ -501,9 +538,38 @@
                                 "formDescription":  "Mock-Benutzer für Rollenansichten und UI-Tests.",
                                 "email":  "E-Mail",
                                 "password":  "Passwort",
+                                "invalidCredentials":  "Die E-Mail-Adresse oder das Passwort ist nicht korrekt.",
+                                "notices":  {
+                                                "accountInactive":  "Dieses Konto ist derzeit inaktiv. Bitte wenden Sie sich an einen Super Admin.",
+                                                "accountNotConfigured":  "Dieses Konto ist noch nicht für den Adminbereich eingerichtet.",
+                                                "invalidLink":  "Dieser Zugangslink ist ungültig oder bereits abgelaufen.",
+                                                "passwordUpdated":  "Ihr Passwort wurde erfolgreich aktualisiert. Sie können jetzt fortfahren."
+                                            },
                                 "demoHint":  "Aktive Demo-Rolle: {role}. Anpassbar in src/lib/admin/currentUser.ts.",
                                 "demoUsersTitle":  "Verfügbare Demo-Benutzer"
                             },
+                  "accountSetup":  {
+                                         "title":  "Zugang einrichten",
+                                         "description":  "Erstellen Sie ein Passwort für Ihr internes GoldHelwah-Konto, um den passenden Adminbereich zu öffnen.",
+                                         "resetTitle":  "Neues Passwort festlegen",
+                                         "resetDescription":  "Wählen Sie ein neues Passwort für Ihr internes GoldHelwah-Konto.",
+                                         "securityTitle":  "Geschützter interner Zugang",
+                                         "securityText":  "Verwenden Sie ein sicheres Passwort und teilen Sie diesen Zugangslink mit niemandem.",
+                                         "formTitle":  "Passwort erstellen",
+                                         "formDescription":  "Legen Sie Ihr Passwort einmalig fest, um das Konto zu aktivieren.",
+                                         "resetFormTitle":  "Passwort zurücksetzen",
+                                         "resetFormDescription":  "Geben Sie ein neues Passwort ein, um den Zugang zu Ihrem Konto wiederherzustellen.",
+                                         "password":  "Passwort",
+                                         "confirmPassword":  "Passwort bestätigen",
+                                         "submit":  "Passwort speichern",
+                                         "resetSubmit":  "Passwort aktualisieren",
+                                         "errors":  {
+                                                       "passwordLength":  "Bitte wählen Sie ein Passwort mit mindestens 8 Zeichen.",
+                                                       "passwordMismatch":  "Die Passwortbestätigung stimmt nicht überein.",
+                                                       "sessionExpired":  "Ihre Sitzung ist nicht mehr gültig. Bitte fordern Sie einen neuen Link an.",
+                                                       "updateFailed":  "Das Passwort konnte gerade nicht aktualisiert werden. Bitte versuchen Sie es erneut."
+                                                   }
+                                     },
                   "products":  {
                                    "eyebrow":  "Produktverwaltung",
                                    "title":  "Produkte",
@@ -586,6 +652,8 @@
                                                 },
                                    "fields":  {
                                                   "product":  "Produkt aus Galerie",
+                                                  "totalAmount":  "Gesamtbetrag",
+                                                  "currency":  "Währung",
                                                   "orderNumber":  "Interne Auftragsnummer",
                                                   "quantity":  "Menge",
                                                   "priority":  "Priorität",
@@ -768,8 +836,50 @@
                                  "statusSavedDescription":  "Tracking-Status wurde aktualisiert.",
                                  "statusSavedAndNotified":  "Tracking-Status gespeichert und Kunde benachrichtigt.",
                                  "statusSaved":  "Tracking-Status gespeichert.",
-                                 "noStatusChanges":  "Bitte Status oder Notiz ändern."
+                                 "noStatusChanges":  "Bitte Status oder Notiz ändern.",
+                                 "publicStageLabel":  "Öffentlicher Status",
+                                 "internalStatusLabel":  "Interner Tracking-Status",
+                                 "publicStageHelp":  "Nur diese drei Meilensteine sind für Kunden sichtbar und können Kunden-E-Mails auslösen.",
+                                 "publicStageEmailNotice":  "Bei einer Änderung des öffentlichen Status wird die Kunden-E-Mail automatisch versendet, sofern E-Mail-Updates aktiviert sind.",
+                                 "publicStageSavedAndNotified":  "Öffentlicher Status gespeichert und Kunde benachrichtigt.",
+                                 "noPublicStage":  "Noch nicht veröffentlicht",
+                                 "notStageSpecific":  "Kein öffentlicher Status",
+                                 "emailTemplateLabel":  "Vorlage",
+                                 "emailLogDuplicateSkipped":  "Diese E-Mail wurde übersprungen, weil dieselbe Kunden-Vorlage bereits für diesen Auftrag versendet wurde.",
+                                 "emailLogSmtpNotice":  "Der E-Mail-Versand wurde übersprungen, weil SMTP nicht vollständig eingerichtet ist.",
+                                 "emailLogErrorFallback":  "Die E-Mail konnte nicht zugestellt werden. Bitte prüfen Sie die SMTP-Konfiguration und die Protokolle."
                              },
+                  "publicTrackingStage":  {
+                                              "order_in_workshop":  "Auftrag in der Werkstatt",
+                                              "in_production":  "In Produktion",
+                                              "quality_check":  "Qualitätsprüfung",
+                                              "ready_for_pickup":  "Bereit zur Abholung",
+                                              "shipping":  "Versand",
+                                              "delivered":  "Zugestellt",
+                                              "completed":  "Abgeschlossen",
+                                              "cancelled":  "Storniert",
+                                              "on_the_way":  "Unterwegs",
+                                              "delivered_to_store":  "Im Geschäft angekommen",
+                                              "picked_up":  "Abgeholt"
+                                          },
+                  "emailLogStatus":  {
+                                         "pending":  "Ausstehend",
+                                         "sent":  "E-Mail gesendet",
+                                         "skipped":  "E-Mail übersprungen",
+                                         "failed":  "E-Mail fehlgeschlagen"
+                                     },
+                  "emailTemplateType":  {
+                                            "orderConfirmation":  "Auftragsbestätigung",
+                                            "publicStageUpdate":  "Update zum öffentlichen Status"
+                                        },
+                  "assignmentStatus":  {
+                                           "assigned":  "Zugewiesen",
+                                           "accepted":  "Angenommen",
+                                           "in_progress":  "In Bearbeitung",
+                                           "waiting":  "Wartend",
+                                           "completed":  "Abgeschlossen",
+                                           "returned":  "Zurückgegeben"
+                                       },
                   "workshops":  {
                                     "eyebrow":  "Werkstätten",
                                     "title":  "Werkstätten",
@@ -798,8 +908,45 @@
                                                   "status":  "Status",
                                                   "activeTasks":  "Aktive Aufgaben",
                                                   "attendance":  "Anwesenheit",
-                                                  "actions":  "Aktionen"
-                                              }
+                                                  "actions":  "Aktionen",
+                                                  "accountStatus":  "Konto"
+                                              },
+                                    "account":  {
+                                                   "create":  "Mitarbeiter anlegen",
+                                                   "edit":  "Mitarbeiter bearbeiten",
+                                                   "formDescription":  "Mitarbeiterdaten und Kontozugang zentral verwalten.",
+                                                   "saved":  "Der Mitarbeiterdatensatz wurde gespeichert.",
+                                                   "inviteSent":  "Die Zugangs-E-Mail wurde versendet.",
+                                                   "inviteDeliveryFailed":  "Das Konto wurde gespeichert, aber die Zugangs-E-Mail konnte nicht zugestellt werden.",
+                                                   "passwordResetSent":  "Die E-Mail zum Zurücksetzen des Passworts wurde versendet.",
+                                                   "passwordResetDeliveryFailed":  "Der Link zum Zurücksetzen wurde erstellt, aber die E-Mail konnte nicht zugestellt werden.",
+                                                   "linked":  "Der Mitarbeiter wurde mit dem bestehenden Konto verknüpft.",
+                                                   "notLinked":  "Diesem Mitarbeiter ist noch kein passendes Auth-Konto zugeordnet.",
+                                                   "duplicateEmail":  "Diese E-Mail-Adresse ist bereits einem anderen Mitarbeiter zugeordnet.",
+                                                   "emailRequired":  "Für den Kontozugang ist eine E-Mail-Adresse erforderlich.",
+                                                   "linkInUse":  "Dieses Auth-Konto ist bereits einem anderen Mitarbeiter zugeordnet.",
+                                                   "roleConflict":  "Das verknüpfte Auth-Konto gehört bereits zu einer anderen internen Rolle.",
+                                                   "roleNotAllowed":  "Sie dürfen dieses Mitarbeiterkonto nicht verwalten.",
+                                                   "notFound":  "Der Mitarbeiter konnte nicht mehr gefunden werden.",
+                                                   "reactivated":  "Das Mitarbeiterkonto wurde reaktiviert.",
+                                                   "deactivated":  "Das Mitarbeiterkonto wurde deaktiviert.",
+                                                   "noEmail":  "Keine E-Mail-Adresse hinterlegt",
+                                                   "lastInvite":  "Letzte Einladung",
+                                                   "lastLogin":  "Letzte Anmeldung",
+                                                   "lastPasswordReset":  "Letztes Zurücksetzen des Passworts",
+                                                   "status":  {"active": "Aktiv", "disabled": "Deaktiviert", "invited": "Eingeladen", "missing_auth_user": "Nicht verknüpft"},
+                                                   "actions":  {"sendInvite": "Einladung senden", "resendInvite": "Einladung erneut senden", "linkAccount": "Konto verknüpfen", "resetPassword": "Passwort zurücksetzen"}
+                                               },
+                                    "form":  {
+                                                "fullName":  "Vollständiger Name",
+                                                "attendance":  "Anwesenheit",
+                                                "phone":  "Telefon",
+                                                "email":  "E-Mail",
+                                                "emailHint":  "Wird für Anmeldung, Einladungen und Passwort-Zurücksetzungen verwendet.",
+                                                "shift":  "Schicht",
+                                                "notes":  "Notizen",
+                                                "active":  "Mitarbeiter ist aktiv"
+                                            }
                                 },
                   "attendance":  {
                                      "eyebrow":  "Arbeitszeiten",
@@ -920,7 +1067,49 @@
                                          "picked_up":  "Abgeholt",
                                          "completed":  "Abgeschlossen",
                                          "cancelled":  "Storniert"
-                                     }
+                                     },
+                  "systemCheck": {
+      "title": "Systemprüfung",
+      "description": "Prüfen Sie die aktuellen Synchronisierungssteuerungen und aktualisieren Sie den Zugang bei Bedarf.",
+      "statusTitle": "Aktueller Status",
+      "statusDescription": "Diese Steuerungen wirken sich auf die interne Synchronisierungsansicht und den Zugriffsstatus aus.",
+      "pinLabel": "Zugangs-PIN",
+      "pinPlaceholder": "Zugangs-PIN eingeben",
+      "unlockDescription": "Geben Sie die Zugangs-PIN ein, um fortzufahren.",
+      "continue": "Weiter",
+      "refresh": "Aktualisieren",
+      "sync": "Synchronisieren",
+      "syncOn": "Synchronisierung AN",
+      "syncOff": "Synchronisierung AUS",
+      "gate": "Zugang",
+      "gateEnabled": "Aktiviert",
+      "gateDisabled": "Deaktiviert",
+      "statusEnabled": "Aktiviert",
+      "statusDisabled": "Deaktiviert",
+      "expiresAt": "Läuft ab am",
+      "lastRotatedAt": "Zuletzt erneuert",
+      "lastUsedAt": "Zuletzt verwendet",
+      "version": "Version",
+      "rotate": "Link erneuern",
+      "disableGate": "Link deaktivieren",
+      "setExpiry": "Ablauf festlegen",
+      "unavailable": "Diese Seite ist derzeit nicht verfügbar.",
+      "updated": "Einstellungen aktualisiert.",
+      "linkDisabled": "Der aktuelle Link wurde deaktiviert.",
+      "newLinkCreated": "Der neue Link ist bereit.",
+      "linkReadyTitle": "Aktualisierung abgeschlossen",
+      "linkReadyDescription": "Der vollständige Zugangslink wird nur jetzt angezeigt.",
+      "deliveryStatusLabel": "Versand an gespeicherte Adresse",
+      "deliverySent": "Gesendet",
+      "deliveryFailed": "Nicht gesendet",
+      "copyLink": "Link kopieren",
+      "copySuccess": "Link kopiert.",
+      "newLinkLabel": "Vollständiger Link",
+      "linkShownOnce": "Dieser Link wird nicht erneut angezeigt.",
+      "mutationUnavailable": "Die Aktualisierung konnte gerade nicht abgeschlossen werden.",
+      "pinInvalid": "Die Zugangs-PIN ist ungültig.",
+      "invalidSession": "Bitte geben Sie die Zugangs-PIN erneut ein."
+                  }
               },
     "Tracking":  {
                      "title":  "Auftragsstatus",
@@ -930,6 +1119,49 @@
                      "timelineDescription":  "Die letzten Schritte zu Ihrem Auftrag.",
                      "contact":  "Kontakt",
                      "phone":  "Anrufen",
-                     "backToWebsite":  "Zur Website"
+                     "backToWebsite":  "Zur Website",
+                     "trackingNumberLabel": "Tracking-Nummer",
+                     "currentPublicStageLabel": "Aktueller öffentlicher Status",
+                     "progressTitle": "Öffentlicher Fortschritt",
+                     "progressDescription": "Wir veröffentlichen nur drei kundenrelevante Meilensteine für Ihren Auftrag.",
+                     "trackAnotherOrder": "Weiteren Auftrag verfolgen",
+                     "contactSupport": "Kundenservice kontaktieren",
+                     "notesTitle": "Kundeninformationen",
+                     "notesDescription": "Hier werden nur kundenrelevante Aktualisierungen angezeigt.",
+                     "orderReceivedLabel": "Auftrag eingegangen",
+                     "instructionsTitle": "So verfolgen Sie Ihren Auftrag",
+                     "instructionsDescription": "Nutzen Sie Ihre Tracking-Nummer über das Website-Menü statt eines direkten Tracking-Links.",
+                     "instructionsStepOne": "Öffnen Sie die Startseite der Website.",
+                     "instructionsStepTwo": "Klicken Sie im Menü auf „Auftrag verfolgen“.",
+                     "instructionsStepThree": "Geben Sie Ihre Tracking-Nummer ein.",
+                     "receivedMessage": "Wir haben Ihren Auftrag erhalten und aktualisieren den öffentlichen Status zeitnah.",
+                     "receivedDescription": "Ihr Auftrag wurde erfasst und wartet auf seinen ersten öffentlichen Meilenstein.",
+                     "currentStageDescription": "Dies ist der aktuelle öffentliche Meilenstein Ihres Auftrags.",
+                     "completedStageDescription": "Dieser Meilenstein wurde bereits abgeschlossen.",
+                     "upcomingStageDescription": "Dieser Meilenstein erscheint, sobald Ihr Auftrag ihn erreicht.",
+                     "lookup": {
+                       "eyebrow": "Auftrag verfolgen",
+                       "title": "Auftrag nachsehen",
+                       "description": "Geben Sie Ihre Tracking-Nummer ein, um die neuesten öffentlichen Updates zu Ihrem GoldHelwah-Auftrag zu sehen.",
+                       "helperTitle": "Nummer nicht zur Hand?",
+                       "helperDescription": "Die Tracking-Nummer finden Sie in Ihrer Auftrags-E-Mail und können sie über das Website-Menü verwenden.",
+                       "formTitle": "Tracking-Nummer eingeben",
+                       "formDescription": "Wir öffnen die aktuelle Auftragsseite für diese Tracking-Nummer.",
+                       "label": "Tracking-Nummer",
+                       "placeholder": "GH-20260618-0001",
+                       "submit": "Auftrag verfolgen",
+                       "emptyError": "Bitte geben Sie Ihre Tracking-Nummer ein."
+                     },
+                     "support": {
+                       "title": "Kundenservice kontaktieren",
+                       "description": "Benötigen Sie Hilfe zu diesem Auftrag? Senden Sie uns eine Nachricht, unser Team meldet sich bei Ihnen.",
+                       "success": "Ihre Nachricht wurde gesendet.",
+                       "error": "Ihre Nachricht konnte gerade nicht gesendet werden."
+                     },
+                     "stages": {
+                       "order_in_workshop": "Auftrag in der Werkstatt",
+                       "shipping": "Auftrag wird versendet",
+                       "ready_for_pickup": "Bereit zur Abholung"
+                     }
                  }
 }

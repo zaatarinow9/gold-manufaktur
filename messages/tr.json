@@ -538,10 +538,20 @@
     "login": {
       "title": "Gold Helwah Admin",
       "description": "Siparisler, katalog ve operasyon akisi icin guvenli dahili erisim.",
+      "cards": {
+        "securityTitle": "Korumalı dahili erişim",
+        "securityText": "Dahili erişim yetkilerinizi rolünüze göre kullanın.",
+        "rolesTitle": "Net roller",
+        "rolesText": "Yetkiler, atanan role göre yönetilir.",
+        "catalogTitle": "Katalog yönetimi",
+        "catalogText": "Ürünleri ve atölyeleri tek yerden yönetin."
+      },
       "formTitle": "Giris",
       "formDescription": "Atanmis admin hesabinizi kullanin.",
       "email": "E-posta",
       "password": "Sifre",
+      "demoHint": "Etkin demo rolü: {role}.",
+      "demoUsersTitle": "Kullanılabilir demo kullanıcıları",
       "invalidCredentials": "E-posta adresi veya sifre hatali.",
       "notices": {
         "accountInactive": "Bu hesap su anda pasif. Lutfen bir super admin ile iletisime gecin.",

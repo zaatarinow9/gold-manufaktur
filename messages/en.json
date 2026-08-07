@@ -538,10 +538,20 @@
     "login": {
       "title": "Gold Helwah Admin",
       "description": "Secure internal access for orders, catalog, and workflow operations.",
+      "cards": {
+        "securityTitle": "Protected internal access",
+        "securityText": "Use your internal access permissions according to your role.",
+        "rolesTitle": "Clear roles",
+        "rolesText": "Permissions are managed according to the assigned role.",
+        "catalogTitle": "Catalog management",
+        "catalogText": "Manage products and workshops from one place."
+      },
       "formTitle": "Sign in",
       "formDescription": "Use your assigned admin account.",
       "email": "Email",
       "password": "Password",
+      "demoHint": "Active demo role: {role}.",
+      "demoUsersTitle": "Available demo users",
       "invalidCredentials": "The email address or password is incorrect.",
       "notices": {
         "accountInactive": "This account is currently inactive. Please contact a super admin.",

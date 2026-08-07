@@ -538,10 +538,20 @@
     "login": {
       "title": "Admin GoldHelwah",
       "description": "Acces interne securise pour les commandes, le catalogue et les operations.",
+      "cards": {
+        "securityTitle": "Accès interne protégé",
+        "securityText": "Utilisez vos droits d’accès internes selon votre rôle.",
+        "rolesTitle": "Rôles clairs",
+        "rolesText": "Les autorisations sont gérées selon le rôle attribué.",
+        "catalogTitle": "Gestion du catalogue",
+        "catalogText": "Gérez les produits et les ateliers depuis un seul endroit."
+      },
       "formTitle": "Connexion",
       "formDescription": "Utilisez votre compte admin attribue.",
       "email": "E-mail",
       "password": "Mot de passe",
+      "demoHint": "Rôle de démonstration actif : {role}.",
+      "demoUsersTitle": "Utilisateurs de démonstration disponibles",
       "invalidCredentials": "L'adresse e-mail ou le mot de passe est incorrect.",
       "notices": {
         "accountInactive": "Ce compte est actuellement desactive. Veuillez contacter un super administrateur.",
