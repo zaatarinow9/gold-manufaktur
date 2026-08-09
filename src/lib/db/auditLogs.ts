@@ -19,6 +19,19 @@ type AuditLogClient = {
   };
 };
 
+export async function createRequiredAuditLog(input: AuditLogInput) {
+  const supabase = createSupabaseAdminClient() as unknown as AuditLogClient;
+  const { error } = await supabase.from("audit_logs").insert({
+    action: input.action,
+    actor_email: input.actorEmail?.trim() || null,
+    metadata_json: input.metadata ?? {},
+  });
+
+  if (error) {
+    throw new Error("AUDIT_UNAVAILABLE");
+  }
+}
+
 export async function createAuditLog(input: AuditLogInput) {
   try {
     const supabase = createSupabaseAdminClient() as unknown as AuditLogClient;

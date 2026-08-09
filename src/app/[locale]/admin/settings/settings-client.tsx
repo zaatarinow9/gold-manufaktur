@@ -11,6 +11,8 @@ import {
   saveNotificationSettingsAction,
   saveOrderEntrySettingsAction,
   savePublicVisualSettingsAction,
+  previewOrderMaintenanceAction,
+  executeOrderMaintenanceAction,
   sendManagedAdminPasswordResetAction,
   sendOrderEntryLinkEmailAction,
   toggleManagedAdminUserActiveAction,
@@ -342,6 +344,10 @@ export function AdminSettingsClient({
   const [homepageHeroImageUrl, setHomepageHeroImageUrl] = useState(initialSettings.publicVisualSettings.homepageHeroImageUrl);
   const [shopHeroImageUrl, setShopHeroImageUrl] = useState(initialSettings.publicVisualSettings.shopHeroImageUrl);
   const [promo, setPromo] = useState(initialSettings.publicVisualSettings.promoPopup);
+  const [archivePreview, setArchivePreview] = useState<number | null>(null);
+  const [clearPreview, setClearPreview] = useState<number | null>(null);
+  const [archiveConfirmation, setArchiveConfirmation] = useState("");
+  const [clearConfirmation, setClearConfirmation] = useState("");
   const [userFormState, setUserFormState] = useState<UserFormState>(createUserForm());
   const diagnosticsReady = initialSettings.diagnostics.available;
   const browserOrigin = useSyncExternalStore(
@@ -424,6 +430,8 @@ export function AdminSettingsClient({
     pushFeedback(result.ok ? "success" : "error", result.message);
     if (result.ok) refreshPage();
   });
+  const previewMaintenance = (mode: "archive_completed" | "clear_active") => startTransition(async () => { const result = await previewOrderMaintenanceAction(locale, mode); if (result.ok) { if (mode === "archive_completed") setArchivePreview(result.count); else setClearPreview(result.count); } pushFeedback(result.ok ? "success" : "error", result.message); });
+  const executeMaintenance = (mode: "archive_completed" | "clear_active", confirmation: string) => startTransition(async () => { const result = await executeOrderMaintenanceAction(locale, mode, confirmation); pushFeedback(result.ok ? "success" : "error", result.message); if (result.ok) refreshPage(); });
 
   const handleRotateLink = () => {
     startTransition(async () => {
@@ -799,6 +807,8 @@ export function AdminSettingsClient({
           <AdminButton variant="ghost" onClick={() => { setHomepageHeroImageUrl(""); setShopHeroImageUrl(""); }}>Reset hero images</AdminButton>
         </div>
       </AdminCard>
+
+      {canManageUsers ? <AdminCard title="Order Maintenance" description="Orders only. Products, images, users, employees and settings are never deleted. Physical deletion is not enabled."><div className="grid gap-5 lg:grid-cols-2"><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">Archive completed orders</h3><p className="text-sm text-muted">Moves delivered, completed, cancelled and ready orders out of active views.</p><AdminButton onClick={() => previewMaintenance("archive_completed")} disabled={isPending}>Preview</AdminButton>{archivePreview !== null ? <p className="text-sm">Affected orders: {archivePreview}</p> : null}<AdminInput id="archiveConfirmation" name="archiveConfirmation" label="Confirmation" value={archiveConfirmation} placeholder="ARCHIVE ORDERS" onChange={(event) => setArchiveConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("archive_completed", archiveConfirmation)} disabled={isPending || archivePreview === null || archiveConfirmation !== "ARCHIVE ORDERS"}>Archive orders</AdminButton></div><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">Clear active orders</h3><p className="text-sm text-muted">Uses existing soft delete only; no physical rows are deleted.</p><AdminButton onClick={() => previewMaintenance("clear_active")} disabled={isPending}>Preview</AdminButton>{clearPreview !== null ? <p className="text-sm">Affected orders: {clearPreview}</p> : null}<AdminInput id="clearConfirmation" name="clearConfirmation" label="Confirmation" value={clearConfirmation} placeholder="CLEAR ACTIVE ORDERS" onChange={(event) => setClearConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("clear_active", clearConfirmation)} disabled={isPending || clearPreview === null || clearConfirmation !== "CLEAR ACTIVE ORDERS"}>Clear active orders</AdminButton></div></div></AdminCard> : null}
 
       <AdminCard
         title={copy.userListTitle}

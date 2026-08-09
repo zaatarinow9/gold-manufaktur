@@ -30,6 +30,8 @@ import {
 import { buildOrderEntryLinkEmail } from "@/lib/email/orderEntryLinkEmail";
 import { sendTransactionalEmail } from "@/lib/email/service";
 import { companyInfo } from "@/lib/site";
+import { archiveOrder, deleteOrder, getScopedOrders } from "@/lib/db/orders";
+import { createRequiredAuditLog } from "@/lib/db/auditLogs";
 
 const notificationSettingsSchema = z.object({
   adminNotificationEmail: z.string().trim().email().or(z.literal("")),
@@ -59,6 +61,45 @@ const publicVisualSettingsSchema = z.object({
   shopHeroImageUrl: z.string().trim().url().or(z.literal("")),
   promoPopup: z.object({ enabled: z.boolean(), title: z.string().trim().max(160), description: z.string().trim().max(1200), ctaText: z.string().trim().max(80), ctaUrl: z.string().trim().url().or(z.literal("")), imageUrl: z.string().trim().url().or(z.literal("")), videoUrl: z.string().trim().url().or(z.literal("")), style: z.enum(["luxury", "image", "announcement"]), startsAt: z.string().trim().max(80), endsAt: z.string().trim().max(80), showOnce: z.boolean() }),
 });
+const orderMaintenanceModeSchema = z.enum(["archive_completed", "clear_active"]);
+
+async function getOrderMaintenanceViewer(locale: AppLocale) {
+  const access = await requireAdminAccess(locale, ["super_admin"]);
+  if (access.state !== "authenticated" || !access.user || await isAdminDecoyEnabled()) return null;
+  return access.user;
+}
+
+async function getEligibleMaintenanceOrders(locale: AppLocale, mode: z.infer<typeof orderMaintenanceModeSchema>) {
+  const viewer = await getOrderMaintenanceViewer(locale);
+  if (!viewer) return null;
+  const orders = await getScopedOrders(viewer);
+  return { viewer, orders: orders.filter((order) => mode === "archive_completed" ? !order.archivedAt && !order.deletedAt && ["delivered", "completed", "cancelled", "ready"].includes(order.status) : !order.archivedAt && !order.deletedAt) };
+}
+
+async function createRequiredMaintenanceAudit(input: { action: string; actorEmail: string; actorUserId: string; count: number; mode: string }) {
+  await createRequiredAuditLog({ action: input.action, actorEmail: input.actorEmail, metadata: { actorUserId: input.actorUserId, affectedOrderCount: input.count, mode: input.mode, timestamp: new Date().toISOString() } });
+}
+
+export async function previewOrderMaintenanceAction(locale: AppLocale, mode: z.infer<typeof orderMaintenanceModeSchema>) {
+  const parsed = orderMaintenanceModeSchema.safeParse(mode);
+  if (!parsed.success) return { message: "Unable to preview orders.", ok: false, count: 0 };
+  try { const eligible = await getEligibleMaintenanceOrders(locale, parsed.data); if (!eligible) return { message: "Permission denied.", ok: false, count: 0 }; return { message: "Preview ready.", ok: true, count: eligible.orders.length }; }
+  catch { return { message: "Unable to preview orders.", ok: false, count: 0 }; }
+}
+
+export async function executeOrderMaintenanceAction(locale: AppLocale, mode: z.infer<typeof orderMaintenanceModeSchema>, confirmation: string) {
+  const parsed = orderMaintenanceModeSchema.safeParse(mode);
+  const phrase = mode === "archive_completed" ? "ARCHIVE ORDERS" : "CLEAR ACTIVE ORDERS";
+  if (!parsed.success || confirmation.trim() !== phrase) return { message: "Confirmation is invalid.", ok: false, count: 0 };
+  try {
+    const eligible = await getEligibleMaintenanceOrders(locale, parsed.data);
+    if (!eligible) return { message: "Permission denied.", ok: false, count: 0 };
+    await createRequiredMaintenanceAudit({ action: mode === "archive_completed" ? "bulk_archive_orders" : "bulk_clear_active_orders", actorEmail: eligible.viewer.email, actorUserId: eligible.viewer.id, count: eligible.orders.length, mode });
+    for (const order of eligible.orders) { if (mode === "archive_completed") await archiveOrder(eligible.viewer, order.id); else await deleteOrder(eligible.viewer, order.id); }
+    revalidateSettingsViews();
+    return { message: "Order maintenance completed.", ok: true, count: eligible.orders.length };
+  } catch { return { message: "Unable to maintain orders.", ok: false, count: 0 }; }
+}
 
 type SettingsActionWithLink = AdminActionResult & {
   link?: string;
