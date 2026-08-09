@@ -8,12 +8,14 @@ import type { CatalogProduct } from "@/types/catalog";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
 type ShopHeroProps = {
+  imageUrl?: string;
   backgroundProduct?: CatalogProduct | null;
   primaryProduct?: CatalogProduct | null;
   secondaryProduct?: CatalogProduct | null;
 };
 
 export function ShopHero({
+  imageUrl,
   backgroundProduct,
   primaryProduct,
   secondaryProduct,
@@ -25,7 +27,7 @@ export function ShopHero({
     <section className="full-bleed-section relative overflow-hidden border-b border-white/6">
       <div className="absolute inset-0">
         <LuxuryMedia
-          src={backgroundProduct?.imageUrl}
+          src={imageUrl || backgroundProduct?.imageUrl}
           alt={backgroundProduct?.name || t("visualAlt")}
           sizes="100vw"
           imageClassName="opacity-[0.22]"

@@ -3,6 +3,7 @@ import { ProductGrid } from "@/components/shop/ProductGrid";
 import { ShopHero } from "@/components/shop/ShopHero";
 import { pickVisualProducts } from "@/lib/catalog/publicVisuals";
 import { getPublicCategories, getPublicProducts } from "@/lib/db/catalog";
+import { getPublicVisualSettings } from "@/lib/db/siteSettings";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
 
@@ -23,9 +24,10 @@ export default async function ShopPage({
 }: PageProps) {
   const locale = await resolveLocale(params);
   const { category } = await searchParams;
-  const [categories, products] = await Promise.all([
+  const [categories, products, visualSettings] = await Promise.all([
     getPublicCategories(locale),
     getPublicProducts(locale),
+    getPublicVisualSettings(),
   ]);
   const visualProducts = pickVisualProducts(products, 3);
   const initialCategory = Array.isArray(category) ? category[0] : category;
@@ -33,6 +35,7 @@ export default async function ShopPage({
   return (
     <div className="space-y-4 pb-8 sm:space-y-6">
       <ShopHero
+        imageUrl={visualSettings.shopHeroImageUrl}
         backgroundProduct={visualProducts[0] ?? null}
         primaryProduct={visualProducts[1] ?? visualProducts[0] ?? null}
         secondaryProduct={visualProducts[2] ?? visualProducts[1] ?? null}

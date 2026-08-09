@@ -890,6 +890,11 @@ export function getDecoyManagedUsers(): ManagedAdminUserRecord[] {
 export function getDecoySettingsSnapshot(): AdminSettingsSnapshot {
   return {
     adminNotificationEmail: "atelier@example.invalid",
+    publicVisualSettings: {
+      homepageHeroImageUrl: "",
+      shopHeroImageUrl: "",
+      promoPopup: { ctaText: "", ctaUrl: "", description: "", enabled: false, endsAt: "", imageUrl: "", showOnce: false, startsAt: "", style: "luxury", title: "", videoUrl: "" },
+    },
     diagnostics: createDecoyDiagnostics(),
     orderEntryEnabled: false,
     orderEntryExpiresAt: "",

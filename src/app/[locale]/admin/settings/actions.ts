@@ -20,6 +20,7 @@ import {
   rotateOrderEntryAccess,
   saveNotificationSettings,
   saveOrderEntrySettings,
+  savePublicVisualSettings,
   SiteSettingsError,
 } from "@/lib/db/siteSettings";
 import {
@@ -52,6 +53,11 @@ const sendOrderEntryLinkEmailSchema = z.object({
   enabled: z.boolean(),
   expiresAt: z.string().trim().max(80).default(""),
   recipientEmail: z.string().trim().email().max(160),
+});
+const publicVisualSettingsSchema = z.object({
+  homepageHeroImageUrl: z.string().trim().url().or(z.literal("")),
+  shopHeroImageUrl: z.string().trim().url().or(z.literal("")),
+  promoPopup: z.object({ enabled: z.boolean(), title: z.string().trim().max(160), description: z.string().trim().max(1200), ctaText: z.string().trim().max(80), ctaUrl: z.string().trim().url().or(z.literal("")), imageUrl: z.string().trim().url().or(z.literal("")), videoUrl: z.string().trim().url().or(z.literal("")), style: z.enum(["luxury", "image", "announcement"]), startsAt: z.string().trim().max(80), endsAt: z.string().trim().max(80), showOnce: z.boolean() }),
 });
 
 type SettingsActionWithLink = AdminActionResult & {
@@ -134,7 +140,20 @@ function revalidateSettingsViews() {
   routing.locales.forEach((targetLocale) => {
     revalidatePath(`/${targetLocale}/admin`);
     revalidatePath(`/${targetLocale}/admin/settings`);
+    revalidatePath(`/${targetLocale}`);
+    revalidatePath(`/${targetLocale}/shop`);
   });
+}
+
+export async function savePublicVisualSettingsAction(locale: AppLocale, input: z.infer<typeof publicVisualSettingsSchema>): Promise<AdminActionResult> {
+  const user = await requireSettingsAccess(locale);
+  if (!user) return { message: getSettingsActionCopy(locale).noAccess, ok: false };
+  const blocked = await getDecoyBlockedResult(locale);
+  if (blocked) return blocked;
+  const parsed = publicVisualSettingsSchema.safeParse(input);
+  if (!parsed.success) return { message: getSettingsActionCopy(locale).invalidEmail, ok: false };
+  try { await savePublicVisualSettings(parsed.data); revalidateSettingsViews(); return { message: getSettingsActionCopy(locale).saved, ok: true }; }
+  catch (error) { return { message: error instanceof Error ? error.message : getSettingsActionCopy(locale).saved, ok: false }; }
 }
 
 async function getDecoyBlockedResult(

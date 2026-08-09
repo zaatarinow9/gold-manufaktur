@@ -7,10 +7,12 @@ import type { CatalogProduct } from "@/types/catalog";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
 type HeroSectionProps = {
+  imageUrl?: string;
   visualProduct?: CatalogProduct | null;
 };
 
 export function HeroSection({
+  imageUrl,
   visualProduct,
 }: HeroSectionProps) {
   const t = useTranslations("Home.hero");
@@ -20,7 +22,7 @@ export function HeroSection({
     <section className="full-bleed-section relative isolate min-h-[80svh] overflow-hidden">
       <div className="absolute inset-0">
         <LuxuryMedia
-          src={visualProduct?.imageUrl}
+          src={imageUrl || visualProduct?.imageUrl}
           alt={t("backgroundAlt")}
           sizes="100vw"
           priority

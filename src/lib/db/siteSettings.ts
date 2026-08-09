@@ -75,6 +75,7 @@ export type AdminSettingsSnapshot = {
   privacyModeUpdatedAt: string;
   smtpStatus: SmtpStatus;
   supportNotificationEmail: string;
+  publicVisualSettings: Awaited<ReturnType<typeof getPublicVisualSettings>>;
 };
 
 type UpsertSiteSettingInput = {
@@ -84,6 +85,9 @@ type UpsertSiteSettingInput = {
 };
 
 export const siteSettingKeys = {
+  homepageHeroImageUrl: "homepage_hero_image_url",
+  shopHeroImageUrl: "shop_hero_image_url",
+  promoPopup: "promo_popup",
   adminNotificationEmail: "admin_notification_email",
   orderEntryEnabled: "order_entry_enabled",
   orderEntryExpiresAt: "order_entry_expires_at",
@@ -98,6 +102,41 @@ export const siteSettingKeys = {
   privacyModeUpdatedAt: "privacy_mode_updated_at",
   supportNotificationEmail: "support_notification_email",
 } as const;
+
+export type PublicPromoPopup = {
+  ctaText: string;
+  ctaUrl: string;
+  description: string;
+  enabled: boolean;
+  endsAt: string;
+  imageUrl: string;
+  showOnce: boolean;
+  startsAt: string;
+  style: "announcement" | "image" | "luxury";
+  title: string;
+  videoUrl: string;
+};
+
+const emptyPromoPopup: PublicPromoPopup = { ctaText: "", ctaUrl: "", description: "", enabled: false, endsAt: "", imageUrl: "", showOnce: false, startsAt: "", style: "luxury", title: "", videoUrl: "" };
+
+export async function getPublicVisualSettings() {
+  const [homepageHeroImageUrl, shopHeroImageUrl, promoRaw] = await Promise.all([
+    getSiteTextSetting(siteSettingKeys.homepageHeroImageUrl),
+    getSiteTextSetting(siteSettingKeys.shopHeroImageUrl),
+    getSiteTextSetting(siteSettingKeys.promoPopup),
+  ]);
+  let promoPopup = emptyPromoPopup;
+  try { promoPopup = { ...emptyPromoPopup, ...JSON.parse(promoRaw) }; } catch {}
+  return { homepageHeroImageUrl, promoPopup, shopHeroImageUrl };
+}
+
+export async function savePublicVisualSettings(input: { homepageHeroImageUrl: string; shopHeroImageUrl: string; promoPopup: PublicPromoPopup }) {
+  await saveSiteSettings([
+    { key: siteSettingKeys.homepageHeroImageUrl, valueText: input.homepageHeroImageUrl || null },
+    { key: siteSettingKeys.shopHeroImageUrl, valueText: input.shopHeroImageUrl || null },
+    { key: siteSettingKeys.promoPopup, valueText: JSON.stringify(input.promoPopup) },
+  ]);
+}
 
 const siteSettingsRequiredEnvVars = [
   "NEXT_PUBLIC_SUPABASE_URL",
@@ -660,6 +699,7 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
       privacyModeUpdatedAt: "",
       smtpStatus: getSmtpStatus(),
       supportNotificationEmail: "",
+      publicVisualSettings: { homepageHeroImageUrl: "", shopHeroImageUrl: "", promoPopup: emptyPromoPopup },
     };
   }
 
@@ -698,6 +738,7 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
     supportNotificationEmail: normalizeSettingText(
       rows.get(siteSettingKeys.supportNotificationEmail)?.valueText
     ),
+    publicVisualSettings: await getPublicVisualSettings(),
   };
 }
 

@@ -10,8 +10,10 @@ import { FeaturedProducts } from "@/components/site/FeaturedProducts";
 import { HeroSection } from "@/components/site/HeroSection";
 import { LocationMap } from "@/components/site/LocationMap";
 import { TrustSection } from "@/components/site/TrustSection";
+import { PromoPopup } from "@/components/site/PromoPopup";
 import { pickVisualProducts } from "@/lib/catalog/publicVisuals";
 import { getHomepageCatalog } from "@/lib/db/catalog";
+import { getPublicVisualSettings } from "@/lib/db/siteSettings";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
 
@@ -29,7 +31,7 @@ export default async function LocaleHomePage({
   params,
 }: PageProps) {
   const locale = await resolveLocale(params);
-  const homepageCatalog = await getHomepageCatalog(locale);
+  const [homepageCatalog, visualSettings] = await Promise.all([getHomepageCatalog(locale), getPublicVisualSettings()]);
   const visualProducts = pickVisualProducts(
     [...homepageCatalog.featuredProducts, ...homepageCatalog.latestProducts],
     3
@@ -37,7 +39,8 @@ export default async function LocaleHomePage({
 
   return (
     <>
-      <HeroSection visualProduct={visualProducts[0] ?? null} />
+      <PromoPopup promo={visualSettings.promoPopup} />
+      <HeroSection imageUrl={visualSettings.homepageHeroImageUrl} visualProduct={visualProducts[0] ?? null} />
       <TrustSection />
       <FeaturedCategories categories={homepageCatalog.categories} />
       <FeaturedProducts products={homepageCatalog.featuredProducts} />

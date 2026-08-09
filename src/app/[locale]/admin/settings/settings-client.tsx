@@ -10,6 +10,7 @@ import {
   rotateOrderEntryAccessAction,
   saveNotificationSettingsAction,
   saveOrderEntrySettingsAction,
+  savePublicVisualSettingsAction,
   sendManagedAdminPasswordResetAction,
   sendOrderEntryLinkEmailAction,
   toggleManagedAdminUserActiveAction,
@@ -338,6 +339,9 @@ export function AdminSettingsClient({
   );
   const [orderEntryToken, setOrderEntryToken] = useState(initialSettings.orderEntryToken);
   const [linkRecipientEmail, setLinkRecipientEmail] = useState("");
+  const [homepageHeroImageUrl, setHomepageHeroImageUrl] = useState(initialSettings.publicVisualSettings.homepageHeroImageUrl);
+  const [shopHeroImageUrl, setShopHeroImageUrl] = useState(initialSettings.publicVisualSettings.shopHeroImageUrl);
+  const [promo, setPromo] = useState(initialSettings.publicVisualSettings.promoPopup);
   const [userFormState, setUserFormState] = useState<UserFormState>(createUserForm());
   const diagnosticsReady = initialSettings.diagnostics.available;
   const browserOrigin = useSyncExternalStore(
@@ -414,6 +418,12 @@ export function AdminSettingsClient({
       }
     });
   };
+
+  const handleSavePublicVisuals = () => startTransition(async () => {
+    const result = await savePublicVisualSettingsAction(locale, { homepageHeroImageUrl, shopHeroImageUrl, promoPopup: promo });
+    pushFeedback(result.ok ? "success" : "error", result.message);
+    if (result.ok) refreshPage();
+  });
 
   const handleRotateLink = () => {
     startTransition(async () => {
@@ -770,6 +780,25 @@ export function AdminSettingsClient({
         </AdminCard>
 
       </section>
+
+      <AdminCard title="Public visuals" description="Optional image overrides and the public promotional popup." action={<AdminButton variant="primary" onClick={handleSavePublicVisuals} disabled={isPending || !diagnosticsReady}>Save</AdminButton>}>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <AdminInput id="homepageHeroImageUrl" name="homepageHeroImageUrl" label="Homepage hero image URL" value={homepageHeroImageUrl} placeholder="https://…" onChange={(event) => setHomepageHeroImageUrl(event.target.value)} />
+          <AdminInput id="shopHeroImageUrl" name="shopHeroImageUrl" label="Shop hero image URL" value={shopHeroImageUrl} placeholder="https://…" onChange={(event) => setShopHeroImageUrl(event.target.value)} />
+          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.enabled} onChange={(event) => setPromo({ ...promo, enabled: event.target.checked })} /> Enable promo popup</label>
+          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.showOnce} onChange={(event) => setPromo({ ...promo, showOnce: event.target.checked })} /> Show once per visitor</label>
+          <AdminInput id="promoTitle" name="promoTitle" label="Promo title" value={promo.title} onChange={(event) => setPromo({ ...promo, title: event.target.value })} />
+          <AdminInput id="promoCtaText" name="promoCtaText" label="CTA text" value={promo.ctaText} onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })} />
+          <AdminInput id="promoDescription" name="promoDescription" label="Promo description" value={promo.description} onChange={(event) => setPromo({ ...promo, description: event.target.value })} />
+          <AdminInput id="promoCtaUrl" name="promoCtaUrl" label="CTA URL" value={promo.ctaUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })} />
+          <AdminInput id="promoImageUrl" name="promoImageUrl" label="Promo image URL" value={promo.imageUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, imageUrl: event.target.value })} />
+          <AdminInput id="promoVideoUrl" name="promoVideoUrl" label="Promo video URL" value={promo.videoUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })} />
+          <AdminInput id="promoStartsAt" name="promoStartsAt" type="datetime-local" label="Promo start" value={toLocalDateTimeInput(promo.startsAt)} onChange={(event) => setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })} />
+          <AdminInput id="promoEndsAt" name="promoEndsAt" type="datetime-local" label="Promo end" value={toLocalDateTimeInput(promo.endsAt)} onChange={(event) => setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })} />
+          <AdminSelect id="promoStyle" name="promoStyle" label="Promo style" value={promo.style} onChange={(event) => setPromo({ ...promo, style: event.target.value as typeof promo.style })}><option value="luxury">Luxury card</option><option value="image">Image feature</option><option value="announcement">Announcement banner</option></AdminSelect>
+          <AdminButton variant="ghost" onClick={() => { setHomepageHeroImageUrl(""); setShopHeroImageUrl(""); }}>Reset hero images</AdminButton>
+        </div>
+      </AdminCard>
 
       <AdminCard
         title={copy.userListTitle}
