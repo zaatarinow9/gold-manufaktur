@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 import {
   createManagedAdminUserAction,
@@ -19,6 +20,7 @@ import {
   updateManagedAdminUserAction,
 } from "@/app/[locale]/admin/settings/actions";
 import { AdminBadge } from "@/components/admin/AdminBadge";
+import { AdminActionPendingBar } from "@/components/admin/AdminActionPendingBar";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
@@ -52,6 +54,16 @@ type FeedbackState =
       message: string;
     }
   | null;
+
+type AdminLoadingKey =
+  | "loading"
+  | "saving"
+  | "updating"
+  | "previewing"
+  | "executing"
+  | "uploading"
+  | "archiving"
+  | "clearing";
 
 function getSettingsUiCopy(locale: AppLocale) {
   if (locale === "ar") {
@@ -292,6 +304,9 @@ export function AdminSettingsClient({
   usersWarning,
 }: AdminSettingsClientProps) {
   const copy = getSettingsUiCopy(locale);
+  const orderMaintenance = useTranslations("Admin.orderMaintenance");
+  const loading = useTranslations("Admin.loading");
+  const publicVisuals = useTranslations("PublicVisuals");
   const userEmailLabel =
     locale === "ar" ? "البريد الإلكتروني" : locale === "de" ? "E-Mail" : "Email";
   const userInactiveLabel =
@@ -325,6 +340,7 @@ export function AdminSettingsClient({
   const requiredLabel = getRequiredFieldBadge(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [pendingAction, setPendingAction] = useState<AdminLoadingKey>("loading");
   const [feedback, setFeedback] = useState<FeedbackState>(null);
   const [adminNotificationEmail, setAdminNotificationEmail] = useState(
     initialSettings.adminNotificationEmail
@@ -385,6 +401,11 @@ export function AdminSettingsClient({
     router.refresh();
   };
 
+  const runPendingAction = (label: AdminLoadingKey, action: () => Promise<void>) => {
+    setPendingAction(label);
+    startTransition(action);
+  };
+
   const syncTokenFromLink = (link?: string) => {
     const nextToken = extractTokenFromLink(link);
 
@@ -394,7 +415,7 @@ export function AdminSettingsClient({
   };
 
   const handleSaveNotifications = () => {
-    startTransition(async () => {
+    runPendingAction("saving", async () => {
       const result = await saveNotificationSettingsAction(locale, {
         adminNotificationEmail,
         ownerEmail,
@@ -410,7 +431,7 @@ export function AdminSettingsClient({
   };
 
   const handleSaveOrderEntry = () => {
-    startTransition(async () => {
+    runPendingAction("saving", async () => {
       const result = await saveOrderEntrySettingsAction(locale, {
         enabled: orderEntryEnabled,
         expiresAt: fromLocalDateTimeInput(orderEntryExpiresAt),
@@ -425,16 +446,16 @@ export function AdminSettingsClient({
     });
   };
 
-  const handleSavePublicVisuals = () => startTransition(async () => {
+  const handleSavePublicVisuals = () => runPendingAction("saving", async () => {
     const result = await savePublicVisualSettingsAction(locale, { homepageHeroImageUrl, shopHeroImageUrl, promoPopup: promo });
     pushFeedback(result.ok ? "success" : "error", result.message);
     if (result.ok) refreshPage();
   });
-  const previewMaintenance = (mode: "archive_completed" | "clear_active") => startTransition(async () => { const result = await previewOrderMaintenanceAction(locale, mode); if (result.ok) { if (mode === "archive_completed") setArchivePreview(result.count); else setClearPreview(result.count); } pushFeedback(result.ok ? "success" : "error", result.message); });
-  const executeMaintenance = (mode: "archive_completed" | "clear_active", confirmation: string) => startTransition(async () => { const result = await executeOrderMaintenanceAction(locale, mode, confirmation); pushFeedback(result.ok ? "success" : "error", result.message); if (result.ok) refreshPage(); });
+  const previewMaintenance = (mode: "archive_completed" | "clear_active") => runPendingAction(mode === "archive_completed" ? "archiving" : "clearing", async () => { const result = await previewOrderMaintenanceAction(locale, mode); if (result.ok) { if (mode === "archive_completed") setArchivePreview(result.count); else setClearPreview(result.count); } pushFeedback(result.ok ? "success" : "error", result.ok ? (result.count === 0 ? orderMaintenance("noOrdersMatched") : orderMaintenance("previewSuccess")) : orderMaintenance("genericError")); });
+  const executeMaintenance = (mode: "archive_completed" | "clear_active", confirmation: string) => runPendingAction("executing", async () => { const result = await executeOrderMaintenanceAction(locale, mode, confirmation); pushFeedback(result.ok ? "success" : "error", result.ok ? (mode === "archive_completed" ? orderMaintenance("archiveSuccess") : orderMaintenance("clearSuccess")) : orderMaintenance("genericError")); if (result.ok) refreshPage(); });
 
   const handleRotateLink = () => {
-    startTransition(async () => {
+    runPendingAction("updating", async () => {
       const result = await rotateOrderEntryAccessAction(locale, {
         enabled: orderEntryEnabled,
         expiresAt: fromLocalDateTimeInput(orderEntryExpiresAt),
@@ -464,7 +485,7 @@ export function AdminSettingsClient({
   };
 
   const handleSendOrderEntryLinkEmail = () => {
-    startTransition(async () => {
+    runPendingAction("saving", async () => {
       const result = await sendOrderEntryLinkEmailAction(locale, {
         enabled: orderEntryEnabled,
         expiresAt: fromLocalDateTimeInput(orderEntryExpiresAt),
@@ -482,7 +503,7 @@ export function AdminSettingsClient({
   };
 
   const handleUserSubmit = () => {
-    startTransition(async () => {
+    runPendingAction("updating", async () => {
       const result = userFormState.id
         ? await updateManagedAdminUserAction(locale, userFormState.id, {
             displayName: userFormState.displayName,
@@ -507,7 +528,7 @@ export function AdminSettingsClient({
   };
 
   const handleUserInvite = (user: ManagedAdminUserRecord) => {
-    startTransition(async () => {
+    runPendingAction("updating", async () => {
       const result = await resendManagedAdminInviteAction(locale, user.id, {
         displayName: user.displayName,
         email: user.email,
@@ -523,7 +544,7 @@ export function AdminSettingsClient({
   };
 
   const handleUserPasswordReset = (user: ManagedAdminUserRecord) => {
-    startTransition(async () => {
+    runPendingAction("updating", async () => {
       const result = await sendManagedAdminPasswordResetAction(locale, user.id, {
         displayName: user.displayName,
         email: user.email,
@@ -539,7 +560,7 @@ export function AdminSettingsClient({
   };
 
   const handleUserToggle = (user: ManagedAdminUserRecord) => {
-    startTransition(async () => {
+    runPendingAction("updating", async () => {
       const result = await toggleManagedAdminUserActiveAction(
         locale,
         user.id,
@@ -559,7 +580,7 @@ export function AdminSettingsClient({
       return;
     }
 
-    startTransition(async () => {
+    runPendingAction("updating", async () => {
       const result = await deleteManagedAdminUserAction(locale, user.id);
 
       pushFeedback(result.ok ? "success" : "error", result.message);
@@ -575,6 +596,7 @@ export function AdminSettingsClient({
 
   return (
     <div className="space-y-6">
+      <AdminActionPendingBar active={isPending} label={loading(pendingAction)} />
       <AdminPageHeader
         eyebrow={copy.title}
         title={copy.title}
@@ -789,26 +811,26 @@ export function AdminSettingsClient({
 
       </section>
 
-      <AdminCard title="Public visuals" description="Optional image overrides and the public promotional popup." action={<AdminButton variant="primary" onClick={handleSavePublicVisuals} disabled={isPending || !diagnosticsReady}>Save</AdminButton>}>
+      <AdminCard title={publicVisuals("title")} description={publicVisuals("description")} action={<AdminButton variant="primary" onClick={handleSavePublicVisuals} disabled={isPending || !diagnosticsReady}>{isPending ? loading("saving") : publicVisuals("save")}</AdminButton>}>
         <div className="grid gap-4 lg:grid-cols-2">
-          <AdminInput id="homepageHeroImageUrl" name="homepageHeroImageUrl" label="Homepage hero image URL" value={homepageHeroImageUrl} placeholder="https://…" onChange={(event) => setHomepageHeroImageUrl(event.target.value)} />
-          <AdminInput id="shopHeroImageUrl" name="shopHeroImageUrl" label="Shop hero image URL" value={shopHeroImageUrl} placeholder="https://…" onChange={(event) => setShopHeroImageUrl(event.target.value)} />
-          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.enabled} onChange={(event) => setPromo({ ...promo, enabled: event.target.checked })} /> Enable promo popup</label>
-          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.showOnce} onChange={(event) => setPromo({ ...promo, showOnce: event.target.checked })} /> Show once per visitor</label>
-          <AdminInput id="promoTitle" name="promoTitle" label="Promo title" value={promo.title} onChange={(event) => setPromo({ ...promo, title: event.target.value })} />
-          <AdminInput id="promoCtaText" name="promoCtaText" label="CTA text" value={promo.ctaText} onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })} />
-          <AdminInput id="promoDescription" name="promoDescription" label="Promo description" value={promo.description} onChange={(event) => setPromo({ ...promo, description: event.target.value })} />
-          <AdminInput id="promoCtaUrl" name="promoCtaUrl" label="CTA URL" value={promo.ctaUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })} />
-          <AdminInput id="promoImageUrl" name="promoImageUrl" label="Promo image URL" value={promo.imageUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, imageUrl: event.target.value })} />
-          <AdminInput id="promoVideoUrl" name="promoVideoUrl" label="Promo video URL" value={promo.videoUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })} />
-          <AdminInput id="promoStartsAt" name="promoStartsAt" type="datetime-local" label="Promo start" value={toLocalDateTimeInput(promo.startsAt)} onChange={(event) => setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })} />
-          <AdminInput id="promoEndsAt" name="promoEndsAt" type="datetime-local" label="Promo end" value={toLocalDateTimeInput(promo.endsAt)} onChange={(event) => setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })} />
-          <AdminSelect id="promoStyle" name="promoStyle" label="Promo style" value={promo.style} onChange={(event) => setPromo({ ...promo, style: event.target.value as typeof promo.style })}><option value="luxury">Luxury card</option><option value="image">Image feature</option><option value="announcement">Announcement banner</option></AdminSelect>
-          <AdminButton variant="ghost" onClick={() => { setHomepageHeroImageUrl(""); setShopHeroImageUrl(""); }}>Reset hero images</AdminButton>
+          <AdminInput id="homepageHeroImageUrl" name="homepageHeroImageUrl" label={publicVisuals("homeHero")} value={homepageHeroImageUrl} placeholder="https://…" onChange={(event) => setHomepageHeroImageUrl(event.target.value)} />
+          <AdminInput id="shopHeroImageUrl" name="shopHeroImageUrl" label={publicVisuals("shopHero")} value={shopHeroImageUrl} placeholder="https://…" onChange={(event) => setShopHeroImageUrl(event.target.value)} />
+          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.enabled} onChange={(event) => setPromo({ ...promo, enabled: event.target.checked })} /> {publicVisuals("enabled")}</label>
+          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.showOnce} onChange={(event) => setPromo({ ...promo, showOnce: event.target.checked })} /> {publicVisuals("showOnce")}</label>
+          <AdminInput id="promoTitle" name="promoTitle" label={publicVisuals("promoTitle")} value={promo.title} onChange={(event) => setPromo({ ...promo, title: event.target.value })} />
+          <AdminInput id="promoCtaText" name="promoCtaText" label={publicVisuals("ctaText")} value={promo.ctaText} onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })} />
+          <AdminInput id="promoDescription" name="promoDescription" label={publicVisuals("promoDescription")} value={promo.description} onChange={(event) => setPromo({ ...promo, description: event.target.value })} />
+          <AdminInput id="promoCtaUrl" name="promoCtaUrl" label={publicVisuals("ctaUrl")} value={promo.ctaUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })} />
+          <AdminInput id="promoImageUrl" name="promoImageUrl" label={publicVisuals("imageUrl")} value={promo.imageUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, imageUrl: event.target.value })} />
+          <AdminInput id="promoVideoUrl" name="promoVideoUrl" label={publicVisuals("videoUrl")} value={promo.videoUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })} />
+          <AdminInput id="promoStartsAt" name="promoStartsAt" type="datetime-local" label={publicVisuals("start")} value={toLocalDateTimeInput(promo.startsAt)} onChange={(event) => setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })} />
+          <AdminInput id="promoEndsAt" name="promoEndsAt" type="datetime-local" label={publicVisuals("end")} value={toLocalDateTimeInput(promo.endsAt)} onChange={(event) => setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })} />
+          <AdminSelect id="promoStyle" name="promoStyle" label={publicVisuals("style")} value={promo.style} onChange={(event) => setPromo({ ...promo, style: event.target.value as typeof promo.style })}><option value="luxury">{publicVisuals("luxury")}</option><option value="image">{publicVisuals("image")}</option><option value="announcement">{publicVisuals("announcement")}</option></AdminSelect>
+          <AdminButton variant="ghost" onClick={() => { setHomepageHeroImageUrl(""); setShopHeroImageUrl(""); }} disabled={isPending}>{publicVisuals("reset")}</AdminButton>
         </div>
       </AdminCard>
 
-      {canManageUsers ? <AdminCard title="Order Maintenance" description="Orders only. Products, images, users, employees and settings are never deleted. Physical deletion is not enabled."><div className="grid gap-5 lg:grid-cols-2"><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">Archive completed orders</h3><p className="text-sm text-muted">Moves delivered, completed, cancelled and ready orders out of active views.</p><AdminButton onClick={() => previewMaintenance("archive_completed")} disabled={isPending}>Preview</AdminButton>{archivePreview !== null ? <p className="text-sm">Affected orders: {archivePreview}</p> : null}<AdminInput id="archiveConfirmation" name="archiveConfirmation" label="Confirmation" value={archiveConfirmation} placeholder="ARCHIVE ORDERS" onChange={(event) => setArchiveConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("archive_completed", archiveConfirmation)} disabled={isPending || archivePreview === null || archiveConfirmation !== "ARCHIVE ORDERS"}>Archive orders</AdminButton></div><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">Clear active orders</h3><p className="text-sm text-muted">Uses existing soft delete only; no physical rows are deleted.</p><AdminButton onClick={() => previewMaintenance("clear_active")} disabled={isPending}>Preview</AdminButton>{clearPreview !== null ? <p className="text-sm">Affected orders: {clearPreview}</p> : null}<AdminInput id="clearConfirmation" name="clearConfirmation" label="Confirmation" value={clearConfirmation} placeholder="CLEAR ACTIVE ORDERS" onChange={(event) => setClearConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("clear_active", clearConfirmation)} disabled={isPending || clearPreview === null || clearConfirmation !== "CLEAR ACTIVE ORDERS"}>Clear active orders</AdminButton></div></div></AdminCard> : null}
+      {canManageUsers ? <AdminCard title={orderMaintenance("title")} description={orderMaintenance("description")}><div className="space-y-4"><p className="text-sm text-muted">{orderMaintenance("excludedDataNote")}</p><p className="text-sm text-muted">{orderMaintenance("permanentDeleteUnavailable")}</p><p className="text-sm text-muted">{orderMaintenance("auditRequired")}</p><div className="grid gap-5 lg:grid-cols-2"><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">{orderMaintenance("archiveTitle")}</h3><p className="text-sm text-muted">{orderMaintenance("archiveDescription")}</p><p className="text-sm text-amber-100">{orderMaintenance("archiveWarning")}</p><AdminButton onClick={() => previewMaintenance("archive_completed")} disabled={isPending}>{isPending ? loading("previewing") : orderMaintenance("previewArchive")}</AdminButton>{archivePreview !== null ? <p className="text-sm">{orderMaintenance("affectedOrders")}: {archivePreview}</p> : null}<AdminInput id="archiveConfirmation" name="archiveConfirmation" label={orderMaintenance("confirmationLabel")} value={archiveConfirmation} placeholder={orderMaintenance("archivePhrase")} onChange={(event) => setArchiveConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("archive_completed", archiveConfirmation)} disabled={isPending || archivePreview === null || archiveConfirmation !== orderMaintenance("archivePhrase")}>{isPending ? loading("executing") : orderMaintenance("executeArchive")}</AdminButton></div><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">{orderMaintenance("clearTitle")}</h3><p className="text-sm text-muted">{orderMaintenance("clearDescription")}</p><p className="text-sm text-amber-100">{orderMaintenance("clearWarning")}</p><AdminButton onClick={() => previewMaintenance("clear_active")} disabled={isPending}>{isPending ? loading("previewing") : orderMaintenance("previewClear")}</AdminButton>{clearPreview !== null ? <p className="text-sm">{orderMaintenance("affectedOrders")}: {clearPreview}</p> : null}<AdminInput id="clearConfirmation" name="clearConfirmation" label={orderMaintenance("confirmationLabel")} value={clearConfirmation} placeholder={orderMaintenance("clearPhrase")} onChange={(event) => setClearConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("clear_active", clearConfirmation)} disabled={isPending || clearPreview === null || clearConfirmation !== orderMaintenance("clearPhrase")}>{isPending ? loading("executing") : orderMaintenance("executeClear")}</AdminButton></div></div></div></AdminCard> : null}
 
       <AdminCard
         title={copy.userListTitle}
