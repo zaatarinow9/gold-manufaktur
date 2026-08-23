@@ -27,7 +27,8 @@ export function ShopHero({
     <section className="full-bleed-section relative overflow-hidden border-b border-white/6">
       <div className="absolute inset-0">
         <LuxuryMedia
-          src={imageUrl || backgroundProduct?.imageUrl}
+          src={imageUrl}
+          fallbackSrc={backgroundProduct?.imageUrl}
           alt={backgroundProduct?.name || t("visualAlt")}
           sizes="100vw"
           imageClassName="opacity-[0.22]"

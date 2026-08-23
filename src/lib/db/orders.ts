@@ -298,6 +298,15 @@ export type PublicTrackingOrderRecord = {
   trackingStatus: TrackingStatus;
 };
 
+export type PermanentOrderDeleteResult = {
+  adminNotifications: number;
+  emailLogs: number;
+  orderItems: number;
+  orders: number;
+  orderStatusEvents: number;
+  supportTickets: number;
+};
+
 type OrderSchemaCapabilities = {
   assignedAt: boolean;
   assignedWorkerEmail: boolean;
@@ -878,11 +887,12 @@ function fallbackInternalOrderNumber(
 
 function getScopedOrderRows(
   viewer: AdminViewer,
-  orders: TableRow<"orders">[]
+  orders: TableRow<"orders">[],
+  options?: { includeDeleted?: boolean }
 ) {
   return orders.filter(
     (order) => {
-      if (isDeletedOrderRow(order)) {
+      if (!options?.includeDeleted && isDeletedOrderRow(order)) {
         return false;
       }
 
@@ -1122,14 +1132,34 @@ async function loadScopedOrderBundle(viewer: AdminViewer) {
   };
 }
 
-export async function getScopedOrders(
-  viewer: AdminViewer
-): Promise<OrderListRecord[]> {
-  if (await isAdminDecoyEnabled()) {
-    return getDecoyOrders(viewer.role);
-  }
+async function loadScopedMaintenanceOrderBundle(viewer: AdminViewer) {
+  const orders = getScopedOrderRows(viewer, await loadOrdersRaw(), {
+    includeDeleted: true,
+  });
+  const orderIds = orders.map((order) => order.id);
 
-  const bundle = await loadScopedOrderBundle(viewer);
+  const [items, events, tickets, emailLogs, workshopMap, employeeMap] =
+    await Promise.all([
+      loadOrderItemsRaw(orderIds),
+      loadOrderEventsRaw(orderIds),
+      loadSupportTicketsRaw(orderIds),
+      loadEmailLogsRaw(orderIds),
+      loadWorkshopsMap(),
+      loadEmployeesMap(),
+    ]);
+
+  return {
+    emailLogs,
+    employeeMap,
+    events,
+    items,
+    orders,
+    tickets,
+    workshopMap,
+  };
+}
+
+function buildOrderListRecords(bundle: Awaited<ReturnType<typeof loadScopedOrderBundle>>) {
   const itemsByOrderId = new Map<string, OrderItemRecord[]>();
   const ticketsByOrderId = new Map<string, SupportTicketRecord[]>();
 
@@ -1186,6 +1216,26 @@ export async function getScopedOrders(
       workshopName: bundle.workshopMap.get(order.workshop_id ?? "")?.name ?? "",
     };
   });
+}
+
+export async function getScopedOrders(
+  viewer: AdminViewer
+): Promise<OrderListRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyOrders(viewer.role);
+  }
+
+  return buildOrderListRecords(await loadScopedOrderBundle(viewer));
+}
+
+export async function getScopedOrderMaintenanceRecords(
+  viewer: AdminViewer
+): Promise<OrderListRecord[]> {
+  if (await isAdminDecoyEnabled()) {
+    return getDecoyOrders(viewer.role);
+  }
+
+  return buildOrderListRecords(await loadScopedMaintenanceOrderBundle(viewer));
 }
 
 export async function getScopedOrderDetail(
@@ -2177,6 +2227,170 @@ export async function deleteOrder(viewer: AdminViewer, orderId: string) {
 
   return {
     trackingNumber: order.trackingNumber,
+  };
+}
+
+export async function permanentlyDeleteOrders(
+  viewer: AdminViewer,
+  orderIds: string[],
+  input: { auditAction: string }
+): Promise<PermanentOrderDeleteResult> {
+  if (viewer.role !== "super_admin") {
+    throw new Error("PERMISSION_DENIED");
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    throw new Error("DECOY_UNAVAILABLE");
+  }
+
+  if (!input.auditAction.trim()) {
+    throw new Error("AUDIT_REQUIRED");
+  }
+
+  const uniqueOrderIds = [...new Set(orderIds.map((value) => value.trim()).filter(Boolean))];
+
+  if (uniqueOrderIds.length === 0) {
+    return {
+      adminNotifications: 0,
+      emailLogs: 0,
+      orderItems: 0,
+      orders: 0,
+      orderStatusEvents: 0,
+      supportTickets: 0,
+    };
+  }
+
+  const maintenanceOrders = await getScopedOrderMaintenanceRecords(viewer);
+  const eligibleOrderIds = new Set(
+    maintenanceOrders
+      .filter(
+        (order) =>
+          Boolean(order.archivedAt) ||
+          Boolean(order.deletedAt) ||
+          order.status === "archived"
+      )
+      .map((order) => order.id)
+  );
+  const targetOrderIds = uniqueOrderIds.filter((orderId) => eligibleOrderIds.has(orderId));
+
+  if (targetOrderIds.length !== uniqueOrderIds.length) {
+    throw new Error("ORDER_ELIGIBILITY_CHANGED");
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const [
+    { data: orderItemRows, error: orderItemsError },
+    { data: orderStatusEventRows, error: orderStatusEventsError },
+    { data: supportTicketRows, error: supportTicketsError },
+    { data: emailLogRows, error: emailLogsError },
+    { data: adminNotificationRows, error: adminNotificationsError },
+  ] = await Promise.all([
+    supabase.from("order_items").select("id").in("order_id", targetOrderIds),
+    supabase.from("order_status_events").select("id").in("order_id", targetOrderIds),
+    supabase.from("support_tickets").select("id").in("order_id", targetOrderIds),
+    supabase.from("email_logs").select("id").in("order_id", targetOrderIds),
+    supabase
+      .from("admin_notifications")
+      .select("id")
+      .eq("entity_type", "order")
+      .in("entity_id", targetOrderIds),
+  ]);
+
+  if (orderItemsError) {
+    throw new Error(`Unable to inspect order items: ${orderItemsError.message}`);
+  }
+
+  if (orderStatusEventsError) {
+    throw new Error(
+      `Unable to inspect order status events: ${orderStatusEventsError.message}`
+    );
+  }
+
+  if (supportTicketsError) {
+    throw new Error(`Unable to inspect support tickets: ${supportTicketsError.message}`);
+  }
+
+  if (emailLogsError) {
+    throw new Error(`Unable to inspect email logs: ${emailLogsError.message}`);
+  }
+
+  if (adminNotificationsError) {
+    throw new Error(
+      `Unable to inspect admin notifications: ${adminNotificationsError.message}`
+    );
+  }
+
+  const supportTicketIds = (supportTicketRows ?? []).map((ticket) => ticket.id);
+  let supportTicketEmailLogRows: Array<{ id: string }> = [];
+
+  if (supportTicketIds.length > 0) {
+    const { data, error } = await supabase
+      .from("email_logs")
+      .select("id")
+      .in("support_ticket_id", supportTicketIds);
+
+    if (error) {
+      throw new Error(`Unable to inspect support ticket email logs: ${error.message}`);
+    }
+
+    supportTicketEmailLogRows = data ?? [];
+  }
+
+  const emailLogIds = [
+    ...new Set(
+      [...(emailLogRows ?? []), ...supportTicketEmailLogRows].map((row) => row.id)
+    ),
+  ];
+  const adminNotificationIds = (adminNotificationRows ?? []).map(
+    (notification) => notification.id
+  );
+
+  if (emailLogIds.length > 0) {
+    const { error } = await supabase.from("email_logs").delete().in("id", emailLogIds);
+
+    if (error) {
+      throw new Error(`Unable to delete email logs: ${error.message}`);
+    }
+  }
+
+  if (adminNotificationIds.length > 0) {
+    const { error } = await supabase
+      .from("admin_notifications")
+      .delete()
+      .in("id", adminNotificationIds);
+
+    if (error) {
+      throw new Error(`Unable to delete admin notifications: ${error.message}`);
+    }
+  }
+
+  if (supportTicketIds.length > 0) {
+    const { error } = await supabase
+      .from("support_tickets")
+      .delete()
+      .in("id", supportTicketIds);
+
+    if (error) {
+      throw new Error(`Unable to delete support tickets: ${error.message}`);
+    }
+  }
+
+  const { error: ordersError } = await supabase
+    .from("orders")
+    .delete()
+    .in("id", targetOrderIds);
+
+  if (ordersError) {
+    throw new Error(`Unable to delete orders: ${ordersError.message}`);
+  }
+
+  return {
+    adminNotifications: adminNotificationIds.length,
+    emailLogs: emailLogIds.length,
+    orderItems: (orderItemRows ?? []).length,
+    orders: targetOrderIds.length,
+    orderStatusEvents: (orderStatusEventRows ?? []).length,
+    supportTickets: supportTicketIds.length,
   };
 }
 

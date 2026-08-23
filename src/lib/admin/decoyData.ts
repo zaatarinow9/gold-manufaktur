@@ -892,8 +892,13 @@ export function getDecoySettingsSnapshot(): AdminSettingsSnapshot {
     adminNotificationEmail: "atelier@example.invalid",
     publicVisualSettings: {
       homepageHeroImageUrl: "",
-      shopHeroImageUrl: "",
       promoPopup: { ctaText: "", ctaUrl: "", description: "", enabled: false, endsAt: "", imageUrl: "", showOnce: false, startsAt: "", style: "luxury", title: "", videoUrl: "" },
+      shopHeroImageUrl: "",
+      staticImages: {
+        homepageHero: null,
+        promoPopupImage: null,
+        shopHero: null,
+      },
     },
     diagnostics: createDecoyDiagnostics(),
     orderEntryEnabled: false,

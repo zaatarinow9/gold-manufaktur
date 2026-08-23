@@ -22,7 +22,8 @@ export function HeroSection({
     <section className="full-bleed-section relative isolate min-h-[80svh] overflow-hidden">
       <div className="absolute inset-0">
         <LuxuryMedia
-          src={imageUrl || visualProduct?.imageUrl}
+          src={imageUrl}
+          fallbackSrc={visualProduct?.imageUrl}
           alt={t("backgroundAlt")}
           sizes="100vw"
           priority

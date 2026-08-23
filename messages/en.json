@@ -1,1196 +1,1298 @@
 {
-  "Metadata": {
-    "site": {
-      "brand": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH presents selected gold jewelry with real product imagery, personal consultation, and a clear showroom experience in Saarbrücken.",
-      "keywords": [
-        "GoldHelwah GmbH",
-        "gold jewelry",
-        "luxury jewelry",
-        "jewelry catalog",
-        "showroom",
-        "wedding rings"
-      ]
-    },
-    "pages": {
-      "home": {
-        "title": "Luxury Gold Jewelry Showroom",
-        "description": "Discover gold jewelry with presence, real imagery, and personal consultation at GoldHelwah GmbH."
-      },
-      "shop": {
-        "title": "Collection",
-        "description": "Explore selected pieces, categories, and product details in the GoldHelwah GmbH collection."
-      },
-      "contact": {
-        "title": "Contact",
-        "description": "Contact GoldHelwah GmbH for consultation, product inquiries, and your visit to the showroom in Saarbrücken."
-      },
-      "impressum": {
-        "title": "Legal Notice",
-        "description": "Legal details and contact information for GoldHelwah GmbH at a glance."
-      },
-      "privacy": {
-        "title": "Privacy",
-        "description": "Privacy information for website visits, language preferences, and contact requests at GoldHelwah GmbH."
-      }
-    }
-  },
-  "Nav": {
-    "tagline": "Luxury Gold Jewelry",
-    "language": "Change language",
-    "currentLanguage": "Current",
-    "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "links": {
-      "home": "Home",
-      "shop": "Shop",
-      "contact": "Contact",
-      "impressum": "Legal Notice",
-      "privacy": "Privacy",
-      "agb": "Terms & Conditions",
-      "tracking": "Track order"
-    }
-  },
-  "Footer": {
-    "description": "GoldHelwah GmbH offers selected gold jewelry, personal consultation, and a clear presentation experience in Saarbrücken.",
-    "navigationTitle": "Pages",
-    "contactTitle": "Contact",
-    "socialTitle": "Follow us",
-    "emailPlaceholder": "service@goldhelwah.de",
-    "legalNote": "Visit us in Saarbrücken or contact us for personal consultation.",
-    "rights": "GoldHelwah GmbH. All rights reserved.",
-    "socials": {
-      "instagram": "Instagram",
-      "facebook": "Facebook",
-      "tiktok": "TikTok",
-      "snapchat": "Snapchat",
-      "whatsapp": "WhatsApp"
-    }
-  },
-  "Home": {
-    "hero": {
-      "eyebrow": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "subtitle": "We craft beauty",
-      "description": "We reflect the precision of detail and the elegance of design, with personal consultation that guides you toward the gold piece that suits your presence and the value of the occasion.",
-      "primaryCta": "Discover products",
-      "secondaryCta": "Request consultation",
-      "backgroundAlt": "GoldHelwah GmbH hero composition",
-      "stats": [
-        {
-          "value": "17",
-          "label": "Categories"
-        },
-        {
-          "value": "5",
-          "label": "Languages"
-        },
-        {
-          "value": "Saarbrücken",
-          "label": "Showroom"
-        }
-      ]
-    },
-    "categories": {
-      "eyebrow": "Selected Categories",
-      "title": "Collections that catch the eye immediately.",
-      "description": "Choose from lines, sets, and standout gold pieces.",
-      "emptyTitle": "No products are currently visible",
-      "emptyText": "As soon as new collections are activated in the dashboard, they will appear here automatically."
-    },
-    "products": {
-      "eyebrow": "Selected Products",
-      "title": "Real imagery. Clear selection. Gold with character.",
-      "description": "Selected jewelry pieces across different categories.",
-      "sectionCta": "Open showroom",
-      "cardCta": "View details",
-      "emptyTitle": "No products are currently visible",
-      "emptyText": "Activate products in the dashboard or contact us for a personal selection."
-    },
-    "showcase": {
-      "eyebrow": "Selected from the showroom",
-      "title": "Selected pieces with clear details",
-      "description": "Browse highlighted gold jewelry from our collection with real images and details that help you choose with confidence.",
-      "sectionCta": "Browse the collection",
-      "cardCta": "View details",
-      "leadCta": "Request consultation",
-      "emptyTitle": "No products are currently visible",
-      "emptyText": "When new products are saved and activated, this section will update automatically."
-    },
-    "aboutGold": {
-      "eyebrow": "About gold",
-      "title": "Gold that lasts.",
-      "description": "Gold is more than jewelry. It stands for value, memory, and meaningful moments. At GoldHelwah GmbH, we present pieces chosen for visual presence and personal significance.",
-      "imageAlt": "Gold jewelry detail from GoldHelwah GmbH",
-      "points": [
-        "Lasting value",
-        "Personal meaning",
-        "Visible craftsmanship"
-      ]
-    },
-    "aboutCompany": {
-      "eyebrow": "About us",
-      "title": "About GoldHelwah GmbH",
-      "description": "In Saarbrücken, GoldHelwah GmbH combines selected gold jewelry with personal consultation and a clear, trustworthy presentation.",
-      "teamLabel": "Our approach",
-      "story": "The GoldHelwah GmbH team and management focus on personal advice, a clear selection, and pieces that suit both the occasion and the wearer.",
-      "locationLabel": "On site"
-    },
-    "trust": {
-      "eyebrow": "Why GoldHelwah GmbH",
-      "title": "Clear, personal, and close to the product.",
-      "items": [
-        {
-          "title": "Personal consultation",
-          "description": "Direct and individually guided."
-        },
-        {
-          "title": "Real product imagery",
-          "description": "The selection shows real pieces."
-        },
-        {
-          "title": "Custom Designs",
-          "description": "Any idea you have can be transformed into a unique gold piece with beautiful details, from name engraving and size adjustments to personal touches that reflect your style."
-        },
-        {
-          "title": "Pickup in Saarbruecken",
-          "description": "Available in person on site."
-        }
-      ]
-    },
-    "cta": {
-      "badge": "GoldHelwah GmbH Service",
-      "title": "Looking for a gift or a custom-made piece?",
-      "description": "We are happy to guide you through selection, special requests, and personal consultation.",
-      "primaryCta": "View shop",
-      "secondaryCta": "Call now"
-    }
-  },
-  "Shop": {
-    "hero": {
-      "eyebrow": "GoldHelwah GmbH",
-      "title": "Collection",
-      "subtitle": "Real product imagery, clear selection, and personal consultation.",
-      "primaryCta": "Request consultation",
-      "secondaryCta": "Call us",
-      "stats": {
-        "categories": "Categories",
-        "featured": "Featured",
-        "checkout": "Consultation"
-      },
-      "visualBadge": "Selected view",
-      "visualAlt": "GoldHelwah GmbH jewelry showroom",
-      "cards": {
-        "oneLabel": "Visual focus",
-        "oneText": "Generous product cards with real imagery and reduced copy.",
-        "twoLabel": "Catalog structure",
-        "twoText": "Categories, product details, and consultation requests stay clear and easy to browse."
-      }
-    },
-    "grid": {
-      "eyebrow": "Collection",
-      "title": "Discover by category.",
-      "all": "All",
-      "resultsSuffix": "pieces",
-      "emptyBadge": "On request",
-      "emptyTitle": "We are happy to guide you to the right piece for this selection.",
-      "emptyText": "Contact us if you are looking for a specific line or model."
-    },
-    "card": {
-      "cta": "Details"
-    },
-    "modal": {
-      "close": "Close",
-      "fallbackCategory": "Collection",
-      "categoryLabel": "Category",
-      "galleryLabel": "Gallery",
-      "galleryCountSuffix": "images",
-      "tagsLabel": "Details",
-      "requestCta": "Send inquiry",
-      "backCta": "Back"
-    }
-  },
-  "Contact": {
-    "hero": {
-      "eyebrow": "Contact",
-      "title": "Personal consultation starts with clear contact.",
-      "subtitle": "For product inquiries, appointments, and WhatsApp messages, you will find the fastest ways to reach GoldHelwah GmbH here.",
-      "primaryCta": "View collection",
-      "secondaryCta": "Read privacy"
-    },
-    "cards": {
-      "consultationTitle": "Consultation",
-      "consultationValue": "Personal & curated",
-      "consultationText": "Collections, gift ideas, and custom requests are discussed individually.",
-      "phoneTitle": "Phone",
-      "phoneText": "Direct contact for quick questions or scheduling.",
-      "phoneCta": "Call now",
-      "whatsappTitle": "WhatsApp",
-      "whatsappText": "Ideal for quick questions and photo references from the showroom.",
-      "whatsappCta": "Start chat"
-    },
-    "form": {
-      "eyebrow": "Get in touch",
-      "title": "Get in touch",
-      "description": "Write to us for product inquiries, consultation, or custom-made jewelry.",
-      "highlights": "Contact",
-      "fields": {
-        "name": "Name",
-        "email": "Email",
-        "phone": "Phone",
-        "message": "Message"
-      },
-      "placeholders": {
-        "name": "Your name",
-        "email": "Your email address",
-        "phone": "Your phone number",
-        "message": "What is your inquiry about?"
-      },
-      "submit": "Send message",
-      "submitPending": "Sending",
-      "success": "Thank you. Your inquiry has been recorded.",
-      "error": "Please check your details and try again.",
-      "validation": {
-        "name": "Please enter your name.",
-        "email": "Please enter a valid email address.",
-        "phone": "Please enter a valid phone number.",
-        "message": "Please add a short message."
-      }
-    },
-    "location": {
-      "eyebrow": "Location",
-      "title": "Visit GoldHelwah GmbH in Saarbrücken.",
-      "description": "Address, phone, and directions at a glance.",
-      "addressLabel": "Address",
-      "phoneLabel": "Phone",
-      "routeCta": "Plan route",
-      "callCta": "Call",
-      "mapTitle": "GoldHelwah GmbH location on Google Maps"
-    }
-  },
-  "Impressum": {
-    "eyebrow": "Legal",
-    "title": "Legal notice",
-    "description": "Official provider information and legal notices for Gold Helwah.",
-    "complianceNoticeTitle": "Information according to § 5 DDG",
-    "complianceNoticeDescription": "The following information applies to the Gold Helwah website.",
-    "sections": [
-      {
-        "title": "Provider",
-        "lines": [
-          "Gold Helwah",
-          "Inh. Khaled Helwah",
-          "Breite Straße 9, 66115 Saarbrücken",
-          "Deutschland"
-        ]
-      },
-      {
-        "title": "Contact",
-        "lines": [
-          "We are happy to assist you with any questions:",
-          "Phone: +49 173 537 1225",
-          "Email: service@goldhelwah.de"
-        ]
-      },
-      {
-        "title": "VAT ID",
-        "lines": [
-          "VAT identification number according to § 27 a German Value Added Tax Act:",
-          "DE313207537"
-        ]
-      },
-      {
-        "title": "Represented by",
-        "lines": "Khaled Helwah"
-      },
-      {
-        "title": "Liability for links",
-        "lines": [
-          "Our website contains links to external third-party websites whose content we do not control. Therefore, we cannot assume any liability for this external content.",
-          "The respective provider or operator is always responsible for the content of linked pages.",
-          "The linked pages were checked for possible legal violations at the time of linking. No unlawful content was identifiable at that time.",
-          "Permanent monitoring of linked pages is not reasonable without concrete evidence of a legal violation. If we become aware of any infringements, we will remove such links immediately."
-        ]
-      },
-      {
-        "title": "Liability for content",
-        "lines": [
-          "The content of our pages has been created with great care. However, we cannot guarantee the correctness, completeness, or timeliness of the content.",
-          "As a service provider, we are responsible for our own content on these pages in accordance with § 5 DDG and general laws.",
-          "According to § 5 DDG, we are not obliged to monitor transmitted or stored third-party information or investigate circumstances that indicate illegal activity.",
-          "Obligations to remove or block the use of information under general law remain unaffected.",
-          "Liability in this respect is only possible from the time of knowledge of a concrete infringement. If we become aware of such violations, we will remove the content immediately."
-        ]
-      }
-    ],
-    "disclaimerTitle": "Copyright",
-    "disclaimerText": "The content and works created by the site operators on these pages are subject to German copyright law. Reproduction, editing, distribution, and any type of use outside the limits of copyright require the written consent of the respective author or creator. Downloads and copies of this site are permitted only for private, non-commercial use. Where content on this site was not created by the operator, third-party copyrights are respected and such content is marked accordingly. Should you nevertheless become aware of a copyright infringement, please inform us. If we become aware of any legal violations, we will remove such content immediately."
-  },
-  "Privacy": {
-    "eyebrow": "Privacy",
-    "title": "Privacy information",
-    "description": "This page explains how personal data is processed when you visit the website or contact us.",
-    "intro": "We process personal data only to the extent required to provide the website, store your language preference, and respond to inquiries.",
-    "sections": [
-      {
-        "title": "1. Responsible party",
-        "paragraphs": [
-          "The responsible party for data processing on this website is Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, phone +49 173 537 1225, email service@goldhelwah.de.",
-          "If you have questions about privacy or wish to exercise your rights, you can contact us at any time."
-        ]
-      },
-      {
-        "title": "2. Technical connection data",
-        "paragraphs": [
-          "When you visit the website, technically necessary data such as IP address, date and time, browser information, and requested pages may be processed.",
-          "This processing is necessary to provide the website securely and reliably."
-        ]
-      },
-      {
-        "title": "3. Contact and inquiry requests",
-        "paragraphs": [
-          "If you contact us by contact form, email, phone, or WhatsApp, we process the information you provide only to handle your request.",
-          "The data processed depends on the subject of your request and the information you share with us."
-        ]
-      },
-      {
-        "title": "4. Language preference and essential cookies",
-        "paragraphs": [
-          "The website supports multiple languages and may store your selected language for technical reasons.",
-          "This information is used only to display the website in your preferred language on later visits."
-        ]
-      },
-      {
-        "title": "5. Your rights",
-        "paragraphs": [
-          "You have the right to request information about your stored personal data and, where the legal requirements are met, to request correction, deletion, or restriction of processing.",
-          "You may also object to processing or withdraw previously granted consent with effect for the future."
-        ]
-      }
-    ],
-    "noticeTitle": "Current version",
-    "noticeText": "We review this privacy information regularly and update it whenever our website, communication channels, or legal obligations change."
-  },
-  "Admin": {
-    "orderMaintenance": {"title":"Order Maintenance","description":"Orders only; other website data is excluded.","archiveTitle":"Archive completed orders","archiveDescription":"Move completed orders out of active views without deleting them.","clearTitle":"Clear active orders","clearDescription":"Hide active orders using soft delete only.","previewArchive":"Preview archive","previewClear":"Preview clear","executeArchive":"Archive orders","executeClear":"Clear active orders","confirmationLabel":"Confirmation","confirmationPlaceholder":"Enter the required phrase","archivePhrase":"ARCHIVE ORDERS","clearPhrase":"CLEAR ACTIVE ORDERS","affectedOrders":"Affected orders","warningTitle":"Important","archiveWarning":"Only completed orders are archived.","clearWarning":"Clear uses soft delete only, never physical deletion.","excludedDataNote":"Products, images, users, employees and settings are not deleted.","permanentDeleteUnavailable":"Physical permanent deletion is not enabled.","auditRequired":"The operation will not run unless its audit record is created.","auditLogCreated":"Audit record created.","previewSuccess":"Preview ready.","archiveSuccess":"Orders archived.","clearSuccess":"Active orders cleared.","genericError":"Unable to complete order maintenance.","permissionDenied":"Permission denied.","decoyUnavailable":"Unavailable in decoy mode.","noOrdersMatched":"No orders matched."},
-    "loading": {"loading":"Loading…","saving":"Saving…","updating":"Updating…","previewing":"Preparing preview…","executing":"Executing operation…","uploading":"Uploading…","archiving":"Preparing archive preview…","clearing":"Preparing clear preview…","pleaseWait":"Please wait…","actionInProgress":"Action in progress","saveInProgress":"Saving changes now","editInProgress":"Updating data now"},
-    "meta": {
-      "title": "Admin",
-      "description": "GoldHelwah GmbH admin for catalog, orders, and workshops."
-    },
-    "header": {
-      "adminArea": "Admin area",
-      "demoMode": "Access role",
-      "activeUser": "Active user",
-      "roleFoundation": "Role foundation",
-      "roleHint": "Roles and views are clearly assigned across the internal workspace.",
-      "welcome": "Welcome, {name}",
-      "toWebsite": "View site"
-    },
-    "roles": {
-      "super_admin": "Super Admin",
-      "admin": "Admin",
-      "employee": "Employee"
-    },
-    "nav": {
-      "overview": "Overview",
-      "products": "Products",
-      "categories": "Categories",
-      "gallery": "Workshop Order",
-      "options": "Options",
-      "orders": "Orders",
-      "workshops": "Workshops",
-      "employees": "Employees",
-      "attendance": "Attendance",
-      "reports": "Reports",
-      "archive": "Archive",
-      "settings": "Settings",
-      "myTasks": "My Tasks",
-      "inquiries": "Customer inquiries"
-    },
-    "buttons": {
-      "openMenu": "Menu",
-      "close": "Close",
-      "demoLogin": "Switch account",
-      "addProduct": "Add product",
-      "createOrder": "Create order",
-      "viewDetails": "Details",
-      "edit": "Edit",
-      "delete": "Delete",
-      "newCategory": "New category",
-      "bulkEnable": "Activate",
-      "bulkDisable": "Deactivate",
-      "assignOptions": "Assign options",
-      "saveDraft": "Save draft",
-      "submitOrder": "Send order to workshop",
-      "createCustomOption": "Custom option",
-      "addOption": "Add option",
-      "addWorkshop": "Add workshop",
-      "addEmployee": "Add employee",
-      "addAbsence": "Add absence",
-      "markReady": "Mark ready",
-      "updateStatus": "Change status",
-      "assignEmployee": "Assign employee",
-      "addNote": "Add note",
-      "archive": "Archive",
-      "restore": "Restore",
-      "backToOrders": "Back to orders",
-      "duplicate": "Duplicate",
-      "deactivate": "Deactivate",
-      "activate": "Activate",
-      "options": "Options",
-      "createOptionGroup": "Create group",
-      "viewOrders": "View orders",
-      "preview": "Preview",
-      "reset": "Reset",
-      "save": "Save",
-      "next": "Next",
-      "previous": "Previous",
-      "notifyCustomer": "Notify customer",
-      "copyTrackingLink": "Copy tracking link",
-      "saveStatus": "Save status"
-    },
-    "common": {
-      "noAccessTitle": "Access restricted",
-      "noAccessText": "This view is not available for the current account.",
-      "catalogOnly": "Showroom",
-      "curated": "Curated",
-      "active": "Active",
-      "inactive": "Inactive",
-      "optional": "Optional",
-      "required": "Required",
-      "all": "All",
-      "search": "Search",
-      "selectPlaceholder": "Please select",
-      "unassigned": "Unassigned",
-      "noCustomer": "No customer data",
-      "mockSubmit": "Changes saved.",
-      "selected": "Selected",
-      "internalOnly": "Internal only",
-      "visibility": "Visibility",
-      "visible": "Visible",
-      "hidden": "Hidden",
-      "yes": "Yes",
-      "no": "No",
-      "enabled": "Enabled",
-      "disabled": "Disabled",
-      "notProvided": "Not specified"
-    },
-    "filters": {
-      "category": "Category",
-      "status": "Status",
-      "featured": "Featured",
-      "priority": "Priority",
-      "workshop": "Workshop",
-      "employee": "Employee",
-      "role": "Role"
-    },
-    "status": {
-      "draft": "Draft",
-      "sent_to_workshop": "Sent to workshop",
-      "accepted": "Accepted",
-      "assigned": "Assigned",
-      "in_production": "In production",
-      "quality_check": "Quality check",
-      "ready": "Ready",
-      "delivered": "Delivered",
-      "cancelled": "Cancelled",
-      "archived": "Archived",
-      "present": "Present",
-      "absent": "Absent",
-      "vacation": "Vacation",
-      "sick": "Sick",
-      "late": "Late"
-    },
-    "priority": {
-      "normal": "Normal",
-      "urgent": "Urgent",
-      "express": "Express"
-    },
-    "overview": {
-      "eyebrow": "Dashboard",
-      "title": "Overview",
-      "description": "Catalog, orders, and workshops at a glance.",
-      "stats": {
-        "totalProducts": "Total products",
-        "totalProductsHint": "Real catalog data from the showroom",
-        "activeCategories": "Active categories",
-        "activeCategoriesHint": "Clearly structured",
-        "newOrders": "New workshop orders",
-        "newOrdersHint": "Draft and newly sent",
-        "inProduction": "In production",
-        "inProductionHint": "Currently in progress",
-        "readyOrders": "Ready orders",
-        "readyOrdersHint": "Prepared for handover or pickup",
-        "employees": "Employees",
-        "employeesHint": "Visible for the current role"
-      },
-      "recentOrdersTitle": "Recent orders",
-      "recentOrdersDescription": "Latest orders and status.",
-      "quickActionsTitle": "Quick actions",
-      "quickActionsDescription": "Common tasks within easy reach.",
-      "actions": {
-        "addProduct": "Add product",
-        "createOrder": "Create order",
-        "manageOptions": "Manage options",
-        "addEmployee": "Add employee"
-      },
-      "workshopLoadTitle": "Workshop load",
-      "workshopLoadDescription": "Current workload by workshop."
-    },
-    "login": {
-      "title": "Gold Helwah Admin",
-      "description": "Secure internal access for orders, catalog, and workflow operations.",
-      "cards": {
-        "securityTitle": "Protected internal access",
-        "securityText": "Use your internal access permissions according to your role.",
-        "rolesTitle": "Clear roles",
-        "rolesText": "Permissions are managed according to the assigned role.",
-        "catalogTitle": "Catalog management",
-        "catalogText": "Manage products and workshops from one place."
-      },
-      "formTitle": "Sign in",
-      "formDescription": "Use your assigned admin account.",
-      "email": "Email",
-      "password": "Password",
-      "demoHint": "Active demo role: {role}.",
-      "demoUsersTitle": "Available demo users",
-      "invalidCredentials": "The email address or password is incorrect.",
-      "notices": {
-        "accountInactive": "This account is currently inactive. Please contact a super admin.",
-        "accountNotConfigured": "This account is not configured for the admin area yet.",
-        "invalidLink": "This access link is invalid or has already expired.",
-        "passwordUpdated": "Your password was updated successfully. You can continue now."
-      }
-    },
-    "accountSetup": {
-      "title": "Set up your access",
-      "description": "Create a password for your internal GoldHelwah account so you can enter the correct admin area.",
-      "resetTitle": "Set a new password",
-      "resetDescription": "Choose a new password for your internal GoldHelwah account.",
-      "securityTitle": "Protected internal access",
-      "securityText": "Use a strong password and do not share this access link with anyone else.",
-      "formTitle": "Create password",
-      "formDescription": "Set your password once to finish activating the account.",
-      "resetFormTitle": "Reset password",
-      "resetFormDescription": "Enter a new password to restore access to your account.",
-      "password": "Password",
-      "confirmPassword": "Confirm password",
-      "submit": "Save password",
-      "resetSubmit": "Update password",
-      "errors": {
-        "passwordLength": "Please choose a password with at least 8 characters.",
-        "passwordMismatch": "The password confirmation does not match.",
-        "sessionExpired": "Your session is no longer valid. Please request a new link.",
-        "updateFailed": "The password could not be updated right now. Please try again."
-      }
-    },
-    "products": {
-      "eyebrow": "Product management",
-      "title": "Manage products",
-      "description": "Edit imagery, categories, and visibility.",
-      "filtersTitle": "Filters & search",
-      "filtersDescription": "Search by product, category, and status.",
-      "searchPlaceholder": "Search products",
-      "featuredOnly": "Featured",
-      "regularOnly": "Not featured",
-      "viewCards": "Cards",
-      "viewTable": "Table",
-      "resultCount": "{count} products",
-      "optionsCount": "{count} options",
-      "empty": "No products found for the current selection.",
-      "table": {
-        "product": "Product",
-        "sku": "SKU",
-        "category": "Category",
-        "status": "Status",
-        "options": "Options",
-        "actions": "Actions",
-        "sortOrder": "Sort order"
-      }
-    },
-    "categories": {
-      "eyebrow": "Categories",
-      "title": "Manage categories",
-      "description": "Control collection structure, assignments, and visibility.",
-      "bulkTitle": "Selection",
-      "bulkDescription": "Update multiple categories together.",
-      "searchPlaceholder": "Search categories",
-      "selectedCount": "{count} selected",
-      "empty": "No categories found for the current search.",
-      "table": {
-        "category": "Category",
-        "slug": "Slug",
-        "sortOrder": "Sort order",
-        "status": "Status",
-        "options": "Options",
-        "actions": "Actions",
-        "products": "Products"
-      }
-    },
-    "gallery": {
-      "eyebrow": "Gallery",
-      "title": "Gallery",
-      "description": "Select products and start workshop orders directly from the catalog.",
-      "filtersTitle": "Filter gallery",
-      "filtersDescription": "Search by product or category.",
-      "searchPlaceholder": "Search products",
-      "internalOnly": "Internal only",
-      "createWorkshopOrder": "Create workshop order",
-      "emptyTitle": "No products found",
-      "emptyDescription": "Adjust the search or category."
-    },
-    "newOrder": {
-      "eyebrow": "New workshop order",
-      "title": "Workshop Order",
-      "description": "Choose the category first, then the product, and fill in only the options assigned to that product before sending it to the workshop.",
-      "productSelectionTitle": "Product and references",
-      "productSelectionDescription": "The internal gallery provides the product reference, imagery, and base data for the order.",
-      "summaryTitle": "Summary",
-      "summaryDescription": "The most important core details stay visible while the form is completed.",
-      "basicDescription": "Capture order, customer, and workshop basics first.",
-      "optionEngineDescription": "These sections combine standard options and free-form order details in one clear flow.",
-      "success": "Order was sent to the workshop.",
-      "sections": {
-        "basic": "Basics",
-        "gold": "Gold",
-        "measurements": "Measurements",
-        "name": "Name personalization",
-        "stones": "Stones",
-        "notes": "Notes",
-        "product": "Product",
-        "order": "Order",
-        "personalization": "Personalization",
-        "workshop": "Workshop",
-        "review": "Review",
-        "tracking": "Customer updates & tracking"
-      },
-      "fields": {
-        "product": "Product from gallery",
-        "orderNumber": "Internal order number",
-        "quantity": "Quantity",
-        "priority": "Priority",
-        "workshop": "Workshop",
-        "productName": "Product name",
-        "category": "Category",
-        "dueDate": "Due date",
-        "customerName": "Customer name",
-        "customerPhone": "Customer phone",
-        "customerReference": "Customer reference",
-        "targetWeight": "Target weight",
-        "weightTolerance": "Weight tolerance",
-        "pendantSize": "Pendant size",
-        "width": "Width",
-        "height": "Height",
-        "customMeasurements": "Custom measurements",
-        "hasNameCustomization": "Enable name personalization",
-        "previewRequired": "Preview required",
-        "nameLanguage": "Name language",
-        "fontStyle": "Font style",
-        "namePlacement": "Name placement",
-        "engravingPlacement": "Engraving placement",
-        "engravingNotes": "Engraving notes",
-        "hasStones": "Include stones",
-        "stoneShape": "Stone shape",
-        "stoneSize": "Stone size",
-        "stoneQuantity": "Stone quantity",
-        "stoneSetting": "Stone setting",
-        "customerNotes": "Customer notes",
-        "adminNotes": "Admin notes",
-        "qualityRequirements": "Quality requirements",
-        "attachmentNotes": "Attachment notes",
-        "assignedAdmin": "Assigned admin",
-        "assignedEmployee": "Assigned employee",
-        "goldKarat": "Gold karat",
-        "goldColor": "Gold color",
-        "ringSize": "Ring size",
-        "braceletSize": "Bracelet size",
-        "chainLength": "Chain length",
-        "workshopNotes": "Workshop notes",
-        "deliveryNotes": "Delivery notes",
-        "engravingText": "Engraving text",
-        "estimatedWeight": "Estimated weight",
-        "internalNotes": "Internal notes",
-        "language": "Language",
-        "nameCustomizationEnabled": "Name personalization enabled",
-        "nameText": "Name / Text",
-        "packagingNotes": "Packaging notes",
-        "placement": "Placement",
-        "stoneColor": "Stone color",
-        "stoneCount": "Count",
-        "stonesEnabled": "Stones enabled",
-        "stoneType": "Stone type",
-        "surface": "Surface",
-        "customerEmail": "Customer email",
-        "emailUpdatesEnabled": "Enable email updates",
-        "trackingNumber": "Tracking number",
-        "trackingStatus": "Tracking status",
-        "totalAmount": "Total amount",
-        "currency": "Currency"
-      },
-      "productDescription": "Choose the product and category.",
-      "orderDescription": "Add customer and order details.",
-      "goldDescription": "Prepare gold details for production.",
-      "measurementsDescription": "Capture sizes and special measurements.",
-      "personalizationDescription": "Set name, engraving, and placement.",
-      "stonesDescription": "Define stones and setting.",
-      "workshopDescription": "Assign workshop, employee, and priority.",
-      "reviewDescription": "Review everything before sending.",
-      "additionalOptionsTitle": "Additional fields",
-      "additionalOptionsDescription": "Only relevant options for this product.",
-      "draftSaved": "Draft saved.",
-      "reviewChecklistTitle": "Checklist",
-      "reviewChecklistProduct": "Confirm product and quantity.",
-      "reviewChecklistGold": "Review gold, sizing, and personalization.",
-      "reviewChecklistWorkshop": "Review workshop, assignee, and due date.",
-      "stepCount": "Step {step} of {total}",
-      "steps": {
-        "product": "Product",
-        "gold": "Gold",
-        "measurements": "Measurements",
-        "personalization": "Personalization",
-        "stones": "Stones",
-        "workshop": "Workshop",
-        "review": "Review & send",
-        "customerWorkshop": "Customer & workshop",
-        "productOptions": "Product & options"
-      },
-      "values": {
-        "yellowGold": "Yellow gold",
-        "whiteGold": "White gold",
-        "roseGold": "Rose gold",
-        "polished": "Polished",
-        "matte": "Matte",
-        "brushed": "Brushed",
-        "classic": "Classic",
-        "modern": "Modern",
-        "script": "Script"
-      },
-      "trackingDescription": "Prepare customer email, phone, and tracking details.",
-      "successWithNotifications": "Order created. Notifications are ready to be sent.",
-      "personalizationDisabled": "Name personalization disabled"
-    },
-    "options": {
-      "eyebrow": "Option engine",
-      "title": "Options",
-      "description": "Control fields for gold, sizing, engraving, and workshop flow.",
-      "groupsTitle": "Option groups",
-      "groupsDescription": "Review option groups quickly.",
-      "searchPlaceholder": "Search option or key",
-      "productsScope": "products",
-      "categoriesScope": "categories",
-      "workshopOverrides": "workshop overrides",
-      "noOverrides": "There are no workshop overrides for this option yet.",
-      "empty": "No options found for the current selection.",
-      "table": {
-        "option": "Option",
-        "type": "Type",
-        "scope": "Scope",
-        "status": "Status",
-        "assignments": "Assignments",
-        "actions": "Actions",
-        "group": "Group"
-      },
-      "filtersTitle": "Filter options",
-      "filtersDescription": "Search by group, status, and requirement.",
-      "groupCount": "{count} groups"
-    },
-    "orders": {
-      "eyebrow": "Orders",
-      "title": "Orders",
-      "description": "Track and update workshop orders.",
-      "filtersTitle": "Filter orders",
-      "filtersDescription": "Search by order, product, customer, or workshop.",
-      "searchPlaceholder": "Search order, product, or customer",
-      "empty": "No orders found for the current selection.",
-      "detailEyebrow": "Order details",
-      "detailDescription": "Order, customer, and production in one clear view.",
-      "summaryTitle": "Order summary",
-      "summaryDescription": "Product, workshop, and due date at a glance.",
-      "timelineTitle": "Tracking timeline",
-      "timelineDescription": "Latest steps for this order.",
-      "goldDetailsTitle": "Gold details",
-      "measurementsTitle": "Measurements",
-      "notesTitle": "Notes & instructions",
-      "itemQuantity": "{count} item(s) in this order",
-      "table": {
-        "order": "Order",
-        "customer": "Customer",
-        "workshop": "Workshop",
-        "status": "Status",
-        "employee": "Employee",
-        "dueDate": "Due date",
-        "action": "Action",
-        "product": "Product",
-        "trackingNumber": "Tracking no.",
-        "email": "Email",
-        "trackingStatus": "Tracking status"
-      },
-      "customerTitle": "Customer",
-      "customerDescription": "Contact details and reference.",
-      "personalizationTitle": "Personalization",
-      "stonesTitle": "Stones",
-      "deliveryTitle": "Delivery",
-      "sidebarActionsTitle": "Actions",
-      "trackingTitle": "Tracking",
-      "trackingDescription": "Status, customer details, and recent steps at a glance.",
-      "trackingNumberLabel": "Tracking number",
-      "trackingStatusLabel": "Tracking status",
-      "customerEmailLabel": "Customer email",
-      "emailUpdatesLabel": "Email updates",
-      "updatePanelTitle": "Update status",
-      "updatePanelDescription": "Manage the tracking status and note for the customer flow.",
-      "updateNoteLabel": "Note",
-      "updateNotePlaceholder": "Short note about this change",
-      "notifyByEmail": "Notify customer by email",
-      "noCustomerEmail": "No customer email is stored.",
-      "copySuccess": "Tracking link copied.",
-      "customerNotified": "Customer notified.",
-      "notifyError": "Notification could not be prepared right now.",
-      "notifyDefaultMessage": "There is a new update for your order.",
-      "statusSavedDescription": "Tracking status was updated.",
-      "statusSavedAndNotified": "Tracking status saved and customer notified.",
-      "statusSaved": "Tracking status saved.",
-      "noStatusChanges": "Please change the status or add a note.",
-      "publicStageLabel": "Public stage",
-      "internalStatusLabel": "Internal tracking status",
-      "publicStageHelp": "Only these three milestones are visible to customers and can trigger customer emails.",
-      "publicStageEmailNotice": "When this public stage changes, the customer email is sent automatically if email updates are enabled.",
-      "publicStageSavedAndNotified": "Public stage saved and customer notified.",
-      "noPublicStage": "Not published yet",
-      "notStageSpecific": "No public stage",
-      "emailTemplateLabel": "Template",
-      "emailLogDuplicateSkipped": "This email was skipped because the same customer template was already sent for this order.",
-      "emailLogSmtpNotice": "Email delivery was skipped because SMTP is not fully configured.",
-      "emailLogErrorFallback": "The email could not be delivered. Please review the SMTP configuration and logs."
-    },
-    "workshops": {
-      "eyebrow": "Workshops",
-      "title": "Workshops",
-      "description": "Manage workshops, contacts, and workload.",
-      "cards": {
-        "contact": "Contact",
-        "activeOrders": "Active orders",
-        "completed": "Completed this month",
-        "performance": "On-time rate",
-        "email": "Email"
-      }
-    },
-    "employees": {
-      "eyebrow": "Employees",
-      "title": "Employees",
-      "description": "Manage the team, roles, and current tasks.",
-      "filtersTitle": "Filter employees",
-      "filtersDescription": "Search by name, role, or workshop.",
-      "searchPlaceholder": "Search employees",
-      "empty": "No employees found for the current selection.",
-      "table": {
-        "employee": "Employee",
-        "role": "Role",
-        "workshop": "Workshop",
-        "workload": "Workload",
-        "accountStatus": "Account",
-        "status": "Status",
-        "activeTasks": "Active tasks",
-        "attendance": "Attendance",
-        "actions": "Actions"
-      },
-      "account": {
-        "create": "Create employee",
-        "edit": "Edit employee",
-        "formDescription": "Maintain employee details and account access in one place.",
-        "saved": "The employee record was saved.",
-        "inviteSent": "The access email was sent.",
-        "inviteDeliveryFailed": "The account was saved, but the access email could not be delivered.",
-        "passwordResetSent": "The password reset email was sent.",
-        "passwordResetDeliveryFailed": "The reset link was created, but the email could not be delivered.",
-        "linked": "The employee was linked to the existing account.",
-        "notLinked": "No matching auth account is linked to this employee yet.",
-        "duplicateEmail": "This email address is already assigned to another employee.",
-        "emailRequired": "An email address is required for account access.",
-        "linkInUse": "This auth account is already linked to another employee.",
-        "roleConflict": "The linked auth account already belongs to a different internal role.",
-        "roleNotAllowed": "You are not allowed to manage this employee account.",
-        "notFound": "The employee could not be found anymore.",
-        "reactivated": "The employee account was reactivated.",
-        "deactivated": "The employee account was deactivated.",
-        "noEmail": "No email address saved",
-        "lastInvite": "Last invite",
-        "lastLogin": "Last login",
-        "lastPasswordReset": "Last password reset",
-        "status": {
-          "active": "Active",
-          "disabled": "Disabled",
-          "invited": "Invited",
-          "missing_auth_user": "Not linked"
-        },
-        "actions": {
-          "sendInvite": "Send invite",
-          "resendInvite": "Resend invite",
-          "linkAccount": "Link account",
-          "resetPassword": "Reset password"
-        }
-      },
-      "form": {
-        "fullName": "Full name",
-        "attendance": "Attendance",
-        "phone": "Phone",
-        "email": "Email",
-        "emailHint": "Used for login, invites, and password resets.",
-        "shift": "Shift",
-        "notes": "Notes",
-        "active": "Employee is active"
-      }
-    },
-    "attendance": {
-      "eyebrow": "Attendance",
-      "title": "Attendance",
-      "description": "Track shifts, status, and absences.",
-      "filtersTitle": "Filter by status",
-      "filtersDescription": "Filter by status and workshop.",
-      "empty": "No attendance data found for this selection.",
-      "table": {
-        "employee": "Employee",
-        "date": "Date",
-        "shift": "Shift",
-        "status": "Status",
-        "note": "Note",
-        "workshop": "Workshop"
-      }
-    },
-    "reports": {
-      "eyebrow": "Reports",
-      "title": "Reports",
-      "description": "KPI snapshot for production, orders, and workshops.",
-      "cards": {
-        "productionTime": "Average production time",
-        "ready": "Ready orders",
-        "delivered": "Delivered orders",
-        "activeWorkshops": "Active workshops"
-      },
-      "tabs": {
-        "status": "Status",
-        "workshops": "Workshops",
-        "options": "Options",
-        "workload": "Workload"
-      },
-      "statusTitle": "Orders by status",
-      "statusDescription": "Quick look at the current production distribution.",
-      "workshopsTitle": "Orders by workshop",
-      "workshopsDescription": "Which workshop is currently carrying how much load.",
-      "optionsTitle": "Option usage",
-      "optionsDescription": "Which option fields are used most often at the moment.",
-      "workloadTitle": "Employee workload",
-      "workloadDescription": "Active orders and rough completion rate per person.",
-      "activeOrdersCount": "{count} active orders"
-    },
-    "archive": {
-      "eyebrow": "Archive",
-      "title": "Archive",
-      "description": "Browse archived orders and products.",
-      "ordersTitle": "Archived orders",
-      "ordersDescription": "Finished or archived production flows.",
-      "productsTitle": "Archived products",
-      "productsDescription": "Inactive or temporarily hidden product cards.",
-      "deleteDisabled": "Delete disabled",
-      "filtersTitle": "Filter archive",
-      "filtersDescription": "Search by item, type, or status.",
-      "searchPlaceholder": "Search archive",
-      "empty": "No archived items found.",
-      "typeOrder": "Order",
-      "typeProduct": "Product",
-      "table": {
-        "item": "Item",
-        "type": "Type",
-        "status": "Status",
-        "context": "Context",
-        "actions": "Actions"
-      }
-    },
-    "settings": {
-      "eyebrow": "Settings",
-      "title": "Settings",
-      "description": "Manage company details, contact information, and dashboard settings.",
-      "contactTitle": "Contact information",
-      "contactDescription": "Core company details for the internal area.",
-      "preferencesTitle": "Dashboard preferences",
-      "preferencesDescription": "Adjust language and appearance for the admin workspace.",
-      "fields": {
-        "companyName": "Company name",
-        "address": "Address",
-        "phone": "Phone",
-        "defaultLanguage": "Default language",
-        "dashboardTheme": "Dashboard theme",
-        "contactFormStatus": "Contact form",
-        "demoRole": "Access role",
-        "density": "Density",
-        "email": "Email",
-        "legalNotice": "Imprint",
-        "privacyPolicy": "Privacy policy",
-        "sidebarMode": "Sidebar mode"
-      },
-      "values": {
-        "luxuryDark": "Luxury Dark",
-        "softGold": "Soft Gold",
-        "comfortable": "Comfortable",
-        "compact": "Compact",
-        "compactDensity": "Compact",
-        "expanded": "Expanded"
-      },
-      "companyTitle": "Company details",
-      "companyDescription": "Core business details for the admin area.",
-      "websiteTitle": "Website",
-      "websiteDescription": "Language, theme, and contact form settings.",
-      "dashboardTitle": "Dashboard",
-      "dashboardDescription": "Control role view, sidebar behavior, and interface density.",
-      "legalTitle": "Legal",
-      "legalDescription": "Maintain the internal overview for legal notice and privacy details.",
-      "previewMessage": "Preview refreshed.",
-      "resetMessage": "Settings were reset.",
-      "saveMessage": "Settings saved."
-    },
-    "systemCheck": {
-      "title": "System check",
-      "description": "Review the current sync controls and refresh access when needed.",
-      "statusTitle": "Current status",
-      "statusDescription": "These controls affect the internal sync view and access state.",
-      "pinLabel": "Access PIN",
-      "pinPlaceholder": "Enter access PIN",
-      "unlockDescription": "Enter the access PIN to continue.",
-      "continue": "Continue",
-      "refresh": "Refresh",
-      "sync": "Sync",
-      "syncOn": "Sync ON",
-      "syncOff": "Sync OFF",
-      "gate": "Access",
-      "gateEnabled": "Enabled",
-      "gateDisabled": "Disabled",
-      "statusEnabled": "Enabled",
-      "statusDisabled": "Disabled",
-      "expiresAt": "Expires at",
-      "lastRotatedAt": "Last rotated",
-      "lastUsedAt": "Last used",
-      "version": "Version",
-      "rotate": "Rotate link",
-      "disableGate": "Disable link",
-      "setExpiry": "Set expiry",
-      "unavailable": "This page is unavailable right now.",
-      "updated": "Settings updated.",
-      "linkDisabled": "The current link has been disabled.",
-      "newLinkCreated": "The new link is ready.",
-      "linkReadyTitle": "Update complete",
-      "linkReadyDescription": "The full access link is only shown at this moment.",
-      "deliveryStatusLabel": "Delivery to saved address",
-      "deliverySent": "Sent",
-      "deliveryFailed": "Not sent",
-      "copyLink": "Copy link",
-      "copySuccess": "Link copied.",
-      "newLinkLabel": "Full link",
-      "linkShownOnce": "This link will not be shown again.",
-      "mutationUnavailable": "The update could not be completed right now.",
-      "pinInvalid": "The access PIN is invalid.",
-      "invalidSession": "Please enter the access PIN again."
-    },
-    "trackingStatus": {
-      "created": "Created",
-      "sent_to_workshop": "Sent to workshop",
-      "accepted_by_workshop": "Accepted by workshop",
-      "in_production": "In production",
-      "quality_check": "Quality check",
-      "ready_for_pickup": "Ready for pickup",
-      "on_the_way": "On the way",
-      "delivered_to_store": "Delivered to store",
-      "picked_up": "Picked up",
-      "completed": "Completed",
-      "cancelled": "Cancelled"
-    },
-    "publicTrackingStage": {
-      "order_in_workshop": "Order in workshop",
-      "in_production": "In production",
-      "quality_check": "Quality check",
-      "ready_for_pickup": "Ready for pickup",
-      "shipping": "Shipping",
-      "delivered": "Delivered",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "on_the_way": "On the way",
-      "delivered_to_store": "Delivered to store",
-      "picked_up": "Picked up"
-    },
-    "emailLogStatus": {
-      "pending": "Pending",
-      "sent": "Email sent",
-      "skipped": "Email skipped",
-      "failed": "Email failed"
-    },
-    "emailTemplateType": {
-      "orderConfirmation": "Order confirmation",
-      "publicStageUpdate": "Public stage update"
-    },
-    "assignmentStatus": {
-      "assigned": "Assigned",
-      "accepted": "Accepted",
-      "in_progress": "In progress",
-      "waiting": "Waiting",
-      "completed": "Completed",
-      "returned": "Returned"
-    }
-  },
-  "Tracking": {
-    "title": "Order status",
-    "description": "Follow the current status of your order with GoldHelwah GmbH.",
-    "currentStatus": "Current status",
-    "timelineTitle": "Timeline",
-    "timelineDescription": "Latest updates for your order.",
-    "contact": "Contact",
-    "phone": "Call",
-    "backToWebsite": "Back to website",
-    "trackingNumberLabel": "Tracking number",
-    "currentPublicStageLabel": "Current public stage",
-    "progressTitle": "Public progress",
-    "progressDescription": "We only publish three customer-facing milestones for your order.",
-    "trackAnotherOrder": "Track another order",
-    "contactSupport": "Contact support",
-    "notesTitle": "Customer updates",
-    "notesDescription": "Only customer-facing updates are shown here.",
-    "orderReceivedLabel": "Order received",
-    "instructionsTitle": "How to track your order",
-    "instructionsDescription": "Use your tracking number from the website menu instead of a direct tracking link.",
-    "instructionsStepOne": "Open the website homepage.",
-    "instructionsStepTwo": "Click \"Track order\" in the menu.",
-    "instructionsStepThree": "Enter your tracking number.",
-    "receivedMessage": "We received your order and will update the public status soon.",
-    "receivedDescription": "Your order has been recorded and is waiting for its first public milestone.",
-    "currentStageDescription": "This is the current public milestone for your order.",
-    "completedStageDescription": "This stage has already been completed.",
-    "upcomingStageDescription": "This stage will appear once your order reaches it.",
-    "lookup": {
-      "eyebrow": "Track order",
-      "title": "Look up your order",
-      "description": "Enter your tracking number to see the latest public updates for your GoldHelwah order.",
-      "helperTitle": "Need your number?",
-      "helperDescription": "You can find the tracking number in your order email and use it from the website menu.",
-      "formTitle": "Enter your tracking number",
-      "formDescription": "We will open the live order page for this tracking number.",
-      "label": "Tracking number",
-      "placeholder": "GH-20260618-0001",
-      "submit": "Track order",
-      "emptyError": "Please enter your tracking number."
-    },
-    "support": {
-      "title": "Contact support",
-      "description": "Need help with this order? Send us a message and our team will follow up.",
-      "success": "Your message has been sent.",
-      "error": "We could not send your message right now."
-    },
-    "stages": {
-      "order_in_workshop": "Order in workshop",
-      "shipping": "Order is being shipped",
-      "ready_for_pickup": "Ready for pickup"
-    }
-  },
-  "AGB": {"eyebrow":"Legal","title":"Terms & Conditions","description":"Draft terms for the GoldHelwah showroom and consultation website.","sections":[{"title":"Scope","text":"These terms apply to consultations, requests and individually agreed services."},{"title":"Products and availability","text":"Presentations are non-binding and subject to confirmation."},{"title":"Custom designs","text":"Custom work requires accurate requirements and approval by the customer."},{"title":"Prices, pickup and delivery","text":"Terms apply only as individually agreed in writing."},{"title":"Liability and copyright","text":"Liability is limited as permitted by law; images and content are protected."},{"title":"Privacy and final provisions","text":"Our privacy notice applies. German law applies where permitted."}]}
-,
-  "PublicVisuals": {"title":"Public visuals","description":"Hero image overrides and promotional popup settings.","homeHero":"Homepage hero image URL","shopHero":"Shop hero image URL","enabled":"Enable promo popup","showOnce":"Show once per visitor","promoTitle":"Promo title","promoDescription":"Promo description","ctaText":"CTA text","ctaUrl":"CTA URL","imageUrl":"Promo image URL","videoUrl":"Promo video URL","start":"Promo start","end":"Promo end","style":"Promo style","save":"Save","reset":"Reset hero images","luxury":"Luxury card","image":"Image feature","announcement":"Announcement banner"}
+    "Metadata":  {
+                     "site":  {
+                                  "brand":  "GoldHelwah GmbH",
+                                  "title":  "GoldHelwah GmbH",
+                                  "description":  "GoldHelwah GmbH presents selected gold jewelry with real product imagery, personal consultation, and a clear showroom experience in SaarbrÃ¼cken.",
+                                  "keywords":  [
+                                                   "GoldHelwah GmbH",
+                                                   "gold jewelry",
+                                                   "luxury jewelry",
+                                                   "jewelry catalog",
+                                                   "showroom",
+                                                   "wedding rings"
+                                               ]
+                              },
+                     "pages":  {
+                                   "home":  {
+                                                "title":  "Luxury Gold Jewelry Showroom",
+                                                "description":  "Discover gold jewelry with presence, real imagery, and personal consultation at GoldHelwah GmbH."
+                                            },
+                                   "shop":  {
+                                                "title":  "Collection",
+                                                "description":  "Explore selected pieces, categories, and product details in the GoldHelwah GmbH collection."
+                                            },
+                                   "contact":  {
+                                                   "title":  "Contact",
+                                                   "description":  "Contact GoldHelwah GmbH for consultation, product inquiries, and your visit to the showroom in SaarbrÃ¼cken."
+                                               },
+                                   "impressum":  {
+                                                     "title":  "Legal Notice",
+                                                     "description":  "Legal details and contact information for GoldHelwah GmbH at a glance."
+                                                 },
+                                   "privacy":  {
+                                                   "title":  "Privacy",
+                                                   "description":  "Privacy information for website visits, language preferences, and contact requests at GoldHelwah GmbH."
+                                               }
+                               }
+                 },
+    "Nav":  {
+                "tagline":  "Luxury Gold Jewelry",
+                "language":  "Change language",
+                "currentLanguage":  "Current",
+                "openMenu":  "Open menu",
+                "closeMenu":  "Close menu",
+                "links":  {
+                              "home":  "Home",
+                              "shop":  "Shop",
+                              "contact":  "Contact",
+                              "impressum":  "Legal Notice",
+                              "privacy":  "Privacy",
+                              "agb":  "Terms \u0026 Conditions",
+                              "tracking":  "Track order"
+                          }
+            },
+    "Footer":  {
+                   "description":  "GoldHelwah GmbH offers selected gold jewelry, personal consultation, and a clear presentation experience in SaarbrÃ¼cken.",
+                   "navigationTitle":  "Pages",
+                   "contactTitle":  "Contact",
+                   "socialTitle":  "Follow us",
+                   "emailPlaceholder":  "service@goldhelwah.de",
+                   "legalNote":  "Visit us in SaarbrÃ¼cken or contact us for personal consultation.",
+                   "rights":  "GoldHelwah GmbH. All rights reserved.",
+                   "socials":  {
+                                   "instagram":  "Instagram",
+                                   "facebook":  "Facebook",
+                                   "tiktok":  "TikTok",
+                                   "snapchat":  "Snapchat",
+                                   "whatsapp":  "WhatsApp"
+                               }
+               },
+    "Home":  {
+                 "hero":  {
+                              "eyebrow":  "GoldHelwah GmbH",
+                              "title":  "GoldHelwah GmbH",
+                              "subtitle":  "We craft beauty",
+                              "description":  "We reflect the precision of detail and the elegance of design, with personal consultation that guides you toward the gold piece that suits your presence and the value of the occasion.",
+                              "primaryCta":  "Discover products",
+                              "secondaryCta":  "Request consultation",
+                              "backgroundAlt":  "GoldHelwah GmbH hero composition",
+                              "stats":  [
+                                            {
+                                                "value":  "17",
+                                                "label":  "Categories"
+                                            },
+                                            {
+                                                "value":  "5",
+                                                "label":  "Languages"
+                                            },
+                                            {
+                                                "value":  "SaarbrÃ¼cken",
+                                                "label":  "Showroom"
+                                            }
+                                        ]
+                          },
+                 "categories":  {
+                                    "eyebrow":  "Selected Categories",
+                                    "title":  "Collections that catch the eye immediately.",
+                                    "description":  "Choose from lines, sets, and standout gold pieces.",
+                                    "emptyTitle":  "No products are currently visible",
+                                    "emptyText":  "As soon as new collections are activated in the dashboard, they will appear here automatically."
+                                },
+                 "products":  {
+                                  "eyebrow":  "Selected Products",
+                                  "title":  "Real imagery. Clear selection. Gold with character.",
+                                  "description":  "Selected jewelry pieces across different categories.",
+                                  "sectionCta":  "Open showroom",
+                                  "cardCta":  "View details",
+                                  "emptyTitle":  "No products are currently visible",
+                                  "emptyText":  "Activate products in the dashboard or contact us for a personal selection."
+                              },
+                 "showcase":  {
+                                  "eyebrow":  "Selected from the showroom",
+                                  "title":  "Selected pieces with clear details",
+                                  "description":  "Browse highlighted gold jewelry from our collection with real images and details that help you choose with confidence.",
+                                  "sectionCta":  "Browse the collection",
+                                  "cardCta":  "View details",
+                                  "leadCta":  "Request consultation",
+                                  "emptyTitle":  "No products are currently visible",
+                                  "emptyText":  "When new products are saved and activated, this section will update automatically."
+                              },
+                 "aboutGold":  {
+                                   "eyebrow":  "About gold",
+                                   "title":  "Gold that lasts.",
+                                   "description":  "Gold is more than jewelry. It stands for value, memory, and meaningful moments. At GoldHelwah GmbH, we present pieces chosen for visual presence and personal significance.",
+                                   "imageAlt":  "Gold jewelry detail from GoldHelwah GmbH",
+                                   "points":  [
+                                                  "Lasting value",
+                                                  "Personal meaning",
+                                                  "Visible craftsmanship"
+                                              ]
+                               },
+                 "aboutCompany":  {
+                                      "eyebrow":  "About us",
+                                      "title":  "About GoldHelwah GmbH",
+                                      "description":  "In SaarbrÃ¼cken, GoldHelwah GmbH combines selected gold jewelry with personal consultation and a clear, trustworthy presentation.",
+                                      "teamLabel":  "Our approach",
+                                      "story":  "The GoldHelwah GmbH team and management focus on personal advice, a clear selection, and pieces that suit both the occasion and the wearer.",
+                                      "locationLabel":  "On site"
+                                  },
+                 "trust":  {
+                               "eyebrow":  "Why GoldHelwah GmbH",
+                               "title":  "Clear, personal, and close to the product.",
+                               "items":  [
+                                             {
+                                                 "title":  "Personal consultation",
+                                                 "description":  "Direct and individually guided."
+                                             },
+                                             {
+                                                 "title":  "Real product imagery",
+                                                 "description":  "The selection shows real pieces."
+                                             },
+                                             {
+                                                 "title":  "Custom Designs",
+                                                 "description":  "Any idea you have can be transformed into a unique gold piece with beautiful details, from name engraving and size adjustments to personal touches that reflect your style."
+                                             },
+                                             {
+                                                 "title":  "Pickup in Saarbruecken",
+                                                 "description":  "Available in person on site."
+                                             }
+                                         ]
+                           },
+                 "cta":  {
+                             "badge":  "GoldHelwah GmbH Service",
+                             "title":  "Looking for a gift or a custom-made piece?",
+                             "description":  "We are happy to guide you through selection, special requests, and personal consultation.",
+                             "primaryCta":  "View shop",
+                             "secondaryCta":  "Call now"
+                         }
+             },
+    "Shop":  {
+                 "hero":  {
+                              "eyebrow":  "GoldHelwah GmbH",
+                              "title":  "Collection",
+                              "subtitle":  "Real product imagery, clear selection, and personal consultation.",
+                              "primaryCta":  "Request consultation",
+                              "secondaryCta":  "Call us",
+                              "stats":  {
+                                            "categories":  "Categories",
+                                            "featured":  "Featured",
+                                            "checkout":  "Consultation"
+                                        },
+                              "visualBadge":  "Selected view",
+                              "visualAlt":  "GoldHelwah GmbH jewelry showroom",
+                              "cards":  {
+                                            "oneLabel":  "Visual focus",
+                                            "oneText":  "Generous product cards with real imagery and reduced copy.",
+                                            "twoLabel":  "Catalog structure",
+                                            "twoText":  "Categories, product details, and consultation requests stay clear and easy to browse."
+                                        }
+                          },
+                 "grid":  {
+                              "eyebrow":  "Collection",
+                              "title":  "Discover by category.",
+                              "all":  "All",
+                              "resultsSuffix":  "pieces",
+                              "emptyBadge":  "On request",
+                              "emptyTitle":  "We are happy to guide you to the right piece for this selection.",
+                              "emptyText":  "Contact us if you are looking for a specific line or model."
+                          },
+                 "card":  {
+                              "cta":  "Details"
+                          },
+                 "modal":  {
+                               "close":  "Close",
+                               "fallbackCategory":  "Collection",
+                               "categoryLabel":  "Category",
+                               "galleryLabel":  "Gallery",
+                               "galleryCountSuffix":  "images",
+                               "tagsLabel":  "Details",
+                               "requestCta":  "Send inquiry",
+                               "backCta":  "Back"
+                           }
+             },
+    "Contact":  {
+                    "hero":  {
+                                 "eyebrow":  "Contact",
+                                 "title":  "Personal consultation starts with clear contact.",
+                                 "subtitle":  "For product inquiries, appointments, and WhatsApp messages, you will find the fastest ways to reach GoldHelwah GmbH here.",
+                                 "primaryCta":  "View collection",
+                                 "secondaryCta":  "Read privacy"
+                             },
+                    "cards":  {
+                                  "consultationTitle":  "Consultation",
+                                  "consultationValue":  "Personal \u0026 curated",
+                                  "consultationText":  "Collections, gift ideas, and custom requests are discussed individually.",
+                                  "phoneTitle":  "Phone",
+                                  "phoneText":  "Direct contact for quick questions or scheduling.",
+                                  "phoneCta":  "Call now",
+                                  "whatsappTitle":  "WhatsApp",
+                                  "whatsappText":  "Ideal for quick questions and photo references from the showroom.",
+                                  "whatsappCta":  "Start chat"
+                              },
+                    "form":  {
+                                 "eyebrow":  "Get in touch",
+                                 "title":  "Get in touch",
+                                 "description":  "Write to us for product inquiries, consultation, or custom-made jewelry.",
+                                 "highlights":  "Contact",
+                                 "fields":  {
+                                                "name":  "Name",
+                                                "email":  "Email",
+                                                "phone":  "Phone",
+                                                "message":  "Message"
+                                            },
+                                 "placeholders":  {
+                                                      "name":  "Your name",
+                                                      "email":  "Your email address",
+                                                      "phone":  "Your phone number",
+                                                      "message":  "What is your inquiry about?"
+                                                  },
+                                 "submit":  "Send message",
+                                 "submitPending":  "Sending",
+                                 "success":  "Thank you. Your inquiry has been recorded.",
+                                 "error":  "Please check your details and try again.",
+                                 "validation":  {
+                                                    "name":  "Please enter your name.",
+                                                    "email":  "Please enter a valid email address.",
+                                                    "phone":  "Please enter a valid phone number.",
+                                                    "message":  "Please add a short message."
+                                                }
+                             },
+                    "location":  {
+                                     "eyebrow":  "Location",
+                                     "title":  "Visit GoldHelwah GmbH in SaarbrÃ¼cken.",
+                                     "description":  "Address, phone, and directions at a glance.",
+                                     "addressLabel":  "Address",
+                                     "phoneLabel":  "Phone",
+                                     "routeCta":  "Plan route",
+                                     "callCta":  "Call",
+                                     "mapTitle":  "GoldHelwah GmbH location on Google Maps"
+                                 }
+                },
+    "Impressum":  {
+                      "eyebrow":  "Legal",
+                      "title":  "Legal notice",
+                      "description":  "Official provider information and legal notices for Gold Helwah.",
+                      "complianceNoticeTitle":  "Information according to Â§ 5 DDG",
+                      "complianceNoticeDescription":  "The following information applies to the Gold Helwah website.",
+                      "sections":  [
+                                       {
+                                           "title":  "Provider",
+                                           "lines":  [
+                                                         "Gold Helwah",
+                                                         "Inh. Khaled Helwah",
+                                                         "Breite StraÃŸe 9, 66115 SaarbrÃ¼cken",
+                                                         "Deutschland"
+                                                     ]
+                                       },
+                                       {
+                                           "title":  "Contact",
+                                           "lines":  [
+                                                         "We are happy to assist you with any questions:",
+                                                         "Phone: +49 173 537 1225",
+                                                         "Email: service@goldhelwah.de"
+                                                     ]
+                                       },
+                                       {
+                                           "title":  "VAT ID",
+                                           "lines":  [
+                                                         "VAT identification number according to Â§ 27 a German Value Added Tax Act:",
+                                                         "DE313207537"
+                                                     ]
+                                       },
+                                       {
+                                           "title":  "Represented by",
+                                           "lines":  "Khaled Helwah"
+                                       },
+                                       {
+                                           "title":  "Liability for links",
+                                           "lines":  [
+                                                         "Our website contains links to external third-party websites whose content we do not control. Therefore, we cannot assume any liability for this external content.",
+                                                         "The respective provider or operator is always responsible for the content of linked pages.",
+                                                         "The linked pages were checked for possible legal violations at the time of linking. No unlawful content was identifiable at that time.",
+                                                         "Permanent monitoring of linked pages is not reasonable without concrete evidence of a legal violation. If we become aware of any infringements, we will remove such links immediately."
+                                                     ]
+                                       },
+                                       {
+                                           "title":  "Liability for content",
+                                           "lines":  [
+                                                         "The content of our pages has been created with great care. However, we cannot guarantee the correctness, completeness, or timeliness of the content.",
+                                                         "As a service provider, we are responsible for our own content on these pages in accordance with Â§ 5 DDG and general laws.",
+                                                         "According to Â§ 5 DDG, we are not obliged to monitor transmitted or stored third-party information or investigate circumstances that indicate illegal activity.",
+                                                         "Obligations to remove or block the use of information under general law remain unaffected.",
+                                                         "Liability in this respect is only possible from the time of knowledge of a concrete infringement. If we become aware of such violations, we will remove the content immediately."
+                                                     ]
+                                       }
+                                   ],
+                      "disclaimerTitle":  "Copyright",
+                      "disclaimerText":  "The content and works created by the site operators on these pages are subject to German copyright law. Reproduction, editing, distribution, and any type of use outside the limits of copyright require the written consent of the respective author or creator. Downloads and copies of this site are permitted only for private, non-commercial use. Where content on this site was not created by the operator, third-party copyrights are respected and such content is marked accordingly. Should you nevertheless become aware of a copyright infringement, please inform us. If we become aware of any legal violations, we will remove such content immediately."
+                  },
+    "Privacy":  {
+                    "eyebrow":  "Privacy",
+                    "title":  "Privacy information",
+                    "description":  "This page explains how personal data is processed when you visit the website or contact us.",
+                    "intro":  "We process personal data only to the extent required to provide the website, store your language preference, and respond to inquiries.",
+                    "sections":  [
+                                     {
+                                         "title":  "1. Responsible party",
+                                         "paragraphs":  [
+                                                            "The responsible party for data processing on this website is Gold Helwah, Inh. Khaled Helwah, Breite StraÃŸe 9, 66115 SaarbrÃ¼cken, Deutschland, phone +49 173 537 1225, email service@goldhelwah.de.",
+                                                            "If you have questions about privacy or wish to exercise your rights, you can contact us at any time."
+                                                        ]
+                                     },
+                                     {
+                                         "title":  "2. Technical connection data",
+                                         "paragraphs":  [
+                                                            "When you visit the website, technically necessary data such as IP address, date and time, browser information, and requested pages may be processed.",
+                                                            "This processing is necessary to provide the website securely and reliably."
+                                                        ]
+                                     },
+                                     {
+                                         "title":  "3. Contact and inquiry requests",
+                                         "paragraphs":  [
+                                                            "If you contact us by contact form, email, phone, or WhatsApp, we process the information you provide only to handle your request.",
+                                                            "The data processed depends on the subject of your request and the information you share with us."
+                                                        ]
+                                     },
+                                     {
+                                         "title":  "4. Language preference and essential cookies",
+                                         "paragraphs":  [
+                                                            "The website supports multiple languages and may store your selected language for technical reasons.",
+                                                            "This information is used only to display the website in your preferred language on later visits."
+                                                        ]
+                                     },
+                                     {
+                                         "title":  "5. Your rights",
+                                         "paragraphs":  [
+                                                            "You have the right to request information about your stored personal data and, where the legal requirements are met, to request correction, deletion, or restriction of processing.",
+                                                            "You may also object to processing or withdraw previously granted consent with effect for the future."
+                                                        ]
+                                     }
+                                 ],
+                    "noticeTitle":  "Current version",
+                    "noticeText":  "We review this privacy information regularly and update it whenever our website, communication channels, or legal obligations change."
+                },
+    "Admin":  {
+                  "orderMaintenance":  {
+                                           "title":  "Order Maintenance",
+                                           "description":  "Manage and remove orders only.",
+                                           "preview":  "Preview",
+                                           "previewSuccess":  "Preview ready.",
+                                           "archiveCompleted":  "Archive completed",
+                                           "archiveDescription":  "Archive completed, ready, or cancelled orders.",
+                                           "clearActive":  "Hide active orders",
+                                           "clearDescription":  "Soft-delete active orders from admin views.",
+                                           "deletePermanent":  "Delete orders permanently",
+                                           "deleteDescription":  "Permanently remove archived or deleted orders from the database.",
+                                           "affectedOrders":  "Affected orders",
+                                           "confirmCheckbox":  "I understand this action affects orders only.",
+                                           "excludedNote":  "Products, images, and users are excluded.",
+                                           "deleteSuccess":  "Orders deleted.",
+                                           "archiveSuccess":  "Orders archived.",
+                                           "clearSuccess":  "Active orders hidden.",
+                                           "noOrders":  "No matching orders.",
+                                           "auditRequired":  "Execution stops if the audit log cannot be created.",
+                                           "genericError":  "Unable to complete order maintenance."
+                                       },
+                  "loading":  {
+                                  "loading":  "Loading…",
+                                  "saving":  "Saving…",
+                                  "updating":  "Updating…",
+                                  "previewing":  "Preparing preview…",
+                                  "executing":  "Executing operation…",
+                                  "uploading":  "Uploading…",
+                                  "archiving":  "Archiving…",
+                                  "clearing":  "Hiding orders…",
+                                  "deleting":  "Deleting…",
+                                  "resetting":  "Resetting…",
+                                  "pleaseWait":  "Please wait…",
+                                  "actionInProgress":  "Action in progress",
+                                  "saveInProgress":  "Saving changes now",
+                                  "editInProgress":  "Updating data now"
+                              },
+                  "meta":  {
+                               "title":  "Admin",
+                               "description":  "GoldHelwah GmbH admin for catalog, orders, and workshops."
+                           },
+                  "header":  {
+                                 "adminArea":  "Admin area",
+                                 "demoMode":  "Access role",
+                                 "activeUser":  "Active user",
+                                 "roleFoundation":  "Role foundation",
+                                 "roleHint":  "Roles and views are clearly assigned across the internal workspace.",
+                                 "welcome":  "Welcome, {name}",
+                                 "toWebsite":  "View site"
+                             },
+                  "roles":  {
+                                "super_admin":  "Super Admin",
+                                "admin":  "Admin",
+                                "employee":  "Employee"
+                            },
+                  "nav":  {
+                              "overview":  "Overview",
+                              "products":  "Products",
+                              "categories":  "Categories",
+                              "gallery":  "Workshop Order",
+                              "options":  "Options",
+                              "orders":  "Orders",
+                              "workshops":  "Workshops",
+                              "employees":  "Employees",
+                              "attendance":  "Attendance",
+                              "reports":  "Reports",
+                              "archive":  "Archive",
+                              "settings":  "Settings",
+                              "myTasks":  "My Tasks",
+                              "inquiries":  "Customer inquiries"
+                          },
+                  "buttons":  {
+                                  "openMenu":  "Menu",
+                                  "close":  "Close",
+                                  "demoLogin":  "Switch account",
+                                  "addProduct":  "Add product",
+                                  "createOrder":  "Create order",
+                                  "viewDetails":  "Details",
+                                  "edit":  "Edit",
+                                  "delete":  "Delete",
+                                  "newCategory":  "New category",
+                                  "bulkEnable":  "Activate",
+                                  "bulkDisable":  "Deactivate",
+                                  "assignOptions":  "Assign options",
+                                  "saveDraft":  "Save draft",
+                                  "submitOrder":  "Send order to workshop",
+                                  "createCustomOption":  "Custom option",
+                                  "addOption":  "Add option",
+                                  "addWorkshop":  "Add workshop",
+                                  "addEmployee":  "Add employee",
+                                  "addAbsence":  "Add absence",
+                                  "markReady":  "Mark ready",
+                                  "updateStatus":  "Change status",
+                                  "assignEmployee":  "Assign employee",
+                                  "addNote":  "Add note",
+                                  "archive":  "Archive",
+                                  "restore":  "Restore",
+                                  "backToOrders":  "Back to orders",
+                                  "duplicate":  "Duplicate",
+                                  "deactivate":  "Deactivate",
+                                  "activate":  "Activate",
+                                  "options":  "Options",
+                                  "createOptionGroup":  "Create group",
+                                  "viewOrders":  "View orders",
+                                  "preview":  "Preview",
+                                  "reset":  "Reset",
+                                  "save":  "Save",
+                                  "next":  "Next",
+                                  "previous":  "Previous",
+                                  "notifyCustomer":  "Notify customer",
+                                  "copyTrackingLink":  "Copy tracking link",
+                                  "saveStatus":  "Save status"
+                              },
+                  "common":  {
+                                 "noAccessTitle":  "Access restricted",
+                                 "noAccessText":  "This view is not available for the current account.",
+                                 "catalogOnly":  "Showroom",
+                                 "curated":  "Curated",
+                                 "active":  "Active",
+                                 "inactive":  "Inactive",
+                                 "optional":  "Optional",
+                                 "required":  "Required",
+                                 "all":  "All",
+                                 "search":  "Search",
+                                 "selectPlaceholder":  "Please select",
+                                 "unassigned":  "Unassigned",
+                                 "noCustomer":  "No customer data",
+                                 "mockSubmit":  "Changes saved.",
+                                 "selected":  "Selected",
+                                 "internalOnly":  "Internal only",
+                                 "visibility":  "Visibility",
+                                 "visible":  "Visible",
+                                 "hidden":  "Hidden",
+                                 "yes":  "Yes",
+                                 "no":  "No",
+                                 "enabled":  "Enabled",
+                                 "disabled":  "Disabled",
+                                 "notProvided":  "Not specified"
+                             },
+                  "filters":  {
+                                  "category":  "Category",
+                                  "status":  "Status",
+                                  "featured":  "Featured",
+                                  "priority":  "Priority",
+                                  "workshop":  "Workshop",
+                                  "employee":  "Employee",
+                                  "role":  "Role"
+                              },
+                  "status":  {
+                                 "draft":  "Draft",
+                                 "sent_to_workshop":  "Sent to workshop",
+                                 "accepted":  "Accepted",
+                                 "assigned":  "Assigned",
+                                 "in_production":  "In production",
+                                 "quality_check":  "Quality check",
+                                 "ready":  "Ready",
+                                 "delivered":  "Delivered",
+                                 "cancelled":  "Cancelled",
+                                 "archived":  "Archived",
+                                 "present":  "Present",
+                                 "absent":  "Absent",
+                                 "vacation":  "Vacation",
+                                 "sick":  "Sick",
+                                 "late":  "Late"
+                             },
+                  "priority":  {
+                                   "normal":  "Normal",
+                                   "urgent":  "Urgent",
+                                   "express":  "Express"
+                               },
+                  "overview":  {
+                                   "eyebrow":  "Dashboard",
+                                   "title":  "Overview",
+                                   "description":  "Catalog, orders, and workshops at a glance.",
+                                   "stats":  {
+                                                 "totalProducts":  "Total products",
+                                                 "totalProductsHint":  "Real catalog data from the showroom",
+                                                 "activeCategories":  "Active categories",
+                                                 "activeCategoriesHint":  "Clearly structured",
+                                                 "newOrders":  "New workshop orders",
+                                                 "newOrdersHint":  "Draft and newly sent",
+                                                 "inProduction":  "In production",
+                                                 "inProductionHint":  "Currently in progress",
+                                                 "readyOrders":  "Ready orders",
+                                                 "readyOrdersHint":  "Prepared for handover or pickup",
+                                                 "employees":  "Employees",
+                                                 "employeesHint":  "Visible for the current role"
+                                             },
+                                   "recentOrdersTitle":  "Recent orders",
+                                   "recentOrdersDescription":  "Latest orders and status.",
+                                   "quickActionsTitle":  "Quick actions",
+                                   "quickActionsDescription":  "Common tasks within easy reach.",
+                                   "actions":  {
+                                                   "addProduct":  "Add product",
+                                                   "createOrder":  "Create order",
+                                                   "manageOptions":  "Manage options",
+                                                   "addEmployee":  "Add employee"
+                                               },
+                                   "workshopLoadTitle":  "Workshop load",
+                                   "workshopLoadDescription":  "Current workload by workshop."
+                               },
+                  "login":  {
+                                "title":  "Gold Helwah Admin",
+                                "description":  "Secure internal access for orders, catalog, and workflow operations.",
+                                "cards":  {
+                                              "securityTitle":  "Protected internal access",
+                                              "securityText":  "Use your internal access permissions according to your role.",
+                                              "rolesTitle":  "Clear roles",
+                                              "rolesText":  "Permissions are managed according to the assigned role.",
+                                              "catalogTitle":  "Catalog management",
+                                              "catalogText":  "Manage products and workshops from one place."
+                                          },
+                                "formTitle":  "Sign in",
+                                "formDescription":  "Use your assigned admin account.",
+                                "email":  "Email",
+                                "password":  "Password",
+                                "demoHint":  "Active demo role: {role}.",
+                                "demoUsersTitle":  "Available demo users",
+                                "invalidCredentials":  "The email address or password is incorrect.",
+                                "notices":  {
+                                                "accountInactive":  "This account is currently inactive. Please contact a super admin.",
+                                                "accountNotConfigured":  "This account is not configured for the admin area yet.",
+                                                "invalidLink":  "This access link is invalid or has already expired.",
+                                                "passwordUpdated":  "Your password was updated successfully. You can continue now."
+                                            }
+                            },
+                  "accountSetup":  {
+                                       "title":  "Set up your access",
+                                       "description":  "Create a password for your internal GoldHelwah account so you can enter the correct admin area.",
+                                       "resetTitle":  "Set a new password",
+                                       "resetDescription":  "Choose a new password for your internal GoldHelwah account.",
+                                       "securityTitle":  "Protected internal access",
+                                       "securityText":  "Use a strong password and do not share this access link with anyone else.",
+                                       "formTitle":  "Create password",
+                                       "formDescription":  "Set your password once to finish activating the account.",
+                                       "resetFormTitle":  "Reset password",
+                                       "resetFormDescription":  "Enter a new password to restore access to your account.",
+                                       "password":  "Password",
+                                       "confirmPassword":  "Confirm password",
+                                       "submit":  "Save password",
+                                       "resetSubmit":  "Update password",
+                                       "errors":  {
+                                                      "passwordLength":  "Please choose a password with at least 8 characters.",
+                                                      "passwordMismatch":  "The password confirmation does not match.",
+                                                      "sessionExpired":  "Your session is no longer valid. Please request a new link.",
+                                                      "updateFailed":  "The password could not be updated right now. Please try again."
+                                                  }
+                                   },
+                  "products":  {
+                                   "eyebrow":  "Product management",
+                                   "title":  "Manage products",
+                                   "description":  "Edit imagery, categories, and visibility.",
+                                   "filtersTitle":  "Filters \u0026 search",
+                                   "filtersDescription":  "Search by product, category, and status.",
+                                   "searchPlaceholder":  "Search products",
+                                   "featuredOnly":  "Featured",
+                                   "regularOnly":  "Not featured",
+                                   "viewCards":  "Cards",
+                                   "viewTable":  "Table",
+                                   "resultCount":  "{count} products",
+                                   "optionsCount":  "{count} options",
+                                   "empty":  "No products found for the current selection.",
+                                   "table":  {
+                                                 "product":  "Product",
+                                                 "sku":  "SKU",
+                                                 "category":  "Category",
+                                                 "status":  "Status",
+                                                 "options":  "Options",
+                                                 "actions":  "Actions",
+                                                 "sortOrder":  "Sort order"
+                                             }
+                               },
+                  "categories":  {
+                                     "eyebrow":  "Categories",
+                                     "title":  "Manage categories",
+                                     "description":  "Control collection structure, assignments, and visibility.",
+                                     "bulkTitle":  "Selection",
+                                     "bulkDescription":  "Update multiple categories together.",
+                                     "searchPlaceholder":  "Search categories",
+                                     "selectedCount":  "{count} selected",
+                                     "empty":  "No categories found for the current search.",
+                                     "table":  {
+                                                   "category":  "Category",
+                                                   "slug":  "Slug",
+                                                   "sortOrder":  "Sort order",
+                                                   "status":  "Status",
+                                                   "options":  "Options",
+                                                   "actions":  "Actions",
+                                                   "products":  "Products"
+                                               }
+                                 },
+                  "gallery":  {
+                                  "eyebrow":  "Gallery",
+                                  "title":  "Gallery",
+                                  "description":  "Select products and start workshop orders directly from the catalog.",
+                                  "filtersTitle":  "Filter gallery",
+                                  "filtersDescription":  "Search by product or category.",
+                                  "searchPlaceholder":  "Search products",
+                                  "internalOnly":  "Internal only",
+                                  "createWorkshopOrder":  "Create workshop order",
+                                  "emptyTitle":  "No products found",
+                                  "emptyDescription":  "Adjust the search or category."
+                              },
+                  "newOrder":  {
+                                   "eyebrow":  "New workshop order",
+                                   "title":  "Workshop Order",
+                                   "description":  "Choose the category first, then the product, and fill in only the options assigned to that product before sending it to the workshop.",
+                                   "productSelectionTitle":  "Product and references",
+                                   "productSelectionDescription":  "The internal gallery provides the product reference, imagery, and base data for the order.",
+                                   "summaryTitle":  "Summary",
+                                   "summaryDescription":  "The most important core details stay visible while the form is completed.",
+                                   "basicDescription":  "Capture order, customer, and workshop basics first.",
+                                   "optionEngineDescription":  "These sections combine standard options and free-form order details in one clear flow.",
+                                   "success":  "Order was sent to the workshop.",
+                                   "sections":  {
+                                                    "basic":  "Basics",
+                                                    "gold":  "Gold",
+                                                    "measurements":  "Measurements",
+                                                    "name":  "Name personalization",
+                                                    "stones":  "Stones",
+                                                    "notes":  "Notes",
+                                                    "product":  "Product",
+                                                    "order":  "Order",
+                                                    "personalization":  "Personalization",
+                                                    "workshop":  "Workshop",
+                                                    "review":  "Review",
+                                                    "tracking":  "Customer updates \u0026 tracking"
+                                                },
+                                   "fields":  {
+                                                  "product":  "Product from gallery",
+                                                  "orderNumber":  "Internal order number",
+                                                  "quantity":  "Quantity",
+                                                  "priority":  "Priority",
+                                                  "workshop":  "Workshop",
+                                                  "productName":  "Product name",
+                                                  "category":  "Category",
+                                                  "dueDate":  "Due date",
+                                                  "customerName":  "Customer name",
+                                                  "customerPhone":  "Customer phone",
+                                                  "customerReference":  "Customer reference",
+                                                  "targetWeight":  "Target weight",
+                                                  "weightTolerance":  "Weight tolerance",
+                                                  "pendantSize":  "Pendant size",
+                                                  "width":  "Width",
+                                                  "height":  "Height",
+                                                  "customMeasurements":  "Custom measurements",
+                                                  "hasNameCustomization":  "Enable name personalization",
+                                                  "previewRequired":  "Preview required",
+                                                  "nameLanguage":  "Name language",
+                                                  "fontStyle":  "Font style",
+                                                  "namePlacement":  "Name placement",
+                                                  "engravingPlacement":  "Engraving placement",
+                                                  "engravingNotes":  "Engraving notes",
+                                                  "hasStones":  "Include stones",
+                                                  "stoneShape":  "Stone shape",
+                                                  "stoneSize":  "Stone size",
+                                                  "stoneQuantity":  "Stone quantity",
+                                                  "stoneSetting":  "Stone setting",
+                                                  "customerNotes":  "Customer notes",
+                                                  "adminNotes":  "Admin notes",
+                                                  "qualityRequirements":  "Quality requirements",
+                                                  "attachmentNotes":  "Attachment notes",
+                                                  "assignedAdmin":  "Assigned admin",
+                                                  "assignedEmployee":  "Assigned employee",
+                                                  "goldKarat":  "Gold karat",
+                                                  "goldColor":  "Gold color",
+                                                  "ringSize":  "Ring size",
+                                                  "braceletSize":  "Bracelet size",
+                                                  "chainLength":  "Chain length",
+                                                  "workshopNotes":  "Workshop notes",
+                                                  "deliveryNotes":  "Delivery notes",
+                                                  "engravingText":  "Engraving text",
+                                                  "estimatedWeight":  "Estimated weight",
+                                                  "internalNotes":  "Internal notes",
+                                                  "language":  "Language",
+                                                  "nameCustomizationEnabled":  "Name personalization enabled",
+                                                  "nameText":  "Name / Text",
+                                                  "packagingNotes":  "Packaging notes",
+                                                  "placement":  "Placement",
+                                                  "stoneColor":  "Stone color",
+                                                  "stoneCount":  "Count",
+                                                  "stonesEnabled":  "Stones enabled",
+                                                  "stoneType":  "Stone type",
+                                                  "surface":  "Surface",
+                                                  "customerEmail":  "Customer email",
+                                                  "emailUpdatesEnabled":  "Enable email updates",
+                                                  "trackingNumber":  "Tracking number",
+                                                  "trackingStatus":  "Tracking status",
+                                                  "totalAmount":  "Total amount",
+                                                  "currency":  "Currency"
+                                              },
+                                   "productDescription":  "Choose the product and category.",
+                                   "orderDescription":  "Add customer and order details.",
+                                   "goldDescription":  "Prepare gold details for production.",
+                                   "measurementsDescription":  "Capture sizes and special measurements.",
+                                   "personalizationDescription":  "Set name, engraving, and placement.",
+                                   "stonesDescription":  "Define stones and setting.",
+                                   "workshopDescription":  "Assign workshop, employee, and priority.",
+                                   "reviewDescription":  "Review everything before sending.",
+                                   "additionalOptionsTitle":  "Additional fields",
+                                   "additionalOptionsDescription":  "Only relevant options for this product.",
+                                   "draftSaved":  "Draft saved.",
+                                   "reviewChecklistTitle":  "Checklist",
+                                   "reviewChecklistProduct":  "Confirm product and quantity.",
+                                   "reviewChecklistGold":  "Review gold, sizing, and personalization.",
+                                   "reviewChecklistWorkshop":  "Review workshop, assignee, and due date.",
+                                   "stepCount":  "Step {step} of {total}",
+                                   "steps":  {
+                                                 "product":  "Product",
+                                                 "gold":  "Gold",
+                                                 "measurements":  "Measurements",
+                                                 "personalization":  "Personalization",
+                                                 "stones":  "Stones",
+                                                 "workshop":  "Workshop",
+                                                 "review":  "Review \u0026 send",
+                                                 "customerWorkshop":  "Customer \u0026 workshop",
+                                                 "productOptions":  "Product \u0026 options"
+                                             },
+                                   "values":  {
+                                                  "yellowGold":  "Yellow gold",
+                                                  "whiteGold":  "White gold",
+                                                  "roseGold":  "Rose gold",
+                                                  "polished":  "Polished",
+                                                  "matte":  "Matte",
+                                                  "brushed":  "Brushed",
+                                                  "classic":  "Classic",
+                                                  "modern":  "Modern",
+                                                  "script":  "Script"
+                                              },
+                                   "trackingDescription":  "Prepare customer email, phone, and tracking details.",
+                                   "successWithNotifications":  "Order created. Notifications are ready to be sent.",
+                                   "personalizationDisabled":  "Name personalization disabled"
+                               },
+                  "options":  {
+                                  "eyebrow":  "Option engine",
+                                  "title":  "Options",
+                                  "description":  "Control fields for gold, sizing, engraving, and workshop flow.",
+                                  "groupsTitle":  "Option groups",
+                                  "groupsDescription":  "Review option groups quickly.",
+                                  "searchPlaceholder":  "Search option or key",
+                                  "productsScope":  "products",
+                                  "categoriesScope":  "categories",
+                                  "workshopOverrides":  "workshop overrides",
+                                  "noOverrides":  "There are no workshop overrides for this option yet.",
+                                  "empty":  "No options found for the current selection.",
+                                  "table":  {
+                                                "option":  "Option",
+                                                "type":  "Type",
+                                                "scope":  "Scope",
+                                                "status":  "Status",
+                                                "assignments":  "Assignments",
+                                                "actions":  "Actions",
+                                                "group":  "Group"
+                                            },
+                                  "filtersTitle":  "Filter options",
+                                  "filtersDescription":  "Search by group, status, and requirement.",
+                                  "groupCount":  "{count} groups"
+                              },
+                  "orders":  {
+                                 "eyebrow":  "Orders",
+                                 "title":  "Orders",
+                                 "description":  "Track and update workshop orders.",
+                                 "filtersTitle":  "Filter orders",
+                                 "filtersDescription":  "Search by order, product, customer, or workshop.",
+                                 "searchPlaceholder":  "Search order, product, or customer",
+                                 "empty":  "No orders found for the current selection.",
+                                 "detailEyebrow":  "Order details",
+                                 "detailDescription":  "Order, customer, and production in one clear view.",
+                                 "summaryTitle":  "Order summary",
+                                 "summaryDescription":  "Product, workshop, and due date at a glance.",
+                                 "timelineTitle":  "Tracking timeline",
+                                 "timelineDescription":  "Latest steps for this order.",
+                                 "goldDetailsTitle":  "Gold details",
+                                 "measurementsTitle":  "Measurements",
+                                 "notesTitle":  "Notes \u0026 instructions",
+                                 "itemQuantity":  "{count} item(s) in this order",
+                                 "table":  {
+                                               "order":  "Order",
+                                               "customer":  "Customer",
+                                               "workshop":  "Workshop",
+                                               "status":  "Status",
+                                               "employee":  "Employee",
+                                               "dueDate":  "Due date",
+                                               "action":  "Action",
+                                               "product":  "Product",
+                                               "trackingNumber":  "Tracking no.",
+                                               "email":  "Email",
+                                               "trackingStatus":  "Tracking status"
+                                           },
+                                 "customerTitle":  "Customer",
+                                 "customerDescription":  "Contact details and reference.",
+                                 "personalizationTitle":  "Personalization",
+                                 "stonesTitle":  "Stones",
+                                 "deliveryTitle":  "Delivery",
+                                 "sidebarActionsTitle":  "Actions",
+                                 "trackingTitle":  "Tracking",
+                                 "trackingDescription":  "Status, customer details, and recent steps at a glance.",
+                                 "trackingNumberLabel":  "Tracking number",
+                                 "trackingStatusLabel":  "Tracking status",
+                                 "customerEmailLabel":  "Customer email",
+                                 "emailUpdatesLabel":  "Email updates",
+                                 "updatePanelTitle":  "Update status",
+                                 "updatePanelDescription":  "Manage the tracking status and note for the customer flow.",
+                                 "updateNoteLabel":  "Note",
+                                 "updateNotePlaceholder":  "Short note about this change",
+                                 "notifyByEmail":  "Notify customer by email",
+                                 "noCustomerEmail":  "No customer email is stored.",
+                                 "copySuccess":  "Tracking link copied.",
+                                 "customerNotified":  "Customer notified.",
+                                 "notifyError":  "Notification could not be prepared right now.",
+                                 "notifyDefaultMessage":  "There is a new update for your order.",
+                                 "statusSavedDescription":  "Tracking status was updated.",
+                                 "statusSavedAndNotified":  "Tracking status saved and customer notified.",
+                                 "statusSaved":  "Tracking status saved.",
+                                 "noStatusChanges":  "Please change the status or add a note.",
+                                 "publicStageLabel":  "Public stage",
+                                 "internalStatusLabel":  "Internal tracking status",
+                                 "publicStageHelp":  "Only these three milestones are visible to customers and can trigger customer emails.",
+                                 "publicStageEmailNotice":  "When this public stage changes, the customer email is sent automatically if email updates are enabled.",
+                                 "publicStageSavedAndNotified":  "Public stage saved and customer notified.",
+                                 "noPublicStage":  "Not published yet",
+                                 "notStageSpecific":  "No public stage",
+                                 "emailTemplateLabel":  "Template",
+                                 "emailLogDuplicateSkipped":  "This email was skipped because the same customer template was already sent for this order.",
+                                 "emailLogSmtpNotice":  "Email delivery was skipped because SMTP is not fully configured.",
+                                 "emailLogErrorFallback":  "The email could not be delivered. Please review the SMTP configuration and logs."
+                             },
+                  "workshops":  {
+                                    "eyebrow":  "Workshops",
+                                    "title":  "Workshops",
+                                    "description":  "Manage workshops, contacts, and workload.",
+                                    "cards":  {
+                                                  "contact":  "Contact",
+                                                  "activeOrders":  "Active orders",
+                                                  "completed":  "Completed this month",
+                                                  "performance":  "On-time rate",
+                                                  "email":  "Email"
+                                              }
+                                },
+                  "employees":  {
+                                    "eyebrow":  "Employees",
+                                    "title":  "Employees",
+                                    "description":  "Manage the team, roles, and current tasks.",
+                                    "filtersTitle":  "Filter employees",
+                                    "filtersDescription":  "Search by name, role, or workshop.",
+                                    "searchPlaceholder":  "Search employees",
+                                    "empty":  "No employees found for the current selection.",
+                                    "table":  {
+                                                  "employee":  "Employee",
+                                                  "role":  "Role",
+                                                  "workshop":  "Workshop",
+                                                  "workload":  "Workload",
+                                                  "accountStatus":  "Account",
+                                                  "status":  "Status",
+                                                  "activeTasks":  "Active tasks",
+                                                  "attendance":  "Attendance",
+                                                  "actions":  "Actions"
+                                              },
+                                    "account":  {
+                                                    "create":  "Create employee",
+                                                    "edit":  "Edit employee",
+                                                    "formDescription":  "Maintain employee details and account access in one place.",
+                                                    "saved":  "The employee record was saved.",
+                                                    "inviteSent":  "The access email was sent.",
+                                                    "inviteDeliveryFailed":  "The account was saved, but the access email could not be delivered.",
+                                                    "passwordResetSent":  "The password reset email was sent.",
+                                                    "passwordResetDeliveryFailed":  "The reset link was created, but the email could not be delivered.",
+                                                    "linked":  "The employee was linked to the existing account.",
+                                                    "notLinked":  "No matching auth account is linked to this employee yet.",
+                                                    "duplicateEmail":  "This email address is already assigned to another employee.",
+                                                    "emailRequired":  "An email address is required for account access.",
+                                                    "linkInUse":  "This auth account is already linked to another employee.",
+                                                    "roleConflict":  "The linked auth account already belongs to a different internal role.",
+                                                    "roleNotAllowed":  "You are not allowed to manage this employee account.",
+                                                    "notFound":  "The employee could not be found anymore.",
+                                                    "reactivated":  "The employee account was reactivated.",
+                                                    "deactivated":  "The employee account was deactivated.",
+                                                    "noEmail":  "No email address saved",
+                                                    "lastInvite":  "Last invite",
+                                                    "lastLogin":  "Last login",
+                                                    "lastPasswordReset":  "Last password reset",
+                                                    "status":  {
+                                                                   "active":  "Active",
+                                                                   "disabled":  "Disabled",
+                                                                   "invited":  "Invited",
+                                                                   "missing_auth_user":  "Not linked"
+                                                               },
+                                                    "actions":  {
+                                                                    "sendInvite":  "Send invite",
+                                                                    "resendInvite":  "Resend invite",
+                                                                    "linkAccount":  "Link account",
+                                                                    "resetPassword":  "Reset password"
+                                                                }
+                                                },
+                                    "form":  {
+                                                 "fullName":  "Full name",
+                                                 "attendance":  "Attendance",
+                                                 "phone":  "Phone",
+                                                 "email":  "Email",
+                                                 "emailHint":  "Used for login, invites, and password resets.",
+                                                 "shift":  "Shift",
+                                                 "notes":  "Notes",
+                                                 "active":  "Employee is active"
+                                             }
+                                },
+                  "attendance":  {
+                                     "eyebrow":  "Attendance",
+                                     "title":  "Attendance",
+                                     "description":  "Track shifts, status, and absences.",
+                                     "filtersTitle":  "Filter by status",
+                                     "filtersDescription":  "Filter by status and workshop.",
+                                     "empty":  "No attendance data found for this selection.",
+                                     "table":  {
+                                                   "employee":  "Employee",
+                                                   "date":  "Date",
+                                                   "shift":  "Shift",
+                                                   "status":  "Status",
+                                                   "note":  "Note",
+                                                   "workshop":  "Workshop"
+                                               }
+                                 },
+                  "reports":  {
+                                  "eyebrow":  "Reports",
+                                  "title":  "Reports",
+                                  "description":  "KPI snapshot for production, orders, and workshops.",
+                                  "cards":  {
+                                                "productionTime":  "Average production time",
+                                                "ready":  "Ready orders",
+                                                "delivered":  "Delivered orders",
+                                                "activeWorkshops":  "Active workshops"
+                                            },
+                                  "tabs":  {
+                                               "status":  "Status",
+                                               "workshops":  "Workshops",
+                                               "options":  "Options",
+                                               "workload":  "Workload"
+                                           },
+                                  "statusTitle":  "Orders by status",
+                                  "statusDescription":  "Quick look at the current production distribution.",
+                                  "workshopsTitle":  "Orders by workshop",
+                                  "workshopsDescription":  "Which workshop is currently carrying how much load.",
+                                  "optionsTitle":  "Option usage",
+                                  "optionsDescription":  "Which option fields are used most often at the moment.",
+                                  "workloadTitle":  "Employee workload",
+                                  "workloadDescription":  "Active orders and rough completion rate per person.",
+                                  "activeOrdersCount":  "{count} active orders"
+                              },
+                  "archive":  {
+                                  "eyebrow":  "Archive",
+                                  "title":  "Archive",
+                                  "description":  "Browse archived orders and products.",
+                                  "ordersTitle":  "Archived orders",
+                                  "ordersDescription":  "Finished or archived production flows.",
+                                  "productsTitle":  "Archived products",
+                                  "productsDescription":  "Inactive or temporarily hidden product cards.",
+                                  "deleteDisabled":  "Delete disabled",
+                                  "filtersTitle":  "Filter archive",
+                                  "filtersDescription":  "Search by item, type, or status.",
+                                  "searchPlaceholder":  "Search archive",
+                                  "empty":  "No archived items found.",
+                                  "typeOrder":  "Order",
+                                  "typeProduct":  "Product",
+                                  "table":  {
+                                                "item":  "Item",
+                                                "type":  "Type",
+                                                "status":  "Status",
+                                                "context":  "Context",
+                                                "actions":  "Actions"
+                                            }
+                              },
+                  "settings":  {
+                                   "eyebrow":  "Settings",
+                                   "title":  "Settings",
+                                   "description":  "Manage company details, contact information, and dashboard settings.",
+                                   "contactTitle":  "Contact information",
+                                   "contactDescription":  "Core company details for the internal area.",
+                                   "preferencesTitle":  "Dashboard preferences",
+                                   "preferencesDescription":  "Adjust language and appearance for the admin workspace.",
+                                   "fields":  {
+                                                  "companyName":  "Company name",
+                                                  "address":  "Address",
+                                                  "phone":  "Phone",
+                                                  "defaultLanguage":  "Default language",
+                                                  "dashboardTheme":  "Dashboard theme",
+                                                  "contactFormStatus":  "Contact form",
+                                                  "demoRole":  "Access role",
+                                                  "density":  "Density",
+                                                  "email":  "Email",
+                                                  "legalNotice":  "Imprint",
+                                                  "privacyPolicy":  "Privacy policy",
+                                                  "sidebarMode":  "Sidebar mode"
+                                              },
+                                   "values":  {
+                                                  "luxuryDark":  "Luxury Dark",
+                                                  "softGold":  "Soft Gold",
+                                                  "comfortable":  "Comfortable",
+                                                  "compact":  "Compact",
+                                                  "compactDensity":  "Compact",
+                                                  "expanded":  "Expanded"
+                                              },
+                                   "companyTitle":  "Company details",
+                                   "companyDescription":  "Core business details for the admin area.",
+                                   "websiteTitle":  "Website",
+                                   "websiteDescription":  "Language, theme, and contact form settings.",
+                                   "dashboardTitle":  "Dashboard",
+                                   "dashboardDescription":  "Control role view, sidebar behavior, and interface density.",
+                                   "legalTitle":  "Legal",
+                                   "legalDescription":  "Maintain the internal overview for legal notice and privacy details.",
+                                   "previewMessage":  "Preview refreshed.",
+                                   "resetMessage":  "Settings were reset.",
+                                   "saveMessage":  "Settings saved."
+                               },
+                  "systemCheck":  {
+                                      "title":  "System check",
+                                      "description":  "Review the current sync controls and refresh access when needed.",
+                                      "statusTitle":  "Current status",
+                                      "statusDescription":  "These controls affect the internal sync view and access state.",
+                                      "pinLabel":  "Access PIN",
+                                      "pinPlaceholder":  "Enter access PIN",
+                                      "unlockDescription":  "Enter the access PIN to continue.",
+                                      "continue":  "Continue",
+                                      "refresh":  "Refresh",
+                                      "sync":  "Sync",
+                                      "syncOn":  "Sync ON",
+                                      "syncOff":  "Sync OFF",
+                                      "gate":  "Access",
+                                      "gateEnabled":  "Enabled",
+                                      "gateDisabled":  "Disabled",
+                                      "statusEnabled":  "Enabled",
+                                      "statusDisabled":  "Disabled",
+                                      "expiresAt":  "Expires at",
+                                      "lastRotatedAt":  "Last rotated",
+                                      "lastUsedAt":  "Last used",
+                                      "version":  "Version",
+                                      "rotate":  "Rotate link",
+                                      "disableGate":  "Disable link",
+                                      "setExpiry":  "Set expiry",
+                                      "unavailable":  "This page is unavailable right now.",
+                                      "updated":  "Settings updated.",
+                                      "linkDisabled":  "The current link has been disabled.",
+                                      "newLinkCreated":  "The new link is ready.",
+                                      "linkReadyTitle":  "Update complete",
+                                      "linkReadyDescription":  "The full access link is only shown at this moment.",
+                                      "deliveryStatusLabel":  "Delivery to saved address",
+                                      "deliverySent":  "Sent",
+                                      "deliveryFailed":  "Not sent",
+                                      "copyLink":  "Copy link",
+                                      "copySuccess":  "Link copied.",
+                                      "newLinkLabel":  "Full link",
+                                      "linkShownOnce":  "This link will not be shown again.",
+                                      "mutationUnavailable":  "The update could not be completed right now.",
+                                      "pinInvalid":  "The access PIN is invalid.",
+                                      "invalidSession":  "Please enter the access PIN again."
+                                  },
+                  "trackingStatus":  {
+                                         "created":  "Created",
+                                         "sent_to_workshop":  "Sent to workshop",
+                                         "accepted_by_workshop":  "Accepted by workshop",
+                                         "in_production":  "In production",
+                                         "quality_check":  "Quality check",
+                                         "ready_for_pickup":  "Ready for pickup",
+                                         "on_the_way":  "On the way",
+                                         "delivered_to_store":  "Delivered to store",
+                                         "picked_up":  "Picked up",
+                                         "completed":  "Completed",
+                                         "cancelled":  "Cancelled"
+                                     },
+                  "publicTrackingStage":  {
+                                              "order_in_workshop":  "Order in workshop",
+                                              "in_production":  "In production",
+                                              "quality_check":  "Quality check",
+                                              "ready_for_pickup":  "Ready for pickup",
+                                              "shipping":  "Shipping",
+                                              "delivered":  "Delivered",
+                                              "completed":  "Completed",
+                                              "cancelled":  "Cancelled",
+                                              "on_the_way":  "On the way",
+                                              "delivered_to_store":  "Delivered to store",
+                                              "picked_up":  "Picked up"
+                                          },
+                  "emailLogStatus":  {
+                                         "pending":  "Pending",
+                                         "sent":  "Email sent",
+                                         "skipped":  "Email skipped",
+                                         "failed":  "Email failed"
+                                     },
+                  "emailTemplateType":  {
+                                            "orderConfirmation":  "Order confirmation",
+                                            "publicStageUpdate":  "Public stage update"
+                                        },
+                  "assignmentStatus":  {
+                                           "assigned":  "Assigned",
+                                           "accepted":  "Accepted",
+                                           "in_progress":  "In progress",
+                                           "waiting":  "Waiting",
+                                           "completed":  "Completed",
+                                           "returned":  "Returned"
+                                       },
+                  "siteImages":  {
+                                     "title":  "Site Images",
+                                     "description":  "Replace static website images without changing product images.",
+                                     "homepageHero":  "Homepage hero",
+                                     "shopHero":  "Shop hero",
+                                     "promoPopup":  "Promo popup image",
+                                     "upload":  "Upload image",
+                                     "replace":  "Replace",
+                                     "reset":  "Reset to default",
+                                     "currentImage":  "Current image",
+                                     "uploadSuccess":  "Image updated.",
+                                     "uploadError":  "Unable to update image.",
+                                     "invalidFile":  "Invalid image file.",
+                                     "productsExcluded":  "Product images are not changed here.",
+                                     "usesDefault":  "Using the default fallback.",
+                                     "resetSuccess":  "Image reset."
+                                 }
+              },
+    "Tracking":  {
+                     "title":  "Order status",
+                     "description":  "Follow the current status of your order with GoldHelwah GmbH.",
+                     "currentStatus":  "Current status",
+                     "timelineTitle":  "Timeline",
+                     "timelineDescription":  "Latest updates for your order.",
+                     "contact":  "Contact",
+                     "phone":  "Call",
+                     "backToWebsite":  "Back to website",
+                     "trackingNumberLabel":  "Tracking number",
+                     "currentPublicStageLabel":  "Current public stage",
+                     "progressTitle":  "Public progress",
+                     "progressDescription":  "We only publish three customer-facing milestones for your order.",
+                     "trackAnotherOrder":  "Track another order",
+                     "contactSupport":  "Contact support",
+                     "notesTitle":  "Customer updates",
+                     "notesDescription":  "Only customer-facing updates are shown here.",
+                     "orderReceivedLabel":  "Order received",
+                     "instructionsTitle":  "How to track your order",
+                     "instructionsDescription":  "Use your tracking number from the website menu instead of a direct tracking link.",
+                     "instructionsStepOne":  "Open the website homepage.",
+                     "instructionsStepTwo":  "Click \"Track order\" in the menu.",
+                     "instructionsStepThree":  "Enter your tracking number.",
+                     "receivedMessage":  "We received your order and will update the public status soon.",
+                     "receivedDescription":  "Your order has been recorded and is waiting for its first public milestone.",
+                     "currentStageDescription":  "This is the current public milestone for your order.",
+                     "completedStageDescription":  "This stage has already been completed.",
+                     "upcomingStageDescription":  "This stage will appear once your order reaches it.",
+                     "lookup":  {
+                                    "eyebrow":  "Track order",
+                                    "title":  "Look up your order",
+                                    "description":  "Enter your tracking number to see the latest public updates for your GoldHelwah order.",
+                                    "helperTitle":  "Need your number?",
+                                    "helperDescription":  "You can find the tracking number in your order email and use it from the website menu.",
+                                    "formTitle":  "Enter your tracking number",
+                                    "formDescription":  "We will open the live order page for this tracking number.",
+                                    "label":  "Tracking number",
+                                    "placeholder":  "GH-20260618-0001",
+                                    "submit":  "Track order",
+                                    "emptyError":  "Please enter your tracking number."
+                                },
+                     "support":  {
+                                     "title":  "Contact support",
+                                     "description":  "Need help with this order? Send us a message and our team will follow up.",
+                                     "success":  "Your message has been sent.",
+                                     "error":  "We could not send your message right now."
+                                 },
+                     "stages":  {
+                                    "order_in_workshop":  "Order in workshop",
+                                    "shipping":  "Order is being shipped",
+                                    "ready_for_pickup":  "Ready for pickup"
+                                }
+                 },
+    "AGB":  {
+                "eyebrow":  "Legal",
+                "title":  "Terms \u0026 Conditions",
+                "description":  "Draft terms for the GoldHelwah showroom and consultation website.",
+                "sections":  [
+                                 {
+                                     "title":  "Scope",
+                                     "text":  "These terms apply to consultations, requests and individually agreed services."
+                                 },
+                                 {
+                                     "title":  "Products and availability",
+                                     "text":  "Presentations are non-binding and subject to confirmation."
+                                 },
+                                 {
+                                     "title":  "Custom designs",
+                                     "text":  "Custom work requires accurate requirements and approval by the customer."
+                                 },
+                                 {
+                                     "title":  "Prices, pickup and delivery",
+                                     "text":  "Terms apply only as individually agreed in writing."
+                                 },
+                                 {
+                                     "title":  "Liability and copyright",
+                                     "text":  "Liability is limited as permitted by law; images and content are protected."
+                                 },
+                                 {
+                                     "title":  "Privacy and final provisions",
+                                     "text":  "Our privacy notice applies. German law applies where permitted."
+                                 }
+                             ]
+            },
+    "PublicVisuals":  {
+                          "title":  "Promo Popup",
+                          "description":  "Manage promo popup text, links, and timing.",
+                          "homeHero":  "Homepage hero image URL",
+                          "shopHero":  "Shop hero image URL",
+                          "enabled":  "Enable promo popup",
+                          "showOnce":  "Show once per visitor",
+                          "promoTitle":  "Promo title",
+                          "promoDescription":  "Promo description",
+                          "ctaText":  "CTA text",
+                          "ctaUrl":  "CTA URL",
+                          "imageUrl":  "Promo image URL",
+                          "videoUrl":  "Promo video URL",
+                          "start":  "Promo start",
+                          "end":  "Promo end",
+                          "style":  "Promo style",
+                          "save":  "Save promo settings",
+                          "reset":  "Reset hero images",
+                          "luxury":  "Luxury card",
+                          "image":  "Image feature",
+                          "announcement":  "Announcement banner"
+                      }
 }

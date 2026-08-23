@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
@@ -6,6 +8,7 @@ type LuxuryMediaProps = {
   alt: string;
   fallbackClassName?: string;
   fallbackContent?: ReactNode;
+  fallbackSrc?: string | null;
   imageClassName?: string;
   priority?: boolean;
   sizes: string;
@@ -16,22 +19,37 @@ export function LuxuryMedia({
   alt,
   fallbackClassName,
   fallbackContent,
+  fallbackSrc,
   imageClassName,
   priority = false,
   sizes,
   src,
 }: LuxuryMediaProps) {
   const normalizedSrc = typeof src === "string" ? src.trim() : "";
+  const normalizedFallbackSrc =
+    typeof fallbackSrc === "string" ? fallbackSrc.trim() : "";
+  const [failedSrc, setFailedSrc] = useState("");
+  const currentSrc =
+    failedSrc === normalizedSrc
+      ? normalizedFallbackSrc !== normalizedSrc
+        ? normalizedFallbackSrc
+        : ""
+      : failedSrc === normalizedFallbackSrc
+        ? ""
+        : normalizedSrc || normalizedFallbackSrc;
 
-  if (normalizedSrc) {
+  if (currentSrc) {
     return (
       <Image
-        src={normalizedSrc}
+        src={currentSrc}
         alt={alt}
         fill
-        priority={priority}
+        preload={priority}
         className={clsx("object-cover", imageClassName)}
         sizes={sizes}
+        onError={() => {
+          setFailedSrc(currentSrc);
+        }}
       />
     );
   }

@@ -10,6 +10,10 @@ import {
 } from "node:crypto";
 
 import { getDecoySettingsSnapshot } from "@/lib/admin/decoyData";
+import type {
+  StaticSiteImageRecord,
+  StaticSiteImageSlot,
+} from "@/lib/site-images";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { Json } from "@/lib/supabase/types";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -88,6 +92,9 @@ export const siteSettingKeys = {
   homepageHeroImageUrl: "homepage_hero_image_url",
   shopHeroImageUrl: "shop_hero_image_url",
   promoPopup: "promo_popup",
+  staticImageHomepageHero: "static_image_homepage_hero",
+  staticImagePromoPopupImage: "static_image_promo_popup_image",
+  staticImageShopHero: "static_image_shop_hero",
   adminNotificationEmail: "admin_notification_email",
   orderEntryEnabled: "order_entry_enabled",
   orderEntryExpiresAt: "order_entry_expires_at",
@@ -117,25 +124,252 @@ export type PublicPromoPopup = {
   videoUrl: string;
 };
 
+export type PublicPromoPopupSettings = Omit<PublicPromoPopup, "imageUrl">;
+export type StaticSiteImageMap = Record<
+  StaticSiteImageSlot,
+  StaticSiteImageRecord | null
+>;
+export type PublicVisualSettings = {
+  homepageHeroImageUrl: string;
+  promoPopup: PublicPromoPopup;
+  shopHeroImageUrl: string;
+  staticImages: StaticSiteImageMap;
+};
+
 const emptyPromoPopup: PublicPromoPopup = { ctaText: "", ctaUrl: "", description: "", enabled: false, endsAt: "", imageUrl: "", showOnce: false, startsAt: "", style: "luxury", title: "", videoUrl: "" };
 
-export async function getPublicVisualSettings() {
-  const [homepageHeroImageUrl, shopHeroImageUrl, promoRaw] = await Promise.all([
-    getSiteTextSetting(siteSettingKeys.homepageHeroImageUrl),
-    getSiteTextSetting(siteSettingKeys.shopHeroImageUrl),
-    getSiteTextSetting(siteSettingKeys.promoPopup),
-  ]);
-  let promoPopup = emptyPromoPopup;
-  try { promoPopup = { ...emptyPromoPopup, ...JSON.parse(promoRaw) }; } catch {}
-  return { homepageHeroImageUrl, promoPopup, shopHeroImageUrl };
+function createEmptyStaticSiteImages(): StaticSiteImageMap {
+  return {
+    homepageHero: null,
+    promoPopupImage: null,
+    shopHero: null,
+  };
 }
 
-export async function savePublicVisualSettings(input: { homepageHeroImageUrl: string; shopHeroImageUrl: string; promoPopup: PublicPromoPopup }) {
-  await saveSiteSettings([
-    { key: siteSettingKeys.homepageHeroImageUrl, valueText: input.homepageHeroImageUrl || null },
-    { key: siteSettingKeys.shopHeroImageUrl, valueText: input.shopHeroImageUrl || null },
-    { key: siteSettingKeys.promoPopup, valueText: JSON.stringify(input.promoPopup) },
+function getStaticSiteImageSettingKey(slot: StaticSiteImageSlot) {
+  switch (slot) {
+    case "homepageHero":
+      return siteSettingKeys.staticImageHomepageHero;
+    case "promoPopupImage":
+      return siteSettingKeys.staticImagePromoPopupImage;
+    case "shopHero":
+      return siteSettingKeys.staticImageShopHero;
+  }
+}
+
+function normalizeStaticSiteImageRecord(
+  value: Json | null | undefined
+): StaticSiteImageRecord | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const publicUrl =
+    typeof value.publicUrl === "string" ? value.publicUrl.trim() : "";
+  const storagePath =
+    typeof value.storagePath === "string" ? value.storagePath.trim() : "";
+  const updatedAt =
+    typeof value.updatedAt === "string" ? value.updatedAt.trim() : "";
+
+  if (!publicUrl || !storagePath) {
+    return null;
+  }
+
+  return {
+    publicUrl,
+    storagePath,
+    updatedAt,
+  };
+}
+
+function parsePromoPopup(value: string) {
+  try {
+    return {
+      ...emptyPromoPopup,
+      ...JSON.parse(value),
+    };
+  } catch {
+    return emptyPromoPopup;
+  }
+}
+
+function buildPublicVisualSettingsFromRows(rows: SiteSettingRowMap): PublicVisualSettings {
+  const staticImages: StaticSiteImageMap = {
+    homepageHero: normalizeStaticSiteImageRecord(
+      rows.get(siteSettingKeys.staticImageHomepageHero)?.valueJson
+    ),
+    promoPopupImage: normalizeStaticSiteImageRecord(
+      rows.get(siteSettingKeys.staticImagePromoPopupImage)?.valueJson
+    ),
+    shopHero: normalizeStaticSiteImageRecord(
+      rows.get(siteSettingKeys.staticImageShopHero)?.valueJson
+    ),
+  };
+  const promoPopup = parsePromoPopup(
+    normalizeSettingText(rows.get(siteSettingKeys.promoPopup)?.valueText)
+  );
+
+  return {
+    homepageHeroImageUrl:
+      staticImages.homepageHero?.publicUrl ||
+      normalizeSettingText(rows.get(siteSettingKeys.homepageHeroImageUrl)?.valueText),
+    promoPopup: {
+      ...promoPopup,
+      imageUrl: staticImages.promoPopupImage?.publicUrl || promoPopup.imageUrl,
+    },
+    shopHeroImageUrl:
+      staticImages.shopHero?.publicUrl ||
+      normalizeSettingText(rows.get(siteSettingKeys.shopHeroImageUrl)?.valueText),
+    staticImages,
+  };
+}
+
+function buildLegacySiteImageUpdates(input: {
+  promoPopup: PublicPromoPopup;
+  slot: StaticSiteImageSlot;
+  publicUrl: string;
+}): UpsertSiteSettingInput[] {
+  switch (input.slot) {
+    case "homepageHero":
+      return [
+        {
+          key: siteSettingKeys.homepageHeroImageUrl,
+          valueText: input.publicUrl || null,
+        },
+      ];
+    case "promoPopupImage":
+      return [
+        {
+          key: siteSettingKeys.promoPopup,
+          valueText: JSON.stringify({
+            ...input.promoPopup,
+            imageUrl: input.publicUrl,
+          }),
+        },
+      ];
+    case "shopHero":
+      return [
+        {
+          key: siteSettingKeys.shopHeroImageUrl,
+          valueText: input.publicUrl || null,
+        },
+      ];
+  }
+}
+
+export async function getPublicVisualSettings(): Promise<PublicVisualSettings> {
+  try {
+    const rows = await ensureSiteSettingsRows([
+      siteSettingKeys.homepageHeroImageUrl,
+      siteSettingKeys.promoPopup,
+      siteSettingKeys.shopHeroImageUrl,
+      siteSettingKeys.staticImageHomepageHero,
+      siteSettingKeys.staticImagePromoPopupImage,
+      siteSettingKeys.staticImageShopHero,
+    ]);
+
+    return buildPublicVisualSettingsFromRows(rows);
+  } catch (error) {
+    if (error instanceof SiteSettingsError) {
+      return {
+        homepageHeroImageUrl: "",
+        promoPopup: emptyPromoPopup,
+        shopHeroImageUrl: "",
+        staticImages: createEmptyStaticSiteImages(),
+      };
+    }
+
+    throw error;
+  }
+}
+
+export async function savePublicVisualSettings(input: {
+  promoPopup: PublicPromoPopupSettings;
+}) {
+  const rows = await ensureSiteSettingsRows([
+    siteSettingKeys.promoPopup,
+    siteSettingKeys.staticImagePromoPopupImage,
   ]);
+  const currentVisualSettings = buildPublicVisualSettingsFromRows(rows);
+
+  await saveSiteSettings([
+    {
+      key: siteSettingKeys.promoPopup,
+      valueText: JSON.stringify({
+        ...currentVisualSettings.promoPopup,
+        ...input.promoPopup,
+        imageUrl: currentVisualSettings.promoPopup.imageUrl,
+      }),
+    },
+  ]);
+}
+
+export async function replaceStaticSiteImage(input: {
+  publicUrl: string;
+  slot: StaticSiteImageSlot;
+  storagePath: string;
+}) {
+  const rows = await ensureSiteSettingsRows([
+    siteSettingKeys.homepageHeroImageUrl,
+    siteSettingKeys.promoPopup,
+    siteSettingKeys.shopHeroImageUrl,
+    siteSettingKeys.staticImageHomepageHero,
+    siteSettingKeys.staticImagePromoPopupImage,
+    siteSettingKeys.staticImageShopHero,
+  ]);
+  const currentVisualSettings = buildPublicVisualSettingsFromRows(rows);
+  const nextRecord: StaticSiteImageRecord = {
+    publicUrl: normalizeSettingText(input.publicUrl),
+    storagePath: normalizeSettingText(input.storagePath),
+    updatedAt: new Date().toISOString(),
+  };
+  const previousRecord = currentVisualSettings.staticImages[input.slot];
+
+  await saveSiteSettings([
+    {
+      key: getStaticSiteImageSettingKey(input.slot),
+      valueJson: nextRecord,
+      valueText: null,
+    },
+    ...buildLegacySiteImageUpdates({
+      promoPopup: currentVisualSettings.promoPopup,
+      publicUrl: nextRecord.publicUrl,
+      slot: input.slot,
+    }),
+  ]);
+
+  return {
+    current: nextRecord,
+    previous: previousRecord,
+  };
+}
+
+export async function resetStaticSiteImage(slot: StaticSiteImageSlot) {
+  const rows = await ensureSiteSettingsRows([
+    siteSettingKeys.homepageHeroImageUrl,
+    siteSettingKeys.promoPopup,
+    siteSettingKeys.shopHeroImageUrl,
+    siteSettingKeys.staticImageHomepageHero,
+    siteSettingKeys.staticImagePromoPopupImage,
+    siteSettingKeys.staticImageShopHero,
+  ]);
+  const currentVisualSettings = buildPublicVisualSettingsFromRows(rows);
+  const previousRecord = currentVisualSettings.staticImages[slot];
+
+  await saveSiteSettings([
+    {
+      key: getStaticSiteImageSettingKey(slot),
+      valueJson: {},
+      valueText: null,
+    },
+    ...buildLegacySiteImageUpdates({
+      promoPopup: currentVisualSettings.promoPopup,
+      publicUrl: "",
+      slot,
+    }),
+  ]);
+
+  return previousRecord;
 }
 
 const siteSettingsRequiredEnvVars = [
@@ -699,7 +933,12 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
       privacyModeUpdatedAt: "",
       smtpStatus: getSmtpStatus(),
       supportNotificationEmail: "",
-      publicVisualSettings: { homepageHeroImageUrl: "", shopHeroImageUrl: "", promoPopup: emptyPromoPopup },
+      publicVisualSettings: {
+        homepageHeroImageUrl: "",
+        promoPopup: emptyPromoPopup,
+        shopHeroImageUrl: "",
+        staticImages: createEmptyStaticSiteImages(),
+      },
     };
   }
 

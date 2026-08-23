@@ -1,6 +1,13 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
+import {
+  type ChangeEvent,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+} from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -26,10 +33,16 @@ import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
+import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 import type { AppLocale } from "@/i18n/routing";
 import { getRequiredFieldBadge } from "@/lib/admin/clientForm";
 import type { ManagedAdminRole, ManagedAdminUserRecord } from "@/lib/db/adminUsers";
 import type { AdminSettingsSnapshot } from "@/lib/db/siteSettings";
+import {
+  STATIC_SITE_IMAGE_INPUT_ACCEPT,
+  type StaticSiteImageRecord,
+  type StaticSiteImageSlot,
+} from "@/lib/site-images";
 
 type AdminSettingsClientProps = {
   canManageUsers: boolean;
@@ -63,57 +76,76 @@ type AdminLoadingKey =
   | "executing"
   | "uploading"
   | "archiving"
-  | "clearing";
+  | "clearing"
+  | "deleting"
+  | "resetting";
+
+type OrderMaintenanceMode =
+  | "archive_completed"
+  | "clear_active"
+  | "delete_permanent";
+
+type SiteImageResponse = {
+  error?: string;
+  image?: StaticSiteImageRecord | null;
+  success: boolean;
+};
+
+const SITE_IMAGE_SLOTS: StaticSiteImageSlot[] = [
+  "homepageHero",
+  "shopHero",
+  "promoPopupImage",
+];
 
 function getSettingsUiCopy(locale: AppLocale) {
   if (locale === "ar") {
     return {
-      adminEmail: "بريد تنبيهات الطلبات",
-      copyLink: "نسخ الرابط",
-      copySuccess: "تم نسخ الرابط الكامل.",
-      copyUnavailable: "لا يوجد رابط كامل متاح للنسخ حالياً.",
+      adminEmail: "Ø¨Ø±ÙŠØ¯ ØªÙ†Ø¨ÙŠÙ‡Ø§Øª Ø§Ù„Ø·Ù„Ø¨Ø§Øª",
+      copyLink: "Ù†Ø³Ø® Ø§Ù„Ø±Ø§Ø¨Ø·",
+      copySuccess: "ØªÙ… Ù†Ø³Ø® Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„.",
+      copyUnavailable: "Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±Ø§Ø¨Ø· ÙƒØ§Ù…Ù„ Ù…ØªØ§Ø­ Ù„Ù„Ù†Ø³Ø® Ø­Ø§Ù„ÙŠØ§Ù‹.",
       description:
-        "إدارة عناوين الإشعارات، رابط إدخال الطلبات الخارجي، والمستخدمين من شاشة واحدة.",
-      diagnosticsTitle: "تنبيه الإعدادات",
-      expiresAt: "ينتهي في",
+        "Ø¥Ø¯Ø§Ø±Ø© Ø¹Ù†Ø§ÙˆÙŠÙ† Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§ØªØŒ Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠØŒ ÙˆØ§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† Ù…Ù† Ø´Ø§Ø´Ø© ÙˆØ§Ø­Ø¯Ø©.",
+      diagnosticsTitle: "ØªÙ†Ø¨ÙŠÙ‡ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª",
+      expiresAt: "ÙŠÙ†ØªÙ‡ÙŠ ÙÙŠ",
       fullLinkHelp:
-        "يتم عرض الرابط الكامل كما سيصل إلى العميل، مع استخدام عنوان هذا المتصفح إذا كانت إعدادات الخادم ما تزال على localhost.",
-      fullLinkLabel: "الرابط الكامل",
-      inviteAgain: "إرسال رابط جديد",
-      linkDisabled: "رابط إدخال الطلبات الخارجي غير مفعل حالياً.",
-      linkRecipient: "إرسال الرابط إلى",
-      linkRecipientHelp: "سيتم إرسال رسالة ألمانية احترافية تحتوي على زر ورابط مباشر.",
+        "ÙŠØªÙ… Ø¹Ø±Ø¶ Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„ ÙƒÙ…Ø§ Ø³ÙŠØµÙ„ Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ù…ÙŠÙ„ØŒ Ù…Ø¹ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¹Ù†ÙˆØ§Ù† Ù‡Ø°Ø§ Ø§Ù„Ù…ØªØµÙØ­ Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø®Ø§Ø¯Ù… Ù…Ø§ ØªØ²Ø§Ù„ Ø¹Ù„Ù‰ localhost.",
+      fullLinkLabel: "Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„",
+      inviteAgain: "Ø¥Ø±Ø³Ø§Ù„ Ø±Ø§Ø¨Ø· Ø¬Ø¯ÙŠØ¯",
+      linkDisabled: "Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ ØºÙŠØ± Ù…ÙØ¹Ù„ Ø­Ø§Ù„ÙŠØ§Ù‹.",
+      linkRecipient: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø§Ø¨Ø· Ø¥Ù„Ù‰",
+      linkRecipientHelp: "Ø³ÙŠØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ø³Ø§Ù„Ø© Ø£Ù„Ù…Ø§Ù†ÙŠØ© Ø§Ø­ØªØ±Ø§ÙÙŠØ© ØªØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ Ø²Ø± ÙˆØ±Ø§Ø¨Ø· Ù…Ø¨Ø§Ø´Ø±.",
       manageUsersHint:
-        "إدارة المستخدمين تتطلب صلاحية المالك أو المدير الأعلى لأنها تعمل عبر Supabase Auth على الخادم.",
-      notificationTitle: "الإشعارات",
+        "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† ØªØªØ·Ù„Ø¨ ØµÙ„Ø§Ø­ÙŠØ© Ø§Ù„Ù…Ø§Ù„Ùƒ Ø£Ùˆ Ø§Ù„Ù…Ø¯ÙŠØ± Ø§Ù„Ø£Ø¹Ù„Ù‰ Ù„Ø£Ù†Ù‡Ø§ ØªØ¹Ù…Ù„ Ø¹Ø¨Ø± Supabase Auth Ø¹Ù„Ù‰ Ø§Ù„Ø®Ø§Ø¯Ù….",
+      notificationTitle: "Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª",
       orderEntryDescription:
-        "فعّل الرابط الخارجي، راجع الرابط الكامل، وانسخه أو أرسله بالبريد الإلكتروني مباشرةً من هنا.",
-      orderEntryEnabled: "تفعيل رابط إدخال الطلبات الخارجي",
-      orderEntryTitle: "رابط إدخال الطلبات الخارجي",
-      ownerEmail: "بريد المالك",
+        "ÙØ¹Ù‘Ù„ Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠØŒ Ø±Ø§Ø¬Ø¹ Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„ØŒ ÙˆØ§Ù†Ø³Ø®Ù‡ Ø£Ùˆ Ø£Ø±Ø³Ù„Ù‡ Ø¨Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù…Ø¨Ø§Ø´Ø±Ø©Ù‹ Ù…Ù† Ù‡Ù†Ø§.",
+      orderEntryEnabled: "ØªÙØ¹ÙŠÙ„ Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ",
+      orderEntryTitle: "Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ",
+      ownerEmail: "Ø¨Ø±ÙŠØ¯ Ø§Ù„Ù…Ø§Ù„Ùƒ",
       privacyLocalOnly: "",
       privacyStatusActive: "",
       privacyStatusInactive: "",
       privacyTitle: "",
-      role: "الدور",
-      rotateLink: "تدوير الرابط",
-      rotatedAt: "آخر تدوير",
-      save: "حفظ",
-      sendLink: "إرسال الرابط",
-      smtpConfigured: "SMTP مضبوط",
-      smtpMissing: "SMTP غير مكتمل",
-      smtpTitle: "حالة البريد",
-      statusDisabled: "معطل",
-      statusEnabled: "مفعل",
-      supportEmail: "بريد الدعم",
-      title: "الإعدادات",
-      userActive: "نشط",
-      userCreate: "إنشاء مستخدم",
-      userDelete: "حذف",
-      userDisplayName: "الاسم الظاهر",
-      userEdit: "تعديل",
-      userListTitle: "المستخدمون والأدوار",
-      userSave: "حفظ المستخدم",
+      role: "Ø§Ù„Ø¯ÙˆØ±",
+      rotateLink: "ØªØ¯ÙˆÙŠØ± Ø§Ù„Ø±Ø§Ø¨Ø·",
+      rotatedAt: "Ø¢Ø®Ø± ØªØ¯ÙˆÙŠØ±",
+      save: "Ø­ÙØ¸",
+      sendLink: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø§Ø¨Ø·",
+      smtpConfigured: "SMTP Ù…Ø¶Ø¨ÙˆØ·",
+      smtpMissing: "SMTP ØºÙŠØ± Ù…ÙƒØªÙ…Ù„",
+      smtpTitle: "Ø­Ø§Ù„Ø© Ø§Ù„Ø¨Ø±ÙŠØ¯",
+      statusDisabled: "Ù…Ø¹Ø·Ù„",
+      statusEnabled: "Ù…ÙØ¹Ù„",
+      supportEmail: "Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¯Ø¹Ù…",
+      title: "Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª",
+      userActive: "Ù†Ø´Ø·",
+      userCreate: "Ø¥Ù†Ø´Ø§Ø¡ Ù…Ø³ØªØ®Ø¯Ù…",
+      userDelete: "Ø­Ø°Ù",
+      userDisplayName: "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø¸Ø§Ù‡Ø±",
+      userEdit: "ØªØ¹Ø¯ÙŠÙ„",
+      userListTitle: "Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† ÙˆØ§Ù„Ø£Ø¯ÙˆØ§Ø±",
+      userSave: "Ø­ÙØ¸ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…",
     };
   }
 
@@ -241,9 +273,9 @@ function createUserEditForm(user: ManagedAdminUserRecord): UserFormState {
 
 function getRoleLabel(role: ManagedAdminRole, locale: AppLocale) {
   if (locale === "ar") {
-    if (role === "super_admin") return "المالك";
-    if (role === "admin") return "مدير";
-    return "عامل";
+    if (role === "super_admin") return "Ø§Ù„Ù…Ø§Ù„Ùƒ";
+    if (role === "admin") return "Ù…Ø¯ÙŠØ±";
+    return "Ø¹Ø§Ù…Ù„";
   }
 
   if (locale === "de") {
@@ -306,34 +338,35 @@ export function AdminSettingsClient({
   const copy = getSettingsUiCopy(locale);
   const orderMaintenance = useTranslations("Admin.orderMaintenance");
   const loading = useTranslations("Admin.loading");
+  const siteImagesCopy = useTranslations("Admin.siteImages");
   const publicVisuals = useTranslations("PublicVisuals");
   const userEmailLabel =
-    locale === "ar" ? "البريد الإلكتروني" : locale === "de" ? "E-Mail" : "Email";
+    locale === "ar" ? "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ" : locale === "de" ? "E-Mail" : "Email";
   const userInactiveLabel =
-    locale === "ar" ? "غير نشط" : locale === "de" ? "Inaktiv" : "Inactive";
+    locale === "ar" ? "ØºÙŠØ± Ù†Ø´Ø·" : locale === "de" ? "Inaktiv" : "Inactive";
   const activateUserLabel =
-    locale === "ar" ? "تفعيل" : locale === "de" ? "Aktivieren" : "Activate";
+    locale === "ar" ? "ØªÙØ¹ÙŠÙ„" : locale === "de" ? "Aktivieren" : "Activate";
   const deactivateUserLabel =
-    locale === "ar" ? "إيقاف" : locale === "de" ? "Deaktivieren" : "Deactivate";
+    locale === "ar" ? "Ø¥ÙŠÙ‚Ø§Ù" : locale === "de" ? "Deaktivieren" : "Deactivate";
   const resetPasswordLabel =
     locale === "ar"
-      ? "إرسال رابط كلمة المرور"
+      ? "Ø¥Ø±Ø³Ø§Ù„ Ø±Ø§Ø¨Ø· ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±"
       : locale === "de"
         ? "Passwort-Link senden"
         : "Send password link";
   const diagnosticsEnvironmentLabel =
-    locale === "ar" ? "البيئة" : locale === "de" ? "Umgebung" : "Environment";
+    locale === "ar" ? "Ø§Ù„Ø¨ÙŠØ¦Ø©" : locale === "de" ? "Umgebung" : "Environment";
   const diagnosticsSiteUrlLabel =
-    locale === "ar" ? "رابط الموقع" : locale === "de" ? "Site-URL" : "Site URL";
+    locale === "ar" ? "Ø±Ø§Ø¨Ø· Ø§Ù„Ù…ÙˆÙ‚Ø¹" : locale === "de" ? "Site-URL" : "Site URL";
   const diagnosticsMissingEnvLabel =
     locale === "ar"
-      ? "متغيرات البيئة الناقصة"
+      ? "Ù…ØªØºÙŠØ±Ø§Øª Ø§Ù„Ø¨ÙŠØ¦Ø© Ø§Ù„Ù†Ø§Ù‚ØµØ©"
       : locale === "de"
         ? "Fehlende Umgebungsvariablen"
         : "Missing environment variables";
   const diagnosticsMigrationLabel =
     locale === "ar"
-      ? "الهجرة المطلوبة"
+      ? "Ø§Ù„Ù‡Ø¬Ø±Ø© Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø©"
       : locale === "de"
         ? "Benoetigte Migration"
         : "Suggested migration";
@@ -357,14 +390,41 @@ export function AdminSettingsClient({
   );
   const [orderEntryToken, setOrderEntryToken] = useState(initialSettings.orderEntryToken);
   const [linkRecipientEmail, setLinkRecipientEmail] = useState("");
-  const [homepageHeroImageUrl, setHomepageHeroImageUrl] = useState(initialSettings.publicVisualSettings.homepageHeroImageUrl);
-  const [shopHeroImageUrl, setShopHeroImageUrl] = useState(initialSettings.publicVisualSettings.shopHeroImageUrl);
+  const [siteImagePreviewUrls, setSiteImagePreviewUrls] = useState<
+    Record<StaticSiteImageSlot, string>
+  >({
+    homepageHero: initialSettings.publicVisualSettings.homepageHeroImageUrl,
+    promoPopupImage: initialSettings.publicVisualSettings.promoPopup.imageUrl,
+    shopHero: initialSettings.publicVisualSettings.shopHeroImageUrl,
+  });
   const [promo, setPromo] = useState(initialSettings.publicVisualSettings.promoPopup);
-  const [archivePreview, setArchivePreview] = useState<number | null>(null);
-  const [clearPreview, setClearPreview] = useState<number | null>(null);
-  const [archiveConfirmation, setArchiveConfirmation] = useState("");
-  const [clearConfirmation, setClearConfirmation] = useState("");
+  const [maintenancePreview, setMaintenancePreview] = useState<
+    Record<OrderMaintenanceMode, number | null>
+  >({
+    archive_completed: null,
+    clear_active: null,
+    delete_permanent: null,
+  });
+  const [maintenancePreviewTokens, setMaintenancePreviewTokens] = useState<
+    Record<OrderMaintenanceMode, string>
+  >({
+    archive_completed: "",
+    clear_active: "",
+    delete_permanent: "",
+  });
+  const [maintenanceConfirmation, setMaintenanceConfirmation] = useState<
+    Record<OrderMaintenanceMode, boolean>
+  >({
+    archive_completed: false,
+    clear_active: false,
+    delete_permanent: false,
+  });
   const [userFormState, setUserFormState] = useState<UserFormState>(createUserForm());
+  const fileInputRefs = useRef<Record<StaticSiteImageSlot, HTMLInputElement | null>>({
+    homepageHero: null,
+    promoPopupImage: null,
+    shopHero: null,
+  });
   const diagnosticsReady = initialSettings.diagnostics.available;
   const browserOrigin = useSyncExternalStore(
     () => () => {},
@@ -446,13 +506,234 @@ export function AdminSettingsClient({
     });
   };
 
-  const handleSavePublicVisuals = () => runPendingAction("saving", async () => {
-    const result = await savePublicVisualSettingsAction(locale, { homepageHeroImageUrl, shopHeroImageUrl, promoPopup: promo });
-    pushFeedback(result.ok ? "success" : "error", result.message);
-    if (result.ok) refreshPage();
-  });
-  const previewMaintenance = (mode: "archive_completed" | "clear_active") => runPendingAction(mode === "archive_completed" ? "archiving" : "clearing", async () => { const result = await previewOrderMaintenanceAction(locale, mode); if (result.ok) { if (mode === "archive_completed") setArchivePreview(result.count); else setClearPreview(result.count); } pushFeedback(result.ok ? "success" : "error", result.ok ? (result.count === 0 ? orderMaintenance("noOrdersMatched") : orderMaintenance("previewSuccess")) : orderMaintenance("genericError")); });
-  const executeMaintenance = (mode: "archive_completed" | "clear_active", confirmation: string) => runPendingAction("executing", async () => { const result = await executeOrderMaintenanceAction(locale, mode, confirmation); pushFeedback(result.ok ? "success" : "error", result.ok ? (mode === "archive_completed" ? orderMaintenance("archiveSuccess") : orderMaintenance("clearSuccess")) : orderMaintenance("genericError")); if (result.ok) refreshPage(); });
+  const getSiteImageLabel = (slot: StaticSiteImageSlot) => {
+    if (slot === "homepageHero") {
+      return siteImagesCopy("homepageHero");
+    }
+
+    if (slot === "shopHero") {
+      return siteImagesCopy("shopHero");
+    }
+
+    return siteImagesCopy("promoPopup");
+  };
+
+  const getSiteImageErrorMessage = (error?: string) => {
+    if (error === "FILE_TOO_LARGE" || error === "INVALID_FILE_TYPE" || error === "MISSING_FILE") {
+      return siteImagesCopy("invalidFile");
+    }
+
+    return siteImagesCopy("uploadError");
+  };
+
+  const handleSavePublicVisuals = () =>
+    runPendingAction("saving", async () => {
+      const result = await savePublicVisualSettingsAction(locale, {
+        promoPopup: {
+          ctaText: promo.ctaText,
+          ctaUrl: promo.ctaUrl,
+          description: promo.description,
+          enabled: promo.enabled,
+          endsAt: promo.endsAt,
+          showOnce: promo.showOnce,
+          startsAt: promo.startsAt,
+          style: promo.style,
+          title: promo.title,
+          videoUrl: promo.videoUrl,
+        },
+      });
+      pushFeedback(result.ok ? "success" : "error", result.message);
+      if (result.ok) refreshPage();
+    });
+
+  const handleSiteImageUpload = (
+    slot: StaticSiteImageSlot,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    runPendingAction("uploading", async () => {
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("slot", slot);
+
+      try {
+        const response = await fetch("/api/admin/site-images", {
+          body: formData,
+          method: "POST",
+        });
+        const result = (await response.json()) as SiteImageResponse;
+
+        if (!response.ok || !result.success || !result.image) {
+          pushFeedback("error", getSiteImageErrorMessage(result.error));
+          return;
+        }
+
+        setSiteImagePreviewUrls((current) => ({
+          ...current,
+          [slot]: result.image?.publicUrl ?? "",
+        }));
+
+        if (slot === "promoPopupImage") {
+          setPromo((current) => ({
+            ...current,
+            imageUrl: result.image?.publicUrl ?? "",
+          }));
+        }
+
+        pushFeedback("success", siteImagesCopy("uploadSuccess"));
+        refreshPage();
+      } catch {
+        pushFeedback("error", siteImagesCopy("uploadError"));
+      }
+    });
+  };
+
+  const handleSiteImageReset = (slot: StaticSiteImageSlot) => {
+    runPendingAction("resetting", async () => {
+      try {
+        const response = await fetch("/api/admin/site-images", {
+          body: JSON.stringify({ slot }),
+          headers: {
+            "content-type": "application/json",
+          },
+          method: "DELETE",
+        });
+        const result = (await response.json()) as SiteImageResponse;
+
+        if (!response.ok || !result.success) {
+          pushFeedback("error", getSiteImageErrorMessage(result.error));
+          return;
+        }
+
+        setSiteImagePreviewUrls((current) => ({
+          ...current,
+          [slot]: "",
+        }));
+
+        if (slot === "promoPopupImage") {
+          setPromo((current) => ({
+            ...current,
+            imageUrl: "",
+          }));
+        }
+
+        pushFeedback("success", siteImagesCopy("resetSuccess"));
+        refreshPage();
+      } catch {
+        pushFeedback("error", siteImagesCopy("uploadError"));
+      }
+    });
+  };
+
+  const previewMaintenance = (mode: OrderMaintenanceMode) =>
+    runPendingAction(
+      mode === "archive_completed"
+        ? "archiving"
+        : mode === "clear_active"
+          ? "clearing"
+          : "previewing",
+      async () => {
+        const result = await previewOrderMaintenanceAction(locale, mode);
+
+        if (result.ok) {
+          setMaintenancePreview((current) => ({
+            ...current,
+            [mode]: result.count,
+          }));
+          setMaintenancePreviewTokens((current) => ({
+            ...current,
+            [mode]: result.previewToken ?? "",
+          }));
+          setMaintenanceConfirmation((current) => ({
+            ...current,
+            [mode]: false,
+          }));
+        } else {
+          setMaintenancePreviewTokens((current) => ({
+            ...current,
+            [mode]: "",
+          }));
+          setMaintenanceConfirmation((current) => ({
+            ...current,
+            [mode]: false,
+          }));
+        }
+
+        pushFeedback(
+          result.ok ? "success" : "error",
+          result.ok
+            ? result.count === 0
+              ? orderMaintenance("noOrders")
+              : orderMaintenance("previewSuccess")
+            : result.message
+        );
+      }
+    );
+
+  const executeMaintenance = (mode: OrderMaintenanceMode) =>
+    runPendingAction(
+      mode === "archive_completed"
+        ? "archiving"
+        : mode === "clear_active"
+          ? "clearing"
+          : "deleting",
+      async () => {
+        const result = await executeOrderMaintenanceAction(locale, {
+          confirmedOrdersOnly: true,
+          expectedCount: maintenancePreview[mode] ?? 0,
+          mode,
+          previewToken: maintenancePreviewTokens[mode],
+        });
+        pushFeedback(
+          result.ok ? "success" : "error",
+          result.ok
+            ? mode === "archive_completed"
+              ? orderMaintenance("archiveSuccess")
+              : mode === "clear_active"
+                ? orderMaintenance("clearSuccess")
+                : orderMaintenance("deleteSuccess")
+            : result.message
+        );
+
+        if (result.ok) {
+          setMaintenancePreview((current) => ({
+            ...current,
+            [mode]: null,
+          }));
+          setMaintenancePreviewTokens((current) => ({
+            ...current,
+            [mode]: "",
+          }));
+          setMaintenanceConfirmation((current) => ({
+            ...current,
+            [mode]: false,
+          }));
+          refreshPage();
+        } else if (typeof result.count === "number") {
+          setMaintenancePreview((current) => ({
+            ...current,
+            [mode]: result.count,
+          }));
+        }
+
+        if (result.requiresPreview) {
+          setMaintenancePreviewTokens((current) => ({
+            ...current,
+            [mode]: "",
+          }));
+          setMaintenanceConfirmation((current) => ({
+            ...current,
+            [mode]: false,
+          }));
+        }
+      }
+    );
 
   const handleRotateLink = () => {
     runPendingAction("updating", async () => {
@@ -811,27 +1092,276 @@ export function AdminSettingsClient({
 
       </section>
 
-      <AdminCard title={publicVisuals("title")} description={publicVisuals("description")} action={<AdminButton variant="primary" onClick={handleSavePublicVisuals} disabled={isPending || !diagnosticsReady}>{isPending ? loading("saving") : publicVisuals("save")}</AdminButton>}>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <AdminInput id="homepageHeroImageUrl" name="homepageHeroImageUrl" label={publicVisuals("homeHero")} value={homepageHeroImageUrl} placeholder="https://…" onChange={(event) => setHomepageHeroImageUrl(event.target.value)} />
-          <AdminInput id="shopHeroImageUrl" name="shopHeroImageUrl" label={publicVisuals("shopHero")} value={shopHeroImageUrl} placeholder="https://…" onChange={(event) => setShopHeroImageUrl(event.target.value)} />
-          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.enabled} onChange={(event) => setPromo({ ...promo, enabled: event.target.checked })} /> {publicVisuals("enabled")}</label>
-          <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={promo.showOnce} onChange={(event) => setPromo({ ...promo, showOnce: event.target.checked })} /> {publicVisuals("showOnce")}</label>
-          <AdminInput id="promoTitle" name="promoTitle" label={publicVisuals("promoTitle")} value={promo.title} onChange={(event) => setPromo({ ...promo, title: event.target.value })} />
-          <AdminInput id="promoCtaText" name="promoCtaText" label={publicVisuals("ctaText")} value={promo.ctaText} onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })} />
-          <AdminInput id="promoDescription" name="promoDescription" label={publicVisuals("promoDescription")} value={promo.description} onChange={(event) => setPromo({ ...promo, description: event.target.value })} />
-          <AdminInput id="promoCtaUrl" name="promoCtaUrl" label={publicVisuals("ctaUrl")} value={promo.ctaUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })} />
-          <AdminInput id="promoImageUrl" name="promoImageUrl" label={publicVisuals("imageUrl")} value={promo.imageUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, imageUrl: event.target.value })} />
-          <AdminInput id="promoVideoUrl" name="promoVideoUrl" label={publicVisuals("videoUrl")} value={promo.videoUrl} placeholder="https://…" onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })} />
-          <AdminInput id="promoStartsAt" name="promoStartsAt" type="datetime-local" label={publicVisuals("start")} value={toLocalDateTimeInput(promo.startsAt)} onChange={(event) => setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })} />
-          <AdminInput id="promoEndsAt" name="promoEndsAt" type="datetime-local" label={publicVisuals("end")} value={toLocalDateTimeInput(promo.endsAt)} onChange={(event) => setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })} />
-          <AdminSelect id="promoStyle" name="promoStyle" label={publicVisuals("style")} value={promo.style} onChange={(event) => setPromo({ ...promo, style: event.target.value as typeof promo.style })}><option value="luxury">{publicVisuals("luxury")}</option><option value="image">{publicVisuals("image")}</option><option value="announcement">{publicVisuals("announcement")}</option></AdminSelect>
-          <AdminButton variant="ghost" onClick={() => { setHomepageHeroImageUrl(""); setShopHeroImageUrl(""); }} disabled={isPending}>{publicVisuals("reset")}</AdminButton>
-        </div>
-      </AdminCard>
+      <section className="space-y-6">
+        <AdminCard title={siteImagesCopy("title")} description={siteImagesCopy("description")}>
+          <div className="space-y-4">
+            <div className="grid gap-5 lg:grid-cols-3">
+              {SITE_IMAGE_SLOTS.map((slot) => {
+                const previewUrl = siteImagePreviewUrls[slot];
+                const hasPreview = previewUrl.trim().length > 0;
 
-      {canManageUsers ? <AdminCard title={orderMaintenance("title")} description={orderMaintenance("description")}><div className="space-y-4"><p className="text-sm text-muted">{orderMaintenance("excludedDataNote")}</p><p className="text-sm text-muted">{orderMaintenance("permanentDeleteUnavailable")}</p><p className="text-sm text-muted">{orderMaintenance("auditRequired")}</p><div className="grid gap-5 lg:grid-cols-2"><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">{orderMaintenance("archiveTitle")}</h3><p className="text-sm text-muted">{orderMaintenance("archiveDescription")}</p><p className="text-sm text-amber-100">{orderMaintenance("archiveWarning")}</p><AdminButton onClick={() => previewMaintenance("archive_completed")} disabled={isPending}>{isPending ? loading("previewing") : orderMaintenance("previewArchive")}</AdminButton>{archivePreview !== null ? <p className="text-sm">{orderMaintenance("affectedOrders")}: {archivePreview}</p> : null}<AdminInput id="archiveConfirmation" name="archiveConfirmation" label={orderMaintenance("confirmationLabel")} value={archiveConfirmation} placeholder={orderMaintenance("archivePhrase")} onChange={(event) => setArchiveConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("archive_completed", archiveConfirmation)} disabled={isPending || archivePreview === null || archiveConfirmation !== orderMaintenance("archivePhrase")}>{isPending ? loading("executing") : orderMaintenance("executeArchive")}</AdminButton></div><div className="space-y-3 rounded-xl border border-white/10 p-4"><h3 className="font-semibold">{orderMaintenance("clearTitle")}</h3><p className="text-sm text-muted">{orderMaintenance("clearDescription")}</p><p className="text-sm text-amber-100">{orderMaintenance("clearWarning")}</p><AdminButton onClick={() => previewMaintenance("clear_active")} disabled={isPending}>{isPending ? loading("previewing") : orderMaintenance("previewClear")}</AdminButton>{clearPreview !== null ? <p className="text-sm">{orderMaintenance("affectedOrders")}: {clearPreview}</p> : null}<AdminInput id="clearConfirmation" name="clearConfirmation" label={orderMaintenance("confirmationLabel")} value={clearConfirmation} placeholder={orderMaintenance("clearPhrase")} onChange={(event) => setClearConfirmation(event.target.value)} /><AdminButton variant="danger" onClick={() => executeMaintenance("clear_active", clearConfirmation)} disabled={isPending || clearPreview === null || clearConfirmation !== orderMaintenance("clearPhrase")}>{isPending ? loading("executing") : orderMaintenance("executeClear")}</AdminButton></div></div></div></AdminCard> : null}
+                return (
+                  <article
+                    key={slot}
+                    className="space-y-3 rounded-[1rem] border border-white/10 bg-white/4 p-4"
+                  >
+                    <div className="relative h-40 overflow-hidden rounded-[1rem] border border-white/8 bg-black/30">
+                      <LuxuryMedia
+                        src={previewUrl || undefined}
+                        alt={getSiteImageLabel(slot)}
+                        sizes="(max-width: 1024px) 100vw, 30vw"
+                        fallbackContent={
+                          <div className="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-muted">
+                            {siteImagesCopy("usesDefault")}
+                          </div>
+                        }
+                      />
+                    </div>
 
+                    <div className="space-y-1">
+                      <p className="font-semibold text-foreground">{getSiteImageLabel(slot)}</p>
+                      <p className="text-sm text-muted">
+                        {hasPreview
+                          ? siteImagesCopy("currentImage")
+                          : siteImagesCopy("usesDefault")}
+                      </p>
+                    </div>
+
+                    <input
+                      ref={(node) => {
+                        fileInputRefs.current[slot] = node;
+                      }}
+                      type="file"
+                      accept={STATIC_SITE_IMAGE_INPUT_ACCEPT}
+                      className="hidden"
+                      onChange={(event) => handleSiteImageUpload(slot, event)}
+                    />
+
+                    <div className="flex flex-wrap gap-2">
+                      <AdminButton
+                        size="sm"
+                        variant="primary"
+                        onClick={() => fileInputRefs.current[slot]?.click()}
+                        disabled={isPending || !diagnosticsReady}
+                      >
+                        {hasPreview ? siteImagesCopy("replace") : siteImagesCopy("upload")}
+                      </AdminButton>
+                      <AdminButton
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleSiteImageReset(slot)}
+                        disabled={isPending || !diagnosticsReady || !hasPreview}
+                      >
+                        {siteImagesCopy("reset")}
+                      </AdminButton>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            <p className="text-sm text-muted">{siteImagesCopy("productsExcluded")}</p>
+          </div>
+        </AdminCard>
+
+        <AdminCard
+          title={publicVisuals("title")}
+          description={publicVisuals("description")}
+          action={
+            <AdminButton
+              variant="primary"
+              onClick={handleSavePublicVisuals}
+              disabled={isPending || !diagnosticsReady}
+            >
+              {isPending && pendingAction === "saving"
+                ? loading("saving")
+                : publicVisuals("save")}
+            </AdminButton>
+          }
+        >
+          <div className="grid gap-4 lg:grid-cols-2">
+            <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+              <input
+                type="checkbox"
+                checked={promo.enabled}
+                onChange={(event) => setPromo({ ...promo, enabled: event.target.checked })}
+              />
+              {publicVisuals("enabled")}
+            </label>
+            <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+              <input
+                type="checkbox"
+                checked={promo.showOnce}
+                onChange={(event) => setPromo({ ...promo, showOnce: event.target.checked })}
+              />
+              {publicVisuals("showOnce")}
+            </label>
+            <AdminInput
+              id="promoTitle"
+              name="promoTitle"
+              label={publicVisuals("promoTitle")}
+              value={promo.title}
+              onChange={(event) => setPromo({ ...promo, title: event.target.value })}
+            />
+            <AdminInput
+              id="promoCtaText"
+              name="promoCtaText"
+              label={publicVisuals("ctaText")}
+              value={promo.ctaText}
+              onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })}
+            />
+            <AdminInput
+              id="promoDescription"
+              name="promoDescription"
+              label={publicVisuals("promoDescription")}
+              value={promo.description}
+              onChange={(event) => setPromo({ ...promo, description: event.target.value })}
+            />
+            <AdminInput
+              id="promoCtaUrl"
+              name="promoCtaUrl"
+              label={publicVisuals("ctaUrl")}
+              value={promo.ctaUrl}
+              placeholder="https://..."
+              onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })}
+            />
+            <AdminInput
+              id="promoVideoUrl"
+              name="promoVideoUrl"
+              label={publicVisuals("videoUrl")}
+              value={promo.videoUrl}
+              placeholder="https://..."
+              onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })}
+            />
+            <AdminInput
+              id="promoStartsAt"
+              name="promoStartsAt"
+              type="datetime-local"
+              label={publicVisuals("start")}
+              value={toLocalDateTimeInput(promo.startsAt)}
+              onChange={(event) =>
+                setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })
+              }
+            />
+            <AdminInput
+              id="promoEndsAt"
+              name="promoEndsAt"
+              type="datetime-local"
+              label={publicVisuals("end")}
+              value={toLocalDateTimeInput(promo.endsAt)}
+              onChange={(event) =>
+                setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })
+              }
+            />
+            <AdminSelect
+              id="promoStyle"
+              name="promoStyle"
+              label={publicVisuals("style")}
+              value={promo.style}
+              onChange={(event) =>
+                setPromo({ ...promo, style: event.target.value as typeof promo.style })
+              }
+            >
+              <option value="luxury">{publicVisuals("luxury")}</option>
+              <option value="image">{publicVisuals("image")}</option>
+              <option value="announcement">{publicVisuals("announcement")}</option>
+            </AdminSelect>
+          </div>
+        </AdminCard>
+      </section>
+
+      {canManageUsers ? (
+        <AdminCard title={orderMaintenance("title")} description={orderMaintenance("description")}>
+          <div className="space-y-4">
+            <p className="text-sm text-muted">{orderMaintenance("excludedNote")}</p>
+            <p className="text-sm text-muted">{orderMaintenance("auditRequired")}</p>
+
+            <div className="grid gap-5 lg:grid-cols-3">
+              {([
+                {
+                  description: orderMaintenance("archiveDescription"),
+                  mode: "archive_completed" as const,
+                  title: orderMaintenance("archiveCompleted"),
+                  variant: "secondary" as const,
+                },
+                {
+                  description: orderMaintenance("clearDescription"),
+                  mode: "clear_active" as const,
+                  title: orderMaintenance("clearActive"),
+                  variant: "danger" as const,
+                },
+                {
+                  description: orderMaintenance("deleteDescription"),
+                  mode: "delete_permanent" as const,
+                  title: orderMaintenance("deletePermanent"),
+                  variant: "danger" as const,
+                },
+              ]).map((item) => {
+                const previewCount = maintenancePreview[item.mode];
+                const confirmed = maintenanceConfirmation[item.mode];
+                const missingPreviewToken =
+                  item.mode === "delete_permanent" &&
+                  !maintenancePreviewTokens[item.mode];
+
+                return (
+                  <article
+                    key={item.mode}
+                    className="space-y-3 rounded-[1rem] border border-white/10 bg-white/4 p-4"
+                  >
+                    <div className="space-y-1">
+                      <h3 className="font-semibold text-foreground">{item.title}</h3>
+                      <p className="text-sm text-muted">{item.description}</p>
+                    </div>
+
+                    <AdminButton
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => previewMaintenance(item.mode)}
+                      disabled={isPending}
+                    >
+                      {orderMaintenance("preview")}
+                    </AdminButton>
+
+                    <p className="text-sm text-muted">
+                      {orderMaintenance("affectedOrders")}: {previewCount ?? "-"}
+                    </p>
+
+                    <label className="rtl-inline-row flex items-start gap-2 text-sm text-foreground">
+                      <input
+                        type="checkbox"
+                        checked={confirmed}
+                        disabled={isPending || previewCount === null || previewCount === 0}
+                        onChange={(event) =>
+                          setMaintenanceConfirmation((current) => ({
+                            ...current,
+                            [item.mode]: event.target.checked,
+                          }))
+                        }
+                        className="mt-1 h-4 w-4 accent-[#c49a52]"
+                      />
+                      <span>{orderMaintenance("confirmCheckbox")}</span>
+                    </label>
+
+                    <AdminButton
+                      variant={item.variant}
+                      onClick={() => executeMaintenance(item.mode)}
+                      disabled={
+                        isPending ||
+                        previewCount === null ||
+                        previewCount === 0 ||
+                        !confirmed ||
+                        missingPreviewToken
+                      }
+                    >
+                      {item.title}
+                    </AdminButton>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </AdminCard>
+      ) : null}
       <AdminCard
         title={copy.userListTitle}
         description={!canManageUsers ? copy.manageUsersHint : undefined}

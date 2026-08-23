@@ -1,5 +1,7 @@
 "use server";
 
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -30,7 +32,13 @@ import {
 import { buildOrderEntryLinkEmail } from "@/lib/email/orderEntryLinkEmail";
 import { sendTransactionalEmail } from "@/lib/email/service";
 import { companyInfo } from "@/lib/site";
-import { archiveOrder, deleteOrder, getScopedOrders } from "@/lib/db/orders";
+import {
+  archiveOrder,
+  deleteOrder,
+  getScopedOrderMaintenanceRecords,
+  getScopedOrders,
+  permanentlyDeleteOrders,
+} from "@/lib/db/orders";
 import { createRequiredAuditLog } from "@/lib/db/auditLogs";
 
 const notificationSettingsSchema = z.object({
@@ -57,11 +65,235 @@ const sendOrderEntryLinkEmailSchema = z.object({
   recipientEmail: z.string().trim().email().max(160),
 });
 const publicVisualSettingsSchema = z.object({
-  homepageHeroImageUrl: z.string().trim().url().or(z.literal("")),
-  shopHeroImageUrl: z.string().trim().url().or(z.literal("")),
-  promoPopup: z.object({ enabled: z.boolean(), title: z.string().trim().max(160), description: z.string().trim().max(1200), ctaText: z.string().trim().max(80), ctaUrl: z.string().trim().url().or(z.literal("")), imageUrl: z.string().trim().url().or(z.literal("")), videoUrl: z.string().trim().url().or(z.literal("")), style: z.enum(["luxury", "image", "announcement"]), startsAt: z.string().trim().max(80), endsAt: z.string().trim().max(80), showOnce: z.boolean() }),
+  promoPopup: z.object({
+    enabled: z.boolean(),
+    title: z.string().trim().max(160),
+    description: z.string().trim().max(1200),
+    ctaText: z.string().trim().max(80),
+    ctaUrl: z.string().trim().url().or(z.literal("")),
+    videoUrl: z.string().trim().url().or(z.literal("")),
+    style: z.enum(["luxury", "image", "announcement"]),
+    startsAt: z.string().trim().max(80),
+    endsAt: z.string().trim().max(80),
+    showOnce: z.boolean(),
+  }),
 });
-const orderMaintenanceModeSchema = z.enum(["archive_completed", "clear_active"]);
+const orderMaintenanceModeSchema = z.enum([
+  "archive_completed",
+  "clear_active",
+  "delete_permanent",
+]);
+const orderMaintenanceExecutionSchema = z.object({
+  confirmedOrdersOnly: z.literal(true),
+  expectedCount: z.number().int().nonnegative(),
+  mode: orderMaintenanceModeSchema,
+  previewToken: z.string().trim().max(4096).default(""),
+});
+
+const PERMANENT_DELETE_PREVIEW_TOKEN_MODE = "permanent_delete_orders";
+const PERMANENT_DELETE_PREVIEW_TOKEN_TTL_MS = 10 * 60 * 1000;
+
+type OrderMaintenancePreviewResult = {
+  count: number;
+  message: string;
+  ok: boolean;
+  previewToken?: string;
+};
+
+type OrderMaintenanceExecutionResult = {
+  count: number;
+  message: string;
+  ok: boolean;
+  requiresPreview?: boolean;
+};
+
+type PermanentDeletePreviewTokenPayload = {
+  c: number;
+  e: number;
+  h: string;
+  m: string;
+  u: string;
+  em: string;
+};
+
+type PermanentDeletePreviewTokenFailureReason =
+  | "count_mismatch"
+  | "expired"
+  | "hash_mismatch"
+  | "invalid_signature"
+  | "missing"
+  | "mode_mismatch"
+  | "user_mismatch";
+
+let permanentDeletePreviewTokenSecret: Buffer | null = null;
+
+function normalizeMaintenanceEmail(value?: string | null) {
+  return value?.trim().toLowerCase() ?? "";
+}
+
+function getPermanentDeletePreviewTokenSecret() {
+  if (!permanentDeletePreviewTokenSecret) {
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ?? "";
+
+    if (!serviceRoleKey) {
+      throw new Error("Missing required permanent delete preview token secret.");
+    }
+
+    permanentDeletePreviewTokenSecret = createHash("sha256")
+      .update(`permanent-delete-preview:${serviceRoleKey}`)
+      .digest();
+  }
+
+  return permanentDeletePreviewTokenSecret;
+}
+
+function getStableEligibleOrderIdsHash(orderIds: string[]) {
+  const normalizedOrderIds = [...new Set(orderIds.map((value) => value.trim()).filter(Boolean))];
+
+  normalizedOrderIds.sort((left, right) => left.localeCompare(right));
+
+  return createHash("sha256")
+    .update(normalizedOrderIds.join("\n"), "utf8")
+    .digest("hex");
+}
+
+function encodePermanentDeletePreviewTokenPayload(
+  payload: PermanentDeletePreviewTokenPayload
+) {
+  return Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
+}
+
+function decodePermanentDeletePreviewTokenPayload(value: string) {
+  try {
+    const parsed = JSON.parse(
+      Buffer.from(value, "base64url").toString("utf8")
+    ) as Partial<PermanentDeletePreviewTokenPayload>;
+
+    if (
+      typeof parsed.c !== "number" ||
+      typeof parsed.e !== "number" ||
+      typeof parsed.h !== "string" ||
+      typeof parsed.m !== "string" ||
+      typeof parsed.u !== "string" ||
+      typeof parsed.em !== "string"
+    ) {
+      return null;
+    }
+
+    return parsed as PermanentDeletePreviewTokenPayload;
+  } catch {
+    return null;
+  }
+}
+
+function signPermanentDeletePreviewToken(encodedPayload: string) {
+  return createHmac("sha256", getPermanentDeletePreviewTokenSecret())
+    .update(encodedPayload)
+    .digest("base64url");
+}
+
+function isTimingSafeTokenMatch(expectedValue: string, providedValue: string) {
+  const expected = Buffer.from(expectedValue, "utf8");
+  const provided = Buffer.from(providedValue, "utf8");
+
+  if (expected.length !== provided.length) {
+    return false;
+  }
+
+  return timingSafeEqual(expected, provided);
+}
+
+function createPermanentDeletePreviewToken(input: {
+  count: number;
+  orderIds: string[];
+  userEmail: string;
+  userId: string;
+}) {
+  const payload: PermanentDeletePreviewTokenPayload = {
+    c: input.count,
+    e: Date.now() + PERMANENT_DELETE_PREVIEW_TOKEN_TTL_MS,
+    em: normalizeMaintenanceEmail(input.userEmail),
+    h: getStableEligibleOrderIdsHash(input.orderIds),
+    m: PERMANENT_DELETE_PREVIEW_TOKEN_MODE,
+    u: input.userId.trim(),
+  };
+  const encodedPayload = encodePermanentDeletePreviewTokenPayload(payload);
+
+  return `${encodedPayload}.${signPermanentDeletePreviewToken(encodedPayload)}`;
+}
+
+function validatePermanentDeletePreviewToken(input: {
+  count: number;
+  orderIds: string[];
+  token: string;
+  userEmail: string;
+  userId: string;
+}):
+  | { ok: true }
+  | { ok: false; reason: PermanentDeletePreviewTokenFailureReason } {
+  const token = input.token.trim();
+
+  if (!token) {
+    return { ok: false, reason: "missing" };
+  }
+
+  const [encodedPayload, providedSignature] = token.split(".", 2);
+
+  if (!encodedPayload || !providedSignature) {
+    return { ok: false, reason: "invalid_signature" };
+  }
+
+  const expectedSignature = signPermanentDeletePreviewToken(encodedPayload);
+
+  if (!isTimingSafeTokenMatch(expectedSignature, providedSignature)) {
+    return { ok: false, reason: "invalid_signature" };
+  }
+
+  const payload = decodePermanentDeletePreviewTokenPayload(encodedPayload);
+
+  if (!payload) {
+    return { ok: false, reason: "invalid_signature" };
+  }
+
+  if (payload.e <= Date.now()) {
+    return { ok: false, reason: "expired" };
+  }
+
+  if (payload.m !== PERMANENT_DELETE_PREVIEW_TOKEN_MODE) {
+    return { ok: false, reason: "mode_mismatch" };
+  }
+
+  if (
+    payload.u !== input.userId.trim() ||
+    payload.em !== normalizeMaintenanceEmail(input.userEmail)
+  ) {
+    return { ok: false, reason: "user_mismatch" };
+  }
+
+  if (payload.c !== input.count) {
+    return { ok: false, reason: "count_mismatch" };
+  }
+
+  if (payload.h !== getStableEligibleOrderIdsHash(input.orderIds)) {
+    return { ok: false, reason: "hash_mismatch" };
+  }
+
+  return { ok: true };
+}
+
+function getPermanentDeletePreviewFailureMessage(
+  reason: PermanentDeletePreviewTokenFailureReason
+) {
+  if (reason === "expired") {
+    return "The permanent delete preview expired. Run the preview again before confirming.";
+  }
+
+  if (reason === "count_mismatch" || reason === "hash_mismatch") {
+    return "The preview changed. Run the preview again before confirming.";
+  }
+
+  return "The permanent delete preview is invalid. Run the preview again before confirming.";
+}
 
 async function getOrderMaintenanceViewer(locale: AppLocale) {
   const access = await requireAdminAccess(locale, ["super_admin"]);
@@ -72,30 +304,144 @@ async function getOrderMaintenanceViewer(locale: AppLocale) {
 async function getEligibleMaintenanceOrders(locale: AppLocale, mode: z.infer<typeof orderMaintenanceModeSchema>) {
   const viewer = await getOrderMaintenanceViewer(locale);
   if (!viewer) return null;
-  const orders = await getScopedOrders(viewer);
-  return { viewer, orders: orders.filter((order) => mode === "archive_completed" ? !order.archivedAt && !order.deletedAt && ["delivered", "completed", "cancelled", "ready"].includes(order.status) : !order.archivedAt && !order.deletedAt) };
+  const orders =
+    mode === "delete_permanent"
+      ? await getScopedOrderMaintenanceRecords(viewer)
+      : await getScopedOrders(viewer);
+  return {
+    viewer,
+    orders: orders.filter((order) => {
+      if (mode === "archive_completed") {
+        return (
+          !order.archivedAt &&
+          !order.deletedAt &&
+          ["delivered", "completed", "cancelled", "ready"].includes(order.status)
+        );
+      }
+
+      if (mode === "clear_active") {
+        return !order.archivedAt && !order.deletedAt;
+      }
+
+      return Boolean(order.archivedAt) || Boolean(order.deletedAt) || order.status === "archived";
+    }),
+  };
 }
 
 async function createRequiredMaintenanceAudit(input: { action: string; actorEmail: string; actorUserId: string; count: number; mode: string }) {
   await createRequiredAuditLog({ action: input.action, actorEmail: input.actorEmail, metadata: { actorUserId: input.actorUserId, affectedOrderCount: input.count, mode: input.mode, timestamp: new Date().toISOString() } });
 }
 
-export async function previewOrderMaintenanceAction(locale: AppLocale, mode: z.infer<typeof orderMaintenanceModeSchema>) {
+export async function previewOrderMaintenanceAction(
+  locale: AppLocale,
+  mode: z.infer<typeof orderMaintenanceModeSchema>
+): Promise<OrderMaintenancePreviewResult> {
   const parsed = orderMaintenanceModeSchema.safeParse(mode);
-  if (!parsed.success) return { message: "Unable to preview orders.", ok: false, count: 0 };
-  try { const eligible = await getEligibleMaintenanceOrders(locale, parsed.data); if (!eligible) return { message: "Permission denied.", ok: false, count: 0 }; return { message: "Preview ready.", ok: true, count: eligible.orders.length }; }
-  catch { return { message: "Unable to preview orders.", ok: false, count: 0 }; }
-}
 
-export async function executeOrderMaintenanceAction(locale: AppLocale, mode: z.infer<typeof orderMaintenanceModeSchema>, confirmation: string) {
-  const parsed = orderMaintenanceModeSchema.safeParse(mode);
-  const phrase = mode === "archive_completed" ? "ARCHIVE ORDERS" : "CLEAR ACTIVE ORDERS";
-  if (!parsed.success || confirmation.trim() !== phrase) return { message: "Confirmation is invalid.", ok: false, count: 0 };
+  if (!parsed.success) {
+    return { message: "Unable to preview orders.", ok: false, count: 0 };
+  }
+
   try {
     const eligible = await getEligibleMaintenanceOrders(locale, parsed.data);
+
+    if (!eligible) {
+      return { message: "Permission denied.", ok: false, count: 0 };
+    }
+
+    return {
+      count: eligible.orders.length,
+      message: "Preview ready.",
+      ok: true,
+      previewToken:
+        parsed.data === "delete_permanent"
+          ? createPermanentDeletePreviewToken({
+              count: eligible.orders.length,
+              orderIds: eligible.orders.map((order) => order.id),
+              userEmail: eligible.viewer.email,
+              userId: eligible.viewer.id,
+            })
+          : undefined,
+    };
+  } catch {
+    return { message: "Unable to preview orders.", ok: false, count: 0 };
+  }
+}
+
+export async function executeOrderMaintenanceAction(
+  locale: AppLocale,
+  input: z.infer<typeof orderMaintenanceExecutionSchema>
+): Promise<OrderMaintenanceExecutionResult> {
+  const parsed = orderMaintenanceExecutionSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return { message: "Confirmation is invalid.", ok: false, count: 0 };
+  }
+
+  try {
+    const eligible = await getEligibleMaintenanceOrders(locale, parsed.data.mode);
     if (!eligible) return { message: "Permission denied.", ok: false, count: 0 };
-    await createRequiredMaintenanceAudit({ action: mode === "archive_completed" ? "bulk_archive_orders" : "bulk_clear_active_orders", actorEmail: eligible.viewer.email, actorUserId: eligible.viewer.id, count: eligible.orders.length, mode });
-    for (const order of eligible.orders) { if (mode === "archive_completed") await archiveOrder(eligible.viewer, order.id); else await deleteOrder(eligible.viewer, order.id); }
+
+    if (eligible.orders.length !== parsed.data.expectedCount) {
+      return {
+        message: "The preview changed. Run the preview again before confirming.",
+        ok: false,
+        count: eligible.orders.length,
+        requiresPreview: true,
+      };
+    }
+
+    if (parsed.data.mode === "delete_permanent") {
+      const previewTokenValidation = validatePermanentDeletePreviewToken({
+        count: eligible.orders.length,
+        orderIds: eligible.orders.map((order) => order.id),
+        token: parsed.data.previewToken,
+        userEmail: eligible.viewer.email,
+        userId: eligible.viewer.id,
+      });
+
+      if (!previewTokenValidation.ok) {
+        return {
+          message: getPermanentDeletePreviewFailureMessage(
+            previewTokenValidation.reason
+          ),
+          ok: false,
+          count: eligible.orders.length,
+          requiresPreview: true,
+        };
+      }
+    }
+
+    const auditAction =
+      parsed.data.mode === "archive_completed"
+        ? "bulk_archive_orders"
+        : parsed.data.mode === "clear_active"
+          ? "bulk_clear_active_orders"
+          : "bulk_delete_orders_permanently";
+    await createRequiredMaintenanceAudit({
+      action: auditAction,
+      actorEmail: eligible.viewer.email,
+      actorUserId: eligible.viewer.id,
+      count: eligible.orders.length,
+      mode: parsed.data.mode,
+    });
+
+    if (parsed.data.mode === "delete_permanent") {
+      await permanentlyDeleteOrders(
+        eligible.viewer,
+        eligible.orders.map((order) => order.id),
+        { auditAction }
+      );
+    } else {
+      for (const order of eligible.orders) {
+        if (parsed.data.mode === "archive_completed") {
+          await archiveOrder(eligible.viewer, order.id);
+        } else {
+          await deleteOrder(eligible.viewer, order.id);
+        }
+      }
+    }
+
     revalidateSettingsViews();
     return { message: "Order maintenance completed.", ok: true, count: eligible.orders.length };
   } catch { return { message: "Unable to maintain orders.", ok: false, count: 0 }; }
@@ -179,9 +525,12 @@ function getSettingsActionCopy(locale: AppLocale) {
 
 function revalidateSettingsViews() {
   routing.locales.forEach((targetLocale) => {
-    revalidatePath(`/${targetLocale}/admin`);
-    revalidatePath(`/${targetLocale}/admin/settings`);
     revalidatePath(`/${targetLocale}`);
+    revalidatePath(`/${targetLocale}/admin`);
+    revalidatePath(`/${targetLocale}/admin/archive`);
+    revalidatePath(`/${targetLocale}/admin/my-tasks`);
+    revalidatePath(`/${targetLocale}/admin/orders`);
+    revalidatePath(`/${targetLocale}/admin/settings`);
     revalidatePath(`/${targetLocale}/shop`);
   });
 }
