@@ -9,6 +9,7 @@
     "lint": "eslint",
     "check:messages": "\"%npm_node_execpath%\" scripts/check-messages.mjs",
     "check:message-keys": "\"%npm_node_execpath%\" scripts/check-message-keys.mjs",
+    "check:mojibake": "\"%npm_node_execpath%\" scripts/check-mojibake.mjs",
     "decoy:hash": "\"%npm_node_execpath%\" scripts/decoy-hash.mjs",
     "decoy:rotate": "\"%npm_node_execpath%\" scripts/decoy-rotate-gate.mjs",
     "decoy:disable-gate": "\"%npm_node_execpath%\" scripts/decoy-disable-gate.mjs",
