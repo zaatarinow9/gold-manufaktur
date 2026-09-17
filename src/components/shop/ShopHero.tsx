@@ -6,6 +6,7 @@ import { trimDisplayHeading } from "@/lib/displayText";
 import { companyInfo } from "@/lib/site";
 import type { CatalogProduct } from "@/types/catalog";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
+import { StaticHeroMedia } from "@/components/site/StaticHeroMedia";
 
 type ShopHeroProps = {
   imageUrl?: string;
@@ -26,7 +27,7 @@ export function ShopHero({
   return (
     <section className="full-bleed-section relative overflow-hidden border-b border-white/6">
       <div className="absolute inset-0">
-        <LuxuryMedia
+        <StaticHeroMedia
           src={imageUrl}
           fallbackSrc={backgroundProduct?.imageUrl}
           alt={backgroundProduct?.name || t("visualAlt")}

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { trimDisplayHeading } from "@/lib/displayText";
 import type { CatalogProduct } from "@/types/catalog";
-import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
+import { StaticHeroMedia } from "@/components/site/StaticHeroMedia";
 
 type HeroSectionProps = {
   imageUrl?: string;
@@ -21,7 +21,7 @@ export function HeroSection({
   return (
     <section className="full-bleed-section relative isolate min-h-[80svh] overflow-hidden">
       <div className="absolute inset-0">
-        <LuxuryMedia
+        <StaticHeroMedia
           src={imageUrl}
           fallbackSrc={visualProduct?.imageUrl}
           alt={t("backgroundAlt")}
