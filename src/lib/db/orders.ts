@@ -2278,103 +2278,6 @@ export async function permanentlyDeleteOrders(
   }
 
   const supabase = createSupabaseAdminClient();
-  const [
-    { data: orderItemRows, error: orderItemsError },
-    { data: orderStatusEventRows, error: orderStatusEventsError },
-    { data: supportTicketRows, error: supportTicketsError },
-    { data: emailLogRows, error: emailLogsError },
-    { data: adminNotificationRows, error: adminNotificationsError },
-  ] = await Promise.all([
-    supabase.from("order_items").select("id").in("order_id", targetOrderIds),
-    supabase.from("order_status_events").select("id").in("order_id", targetOrderIds),
-    supabase.from("support_tickets").select("id").in("order_id", targetOrderIds),
-    supabase.from("email_logs").select("id").in("order_id", targetOrderIds),
-    supabase
-      .from("admin_notifications")
-      .select("id")
-      .eq("entity_type", "order")
-      .in("entity_id", targetOrderIds),
-  ]);
-
-  if (orderItemsError) {
-    throw new Error(`Unable to inspect order items: ${orderItemsError.message}`);
-  }
-
-  if (orderStatusEventsError) {
-    throw new Error(
-      `Unable to inspect order status events: ${orderStatusEventsError.message}`
-    );
-  }
-
-  if (supportTicketsError) {
-    throw new Error(`Unable to inspect support tickets: ${supportTicketsError.message}`);
-  }
-
-  if (emailLogsError) {
-    throw new Error(`Unable to inspect email logs: ${emailLogsError.message}`);
-  }
-
-  if (adminNotificationsError) {
-    throw new Error(
-      `Unable to inspect admin notifications: ${adminNotificationsError.message}`
-    );
-  }
-
-  const supportTicketIds = (supportTicketRows ?? []).map((ticket) => ticket.id);
-  let supportTicketEmailLogRows: Array<{ id: string }> = [];
-
-  if (supportTicketIds.length > 0) {
-    const { data, error } = await supabase
-      .from("email_logs")
-      .select("id")
-      .in("support_ticket_id", supportTicketIds);
-
-    if (error) {
-      throw new Error(`Unable to inspect support ticket email logs: ${error.message}`);
-    }
-
-    supportTicketEmailLogRows = data ?? [];
-  }
-
-  const emailLogIds = [
-    ...new Set(
-      [...(emailLogRows ?? []), ...supportTicketEmailLogRows].map((row) => row.id)
-    ),
-  ];
-  const adminNotificationIds = (adminNotificationRows ?? []).map(
-    (notification) => notification.id
-  );
-
-  if (emailLogIds.length > 0) {
-    const { error } = await supabase.from("email_logs").delete().in("id", emailLogIds);
-
-    if (error) {
-      throw new Error(`Unable to delete email logs: ${error.message}`);
-    }
-  }
-
-  if (adminNotificationIds.length > 0) {
-    const { error } = await supabase
-      .from("admin_notifications")
-      .delete()
-      .in("id", adminNotificationIds);
-
-    if (error) {
-      throw new Error(`Unable to delete admin notifications: ${error.message}`);
-    }
-  }
-
-  if (supportTicketIds.length > 0) {
-    const { error } = await supabase
-      .from("support_tickets")
-      .delete()
-      .in("id", supportTicketIds);
-
-    if (error) {
-      throw new Error(`Unable to delete support tickets: ${error.message}`);
-    }
-  }
-
   const { error: ordersError } = await supabase
     .from("orders")
     .delete()
@@ -2385,12 +2288,12 @@ export async function permanentlyDeleteOrders(
   }
 
   return {
-    adminNotifications: adminNotificationIds.length,
-    emailLogs: emailLogIds.length,
-    orderItems: (orderItemRows ?? []).length,
+    adminNotifications: 0,
+    emailLogs: 0,
+    orderItems: 0,
     orders: targetOrderIds.length,
-    orderStatusEvents: (orderStatusEventRows ?? []).length,
-    supportTickets: supportTicketIds.length,
+    orderStatusEvents: 0,
+    supportTickets: 0,
   };
 }
 

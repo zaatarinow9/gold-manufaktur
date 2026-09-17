@@ -97,161 +97,6 @@ const SITE_IMAGE_SLOTS: StaticSiteImageSlot[] = [
   "promoPopupImage",
 ];
 
-function getSettingsUiCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      adminEmail: "Ø¨Ø±ÙŠØ¯ ØªÙ†Ø¨ÙŠÙ‡Ø§Øª Ø§Ù„Ø·Ù„Ø¨Ø§Øª",
-      copyLink: "Ù†Ø³Ø® Ø§Ù„Ø±Ø§Ø¨Ø·",
-      copySuccess: "ØªÙ… Ù†Ø³Ø® Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„.",
-      copyUnavailable: "Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø±Ø§Ø¨Ø· ÙƒØ§Ù…Ù„ Ù…ØªØ§Ø­ Ù„Ù„Ù†Ø³Ø® Ø­Ø§Ù„ÙŠØ§Ù‹.",
-      description:
-        "Ø¥Ø¯Ø§Ø±Ø© Ø¹Ù†Ø§ÙˆÙŠÙ† Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§ØªØŒ Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠØŒ ÙˆØ§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† Ù…Ù† Ø´Ø§Ø´Ø© ÙˆØ§Ø­Ø¯Ø©.",
-      diagnosticsTitle: "ØªÙ†Ø¨ÙŠÙ‡ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª",
-      expiresAt: "ÙŠÙ†ØªÙ‡ÙŠ ÙÙŠ",
-      fullLinkHelp:
-        "ÙŠØªÙ… Ø¹Ø±Ø¶ Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„ ÙƒÙ…Ø§ Ø³ÙŠØµÙ„ Ø¥Ù„Ù‰ Ø§Ù„Ø¹Ù…ÙŠÙ„ØŒ Ù…Ø¹ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¹Ù†ÙˆØ§Ù† Ù‡Ø°Ø§ Ø§Ù„Ù…ØªØµÙØ­ Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø§Ù„Ø®Ø§Ø¯Ù… Ù…Ø§ ØªØ²Ø§Ù„ Ø¹Ù„Ù‰ localhost.",
-      fullLinkLabel: "Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„",
-      inviteAgain: "Ø¥Ø±Ø³Ø§Ù„ Ø±Ø§Ø¨Ø· Ø¬Ø¯ÙŠØ¯",
-      linkDisabled: "Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ ØºÙŠØ± Ù…ÙØ¹Ù„ Ø­Ø§Ù„ÙŠØ§Ù‹.",
-      linkRecipient: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø§Ø¨Ø· Ø¥Ù„Ù‰",
-      linkRecipientHelp: "Ø³ÙŠØªÙ… Ø¥Ø±Ø³Ø§Ù„ Ø±Ø³Ø§Ù„Ø© Ø£Ù„Ù…Ø§Ù†ÙŠØ© Ø§Ø­ØªØ±Ø§ÙÙŠØ© ØªØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ Ø²Ø± ÙˆØ±Ø§Ø¨Ø· Ù…Ø¨Ø§Ø´Ø±.",
-      manageUsersHint:
-        "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ† ØªØªØ·Ù„Ø¨ ØµÙ„Ø§Ø­ÙŠØ© Ø§Ù„Ù…Ø§Ù„Ùƒ Ø£Ùˆ Ø§Ù„Ù…Ø¯ÙŠØ± Ø§Ù„Ø£Ø¹Ù„Ù‰ Ù„Ø£Ù†Ù‡Ø§ ØªØ¹Ù…Ù„ Ø¹Ø¨Ø± Supabase Auth Ø¹Ù„Ù‰ Ø§Ù„Ø®Ø§Ø¯Ù….",
-      notificationTitle: "Ø§Ù„Ø¥Ø´Ø¹Ø§Ø±Ø§Øª",
-      orderEntryDescription:
-        "ÙØ¹Ù‘Ù„ Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠØŒ Ø±Ø§Ø¬Ø¹ Ø§Ù„Ø±Ø§Ø¨Ø· Ø§Ù„ÙƒØ§Ù…Ù„ØŒ ÙˆØ§Ù†Ø³Ø®Ù‡ Ø£Ùˆ Ø£Ø±Ø³Ù„Ù‡ Ø¨Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ Ù…Ø¨Ø§Ø´Ø±Ø©Ù‹ Ù…Ù† Ù‡Ù†Ø§.",
-      orderEntryEnabled: "ØªÙØ¹ÙŠÙ„ Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ",
-      orderEntryTitle: "Ø±Ø§Ø¨Ø· Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø®Ø§Ø±Ø¬ÙŠ",
-      ownerEmail: "Ø¨Ø±ÙŠØ¯ Ø§Ù„Ù…Ø§Ù„Ùƒ",
-      privacyLocalOnly: "",
-      privacyStatusActive: "",
-      privacyStatusInactive: "",
-      privacyTitle: "",
-      role: "Ø§Ù„Ø¯ÙˆØ±",
-      rotateLink: "ØªØ¯ÙˆÙŠØ± Ø§Ù„Ø±Ø§Ø¨Ø·",
-      rotatedAt: "Ø¢Ø®Ø± ØªØ¯ÙˆÙŠØ±",
-      save: "Ø­ÙØ¸",
-      sendLink: "Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø±Ø§Ø¨Ø·",
-      smtpConfigured: "SMTP Ù…Ø¶Ø¨ÙˆØ·",
-      smtpMissing: "SMTP ØºÙŠØ± Ù…ÙƒØªÙ…Ù„",
-      smtpTitle: "Ø­Ø§Ù„Ø© Ø§Ù„Ø¨Ø±ÙŠØ¯",
-      statusDisabled: "Ù…Ø¹Ø·Ù„",
-      statusEnabled: "Ù…ÙØ¹Ù„",
-      supportEmail: "Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¯Ø¹Ù…",
-      title: "Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª",
-      userActive: "Ù†Ø´Ø·",
-      userCreate: "Ø¥Ù†Ø´Ø§Ø¡ Ù…Ø³ØªØ®Ø¯Ù…",
-      userDelete: "Ø­Ø°Ù",
-      userDisplayName: "Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø¸Ø§Ù‡Ø±",
-      userEdit: "ØªØ¹Ø¯ÙŠÙ„",
-      userListTitle: "Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙˆÙ† ÙˆØ§Ù„Ø£Ø¯ÙˆØ§Ø±",
-      userSave: "Ø­ÙØ¸ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      adminEmail: "E-Mail fuer Auftrags- und Anfragehinweise",
-      copyLink: "Link kopieren",
-      copySuccess: "Der vollstaendige Link wurde kopiert.",
-      copyUnavailable: "Aktuell ist kein vollstaendiger Link verfuegbar.",
-      description:
-        "Verwalten Sie Benachrichtigungen, den externen Auftragserfassungslink und Admin-Benutzer an einem Ort.",
-      diagnosticsTitle: "Einstellungsdiagnose",
-      expiresAt: "Laeuft ab am",
-      fullLinkHelp:
-        "Hier sehen Sie immer die vollstaendige URL, wie sie an Kunden verschickt wird. Falls der Server noch localhost meldet, wird die aktuelle Browser-Domain verwendet.",
-      fullLinkLabel: "Vollstaendiger Link",
-      inviteAgain: "Neuen Link senden",
-      linkDisabled: "Der externe Auftragserfassungslink ist derzeit deaktiviert.",
-      linkRecipient: "Link senden an",
-      linkRecipientHelp:
-        "Es wird eine professionelle deutsche E-Mail mit Schaltflaeche und Direktlink versendet.",
-      manageUsersHint:
-        "Die Benutzerverwaltung benoetigt Super-Admin-Rechte, da sie serverseitig ueber Supabase Auth arbeitet.",
-      notificationTitle: "Benachrichtigungen",
-      orderEntryDescription:
-        "Aktivieren Sie den externen Link, pruefen Sie die vollstaendige URL und kopieren oder versenden Sie ihn direkt von hier.",
-      orderEntryEnabled: "Externen Auftragserfassungslink aktivieren",
-      orderEntryTitle: "Externer Auftragserfassungslink",
-      ownerEmail: "Inhaber / Super-Admin",
-      privacyLocalOnly: "",
-      privacyStatusActive: "",
-      privacyStatusInactive: "",
-      privacyTitle: "",
-      role: "Rolle",
-      rotateLink: "Link neu erzeugen",
-      rotatedAt: "Zuletzt rotiert",
-      save: "Speichern",
-      sendLink: "Link per E-Mail senden",
-      smtpConfigured: "SMTP eingerichtet",
-      smtpMissing: "SMTP unvollstaendig",
-      smtpTitle: "E-Mail-Status",
-      statusDisabled: "Deaktiviert",
-      statusEnabled: "Aktiv",
-      supportEmail: "Support / Kontakt",
-      title: "Einstellungen",
-      userActive: "Aktiv",
-      userCreate: "Benutzer anlegen",
-      userDelete: "Loeschen",
-      userDisplayName: "Anzeigename",
-      userEdit: "Bearbeiten",
-      userListTitle: "Benutzer und Rollen",
-      userSave: "Benutzer speichern",
-    };
-  }
-
-  return {
-    adminEmail: "Order and inquiry notification email",
-    copyLink: "Copy link",
-    copySuccess: "The full link was copied.",
-    copyUnavailable: "No full link is available right now.",
-    description:
-      "Manage notification addresses, the external order-entry link, and admin users from one place.",
-    diagnosticsTitle: "Settings diagnostics",
-    expiresAt: "Expires at",
-    fullLinkHelp:
-      "This always shows the complete URL exactly as it will be shared. If the server still reports localhost, the current browser origin is used instead.",
-    fullLinkLabel: "Full link",
-    inviteAgain: "Send new link",
-    linkDisabled: "The external order-entry link is currently disabled.",
-    linkRecipient: "Send link to",
-    linkRecipientHelp:
-      "A professional German email with a button and direct fallback link will be sent.",
-    manageUsersHint:
-      "User management requires super-admin access because it uses the Supabase Auth admin API server-side.",
-    notificationTitle: "Notifications",
-    orderEntryDescription:
-      "Enable the external link, review the full URL, and copy or email it directly from here.",
-    orderEntryEnabled: "Enable external order-entry link",
-    orderEntryTitle: "External order-entry link",
-    ownerEmail: "Owner / super admin",
-    privacyLocalOnly: "",
-    privacyStatusActive: "",
-    privacyStatusInactive: "",
-    privacyTitle: "",
-    role: "Role",
-    rotateLink: "Rotate link",
-    rotatedAt: "Last rotated",
-    save: "Save",
-    sendLink: "Send link by email",
-    smtpConfigured: "SMTP configured",
-    smtpMissing: "SMTP incomplete",
-    smtpTitle: "Email status",
-    statusDisabled: "Disabled",
-    statusEnabled: "Enabled",
-    supportEmail: "Support / contact",
-    title: "Settings",
-    userActive: "Active",
-    userCreate: "Create user",
-    userDelete: "Delete",
-    userDisplayName: "Display name",
-    userEdit: "Edit",
-    userListTitle: "Users and roles",
-    userSave: "Save user",
-  };
-}
-
 function createUserForm(): UserFormState {
   return {
     displayName: "",
@@ -269,24 +114,6 @@ function createUserEditForm(user: ManagedAdminUserRecord): UserFormState {
     isActive: user.isActive,
     role: user.role,
   };
-}
-
-function getRoleLabel(role: ManagedAdminRole, locale: AppLocale) {
-  if (locale === "ar") {
-    if (role === "super_admin") return "Ø§Ù„Ù…Ø§Ù„Ùƒ";
-    if (role === "admin") return "Ù…Ø¯ÙŠØ±";
-    return "Ø¹Ø§Ù…Ù„";
-  }
-
-  if (locale === "de") {
-    if (role === "super_admin") return "Inhaber";
-    if (role === "admin") return "Admin";
-    return "Mitarbeiter";
-  }
-
-  if (role === "super_admin") return "Owner";
-  if (role === "admin") return "Admin";
-  return "Worker";
 }
 
 function toLocalDateTimeInput(value: string) {
@@ -335,41 +162,20 @@ export function AdminSettingsClient({
   locale,
   usersWarning,
 }: AdminSettingsClientProps) {
-  const copy = getSettingsUiCopy(locale);
+  const settingsCopy = useTranslations("Admin.settingsClient");
   const orderMaintenance = useTranslations("Admin.orderMaintenance");
   const loading = useTranslations("Admin.loading");
   const siteImagesCopy = useTranslations("Admin.siteImages");
   const publicVisuals = useTranslations("PublicVisuals");
-  const userEmailLabel =
-    locale === "ar" ? "Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ" : locale === "de" ? "E-Mail" : "Email";
-  const userInactiveLabel =
-    locale === "ar" ? "ØºÙŠØ± Ù†Ø´Ø·" : locale === "de" ? "Inaktiv" : "Inactive";
-  const activateUserLabel =
-    locale === "ar" ? "ØªÙØ¹ÙŠÙ„" : locale === "de" ? "Aktivieren" : "Activate";
-  const deactivateUserLabel =
-    locale === "ar" ? "Ø¥ÙŠÙ‚Ø§Ù" : locale === "de" ? "Deaktivieren" : "Deactivate";
-  const resetPasswordLabel =
-    locale === "ar"
-      ? "Ø¥Ø±Ø³Ø§Ù„ Ø±Ø§Ø¨Ø· ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±"
-      : locale === "de"
-        ? "Passwort-Link senden"
-        : "Send password link";
-  const diagnosticsEnvironmentLabel =
-    locale === "ar" ? "Ø§Ù„Ø¨ÙŠØ¦Ø©" : locale === "de" ? "Umgebung" : "Environment";
-  const diagnosticsSiteUrlLabel =
-    locale === "ar" ? "Ø±Ø§Ø¨Ø· Ø§Ù„Ù…ÙˆÙ‚Ø¹" : locale === "de" ? "Site-URL" : "Site URL";
-  const diagnosticsMissingEnvLabel =
-    locale === "ar"
-      ? "Ù…ØªØºÙŠØ±Ø§Øª Ø§Ù„Ø¨ÙŠØ¦Ø© Ø§Ù„Ù†Ø§Ù‚ØµØ©"
-      : locale === "de"
-        ? "Fehlende Umgebungsvariablen"
-        : "Missing environment variables";
-  const diagnosticsMigrationLabel =
-    locale === "ar"
-      ? "Ø§Ù„Ù‡Ø¬Ø±Ø© Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø©"
-      : locale === "de"
-        ? "Benoetigte Migration"
-        : "Suggested migration";
+  const userEmailLabel = settingsCopy("email");
+  const userInactiveLabel = settingsCopy("inactive");
+  const activateUserLabel = settingsCopy("activate");
+  const deactivateUserLabel = settingsCopy("deactivate");
+  const resetPasswordLabel = settingsCopy("sendPasswordLink");
+  const diagnosticsEnvironmentLabel = settingsCopy("environment");
+  const diagnosticsSiteUrlLabel = settingsCopy("siteUrl");
+  const diagnosticsMissingEnvLabel = settingsCopy("missingEnvironment");
+  const diagnosticsMigrationLabel = settingsCopy("requiredMigration");
   const requiredLabel = getRequiredFieldBadge(locale);
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -753,13 +559,13 @@ export function AdminSettingsClient({
 
   const handleCopyOrderEntryLink = async () => {
     if (!orderEntryFullUrl) {
-      pushFeedback("error", copy.copyUnavailable);
+      pushFeedback("error", settingsCopy("copyUnavailable"));
       return;
     }
 
     try {
       await navigator.clipboard.writeText(orderEntryFullUrl);
-      pushFeedback("success", copy.copySuccess);
+      pushFeedback("success", settingsCopy("copySuccess"));
     } catch {
       pushFeedback("error", orderEntryFullUrl);
     }
@@ -857,7 +663,7 @@ export function AdminSettingsClient({
   };
 
   const handleUserDelete = (user: ManagedAdminUserRecord) => {
-    if (!window.confirm(copy.userDelete)) {
+    if (!window.confirm(settingsCopy("userDelete"))) {
       return;
     }
 
@@ -879,9 +685,9 @@ export function AdminSettingsClient({
     <div className="space-y-6">
       <AdminActionPendingBar active={isPending} label={loading(pendingAction)} />
       <AdminPageHeader
-        eyebrow={copy.title}
-        title={copy.title}
-        description={copy.description}
+        eyebrow={settingsCopy("title")}
+        title={settingsCopy("title")}
+        description={settingsCopy("description")}
       />
 
       {feedback ? (
@@ -898,7 +704,7 @@ export function AdminSettingsClient({
 
       {!diagnosticsReady ? (
         <div className="rounded-[1rem] border border-rose-400/25 bg-rose-400/10 px-4 py-4 text-sm text-rose-100">
-          <p className="font-semibold">{copy.diagnosticsTitle}</p>
+          <p className="font-semibold">{settingsCopy("diagnosticsTitle")}</p>
           <p className="mt-2">{initialSettings.diagnostics.message}</p>
           <div className="mt-3 space-y-1 text-xs text-rose-100/90">
             <p>{`${diagnosticsEnvironmentLabel}: ${initialSettings.diagnostics.environmentLabel}`}</p>
@@ -925,7 +731,7 @@ export function AdminSettingsClient({
 
       <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <AdminCard
-          title={copy.notificationTitle}
+          title={settingsCopy("notificationTitle")}
           description={diagnosticsReady ? undefined : initialSettings.diagnostics.message ?? undefined}
           action={
             <AdminButton
@@ -933,7 +739,7 @@ export function AdminSettingsClient({
               onClick={handleSaveNotifications}
               disabled={isPending || !diagnosticsReady}
             >
-              {copy.save}
+              {settingsCopy("save")}
             </AdminButton>
           }
         >
@@ -942,7 +748,7 @@ export function AdminSettingsClient({
               id="adminNotificationEmail"
               name="adminNotificationEmail"
               type="email"
-              label={copy.adminEmail}
+              label={settingsCopy("adminEmail")}
               value={adminNotificationEmail}
               requiredLabel={requiredLabel}
               placeholder="service@goldhelwah.de"
@@ -952,7 +758,7 @@ export function AdminSettingsClient({
               id="supportNotificationEmail"
               name="supportNotificationEmail"
               type="email"
-              label={copy.supportEmail}
+              label={settingsCopy("supportEmail")}
               value={supportNotificationEmail}
               placeholder="support@goldhelwah.de"
               onChange={(event) => setSupportNotificationEmail(event.target.value)}
@@ -962,7 +768,7 @@ export function AdminSettingsClient({
                 id="ownerEmail"
                 name="ownerEmail"
                 type="email"
-                label={copy.ownerEmail}
+                label={settingsCopy("ownerEmail")}
                 value={ownerEmail}
                 placeholder="owner@goldhelwah.de"
                 onChange={(event) => setOwnerEmail(event.target.value)}
@@ -971,10 +777,10 @@ export function AdminSettingsClient({
           </div>
         </AdminCard>
 
-        <AdminCard title={copy.smtpTitle}>
+        <AdminCard title={settingsCopy("smtpTitle")}>
           <div className="space-y-4">
             <AdminBadge variant={initialSettings.smtpStatus.configured ? "success" : "danger"}>
-              {initialSettings.smtpStatus.configured ? copy.smtpConfigured : copy.smtpMissing}
+              {initialSettings.smtpStatus.configured ? settingsCopy("smtpConfigured") : settingsCopy("smtpMissing")}
             </AdminBadge>
             <div className="space-y-2 text-sm text-muted">
               <p>{`${initialSettings.smtpStatus.fromName} <${initialSettings.smtpStatus.fromAddress || "-"}>`}</p>
@@ -988,8 +794,8 @@ export function AdminSettingsClient({
 
       <section className="space-y-6">
         <AdminCard
-          title={copy.orderEntryTitle}
-          description={copy.orderEntryDescription}
+          title={settingsCopy("orderEntryTitle")}
+          description={settingsCopy("orderEntryDescription")}
           action={
             <div className="flex gap-2">
               <AdminButton
@@ -997,14 +803,14 @@ export function AdminSettingsClient({
                 onClick={handleSaveOrderEntry}
                 disabled={isPending || !diagnosticsReady}
               >
-                {copy.save}
+                {settingsCopy("save")}
               </AdminButton>
               <AdminButton
                 variant="primary"
                 onClick={handleRotateLink}
                 disabled={isPending || !diagnosticsReady}
               >
-                {copy.rotateLink}
+                {settingsCopy("rotateLink")}
               </AdminButton>
             </div>
           }
@@ -1017,14 +823,14 @@ export function AdminSettingsClient({
                 onChange={(event) => setOrderEntryEnabled(event.target.checked)}
                 className="h-4 w-4 accent-[#c49a52]"
               />
-              {copy.orderEntryEnabled}
+              {settingsCopy("orderEntryEnabled")}
             </label>
 
             <AdminInput
               id="orderEntryExpiresAt"
               name="orderEntryExpiresAt"
               type="datetime-local"
-              label={copy.expiresAt}
+              label={settingsCopy("expiresAt")}
               value={orderEntryExpiresAt}
               onChange={(event) => setOrderEntryExpiresAt(event.target.value)}
             />
@@ -1033,14 +839,14 @@ export function AdminSettingsClient({
               <AdminInput
                 id="orderEntryFullUrl"
                 name="orderEntryFullUrl"
-                label={copy.fullLinkLabel}
+                label={settingsCopy("fullLinkLabel")}
                 value={orderEntryFullUrl}
-                helperText={copy.fullLinkHelp}
+                helperText={settingsCopy("fullLinkHelp")}
                 readOnly
                 className="font-mono text-xs"
               />
             ) : (
-              <p className="text-sm text-muted">{copy.linkDisabled}</p>
+              <p className="text-sm text-muted">{settingsCopy("linkDisabled")}</p>
             )}
 
             <div className="flex flex-wrap items-center gap-2">
@@ -1050,14 +856,14 @@ export function AdminSettingsClient({
                 onClick={handleCopyOrderEntryLink}
                 disabled={!orderEntryFullUrl}
               >
-                {copy.copyLink}
+                {settingsCopy("copyLink")}
               </AdminButton>
               <AdminBadge variant={orderEntryEnabled ? "success" : "neutral"}>
-                {orderEntryEnabled ? copy.statusEnabled : copy.statusDisabled}
+                {orderEntryEnabled ? settingsCopy("statusEnabled") : settingsCopy("statusDisabled")}
               </AdminBadge>
               {initialSettings.orderEntryRotatedAt ? (
                 <AdminBadge variant="info">
-                  {copy.rotatedAt}:{" "}
+                  {settingsCopy("rotatedAt")}:{" "}
                   {initialSettings.orderEntryRotatedAt.slice(0, 16).replace("T", " ")}
                 </AdminBadge>
               ) : null}
@@ -1068,10 +874,10 @@ export function AdminSettingsClient({
                 id="orderEntryRecipientEmail"
                 name="orderEntryRecipientEmail"
                 type="email"
-                label={copy.linkRecipient}
+                label={settingsCopy("linkRecipient")}
                 value={linkRecipientEmail}
-                helperText={copy.linkRecipientHelp}
-                placeholder="kunde@example.com"
+                helperText={settingsCopy("linkRecipientHelp")}
+                placeholder="email@example.com"
                 onChange={(event) => setLinkRecipientEmail(event.target.value)}
               />
               <AdminButton
@@ -1084,7 +890,7 @@ export function AdminSettingsClient({
                   linkRecipientEmail.trim().length === 0
                 }
               >
-                {copy.sendLink}
+                {settingsCopy("sendLink")}
               </AdminButton>
             </div>
           </div>
@@ -1363,12 +1169,12 @@ export function AdminSettingsClient({
         </AdminCard>
       ) : null}
       <AdminCard
-        title={copy.userListTitle}
-        description={!canManageUsers ? copy.manageUsersHint : undefined}
+        title={settingsCopy("userListTitle")}
+        description={!canManageUsers ? settingsCopy("manageUsersHint") : undefined}
         action={
           canManageUsers ? (
             <AdminButton variant="primary" onClick={handleUserSubmit} disabled={isPending}>
-              {userFormState.id ? copy.userSave : copy.userCreate}
+              {userFormState.id ? settingsCopy("userSave") : settingsCopy("userCreate")}
             </AdminButton>
           ) : undefined
         }
@@ -1378,7 +1184,7 @@ export function AdminSettingsClient({
             <AdminInput
               id="userDisplayName"
               name="userDisplayName"
-              label={copy.userDisplayName}
+              label={settingsCopy("userDisplayName")}
               value={userFormState.displayName}
               requiredLabel={requiredLabel}
               onChange={(event) =>
@@ -1405,7 +1211,7 @@ export function AdminSettingsClient({
             <AdminSelect
               id="userRole"
               name="userRole"
-              label={copy.role}
+              label={settingsCopy("role")}
               value={userFormState.role}
               onChange={(event) =>
                 setUserFormState((current) => ({
@@ -1414,9 +1220,9 @@ export function AdminSettingsClient({
                 }))
               }
             >
-              <option value="super_admin">{getRoleLabel("super_admin", locale)}</option>
-              <option value="admin">{getRoleLabel("admin", locale)}</option>
-              <option value="employee">{getRoleLabel("employee", locale)}</option>
+              <option value="super_admin">{settingsCopy("roleOwner")}</option>
+              <option value="admin">{settingsCopy("roleAdmin")}</option>
+              <option value="employee">{settingsCopy("roleEmployee")}</option>
             </AdminSelect>
             <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
               <input
@@ -1430,7 +1236,7 @@ export function AdminSettingsClient({
                 }
                 className="h-4 w-4 accent-[#c49a52]"
               />
-              {copy.userActive}
+              {settingsCopy("userActive")}
             </label>
           </div>
 
@@ -1447,9 +1253,9 @@ export function AdminSettingsClient({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <AdminBadge variant={user.isActive ? "success" : "danger"}>
-                      {user.isActive ? copy.userActive : userInactiveLabel}
+                      {user.isActive ? settingsCopy("userActive") : userInactiveLabel}
                     </AdminBadge>
-                    <AdminBadge variant="info">{getRoleLabel(user.role, locale)}</AdminBadge>
+                    <AdminBadge variant="info">{user.role === "super_admin" ? settingsCopy("roleOwner") : user.role === "admin" ? settingsCopy("roleAdmin") : settingsCopy("roleEmployee")}</AdminBadge>
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -1459,7 +1265,7 @@ export function AdminSettingsClient({
                     onClick={() => setUserFormState(createUserEditForm(user))}
                     disabled={!canManageUsers || isPending}
                   >
-                    {copy.userEdit}
+                    {settingsCopy("userEdit")}
                   </AdminButton>
                   <AdminButton
                     size="sm"
@@ -1467,7 +1273,7 @@ export function AdminSettingsClient({
                     onClick={() => handleUserInvite(user)}
                     disabled={!canManageUsers || isPending}
                   >
-                    {copy.inviteAgain}
+                    {settingsCopy("inviteAgain")}
                   </AdminButton>
                   <AdminButton
                     size="sm"
@@ -1492,7 +1298,7 @@ export function AdminSettingsClient({
                       onClick={() => handleUserDelete(user)}
                       disabled={!canManageUsers || isPending}
                     >
-                      {copy.userDelete}
+                      {settingsCopy("userDelete")}
                     </AdminButton>
                   ) : null}
                 </div>
