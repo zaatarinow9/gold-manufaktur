@@ -390,6 +390,9 @@
                                      "usesDefault":  "Image par défaut utilisée.",
                                      "resetSuccess":  "Image par défaut restaurée."
                                  },
+                  "orderReset":  {
+                                           "title": "Réinitialiser les commandes", "description": "Enregistrez une copie archivée des commandes actuelles, puis recommencez avec une liste vide.", "button": "Réinitialiser les commandes", "confirmTitle": "Confirmer la réinitialisation", "confirmDescription": "Les commandes actuelles seront conservées dans les archives internes puis retirées du tableau de bord et du site. Elles ne peuvent pas être restaurées depuis le site.", "currentOrderCount": "Commandes actuelles", "confirmCheckbox": "Je comprends que ces commandes disparaîtront du site après la réinitialisation.", "cancel": "Annuler", "confirm": "Confirmer", "processing": "Enregistrement de l’archive et réinitialisation des commandes...", "success": "Les commandes ont été réinitialisées.", "genericError": "Les commandes n’ont pas pu être réinitialisées. Aucune donnée n’a été supprimée.", "noOrders": "Aucune commande actuelle à réinitialiser.", "excludedNote": "Les produits, images, employés et réglages du site ne sont pas concernés."
+                                       },
                   "orderMaintenance":  {
                                            "title":  "Maintenance des commandes",
                                            "description":  "Commandes uniquement ; les autres données du site sont exclues.",

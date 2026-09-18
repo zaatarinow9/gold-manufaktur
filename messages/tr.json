@@ -390,6 +390,9 @@
                                      "usesDefault":  "Varsayılan görsel kullanılıyor.",
                                      "resetSuccess":  "Varsayılan görsel geri yüklendi."
                                  },
+                  "orderReset":  {
+                                           "title": "Siparişleri sıfırla", "description": "Mevcut siparişlerin arşiv kopyasını kaydedin, ardından yeni ve boş bir sipariş listesiyle başlayın.", "button": "Siparişleri sıfırla", "confirmTitle": "Sipariş sıfırlamayı onayla", "confirmDescription": "Mevcut siparişler dahili arşive kaydedilecek, ardından panelden ve web sitesinden kaldırılacaktır. Web sitesi üzerinden geri yüklenemezler.", "currentOrderCount": "Mevcut siparişler", "confirmCheckbox": "Bu siparişlerin sıfırlamadan sonra web sitesinden kaybolacağını anlıyorum.", "cancel": "İptal", "confirm": "Sıfırlamayı onayla", "processing": "Arşiv kaydediliyor ve siparişler sıfırlanıyor...", "success": "Siparişler başarıyla sıfırlandı.", "genericError": "Siparişler sıfırlanamadı. Hiçbir veri silinmedi.", "noOrders": "Sıfırlanacak mevcut sipariş yok.", "excludedNote": "Ürünler, görseller, çalışanlar veya site ayarları etkilenmez."
+                                       },
                   "orderMaintenance":  {
                                            "title":  "Sipariş Bakımı",
                                            "description":  "Yalnızca siparişler etkilenir; diğer site verileri hariçtir.",

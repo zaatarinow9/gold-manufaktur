@@ -390,9 +390,25 @@
                                      "usesDefault":  "Using the default image.",
                                      "resetSuccess":  "Default image restored."
                                  },
+                  "orderReset":  {
+                                           "title":  "Reset orders",
+                                           "description":  "Save an archived copy of current orders, then start with a new empty order list.",
+                                           "button": "Reset orders",
+                                           "confirmTitle": "Confirm order reset",
+                                           "confirmDescription": "Current orders will be saved in the internal archive and then removed from the dashboard and website. They cannot be restored from within the website.",
+                                           "currentOrderCount": "Current orders",
+                                           "confirmCheckbox": "I understand that these orders will disappear from the website after the reset.",
+                                           "cancel": "Cancel",
+                                           "confirm": "Confirm reset",
+                                           "processing": "Saving the archive and resetting orders...",
+                                           "success": "Orders were reset successfully.",
+                                           "genericError": "Orders could not be reset. No data was deleted.",
+                                           "noOrders": "There are no current orders to reset.",
+                                           "excludedNote": "This does not affect products, images, employees, or website settings."
+                                       },
                   "orderMaintenance":  {
-                                           "title":  "Order Maintenance",
-                                           "description":  "Orders only; other website data is excluded.",
+                                           "title": "Order maintenance",
+                                           "description": "Orders only; other website data is excluded.",
                                            "archiveTitle":  "Archive completed orders",
                                            "archiveDescription":  "Move completed orders out of active views without deleting them.",
                                            "clearTitle":  "Clear active orders",

@@ -19,13 +19,15 @@ import {
   saveNotificationSettingsAction,
   saveOrderEntrySettingsAction,
   savePublicVisualSettingsAction,
-  previewOrderMaintenanceAction,
-  executeOrderMaintenanceAction,
   sendManagedAdminPasswordResetAction,
   sendOrderEntryLinkEmailAction,
   toggleManagedAdminUserActiveAction,
   updateManagedAdminUserAction,
 } from "@/app/[locale]/admin/settings/actions";
+import {
+  getOrderResetCountAction,
+  resetOrdersToColdArchiveAction,
+} from "@/app/[locale]/admin/settings/order-reset-actions";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminActionPendingBar } from "@/components/admin/AdminActionPendingBar";
 import { AdminButton } from "@/components/admin/AdminButton";
@@ -72,18 +74,9 @@ type AdminLoadingKey =
   | "loading"
   | "saving"
   | "updating"
-  | "previewing"
   | "executing"
   | "uploading"
-  | "archiving"
-  | "clearing"
-  | "deleting"
   | "resetting";
-
-type OrderMaintenanceMode =
-  | "archive_completed"
-  | "clear_active"
-  | "delete_permanent";
 
 type SiteImageResponse = {
   error?: string;
@@ -163,7 +156,7 @@ export function AdminSettingsClient({
   usersWarning,
 }: AdminSettingsClientProps) {
   const settingsCopy = useTranslations("Admin.settingsClient");
-  const orderMaintenance = useTranslations("Admin.orderMaintenance");
+  const orderReset = useTranslations("Admin.orderReset");
   const loading = useTranslations("Admin.loading");
   const siteImagesCopy = useTranslations("Admin.siteImages");
   const publicVisuals = useTranslations("PublicVisuals");
@@ -204,27 +197,9 @@ export function AdminSettingsClient({
     shopHero: initialSettings.publicVisualSettings.shopHeroImageUrl,
   });
   const [promo, setPromo] = useState(initialSettings.publicVisualSettings.promoPopup);
-  const [maintenancePreview, setMaintenancePreview] = useState<
-    Record<OrderMaintenanceMode, number | null>
-  >({
-    archive_completed: null,
-    clear_active: null,
-    delete_permanent: null,
-  });
-  const [maintenancePreviewTokens, setMaintenancePreviewTokens] = useState<
-    Record<OrderMaintenanceMode, string>
-  >({
-    archive_completed: "",
-    clear_active: "",
-    delete_permanent: "",
-  });
-  const [maintenanceConfirmation, setMaintenanceConfirmation] = useState<
-    Record<OrderMaintenanceMode, boolean>
-  >({
-    archive_completed: false,
-    clear_active: false,
-    delete_permanent: false,
-  });
+  const [orderResetCount, setOrderResetCount] = useState<number | null>(null);
+  const [orderResetConfirmed, setOrderResetConfirmed] = useState(false);
+  const [orderResetOpen, setOrderResetOpen] = useState(false);
   const [userFormState, setUserFormState] = useState<UserFormState>(createUserForm());
   const fileInputRefs = useRef<Record<StaticSiteImageSlot, HTMLInputElement | null>>({
     homepageHero: null,
@@ -437,109 +412,25 @@ export function AdminSettingsClient({
     });
   };
 
-  const previewMaintenance = (mode: OrderMaintenanceMode) =>
-    runPendingAction(
-      mode === "archive_completed"
-        ? "archiving"
-        : mode === "clear_active"
-          ? "clearing"
-          : "previewing",
-      async () => {
-        const result = await previewOrderMaintenanceAction(locale, mode);
+  const openOrderReset = () => runPendingAction("resetting", async () => {
+    const result = await getOrderResetCountAction(locale);
+    if (!result.ok) return pushFeedback("error", orderReset("genericError"));
+    if (result.count === 0) return pushFeedback("error", orderReset("noOrders"));
+    setOrderResetCount(result.count);
+    setOrderResetConfirmed(false);
+    setOrderResetOpen(true);
+  });
 
-        if (result.ok) {
-          setMaintenancePreview((current) => ({
-            ...current,
-            [mode]: result.count,
-          }));
-          setMaintenancePreviewTokens((current) => ({
-            ...current,
-            [mode]: result.previewToken ?? "",
-          }));
-          setMaintenanceConfirmation((current) => ({
-            ...current,
-            [mode]: false,
-          }));
-        } else {
-          setMaintenancePreviewTokens((current) => ({
-            ...current,
-            [mode]: "",
-          }));
-          setMaintenanceConfirmation((current) => ({
-            ...current,
-            [mode]: false,
-          }));
-        }
-
-        pushFeedback(
-          result.ok ? "success" : "error",
-          result.ok
-            ? result.count === 0
-              ? orderMaintenance("noOrders")
-              : orderMaintenance("previewSuccess")
-            : result.message
-        );
-      }
-    );
-
-  const executeMaintenance = (mode: OrderMaintenanceMode) =>
-    runPendingAction(
-      mode === "archive_completed"
-        ? "archiving"
-        : mode === "clear_active"
-          ? "clearing"
-          : "deleting",
-      async () => {
-        const result = await executeOrderMaintenanceAction(locale, {
-          confirmedOrdersOnly: true,
-          expectedCount: maintenancePreview[mode] ?? 0,
-          mode,
-          previewToken: maintenancePreviewTokens[mode],
-        });
-        pushFeedback(
-          result.ok ? "success" : "error",
-          result.ok
-            ? mode === "archive_completed"
-              ? orderMaintenance("archiveSuccess")
-              : mode === "clear_active"
-                ? orderMaintenance("clearSuccess")
-                : orderMaintenance("deleteSuccess")
-            : result.message
-        );
-
-        if (result.ok) {
-          setMaintenancePreview((current) => ({
-            ...current,
-            [mode]: null,
-          }));
-          setMaintenancePreviewTokens((current) => ({
-            ...current,
-            [mode]: "",
-          }));
-          setMaintenanceConfirmation((current) => ({
-            ...current,
-            [mode]: false,
-          }));
-          refreshPage();
-        } else if (typeof result.count === "number") {
-          setMaintenancePreview((current) => ({
-            ...current,
-            [mode]: result.count,
-          }));
-        }
-
-        if (result.requiresPreview) {
-          setMaintenancePreviewTokens((current) => ({
-            ...current,
-            [mode]: "",
-          }));
-          setMaintenanceConfirmation((current) => ({
-            ...current,
-            [mode]: false,
-          }));
-        }
-      }
-    );
+  const executeOrderReset = () => runPendingAction("resetting", async () => {
+    const result = await resetOrdersToColdArchiveAction(locale, { confirmed: true });
+    pushFeedback(result.ok ? "success" : "error", result.ok ? orderReset("success") : orderReset("genericError"));
+    if (result.ok) {
+      setOrderResetOpen(false);
+      setOrderResetCount(null);
+      setOrderResetConfirmed(false);
+      refreshPage();
+    }
+  });
 
   const handleRotateLink = () => {
     runPendingAction("updating", async () => {
@@ -683,7 +574,7 @@ export function AdminSettingsClient({
 
   return (
     <div className="space-y-6">
-      <AdminActionPendingBar active={isPending} label={loading(pendingAction)} />
+      <AdminActionPendingBar active={isPending} label={pendingAction === "resetting" ? orderReset("processing") : loading(pendingAction)} />
       <AdminPageHeader
         eyebrow={settingsCopy("title")}
         title={settingsCopy("title")}
@@ -1077,96 +968,33 @@ export function AdminSettingsClient({
       </section>
 
       {canManageUsers ? (
-        <AdminCard title={orderMaintenance("title")} description={orderMaintenance("description")}>
+        <AdminCard title={orderReset("title")} description={orderReset("description")}>
           <div className="space-y-4">
-            <p className="text-sm text-muted">{orderMaintenance("excludedNote")}</p>
-            <p className="text-sm text-muted">{orderMaintenance("auditRequired")}</p>
-
-            <div className="grid gap-5 lg:grid-cols-3">
-              {([
-                {
-                  description: orderMaintenance("archiveDescription"),
-                  mode: "archive_completed" as const,
-                  title: orderMaintenance("archiveCompleted"),
-                  variant: "secondary" as const,
-                },
-                {
-                  description: orderMaintenance("clearDescription"),
-                  mode: "clear_active" as const,
-                  title: orderMaintenance("clearActive"),
-                  variant: "danger" as const,
-                },
-                {
-                  description: orderMaintenance("deleteDescription"),
-                  mode: "delete_permanent" as const,
-                  title: orderMaintenance("deletePermanent"),
-                  variant: "danger" as const,
-                },
-              ]).map((item) => {
-                const previewCount = maintenancePreview[item.mode];
-                const confirmed = maintenanceConfirmation[item.mode];
-                const missingPreviewToken =
-                  item.mode === "delete_permanent" &&
-                  !maintenancePreviewTokens[item.mode];
-
-                return (
-                  <article
-                    key={item.mode}
-                    className="space-y-3 rounded-[1rem] border border-white/10 bg-white/4 p-4"
-                  >
-                    <div className="space-y-1">
-                      <h3 className="font-semibold text-foreground">{item.title}</h3>
-                      <p className="text-sm text-muted">{item.description}</p>
-                    </div>
-
-                    <AdminButton
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => previewMaintenance(item.mode)}
-                      disabled={isPending}
-                    >
-                      {orderMaintenance("preview")}
-                    </AdminButton>
-
-                    <p className="text-sm text-muted">
-                      {orderMaintenance("affectedOrders")}: {previewCount ?? "-"}
-                    </p>
-
-                    <label className="rtl-inline-row flex items-start gap-2 text-sm text-foreground">
-                      <input
-                        type="checkbox"
-                        checked={confirmed}
-                        disabled={isPending || previewCount === null || previewCount === 0}
-                        onChange={(event) =>
-                          setMaintenanceConfirmation((current) => ({
-                            ...current,
-                            [item.mode]: event.target.checked,
-                          }))
-                        }
-                        className="mt-1 h-4 w-4 accent-[#c49a52]"
-                      />
-                      <span>{orderMaintenance("confirmCheckbox")}</span>
-                    </label>
-
-                    <AdminButton
-                      variant={item.variant}
-                      onClick={() => executeMaintenance(item.mode)}
-                      disabled={
-                        isPending ||
-                        previewCount === null ||
-                        previewCount === 0 ||
-                        !confirmed ||
-                        missingPreviewToken
-                      }
-                    >
-                      {item.title}
-                    </AdminButton>
-                  </article>
-                );
-              })}
-            </div>
+            <p className="text-sm text-muted">{orderReset("excludedNote")}</p>
+            <AdminButton variant="danger" onClick={openOrderReset} disabled={isPending}>
+              {orderReset("button")}
+            </AdminButton>
           </div>
         </AdminCard>
+      ) : null}
+      {orderResetOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="order-reset-title">
+          <div className="w-full max-w-lg space-y-5 rounded-[1rem] border border-white/10 bg-[#191714] p-6 shadow-2xl">
+            <div className="space-y-2">
+              <h2 id="order-reset-title" className="text-xl font-semibold text-foreground">{orderReset("confirmTitle")}</h2>
+              <p className="text-sm leading-6 text-muted">{orderReset("confirmDescription")}</p>
+              <p className="text-sm font-medium text-foreground">{orderReset("currentOrderCount")}: {orderResetCount ?? 0}</p>
+            </div>
+            <label className="rtl-inline-row flex items-start gap-2 text-sm text-foreground">
+              <input type="checkbox" checked={orderResetConfirmed} disabled={isPending} onChange={(event) => setOrderResetConfirmed(event.target.checked)} className="mt-1 h-4 w-4 accent-[#c49a52]" />
+              <span>{orderReset("confirmCheckbox")}</span>
+            </label>
+            <div className="flex flex-wrap justify-end gap-3">
+              <AdminButton variant="ghost" onClick={() => setOrderResetOpen(false)} disabled={isPending}>{orderReset("cancel")}</AdminButton>
+              <AdminButton variant="danger" onClick={executeOrderReset} disabled={isPending || !orderResetConfirmed}>{orderReset("confirm")}</AdminButton>
+            </div>
+          </div>
+        </div>
       ) : null}
       <AdminCard
         title={settingsCopy("userListTitle")}

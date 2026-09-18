@@ -378,6 +378,9 @@
                                      "usesDefault":  "Standardbild wird verwendet.",
                                      "resetSuccess":  "Standardbild wiederhergestellt."
                                  },
+                  "orderReset":  {
+                                           "title": "Bestellungen zurücksetzen", "description": "Eine Archivkopie der aktuellen Bestellungen speichern und mit einer neuen leeren Liste beginnen.", "button": "Bestellungen zurücksetzen", "confirmTitle": "Bestellungsreset bestätigen", "confirmDescription": "Die aktuellen Bestellungen werden im internen Archiv gespeichert und danach aus Dashboard und Website entfernt. Sie können nicht über die Website wiederhergestellt werden.", "currentOrderCount": "Aktuelle Bestellungen", "confirmCheckbox": "Ich verstehe, dass diese Bestellungen nach dem Reset nicht mehr auf der Website erscheinen.", "cancel": "Abbrechen", "confirm": "Reset bestätigen", "processing": "Archiv wird gespeichert und Bestellungen werden zurückgesetzt...", "success": "Bestellungen wurden erfolgreich zurückgesetzt.", "genericError": "Bestellungen konnten nicht zurückgesetzt werden. Es wurden keine Daten gelöscht.", "noOrders": "Es gibt keine aktuellen Bestellungen zum Zurücksetzen.", "excludedNote": "Produkte, Bilder, Mitarbeiter und Website-Einstellungen sind nicht betroffen."
+                                       },
                   "orderMaintenance":  {
                                            "title":  "Auftragswartung",
                                            "description":  "Nur Aufträge; andere Websitedaten sind ausgeschlossen.",
