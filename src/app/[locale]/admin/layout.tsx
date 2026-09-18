@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -11,10 +12,20 @@ type AdminLayoutProps = {
   params: Promise<{ locale: string }>;
 };
 
+async function resolveAdminLocale(params: AdminLayoutProps["params"]) {
+  const { locale } = await params;
+
+  if (locale !== "ar" && locale !== "de") {
+    redirect("/de/admin");
+  }
+
+  return resolveLocale(Promise.resolve({ locale }));
+}
+
 export async function generateMetadata({
   params,
 }: Omit<AdminLayoutProps, "children">): Promise<Metadata> {
-  const locale = await resolveLocale(params);
+  const locale = await resolveAdminLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin.meta" });
 
   return {
@@ -27,7 +38,7 @@ export default async function AdminLayout({
   children,
   params,
 }: AdminLayoutProps) {
-  const locale = await resolveLocale(params);
+  const locale = await resolveAdminLocale(params);
   const currentUser = await getAdminShellUser();
   const navCounts =
     currentUser.id !== "guest" ? await getAdminNavCounts(currentUser) : {};

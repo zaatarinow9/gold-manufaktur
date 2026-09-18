@@ -34,23 +34,23 @@ async function getOrderResetAccess(locale: AppLocale) {
 export async function getOrderResetCountAction(locale: AppLocale): Promise<OrderResetResult> {
   try {
     const user = await getOrderResetAccess(locale);
-    if (!user) return { count: 0, message: "Permission denied.", ok: false };
+    if (!user) return { count: 0, message: "PERMISSION_DENIED", ok: false };
     const supabase = await createSupabaseServerClient();
     const { count, error } = await supabase.from("orders").select("id", { count: "exact", head: true });
     if (error) throw error;
     return { count: count ?? 0, message: "", ok: true };
   } catch {
-    return { count: 0, message: "Unable to reset orders.", ok: false };
+    return { count: 0, message: "RESET_FAILED", ok: false };
   }
 }
 
 export async function resetOrdersToColdArchiveAction(locale: AppLocale, input: unknown): Promise<OrderResetResult> {
-  if (!resetOrdersSchema.safeParse(input).success) return { count: 0, message: "Confirmation is invalid.", ok: false };
+  if (!resetOrdersSchema.safeParse(input).success) return { count: 0, message: "INVALID_INPUT", ok: false };
   try {
     const requestHeaders = await headers();
-    if (!hasSameOrigin(requestHeaders)) return { count: 0, message: "Permission denied.", ok: false };
+    if (!hasSameOrigin(requestHeaders)) return { count: 0, message: "PERMISSION_DENIED", ok: false };
     const user = await getOrderResetAccess(locale);
-    if (!user) return { count: 0, message: "Permission denied.", ok: false };
+    if (!user) return { count: 0, message: "PERMISSION_DENIED", ok: false };
     const supabase = await createSupabaseServerClient() as unknown as {
       rpc: (name: "archive_and_reset_orders") => Promise<{ data: { archived_order_count: number; removed_order_count: number }[] | null; error: { message: string } | null }>;
     };
@@ -61,6 +61,6 @@ export async function resetOrdersToColdArchiveAction(locale: AppLocale, input: u
     });
     return { count: data[0].removed_order_count, message: "", ok: true };
   } catch {
-    return { count: 0, message: "Unable to reset orders.", ok: false };
+    return { count: 0, message: "RESET_FAILED", ok: false };
   }
 }
