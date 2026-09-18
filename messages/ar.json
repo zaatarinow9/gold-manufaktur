@@ -646,7 +646,7 @@
                                    "empty":  "لا توجد نتائج مطابقة لمعايير البحث المحددة.",
                                    "table":  {
                                                  "product":  "بيانات المنتج",
-                                                 "sku":  "الرمز المرجعي (SKU)",
+                                                  "sku":  "رمز المنتج",
                                                  "category":  "التصنيف",
                                                  "status":  "حالة الظهور",
                                                  "options":  "الخصائص المرتبطة",
@@ -804,9 +804,9 @@
                                                   "yellowGold":  "ذهب أصفر كلاسيكي",
                                                   "whiteGold":  "ذهب أبيض لامع",
                                                   "roseGold":  "ذهب وردي فاخر",
-                                                  "polished":  "تلميع فائق (Polished)",
-                                                  "matte":  "سطح مطفي (Matte)",
-                                                  "brushed":  "تأثير ممشط (Brushed)",
+                                                "polished":  "مصقول",
+                                                "matte":  "مطفي",
+                                                "brushed":  "مصقول بخطوط",
                                                   "classic":  "طابع كلاسيكي",
                                                   "modern":  "تصميم عصري",
                                                   "script":  "خط ديواني/مخطوط"
@@ -821,7 +821,7 @@
                                   "description":  "منظومة تحكم مركزية لضبط خيارات الصياغة، المقاسات، والنقش المرتبطة بالكتالوج.",
                                   "groupsTitle":  "التصنيفات الهيكلية للخصائص",
                                   "groupsDescription":  "مراجعة شاملة لمجموعات الخيارات ونطاق تأثيرها على المنتجات.",
-                                  "searchPlaceholder":  "البحث بواسطة مفتاح (Key) أو اسم الخاصية...",
+                                          "searchPlaceholder":  "ابحث بالمفتاح أو اسم الخاصية...",
                                   "productsScope":  "مُسند للمنتجات",
                                   "categoriesScope":  "مُسند للفئات",
                                   "workshopOverrides":  "استثناءات الورش",
@@ -906,8 +906,14 @@
                                  "notStageSpecific":  "غير مرتبط بمرحلة محددة",
                                  "emailTemplateLabel":  "قالب البريد",
                                  "emailLogDuplicateSkipped":  "تم تخطي الرسالة لأن الحالة العامة نفسها أُرسلت مسبقاً.",
-                                 "emailLogSmtpNotice":  "تم تسجيل الرسالة، لكن إعدادات SMTP غير مكتملة حالياً.",
-                                 "emailLogErrorFallback":  "تعذر عرض سبب الخطأ بالتفصيل."
+                                 "emailLogSmtpNotice":  "تم تسجيل الرسالة، لكن إعداد إرسال البريد الإلكتروني غير مكتمل حاليًا.",
+                                 "emailLogErrorFallback":  "تعذر عرض سبب الخطأ بالتفصيل.",
+                                 "supportTicketStatuses": {
+                                                              "open": "مفتوحة",
+                                                              "in_progress": "قيد المتابعة",
+                                                              "resolved": "تم الحل",
+                                                              "closed": "مغلقة"
+                                                            }
                              },
                   "workshops":  {
                                     "eyebrow":  "الجهات المنفذة",
@@ -938,53 +944,53 @@
                                                   "activeTasks":  "المهام الجارية",
                                                   "attendance":  "سجل الدوام",
                                                   "actions":  "أدوات",
-                                                  "accountStatus":  "Account"
+                                                  "accountStatus":  "الحساب"
                                               },
                                     "account":  {
-                                                    "create":  "Create employee",
-                                                    "edit":  "Edit employee",
-                                                    "formDescription":  "Maintain employee details and account access in one place.",
-                                                    "saved":  "The employee record was saved.",
-                                                    "inviteSent":  "The access email was sent.",
-                                                    "inviteDeliveryFailed":  "The account was saved, but the access email could not be delivered.",
-                                                    "passwordResetSent":  "The password reset email was sent.",
-                                                    "passwordResetDeliveryFailed":  "The reset link was created, but the email could not be delivered.",
-                                                    "linked":  "The employee was linked to the existing account.",
-                                                    "notLinked":  "No matching auth account is linked to this employee yet.",
-                                                    "duplicateEmail":  "This email address is already assigned to another employee.",
-                                                    "emailRequired":  "An email address is required for account access.",
-                                                    "linkInUse":  "This auth account is already linked to another employee.",
-                                                    "roleConflict":  "The linked auth account already belongs to a different internal role.",
-                                                    "roleNotAllowed":  "You are not allowed to manage this employee account.",
-                                                    "notFound":  "The employee could not be found anymore.",
-                                                    "reactivated":  "The employee account was reactivated.",
-                                                    "deactivated":  "The employee account was deactivated.",
-                                                    "noEmail":  "No email address saved",
-                                                    "lastInvite":  "Last invite",
-                                                    "lastLogin":  "Last login",
-                                                    "lastPasswordReset":  "Last password reset",
+                                      "create":  "إنشاء موظف",
+                                      "edit":  "تعديل الموظف",
+                                      "formDescription":  "إدارة بيانات الموظف وإمكانية الوصول إلى حسابه من مكان واحد.",
+                                      "saved":  "تم حفظ بيانات الموظف.",
+                                      "inviteSent":  "تم إرسال رسالة الوصول.",
+                                      "inviteDeliveryFailed":  "تم حفظ الحساب، لكن تعذر إرسال رسالة الوصول.",
+                                      "passwordResetSent":  "تم إرسال رسالة إعادة تعيين كلمة المرور.",
+                                      "passwordResetDeliveryFailed":  "تم إنشاء رابط إعادة التعيين، لكن تعذر إرسال الرسالة.",
+                                      "linked":  "تم ربط الموظف بالحساب الحالي.",
+                                      "notLinked":  "لا يوجد حساب مرتبط بهذا الموظف حتى الآن.",
+                                      "duplicateEmail":  "هذا البريد الإلكتروني مرتبط بموظف آخر.",
+                                      "emailRequired":  "البريد الإلكتروني مطلوب للوصول إلى الحساب.",
+                                      "linkInUse":  "هذا الحساب مرتبط بموظف آخر بالفعل.",
+                                      "roleConflict":  "الحساب المرتبط لديه صلاحية داخلية مختلفة.",
+                                      "roleNotAllowed":  "لا تملك صلاحية إدارة حساب هذا الموظف.",
+                                      "notFound":  "تعذر العثور على الموظف.",
+                                      "reactivated":  "تم تفعيل حساب الموظف.",
+                                      "deactivated":  "تم تعطيل حساب الموظف.",
+                                      "noEmail":  "لا يوجد بريد إلكتروني محفوظ",
+                                      "lastInvite":  "آخر دعوة",
+                                      "lastLogin":  "آخر تسجيل دخول",
+                                      "lastPasswordReset":  "آخر إعادة تعيين لكلمة المرور",
                                                     "status":  {
-                                                                   "active":  "Active",
-                                                                   "disabled":  "Disabled",
-                                                                   "invited":  "Invited",
-                                                                   "missing_auth_user":  "Not linked"
+                                                  "active":  "نشط",
+                                                  "disabled":  "معطّل",
+                                                  "invited":  "تمت الدعوة",
+                                                  "missing_auth_user":  "غير مرتبط"
                                                                },
                                                     "actions":  {
-                                                                    "sendInvite":  "Send invite",
-                                                                    "resendInvite":  "Resend invite",
-                                                                    "linkAccount":  "Link account",
-                                                                    "resetPassword":  "Reset password"
+                                                   "sendInvite":  "إرسال دعوة",
+                                                   "resendInvite":  "إعادة إرسال الدعوة",
+                                                   "linkAccount":  "ربط الحساب",
+                                                   "resetPassword":  "إعادة تعيين كلمة المرور"
                                                                 }
                                                 },
                                     "form":  {
-                                                 "fullName":  "Full name",
-                                                 "attendance":  "Attendance",
-                                                 "phone":  "Phone",
-                                                 "email":  "Email",
-                                                 "emailHint":  "Used for login, invites, and password resets.",
-                                                 "shift":  "Shift",
-                                                 "notes":  "Notes",
-                                                 "active":  "Employee is active"
+                                      "fullName":  "الاسم الكامل",
+                                      "attendance":  "الحضور",
+                                      "phone":  "الهاتف",
+                                      "email":  "البريد الإلكتروني",
+                                      "emailHint":  "يُستخدم لتسجيل الدخول والدعوات وإعادة تعيين كلمة المرور.",
+                                      "shift":  "الوردية",
+                                      "notes":  "ملاحظات",
+                                      "active":  "الموظف نشط"
                                              }
                                 },
                   "attendance":  {
@@ -1006,7 +1012,7 @@
                   "reports":  {
                                   "eyebrow":  "مركز التقارير",
                                   "title":  "الإحصائيات والتقارير التنفيذية",
-                                  "description":  "لوحة مؤشرات أداء (KPIs) تحليلية لقياس الكفاءة الإنتاجية وسير العمليات المركزية.",
+                                  "description":  "لوحة مؤشرات الأداء التحليلية لقياس الكفاءة الإنتاجية وسير العمليات المركزية.",
                                   "cards":  {
                                                 "productionTime":  "متوسط زمن إنجاز الطلب",
                                                 "ready":  "إجمالي الطلبات الجاهزة",
@@ -1181,25 +1187,25 @@
                                            "returned":  "معاد للإدارة"
                                        },
                   "accountSetup":  {
-                                       "title":  "Set up your access",
-                                       "description":  "Create a password for your internal GoldHelwah account so you can enter the correct admin area.",
-                                       "resetTitle":  "Set a new password",
-                                       "resetDescription":  "Choose a new password for your internal GoldHelwah account.",
-                                       "securityTitle":  "Protected internal access",
-                                       "securityText":  "Use a strong password and do not share this access link with anyone else.",
-                                       "formTitle":  "Create password",
-                                       "formDescription":  "Set your password once to finish activating the account.",
-                                       "resetFormTitle":  "Reset password",
-                                       "resetFormDescription":  "Enter a new password to restore access to your account.",
-                                       "password":  "Password",
-                                       "confirmPassword":  "Confirm password",
-                                       "submit":  "Save password",
-                                       "resetSubmit":  "Update password",
-                                       "errors":  {
-                                                      "passwordLength":  "Please choose a password with at least 8 characters.",
-                                                      "passwordMismatch":  "The password confirmation does not match.",
-                                                      "sessionExpired":  "Your session is no longer valid. Please request a new link.",
-                                                      "updateFailed":  "The password could not be updated right now. Please try again."
+                                         "title": "إعداد الوصول",
+                                         "description": "أنشئ كلمة مرور لحسابك الداخلي للوصول إلى لوحة الإدارة.",
+                                         "resetTitle": "تعيين كلمة مرور جديدة",
+                                         "resetDescription": "اختر كلمة مرور جديدة لحسابك الداخلي.",
+                                         "securityTitle": "وصول داخلي محمي",
+                                         "securityText": "استخدم كلمة مرور قوية ولا تشارك رابط الوصول مع أي شخص.",
+                                         "formTitle": "تعيين كلمة المرور",
+                                         "formDescription": "عيّن كلمة المرور لإكمال تفعيل الحساب.",
+                                         "resetFormTitle": "إعادة تعيين كلمة المرور",
+                                         "resetFormDescription": "أدخل كلمة مرور جديدة لاستعادة الوصول إلى حسابك.",
+                                         "password": "كلمة المرور",
+                                         "confirmPassword": "تأكيد كلمة المرور",
+                                         "submit": "حفظ كلمة المرور",
+                                         "resetSubmit": "تحديث كلمة المرور",
+                                         "errors": {
+                                                        "passwordLength": "يرجى اختيار كلمة مرور من 8 أحرف على الأقل.",
+                                                        "passwordMismatch": "كلمتا المرور غير متطابقتين.",
+                                                        "sessionExpired": "انتهت صلاحية الجلسة. يرجى طلب رابط جديد.",
+                                                        "updateFailed": "تعذر تحديث كلمة المرور الآن. يرجى المحاولة مرة أخرى."
                                                   }
                                    },
                   "settingsClient":  {

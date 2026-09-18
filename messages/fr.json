@@ -904,7 +904,13 @@
                                  "emailTemplateLabel":  "Modele",
                                  "emailLogDuplicateSkipped":  "Cet e-mail a ete ignore car le meme modele client a deja ete envoye pour cette commande.",
                                  "emailLogSmtpNotice":  "L envoi a ete ignore car SMTP n est pas encore completement configure.",
-                                 "emailLogErrorFallback":  "L e-mail n a pas pu etre livre. Veuillez verifier la configuration et les journaux SMTP."
+                                 "emailLogErrorFallback":  "L e-mail n a pas pu etre livre. Veuillez verifier la configuration et les journaux SMTP.",
+                                 "supportTicketStatuses": {
+                                                              "open": "Ouvert",
+                                                              "in_progress": "En cours",
+                                                              "resolved": "Résolu",
+                                                              "closed": "Fermé"
+                                                            }
                              },
                   "workshops":  {
                                     "eyebrow":  "Ateliers",

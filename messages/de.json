@@ -914,7 +914,13 @@
                                  "emailTemplateLabel":  "Vorlage",
                                  "emailLogDuplicateSkipped":  "Diese E-Mail wurde übersprungen, weil dieselbe Kunden-Vorlage bereits für diesen Auftrag versendet wurde.",
                                  "emailLogSmtpNotice":  "Der E-Mail-Versand wurde übersprungen, weil SMTP nicht vollständig eingerichtet ist.",
-                                 "emailLogErrorFallback":  "Die E-Mail konnte nicht zugestellt werden. Bitte prüfen Sie die SMTP-Konfiguration und die Protokolle."
+                                 "emailLogErrorFallback":  "Die E-Mail konnte nicht zugestellt werden. Bitte prüfen Sie die SMTP-Konfiguration und die Protokolle.",
+                                 "supportTicketStatuses": {
+                                                              "open": "Offen",
+                                                              "in_progress": "In Bearbeitung",
+                                                              "resolved": "Gelöst",
+                                                              "closed": "Geschlossen"
+                                                            }
                              },
                   "publicTrackingStage":  {
                                               "order_in_workshop":  "Auftrag in der Werkstatt",

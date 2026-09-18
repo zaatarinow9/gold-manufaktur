@@ -939,7 +939,13 @@
                                  "emailTemplateLabel":  "Template",
                                  "emailLogDuplicateSkipped":  "This email was skipped because the same customer template was already sent for this order.",
                                  "emailLogSmtpNotice":  "Email delivery was skipped because SMTP is not fully configured.",
-                                 "emailLogErrorFallback":  "The email could not be delivered. Please review the SMTP configuration and logs."
+                                 "emailLogErrorFallback":  "The email could not be delivered. Please review the SMTP configuration and logs.",
+                                 "supportTicketStatuses": {
+                                                              "open": "Open",
+                                                              "in_progress": "In progress",
+                                                              "resolved": "Resolved",
+                                                              "closed": "Closed"
+                                                            }
                              },
                   "workshops":  {
                                     "eyebrow":  "Workshops",

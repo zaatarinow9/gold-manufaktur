@@ -508,7 +508,9 @@ export default async function AdminOrderDetailPage({
                               {ticket.customerName || ticket.customerEmail || notProvided}
                             </p>
                           </div>
-                          <AdminBadge variant="info">{ticket.status}</AdminBadge>
+                          <AdminBadge variant="info">
+                            {t(`orders.supportTicketStatuses.${ticket.status}`)}
+                          </AdminBadge>
                         </div>
                         <p className="mt-3 text-sm leading-6 text-muted">{ticket.message}</p>
                         <p className="mt-3 text-xs text-muted">{ticket.createdAt}</p>

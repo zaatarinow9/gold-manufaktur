@@ -904,7 +904,13 @@
                                  "emailTemplateLabel":  "Sablon",
                                  "emailLogDuplicateSkipped":  "Bu e-posta, ayni musteri sablonu bu siparis icin daha once gonderildigi icin atlandi.",
                                  "emailLogSmtpNotice":  "SMTP henuz tam olarak yapilandirilmadigi icin e-posta gonderimi atlandi.",
-                                 "emailLogErrorFallback":  "E-posta teslim edilemedi. Lutfen SMTP ayarlari ve kayitlarini kontrol edin."
+                                 "emailLogErrorFallback":  "E-posta teslim edilemedi. Lutfen SMTP ayarlari ve kayitlarini kontrol edin.",
+                                 "supportTicketStatuses": {
+                                                              "open": "Açık",
+                                                              "in_progress": "İşlemde",
+                                                              "resolved": "Çözüldü",
+                                                              "closed": "Kapalı"
+                                                            }
                              },
                   "workshops":  {
                                     "eyebrow":  "Atolyeler",
