@@ -57,7 +57,7 @@
                    "navigationTitle":  "الصفحات",
                    "contactTitle":  "التواصل",
                    "socialTitle":  "تابعنا",
-                   "emailPlaceholder":  "service@goldhelwah.de",
+                   "emailPlaceholder":  "info@goldhelwah.de",
                    "legalNote":  "نسعد بزيارتكم في صالتنا بساربروكن أو بتواصلكم معنا لتقديم استشارة تليق بتطلعاتكم.",
                    "rights":  "مجوهرات حلوة. جميع الحقوق محفوظة.",
                    "socials":  {
@@ -226,6 +226,9 @@
                                   "phoneTitle":  "الاتصال الهاتفي",
                                   "phoneText":  "تواصل مباشر لتقديم إجابات سريعة، أو لجدولة مواعيد الاستشارة بكل يسر.",
                                   "phoneCta":  "اتصل الآن",
+                                  "emailTitle":  "البريد الإلكتروني",
+                                  "emailText":  "راسلنا لطلبات المنتجات أو المواعيد أو الاستشارة الشخصية.",
+                                  "emailCta":  "إرسال بريد إلكتروني",
                                   "whatsappTitle":  "خدمة الواتساب",
                                   "whatsappText":  "الخيار الأمثل للاستفسارات السريعة، ومشاركة صور القطع لتقديم تفاصيل أدق.",
                                   "whatsappCta":  "ابدأ المحادثة"
@@ -290,7 +293,7 @@
                                            "lines":  [
                                                          "يسعدنا الرد على استفساراتكم:",
                                                          "Telefon: +49 173 537 1225",
-                                                         "E-Mail: service@goldhelwah.de"
+                                                         "E-Mail: info@goldhelwah.de"
                                                      ]
                                        },
                                        {
@@ -336,7 +339,7 @@
                                      {
                                          "title":  "1. الجهة المسؤولة",
                                          "paragraphs":  [
-                                                            "الجهة المسؤولة عن معالجة البيانات على هذا الموقع هي Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland، هاتف +49 173 537 1225، بريد إلكتروني service@goldhelwah.de.",
+                                                            "الجهة المسؤولة عن معالجة البيانات على هذا الموقع هي Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland، هاتف +49 173 537 1225، بريد إلكتروني info@goldhelwah.de.",
                                                             "إذا كانت لديك أسئلة حول الخصوصية أو رغبت في ممارسة حقوقك، يمكنك التواصل معنا في أي وقت."
                                                         ]
                                      },

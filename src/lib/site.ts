@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { routing, type AppLocale } from "@/i18n/routing";
-import { getPhoneHref, getWhatsAppHref, normalizePhoneNumber } from "@/lib/phone";
+import { getPhoneHref, normalizePhoneNumber } from "@/lib/phone";
 
 export const siteName = "GoldHelwah GmbH";
 export const brandLogoPath = "/brand/goldhelwah-logo.svg";
@@ -30,15 +30,14 @@ const companyPhoneNumber = normalizePhoneNumber("+49 173 5371225");
 export const companyInfo = {
   name: "GoldHelwah GmbH",
   address: "Breite Straße 9, 66115 Saarbrücken",
-  emailDisplay: "service@goldhelwah.de",
-  emailHref: "mailto:service@goldhelwah.de",
+  emailDisplay: "info@goldhelwah.de",
+  emailHref: "mailto:info@goldhelwah.de",
   phoneDisplay: "+49 173 5371225",
   phoneHref: getPhoneHref(companyPhoneNumber),
-  instagramHref: "https://instagram.com/goldhelwah",
-  facebookHref: "https://facebook.com/goldhelwah",
-  tiktokHref: "https://tiktok.com/@goldhelwah",
-  snapchatHref: "https://www.snapchat.com/add/goldhelwah",
-  whatsappHref: getWhatsAppHref(companyPhoneNumber),
+  instagramHref: "https://www.instagram.com/gold.helwah",
+  facebookHref: "https://www.facebook.com/Gold.Helwah",
+  tiktokHref: "https://www.tiktok.com/@gold.helwah",
+  snapchatHref: "https://www.snapchat.com/@khaledhelwah",
 } as const;
 
 const mapQuery = encodeURIComponent(companyInfo.address);

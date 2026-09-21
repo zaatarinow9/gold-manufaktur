@@ -57,7 +57,7 @@
                    "navigationTitle":  "Sayfalar",
                    "contactTitle":  "İletişim",
                    "socialTitle":  "Bizi takip edin",
-                   "emailPlaceholder":  "service@goldhelwah.de",
+                   "emailPlaceholder":  "info@goldhelwah.de",
                    "legalNote":  "Saarbrücken\u0027de bizi ziyaret edin ya da kişisel danışmanlık için bize ulaşın.",
                    "rights":  "GoldHelwah GmbH. Tüm haklari saklidir.",
                    "socials":  {
@@ -215,7 +215,7 @@
                     "hero":  {
                                  "eyebrow":  "İletişim",
                                  "title":  "GoldHelwah GmbH ile dogrudan iletisime geçin.",
-                                 "subtitle":  "ürün talepleri, danismanlik, WhatsApp mesajlari ve showroom yol tarifi için gereken her sey burada hazir.",
+                                 "subtitle":  "ürün talepleri, danismanlik ve showroom yol tarifi için gereken her sey burada hazir.",
                                  "primaryCta":  "Koleksiyonu görüntüle",
                                  "secondaryCta":  "Gizliliği oku"
                              },
@@ -226,6 +226,9 @@
                                   "phoneTitle":  "Telefon",
                                   "phoneText":  "Hizli sorular veya randevu planlamasi için dogrudan iletisim.",
                                   "phoneCta":  "Şimdi ara",
+                                  "emailTitle":  "E-posta",
+                                  "emailText":  "Ürün talepleri, randevular veya kişisel danışmanlık için bize yazın.",
+                                  "emailCta":  "E-posta gönder",
                                   "whatsappTitle":  "WhatsApp",
                                   "whatsappText":  "Hizli sorular ve showroom görselleri paylasmak için idealdir.",
                                   "whatsappCta":  "Sohbeti başlat"
@@ -290,7 +293,7 @@
                                            "lines":  [
                                                          "Sorularınız için memnuniyetle yardımcı oluruz:",
                                                          "Telefon: +49 173 537 1225",
-                                                         "E-posta: service@goldhelwah.de"
+                                                         "E-posta: info@goldhelwah.de"
                                                      ]
                                        },
                                        {
@@ -336,7 +339,7 @@
                                      {
                                          "title":  "1. Sorumlu taraf",
                                          "paragraphs":  [
-                                                            "Bu web sitesindeki veri işleme faaliyetlerinden sorumlu taraf Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, telefon +49 173 537 1225, e-posta service@goldhelwah.de adresidir.",
+                                                            "Bu web sitesindeki veri işleme faaliyetlerinden sorumlu taraf Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, telefon +49 173 537 1225, e-posta info@goldhelwah.de adresidir.",
                                                             "Gizlilik hakkında sorularınız varsa veya haklarınızı kullanmak istiyorsanız bizimle her zaman iletişime geçebilirsiniz."
                                                         ]
                                      },

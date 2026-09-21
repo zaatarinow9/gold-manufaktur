@@ -215,7 +215,7 @@
                     "hero":  {
                                  "eyebrow":  "Kontakt",
                                  "title":  "Kontaktieren Sie Gold Helwah ohne Umwege.",
-                                 "subtitle":  "Für Produktanfragen, Beratung, WhatsApp-Nachrichten und die Route zum Showroom steht hier alles Wesentliche bereit.",
+                                 "subtitle":  "Für Produktanfragen, Beratung und die Route zum Showroom steht hier alles Wesentliche bereit.",
                                  "primaryCta":  "Zur Kollektion",
                                  "secondaryCta":  "Datenschutz lesen"
                              },
@@ -226,6 +226,9 @@
                                   "phoneTitle":  "Telefon",
                                   "phoneText":  "Direkter Kontakt für kurze Rückfragen oder Terminabstimmungen.",
                                   "phoneCta":  "Jetzt anrufen",
+                                  "emailTitle":  "E-Mail",
+                                  "emailText":  "Schreiben Sie uns für Produktanfragen, Termine oder eine persönliche Beratung.",
+                                  "emailCta":  "E-Mail schreiben",
                                   "whatsappTitle":  "WhatsApp",
                                   "whatsappText":  "Ideal für schnelle Rückfragen und Bildabgleiche aus dem Showroom.",
                                   "whatsappCta":  "Chat starten"
@@ -289,7 +292,7 @@
                                            "title":  "Kontakt",
                                            "lines":  [
                                                          "+49 173 5371225",
-                                                         "[E-Mail-Adresse ergänzen]",
+                                                         "info@goldhelwah.de",
                                                          "Showroom: Breite Straße 9, 66115 Saarbrücken"
                                                      ]
                                        },
@@ -324,7 +327,7 @@
                                      {
                                          "title":  "1. Verantwortliche Stelle",
                                          "paragraphs":  [
-                                                            "Verantwortlich ist Gold Helwah, Breite Straße 9, 66115 Saarbrücken, Telefon +49 173 5371225. Eine verbindliche E-Mail-Adresse muss vor dem Produktionsstart ergänzt werden.",
+                                                            "Verantwortlich ist Gold Helwah, Breite Straße 9, 66115 Saarbrücken, Telefon +49 173 5371225, E-Mail info@goldhelwah.de.",
                                                             "Nach Eintragung der finalen Angaben sollten Impressum und Datenschutz inhaltlich aufeinander abgestimmt werden."
                                                         ]
                                      },

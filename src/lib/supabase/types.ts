@@ -266,6 +266,7 @@ export type Database = {
           shift_label: string | null;
           updated_at: string;
           workshop_id: string | null;
+          workshop_role: Database["public"]["Enums"]["workshop_member_role"];
         };
         Insert: {
           attendance_status?: Database["public"]["Enums"]["attendance_status"];
@@ -281,6 +282,7 @@ export type Database = {
           shift_label?: string | null;
           updated_at?: string;
           workshop_id?: string | null;
+          workshop_role?: Database["public"]["Enums"]["workshop_member_role"];
         };
         Update: {
           attendance_status?: Database["public"]["Enums"]["attendance_status"];
@@ -296,6 +298,7 @@ export type Database = {
           shift_label?: string | null;
           updated_at?: string;
           workshop_id?: string | null;
+          workshop_role?: Database["public"]["Enums"]["workshop_member_role"];
         };
         Relationships: [
           {
@@ -620,6 +623,7 @@ export type Database = {
           updated_at?: string;
           withdrawn_at?: string | null;
           workshop_id?: string | null;
+          workshop_role?: Database["public"]["Enums"]["workshop_member_role"];
         };
         Update: {
           archived_at?: string | null;
@@ -660,6 +664,7 @@ export type Database = {
           updated_at?: string;
           withdrawn_at?: string | null;
           workshop_id?: string | null;
+          workshop_role?: Database["public"]["Enums"]["workshop_member_role"];
         };
         Relationships: [
           {
@@ -990,10 +995,12 @@ export type Database = {
           code: string | null;
           contact_name: string | null;
           created_at: string;
+          description: string | null;
           email: string | null;
           id: string;
           is_active: boolean;
           location: string | null;
+          manager_employee_id: string | null;
           name: string;
           notes: string | null;
           phone: string | null;
@@ -1004,10 +1011,12 @@ export type Database = {
           code?: string | null;
           contact_name?: string | null;
           created_at?: string;
+          description?: string | null;
           email?: string | null;
           id?: string;
           is_active?: boolean;
           location?: string | null;
+          manager_employee_id?: string | null;
           name: string;
           notes?: string | null;
           phone?: string | null;
@@ -1018,16 +1027,31 @@ export type Database = {
           code?: string | null;
           contact_name?: string | null;
           created_at?: string;
+          description?: string | null;
           email?: string | null;
           id?: string;
           is_active?: boolean;
           location?: string | null;
+          manager_employee_id?: string | null;
           name?: string;
           notes?: string | null;
           phone?: string | null;
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "workshops_manager_employee_id_fkey";
+            columns: ["manager_employee_id"];
+            referencedRelation: "employees";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "employees_workshop_id_fkey";
+            columns: ["workshop_id"];
+            referencedRelation: "workshops";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: Record<string, never>;
@@ -1046,6 +1070,7 @@ export type Database = {
       attendance_status: "present" | "absent" | "vacation" | "sick" | "late";
       email_log_status: "pending" | "sent" | "failed" | "skipped";
       employee_role: "admin" | "employee";
+      workshop_member_role: "workshop_manager" | "workshop_employee";
       order_assignment_status:
         | "assigned"
         | "accepted"

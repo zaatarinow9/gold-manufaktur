@@ -10,6 +10,7 @@ import {
   toggleWorkshopActiveAction,
 } from "@/app/[locale]/admin/workshops/actions";
 import { AdminBadge } from "@/components/admin/AdminBadge";
+import { AdminActionPendingBar } from "@/components/admin/AdminActionPendingBar";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
@@ -110,6 +111,7 @@ export function AdminWorkshopsClient({
 
   return (
     <div className="space-y-6">
+      <AdminActionPendingBar active={isPending} label={t("common.saving")} />
       <AdminPageHeader
         eyebrow={t("workshops.eyebrow")}
         title={t("workshops.title")}

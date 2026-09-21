@@ -57,7 +57,7 @@
                    "navigationTitle":  "Pages",
                    "contactTitle":  "Contact",
                    "socialTitle":  "Follow us",
-                   "emailPlaceholder":  "service@goldhelwah.de",
+                   "emailPlaceholder":  "info@goldhelwah.de",
                    "legalNote":  "Visit us in Saarbrücken or contact us for personal consultation.",
                    "rights":  "GoldHelwah GmbH. All rights reserved.",
                    "socials":  {
@@ -215,7 +215,7 @@
                     "hero":  {
                                  "eyebrow":  "Contact",
                                  "title":  "Personal consultation starts with clear contact.",
-                                 "subtitle":  "For product inquiries, appointments, and WhatsApp messages, you will find the fastest ways to reach GoldHelwah GmbH here.",
+                                 "subtitle":  "For product inquiries, appointments, and directions to the showroom, you will find the fastest ways to reach GoldHelwah GmbH here.",
                                  "primaryCta":  "View collection",
                                  "secondaryCta":  "Read privacy"
                              },
@@ -226,6 +226,9 @@
                                   "phoneTitle":  "Phone",
                                   "phoneText":  "Direct contact for quick questions or scheduling.",
                                   "phoneCta":  "Call now",
+                                  "emailTitle":  "Email",
+                                  "emailText":  "Write to us for product inquiries, appointments, or individual advice.",
+                                  "emailCta":  "Send email",
                                   "whatsappTitle":  "WhatsApp",
                                   "whatsappText":  "Ideal for quick questions and photo references from the showroom.",
                                   "whatsappCta":  "Start chat"
@@ -290,7 +293,7 @@
                                            "lines":  [
                                                          "We are happy to assist you with any questions:",
                                                          "Phone: +49 173 537 1225",
-                                                         "Email: service@goldhelwah.de"
+                                                         "Email: info@goldhelwah.de"
                                                      ]
                                        },
                                        {
@@ -336,7 +339,7 @@
                                      {
                                          "title":  "1. Responsible party",
                                          "paragraphs":  [
-                                                            "The responsible party for data processing on this website is Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, phone +49 173 537 1225, email service@goldhelwah.de.",
+                                                            "The responsible party for data processing on this website is Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, phone +49 173 537 1225, email info@goldhelwah.de.",
                                                             "If you have questions about privacy or wish to exercise your rights, you can contact us at any time."
                                                         ]
                                      },

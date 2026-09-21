@@ -1,4 +1,4 @@
-import { MessageCircle, Phone, Sparkles } from "lucide-react";
+import { Mail, Phone, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { PhoneInline } from "@/components/site/PhoneInline";
@@ -25,12 +25,12 @@ export function ContactCards() {
       value: companyInfo.phoneDisplay,
     },
     {
-      actionHref: companyInfo.whatsappHref,
-      actionLabel: t("whatsappCta"),
-      description: t("whatsappText"),
-      icon: MessageCircle,
-      title: t("whatsappTitle"),
-      value: "WhatsApp",
+      actionHref: companyInfo.emailHref,
+      actionLabel: t("emailCta"),
+      description: t("emailText"),
+      icon: Mail,
+      title: t("emailTitle"),
+      value: companyInfo.emailDisplay,
     },
   ] as const;
 
@@ -62,7 +62,7 @@ export function ContactCards() {
                     <a
                       href={item.actionHref}
                       className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-gold-soft transition hover:text-foreground"
-                      rel="noreferrer"
+                      rel={item.actionHref.startsWith("http") ? "noopener noreferrer" : undefined}
                       target={item.actionHref.startsWith("http") ? "_blank" : undefined}
                     >
                       {item.actionLabel}

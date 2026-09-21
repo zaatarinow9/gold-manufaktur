@@ -514,7 +514,7 @@ export async function assignOrderToEmployeeAction(
   }
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {

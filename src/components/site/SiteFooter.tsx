@@ -1,18 +1,10 @@
-import {
-  Camera,
-  Ghost,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Music2,
-  Phone,
-  Share2,
-} from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { PhoneInline } from "@/components/site/PhoneInline";
+import { SocialIcon } from "@/components/site/SocialIcon";
 import { Link } from "@/i18n/navigation";
 import { companyInfo, getBrandLogoAlt, siteNavigation, siteName } from "@/lib/site";
 import type { AppLocale } from "@/i18n/routing";
@@ -26,28 +18,23 @@ export function SiteFooter() {
   const socialLinks = [
     {
       href: companyInfo.instagramHref,
-      icon: Camera,
+      platform: "instagram",
       label: t("socials.instagram"),
     },
     {
       href: companyInfo.facebookHref,
-      icon: Share2,
+      platform: "facebook",
       label: t("socials.facebook"),
     },
     {
       href: companyInfo.tiktokHref,
-      icon: Music2,
+      platform: "tiktok",
       label: t("socials.tiktok"),
     },
     {
       href: companyInfo.snapchatHref,
-      icon: Ghost,
+      platform: "snapchat",
       label: t("socials.snapchat"),
-    },
-    {
-      href: companyInfo.whatsappHref,
-      icon: MessageCircle,
-      label: t("socials.whatsapp"),
     },
   ] as const;
 
@@ -116,22 +103,16 @@ export function SiteFooter() {
               <p className="muted-label">{t("socialTitle")}</p>
               <div className="mt-5 space-y-3 text-sm text-muted">
                 {socialLinks.map((item) => {
-                  const Icon = item.icon;
-                  const isWhatsApp = item.href === companyInfo.whatsappHref;
-
                   return (
                     <a
                       key={item.label}
                       href={item.href}
                       target="_blank"
-                      rel="noreferrer"
-                      className={`footer-social-link rtl-inline-row flex items-center gap-3 rounded-full px-4 py-3 transition ${
-                        isWhatsApp
-                          ? "border border-gold/20 bg-gold/10 text-foreground hover:border-gold/40 hover:text-gold-soft"
-                          : "border border-white/10 bg-white/4 text-muted hover:border-gold/25 hover:text-foreground"
-                      }`}
+                      rel="noopener noreferrer"
+                      aria-label={item.label}
+                      className="footer-social-link rtl-inline-row flex items-center gap-3 rounded-full border border-white/10 bg-white/4 px-4 py-3 text-muted transition hover:border-gold/25 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-soft"
                     >
-                      <Icon className="h-4 w-4 text-gold-soft" />
+                      <SocialIcon platform={item.platform} className="h-4 w-4 shrink-0 text-gold-soft" />
                       <span>{item.label}</span>
                     </a>
                   );

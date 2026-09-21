@@ -3,6 +3,7 @@ import "server-only";
 import { z } from "zod";
 
 import { assertEmployeeAssignedToOrder } from "@/lib/admin/access";
+import { createRequiredAuditLog } from "@/lib/db/auditLogs";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { createAdminNotification } from "@/lib/db/notifications";
 import { getScopedOrderDetail } from "@/lib/db/orders";
@@ -198,6 +199,25 @@ export async function assignOrderToEmployee(
   }
 
   const supabase = createSupabaseAdminClient();
+  if (!order.workshopId) {
+    throw new Error("ORDER_WORKSHOP_REQUIRED");
+  }
+
+  if (viewer.role === "employee") {
+    if (!viewer.linkedEmployeeId) {
+      throw new Error("ORDER_ASSIGNMENT_FORBIDDEN");
+    }
+    const { data: workshop, error: workshopError } = await supabase
+      .from("workshops")
+      .select("manager_employee_id")
+      .eq("id", order.workshopId)
+      .maybeSingle();
+
+    if (workshopError || workshop?.manager_employee_id !== viewer.linkedEmployeeId) {
+      throw new Error("ORDER_ASSIGNMENT_FORBIDDEN");
+    }
+  }
+
   const { data: employee, error: employeeError } = await supabase
     .from("employees")
     .select("email, full_name, id, is_active, workshop_id")
@@ -205,6 +225,10 @@ export async function assignOrderToEmployee(
     .maybeSingle();
 
   if (employeeError || !employee || !employee.is_active) {
+    throw new Error("INVALID_EMPLOYEE_SELECTION");
+  }
+
+  if (employee.workshop_id !== order.workshopId) {
     throw new Error("INVALID_EMPLOYEE_SELECTION");
   }
 
@@ -224,7 +248,7 @@ export async function assignOrderToEmployee(
     assignment_status: nextStatus,
     employee_id: employee.id,
     employee_note: employeeChanged ? null : order.employeeNote || null,
-    workshop_id: employee.workshop_id ?? order.workshopId,
+    workshop_id: order.workshopId,
   };
 
   const { error: orderError } = await supabase
@@ -258,6 +282,20 @@ export async function assignOrderToEmployee(
   if (eventError) {
     throw new Error(`Unable to log assignment change: ${eventError.message}`);
   }
+
+  await createRequiredAuditLog({
+    action: employeeChanged
+      ? previousEmployeeName
+        ? "order_reassigned_to_employee"
+        : "order_assigned_to_employee"
+      : "order_assignment_updated",
+    actorEmail: viewer.email,
+    metadata: {
+      employeeId: employee.id,
+      orderId: order.id,
+      workshopId: order.workshopId,
+    },
+  });
 
   await createAdminNotification({
     employeeId: employee.id,
