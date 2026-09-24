@@ -12,6 +12,7 @@ import {
   Settings2,
   ShoppingBag,
   Users,
+  Wrench,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -33,7 +34,8 @@ export type AdminNavKey =
   | "orders"
   | "overview"
   | "products"
-  | "settings";
+  | "settings"
+  | "workshops";
 
 export type AdminNavCounts = Partial<Record<AdminNavKey, number>>;
 
@@ -55,6 +57,7 @@ const adminNavLabelKeys: Record<AdminNavKey, string> = {
   overview: "nav.overview",
   products: "nav.products",
   settings: "nav.settings",
+  workshops: "nav.workshops",
 };
 
 export const adminNavItems: AdminNavItem[] = [
@@ -68,6 +71,7 @@ export const adminNavItems: AdminNavItem[] = [
     section: "my_tasks",
   },
   { href: "/admin/employees", icon: Users, key: "employees", section: "employees" },
+  { href: "/admin/workshops", icon: Wrench, key: "workshops", section: "workshops" },
   { href: "/admin/products", icon: Package, key: "products", section: "products" },
   { href: "/admin/categories", icon: Layers3, key: "categories", section: "categories" },
   { href: "/admin/options", icon: Gem, key: "options", section: "options" },
