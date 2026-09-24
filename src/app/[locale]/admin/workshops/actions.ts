@@ -29,6 +29,15 @@ const workshopMembershipSchema = z.object({
   workshopId: z.string().uuid(),
 });
 
+function getWorkshopMutationError(locale: AppLocale, error: unknown, fallback: string) {
+  if (error instanceof Error && error.message.includes("CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN")) {
+    return locale === "ar"
+      ? "لا يمكن نقل مدير الورشة الحالي. عيّن مديراً بديلاً أو أزل تعيينه أولاً."
+      : "Die aktuelle Werkstattleitung kann erst nach Ersatz oder Aufhebung der Leitung verschoben werden.";
+  }
+  return getSafeActionErrorMessage(error, fallback);
+}
+
 function revalidateWorkshopViews() {
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}/admin`);
@@ -130,6 +139,13 @@ export async function assignWorkshopManagerAction(
   try {
     const parsed = workshopMembershipSchema.parse(input);
     const supabase = createSupabaseAdminClient();
+    const { data: workshop, error: workshopError } = await supabase
+      .from("workshops")
+      .select("manager_employee_id")
+      .eq("id", parsed.workshopId)
+      .eq("is_active", true)
+      .maybeSingle();
+    if (workshopError || !workshop) throw new Error("INVALID_WORKSHOP_MANAGER");
     const { data: employee, error: employeeError } = await supabase
       .from("employees")
       .select("id, is_active, profile_id, workshop_id")
@@ -140,13 +156,13 @@ export async function assignWorkshopManagerAction(
     }
     const { error: roleError } = await supabase.from("employees").update({ workshop_role: "workshop_manager" }).eq("id", employee.id);
     if (roleError) throw new Error("WORKSHOP_MANAGER_UPDATE_FAILED");
-    const { error: workshopError } = await supabase.from("workshops").update({ manager_employee_id: employee.id }).eq("id", parsed.workshopId).eq("is_active", true);
-    if (workshopError) throw new Error("WORKSHOP_MANAGER_UPDATE_FAILED");
-    await createRequiredAuditLog({ action: "workshop_manager_changed", actorEmail: access.user.email, metadata: { employeeId: employee.id, workshopId: parsed.workshopId } });
+    const { error: managerUpdateError } = await supabase.from("workshops").update({ manager_employee_id: employee.id }).eq("id", parsed.workshopId).eq("is_active", true);
+    if (managerUpdateError) throw new Error("WORKSHOP_MANAGER_UPDATE_FAILED");
+    await createRequiredAuditLog({ action: "workshop_manager_changed", actorEmail: access.user.email, metadata: { employeeId: employee.id, previousEmployeeId: workshop.manager_employee_id, workshopId: parsed.workshopId } });
     revalidateWorkshopViews();
     return { message: t("common.mockSubmit"), ok: true as const };
   } catch (error) {
-    return { message: getSafeActionErrorMessage(error, getOrderWorkflowCopy(locale).formErrorFallback), ok: false as const };
+    return { message: getWorkshopMutationError(locale, error, getOrderWorkflowCopy(locale).formErrorFallback), ok: false as const };
   }
 }
 
@@ -166,13 +182,15 @@ export async function moveEmployeeToWorkshopAction(
     if (workshopError || !workshop) throw new Error("INVALID_WORKSHOP");
     const { data: employee, error: employeeError } = await supabase.from("employees").select("id, workshop_id").eq("id", parsed.employeeId).maybeSingle();
     if (employeeError || !employee) throw new Error("INVALID_EMPLOYEE");
+    const { data: managedWorkshop, error: managedWorkshopError } = await supabase.from("workshops").select("id").eq("manager_employee_id", employee.id).maybeSingle();
+    if (managedWorkshopError) throw new Error("EMPLOYEE_MOVE_FAILED");
+    if (managedWorkshop && employee.workshop_id !== parsed.workshopId) throw new Error("CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN");
     const { error: updateError } = await supabase.from("employees").update({ workshop_id: parsed.workshopId, workshop_role: "workshop_employee" }).eq("id", employee.id);
     if (updateError) throw new Error("EMPLOYEE_MOVE_FAILED");
-    if (employee.workshop_id) await supabase.from("workshops").update({ manager_employee_id: null }).eq("manager_employee_id", employee.id);
     await createRequiredAuditLog({ action: employee.workshop_id ? "employee_moved_workshop" : "employee_added_to_workshop", actorEmail: access.user.email, metadata: { employeeId: employee.id, workshopId: parsed.workshopId } });
     revalidateWorkshopViews();
     return { message: t("common.mockSubmit"), ok: true as const };
   } catch (error) {
-    return { message: getSafeActionErrorMessage(error, getOrderWorkflowCopy(locale).formErrorFallback), ok: false as const };
+    return { message: getWorkshopMutationError(locale, error, getOrderWorkflowCopy(locale).formErrorFallback), ok: false as const };
   }
 }

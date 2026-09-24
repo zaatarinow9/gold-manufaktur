@@ -16,12 +16,14 @@ import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
+import { Link } from "@/i18n/navigation";
 import type { WorkshopRecord } from "@/lib/db/workshops";
 
 type WorkshopFormState = {
   address: string;
   code: string;
   contactName: string;
+  description: string;
   email: string;
   id?: string;
   isActive: boolean;
@@ -42,6 +44,7 @@ function createEmptyForm(): WorkshopFormState {
     address: "",
     code: "",
     contactName: "",
+    description: "",
     email: "",
     isActive: true,
     location: "",
@@ -56,6 +59,7 @@ function createEditForm(workshop: WorkshopRecord): WorkshopFormState {
     address: workshop.address,
     code: workshop.code,
     contactName: workshop.contactName,
+    description: workshop.description ?? "",
     email: workshop.email,
     id: workshop.id,
     isActive: workshop.isActive,
@@ -89,6 +93,7 @@ export function AdminWorkshopsClient({
         address: formState.address,
         code: formState.code,
         contactName: formState.contactName,
+        description: formState.description,
         email: formState.email,
         isActive: formState.isActive,
         location: formState.location,
@@ -160,6 +165,7 @@ export function AdminWorkshopsClient({
                 setFormState((current) => ({ ...current, name: event.target.value }))
               }
             />
+            <AdminTextarea label={locale === "ar" ? "وصف اختياري" : "Optionale Beschreibung"} value={formState.description} onChange={(event) => setFormState((current) => ({ ...current, description: event.target.value }))} />
             <AdminInput
               label="Code"
               value={formState.code}
@@ -269,6 +275,7 @@ export function AdminWorkshopsClient({
             </div>
 
             <div className="flex flex-wrap gap-2">
+              <Link href={`/admin/workshops/${workshop.id}`} className="rounded-lg border border-white/15 px-3 py-2 text-sm font-medium">{locale === "ar" ? "عرض التفاصيل" : "Details anzeigen"}</Link>
               <AdminButton
                 size="sm"
                 variant="secondary"

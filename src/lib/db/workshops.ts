@@ -13,6 +13,7 @@ const workshopInputSchema = z.object({
   address: z.string().trim().max(500).optional().default(""),
   code: z.string().trim().max(40).optional().default(""),
   contactName: z.string().trim().max(160).optional().default(""),
+  description: z.string().trim().max(4000).optional().default(""),
   email: z.email().optional().or(z.literal("")).default(""),
   isActive: z.boolean().default(true),
   location: z.string().trim().max(255).optional().default(""),
@@ -34,6 +35,7 @@ export type WorkshopRecord = {
   code: string;
   completedThisMonth: number;
   contactName: string;
+  description?: string;
   email: string;
   employeeCount: number;
   id: string;
@@ -120,6 +122,7 @@ function toWorkshopInsert(input: WorkshopInput | WorkshopUpdateInput) {
     address: nullableText(input.address),
     code: nullableText(input.code),
     contact_name: nullableText(input.contactName),
+    description: nullableText(input.description),
     email: nullableText(input.email),
     is_active: input.isActive,
     location: nullableText(input.location),
@@ -203,6 +206,7 @@ export async function getScopedWorkshops(
           (order) => isCompletedOrder(order) && startedThisMonth(order.updated_at)
         ).length,
         contactName: workshop.contact_name ?? "",
+        description: workshop.description ?? "",
         email: workshop.email ?? "",
         employeeCount: workshopEmployees.filter((employee) => employee.is_active).length,
         id: workshop.id,

@@ -71,6 +71,60 @@ create trigger validate_workshop_manager
 before insert or update of manager_employee_id on public.workshops
 for each row execute function public.validate_workshop_manager();
 
+-- Employee changes made after appointment cannot invalidate a workshop's
+-- manager pointer. Moving a current manager is deliberately rejected rather
+-- than silently leaving their former workshop without a valid manager.
+create or replace function public.protect_current_workshop_manager()
+returns trigger
+language plpgsql
+set search_path = pg_catalog, public
+as $$
+begin
+  if exists (select 1 from public.workshops w where w.manager_employee_id = old.id) then
+    if new.workshop_id is distinct from old.workshop_id then
+      raise exception 'CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN';
+    end if;
+    if new.workshop_role <> 'workshop_manager'::public.workshop_member_role
+      or new.is_active is not true
+      or new.profile_id is null then
+      raise exception 'CURRENT_WORKSHOP_MANAGER_INVARIANT_VIOLATION';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists protect_current_workshop_manager on public.employees;
+create trigger protect_current_workshop_manager
+before update of workshop_id, workshop_role, is_active, profile_id on public.employees
+for each row execute function public.protect_current_workshop_manager();
+
+-- Updating the pointer is the authoritative manager replacement operation.
+-- The new manager was validated above; demote the old one only when no other
+-- workshop still points at them.
+create or replace function public.sync_previous_workshop_manager_role()
+returns trigger
+language plpgsql
+set search_path = pg_catalog, public
+as $$
+begin
+  if old.manager_employee_id is not null
+    and old.manager_employee_id is distinct from new.manager_employee_id
+    and not exists (select 1 from public.workshops w where w.manager_employee_id = old.manager_employee_id) then
+    update public.employees
+    set workshop_role = 'workshop_employee'::public.workshop_member_role
+    where id = old.manager_employee_id
+      and workshop_role = 'workshop_manager'::public.workshop_member_role;
+  end if;
+  return null;
+end;
+$$;
+
+drop trigger if exists sync_previous_workshop_manager_role on public.workshops;
+create trigger sync_previous_workshop_manager_role
+after update of manager_employee_id on public.workshops
+for each row execute function public.sync_previous_workshop_manager_role();
+
 -- A workshop change always clears an employee assignment from the old
 -- workshop.  The employee must then be assigned by the new workshop manager.
 create or replace function public.clear_incompatible_order_employee()
@@ -178,6 +232,13 @@ create policy "Staff can read scoped employees"
 on public.employees for select
 using (public.can_access_employee(id));
 
+-- 0003 created this exact SELECT policy. Replace it rather than adding a
+-- second permissive policy, because PostgreSQL ORs SELECT policies together.
+drop policy if exists "Staff can read scoped orders" on public.orders;
+create policy "Staff can read scoped orders"
+on public.orders for select
+using (public.can_access_order_v2(workshop_id, employee_id, assigned_admin_id));
+
 -- RPCs are the mutation boundary. They validate caller, target workshop, and
 -- membership again in the database; browser-supplied IDs are never trusted.
 create or replace function public.assign_order_to_workshop(p_order_id uuid, p_workshop_id uuid)
@@ -215,6 +276,9 @@ begin
   if v_actor is null then raise exception 'not authorized'; end if;
   select workshop_id, employee_id into v_workshop, v_previous from public.orders where id = p_order_id for update;
   if not found then raise exception 'order not found'; end if;
+  if v_workshop is null or not exists (select 1 from public.workshops where id = v_workshop and is_active is true) then
+    raise exception 'invalid active workshop';
+  end if;
   if not public.is_workshop_manager(v_workshop) and not public.is_super_admin() and public.current_profile_role() <> 'admin' then raise exception 'not authorized'; end if;
   select email, full_name into v_email, v_name from public.employees
   where id = p_employee_id and workshop_id = v_workshop and is_active is true and profile_id is not null;
