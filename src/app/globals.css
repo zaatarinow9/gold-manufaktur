@@ -428,6 +428,21 @@ button {
   font-family: var(--font-thmanyah), system-ui, sans-serif;
 }
 
+.site-form-control {
+  line-height: 1.55;
+  min-height: 3.2rem;
+  padding-block: 0.7rem;
+}
+
+.site-form-control:is(textarea) {
+  line-height: 1.65;
+}
+
+html[dir="rtl"] .site-form-control:not([dir="ltr"]) {
+  direction: rtl;
+  text-align: start;
+}
+
 :is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) {
   --font-body: var(--font-thmanyah);
   --font-sans: var(--font-thmanyah);

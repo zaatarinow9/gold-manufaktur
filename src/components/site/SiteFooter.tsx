@@ -76,12 +76,13 @@ export function SiteFooter() {
               <div className="mt-5 space-y-4 text-sm text-muted">
                 <div className="rtl-inline-row flex items-start gap-3">
                   <MapPin className="mt-1 h-4 w-4 text-gold-soft" />
-                  <p className="leading-6">{companyInfo.address}</p>
+                  <p dir="ltr" className="leading-6">{companyInfo.address}</p>
                 </div>
                 <div className="rtl-inline-row flex items-start gap-3">
                   <Phone className="mt-1 h-4 w-4 text-gold-soft" />
                   <a
                     href={companyInfo.phoneHref}
+                    dir="ltr"
                     className="leading-6 transition hover:text-foreground"
                   >
                     <PhoneInline>{companyInfo.phoneDisplay}</PhoneInline>
@@ -91,6 +92,7 @@ export function SiteFooter() {
                   <Mail className="mt-1 h-4 w-4 text-gold-soft" />
                   <a
                     href={companyInfo.emailHref}
+                    dir="ltr"
                     className="leading-6 transition hover:text-foreground"
                   >
                     {companyInfo.emailDisplay}

@@ -85,7 +85,7 @@ export function TrackingSupportForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const inputClassName =
-    "w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
+    "site-form-control w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
 
   const clearFieldError = (field: TrackingSupportField) => {
     setFieldErrors((current) => {
@@ -228,6 +228,7 @@ export function TrackingSupportForm({
             <input
               id="email"
               name="email"
+              dir="ltr"
               className={clsx(
                 inputClassName,
                 fieldErrors.email && "border-rose-400/40 focus:border-rose-300/60"

@@ -18,7 +18,6 @@ export function LocationMap() {
         <div className="content-shell rtl-mirror-grid grid gap-6 xl:grid-cols-[0.72fr_1.28fr] xl:items-stretch">
           <div className="luxury-panel flex h-full min-h-[22rem] flex-col px-6 py-8 sm:px-8 xl:min-h-[32.5rem]">
             <SectionHeading
-              eyebrow={t("eyebrow")}
               title={t("title")}
               description={t("description")}
               titleClassName="text-4xl sm:text-5xl"
@@ -31,7 +30,7 @@ export function LocationMap() {
                   <MapPinned className="h-4 w-4" />
                   <p className="muted-label text-gold-soft">{t("addressLabel")}</p>
                 </div>
-                <p className="mt-4 text-base leading-7 text-foreground">
+                <p dir="ltr" className="mt-4 text-base leading-7 text-foreground">
                   {companyInfo.address}
                 </p>
               </div>
@@ -43,6 +42,7 @@ export function LocationMap() {
                 </div>
                 <a
                   href={companyInfo.phoneHref}
+                  dir="ltr"
                   className="mt-4 inline-flex text-base leading-7 text-foreground transition hover:text-gold-soft"
                 >
                   <PhoneInline>{companyInfo.phoneDisplay}</PhoneInline>

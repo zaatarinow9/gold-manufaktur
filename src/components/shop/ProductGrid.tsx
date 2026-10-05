@@ -61,8 +61,7 @@ export function ProductGrid({
         <div className="content-shell min-w-0 space-y-8">
           <div className="min-w-0 flex flex-col gap-4">
             <div>
-              <p className="eyebrow">{t("eyebrow")}</p>
-              <h2 className="card-title mt-5 text-4xl text-foreground sm:text-5xl">
+              <h2 className="card-title text-4xl text-foreground sm:text-5xl">
                 {trimDisplayHeading(t("title"))}
               </h2>
             </div>

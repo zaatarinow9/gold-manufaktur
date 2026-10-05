@@ -954,6 +954,8 @@
                                     "eyebrow":  "Workshops",
                                     "title":  "Workshops",
                                     "description":  "Manage workshops, contacts, and workload.",
+                                    "detail": {"title":"Workshop information","manager":"Workshop manager","employees":"Workshop employees","orders":"Current orders","deactivate":"Deactivate workshop","employeeCount":"Employee count","pending":"Saving…","viewDetails":"View details"},
+                                    "workshopOrders": {"assign":"Assign to employee","empty":"There are no orders for this workshop.","pending":"Saving assignment…","title":"Workshop orders","unassigned":"Unassigned"},
                                     "cards":  {
                                                   "contact":  "Contact",
                                                   "activeOrders":  "Active orders",

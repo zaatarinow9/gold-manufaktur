@@ -919,6 +919,8 @@
                                     "eyebrow":  "Ateliers",
                                     "title":  "Ateliers",
                                     "description":  "Gerer les ateliers, contacts et charge de travail.",
+                                    "detail": {"title":"Informations de l’atelier","manager":"Responsable d’atelier","employees":"Employés de l’atelier","orders":"Commandes actuelles","deactivate":"Désactiver l’atelier","employeeCount":"Nombre d’employés","pending":"Enregistrement…","viewDetails":"Voir les détails"},
+                                    "workshopOrders": {"assign":"Attribuer à un employé","empty":"Il n’y a aucune commande pour cet atelier.","pending":"Enregistrement de l’attribution…","title":"Commandes de l’atelier","unassigned":"Non attribué"},
                                     "cards":  {
                                                   "contact":  "Contact",
                                                   "activeOrders":  "Commandes actives",

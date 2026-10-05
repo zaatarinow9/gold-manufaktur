@@ -7,6 +7,7 @@ type SectionHeadingProps = {
   className?: string;
   description?: string;
   descriptionClassName?: string;
+  /** Retained for call-site compatibility; decorative section labels are not rendered. */
   eyebrow?: string;
   title: string;
   titleClassName?: string;
@@ -17,7 +18,6 @@ export function SectionHeading({
   className,
   description,
   descriptionClassName,
-  eyebrow,
   title,
   titleClassName,
 }: SectionHeadingProps) {
@@ -29,7 +29,6 @@ export function SectionHeading({
         className
       )}
     >
-      {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
       <h2
         className={clsx(
           "balanced-title section-heading site-heading max-w-full text-foreground",

@@ -919,6 +919,8 @@
                                     "eyebrow":  "Atolyeler",
                                     "title":  "Atolyeler",
                                     "description":  "Atolyeleri, iletisimleri ve is yukunu yonetin.",
+                                    "detail": {"title":"Atölye bilgileri","manager":"Atölye yöneticisi","employees":"Atölye çalışanları","orders":"Mevcut siparişler","deactivate":"Atölyeyi devre dışı bırak","employeeCount":"Çalışan sayısı","pending":"Kaydediliyor…","viewDetails":"Ayrıntıları görüntüle"},
+                                    "workshopOrders": {"assign":"Çalışana ata","empty":"Bu atölye için sipariş yok.","pending":"Atama kaydediliyor…","title":"Atölye siparişleri","unassigned":"Atanmamış"},
                                     "cards":  {
                                                   "contact":  "Iletisim",
                                                   "activeOrders":  "Aktif siparisler",

@@ -19,7 +19,6 @@ export function AboutCompanySection() {
             <div className="rtl-mirror-grid grid gap-6 xl:grid-cols-[1.04fr_0.96fr] xl:items-stretch">
               <div className="flex h-full flex-col justify-center">
                 <SectionHeading
-                  eyebrow={t("eyebrow")}
                   title={t("title")}
                   description={t("description")}
                   titleClassName="text-4xl sm:text-5xl xl:text-[4rem]"
@@ -52,10 +51,9 @@ export function AboutCompanySection() {
                 <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-[linear-gradient(90deg,transparent,rgba(232,201,135,0.42),transparent)]" />
                 <div className="flex h-full flex-col justify-between gap-8">
                   <div>
-                    <span className="gold-chip">GoldHelwah GmbH</span>
                     <BrandLogo
                       alt={brandLogoAlt}
-                      className="mt-6 h-[5.5rem] w-auto sm:h-[6.5rem]"
+                      className="h-[5.5rem] w-auto sm:h-[6.5rem]"
                     />
                   </div>
 

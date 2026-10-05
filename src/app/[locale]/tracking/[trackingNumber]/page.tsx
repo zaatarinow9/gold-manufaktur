@@ -58,7 +58,6 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
                     />
                   </Link>
                   <div className="space-y-2">
-                    <p className="eyebrow">{t("title")}</p>
                     <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                       {order.trackingNumber}
                     </h1>

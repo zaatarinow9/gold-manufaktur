@@ -30,7 +30,8 @@ export function TrackingLookupForm() {
       <label className="flex flex-col gap-2 text-sm text-foreground">
         <span>{t("label")}</span>
         <input
-          className="w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40"
+          className="site-form-control w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40"
+          dir="ltr"
           value={trackingNumber}
           onChange={(event) => {
             if (error) {

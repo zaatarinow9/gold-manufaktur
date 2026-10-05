@@ -40,9 +40,8 @@ export function ShopHero({
       <div className="container-shell">
         <div className="content-shell rtl-mirror-grid relative grid gap-8 py-12 lg:grid-cols-[0.86fr_1.14fr] lg:gap-12 lg:py-16">
           <div className="shop-hero-copy rtl-items-start min-w-0 flex flex-col justify-center">
-            <span className="eyebrow">{t("eyebrow")}</span>
-            <h1 className="section-title mt-6 text-foreground">{title}</h1>
-            <p className="section-copy mt-6 max-w-2xl text-base sm:text-lg">
+            <h1 className="section-title text-foreground">{title}</h1>
+            <p className="section-copy mt-5 max-w-2xl text-base sm:text-lg">
               {t("subtitle")}
             </p>
 

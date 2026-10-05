@@ -53,11 +53,10 @@ export default async function ContactPage({
         <div className="container-shell">
           <div className="content-shell rtl-mirror-grid grid gap-6 xl:grid-cols-[0.82fr_1.18fr]">
             <div className="contact-hero-copy rtl-items-start luxury-panel px-6 py-8 sm:px-8 sm:py-10">
-              <span className="eyebrow">{t("eyebrow")}</span>
-              <h1 className="section-title mt-6 text-foreground">
+              <h1 className="section-title text-foreground">
                 {trimDisplayHeading(t("title"))}
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg">
+              <p className="mt-5 max-w-2xl text-base leading-7 text-muted sm:text-lg">
                 {t("subtitle")}
               </p>
 

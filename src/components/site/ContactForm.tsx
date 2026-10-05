@@ -250,7 +250,7 @@ export function ContactForm({ product }: ContactFormProps) {
   };
 
   const inputClassName =
-    "w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
+    "site-form-control w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
 
   return (
     <section className="section-shell">
@@ -258,7 +258,6 @@ export function ContactForm({ product }: ContactFormProps) {
         <div className="content-shell grid gap-6 xl:grid-cols-[0.62fr_1.38fr] xl:items-stretch">
           <div className="luxury-panel flex h-full flex-col justify-center px-6 py-8 sm:px-8">
             <SectionHeading
-              eyebrow={t("eyebrow")}
               title={product ? copy.requestTitle : t("title")}
               description={t("description")}
               titleClassName="text-4xl sm:text-5xl"
@@ -556,6 +555,7 @@ export function ContactForm({ product }: ContactFormProps) {
                   <input
                     {...register("email")}
                     id="email"
+                    dir="ltr"
                     className={clsx(
                       inputClassName,
                       errors.email && "border-rose-400/40 focus:border-rose-300/60"

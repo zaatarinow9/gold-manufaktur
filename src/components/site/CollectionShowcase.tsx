@@ -23,7 +23,6 @@ export function CollectionShowcase({
         <div className="content-shell space-y-10">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
-              eyebrow={t("eyebrow")}
               title={t("title")}
               description={t("description")}
               className="max-w-[56rem]"
@@ -77,7 +76,7 @@ export function CollectionShowcase({
                 </div>
               </article>
 
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+              <div className="grid content-start gap-4 sm:grid-cols-2 xl:grid-cols-1 xl:auto-rows-max">
                 {supportingProducts.map((product) => (
                   <article
                     key={product.id}
@@ -122,8 +121,7 @@ export function CollectionShowcase({
             </div>
           ) : (
             <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(22,18,13,0.92),rgba(9,9,9,0.98))] px-6 py-12 text-center sm:px-8">
-              <span className="gold-chip">{t("eyebrow")}</span>
-              <h3 className="card-title mt-6 text-3xl text-foreground sm:text-4xl">
+              <h3 className="card-title text-3xl text-foreground sm:text-4xl">
                 {t("emptyTitle")}
               </h3>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted sm:text-base">

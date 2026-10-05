@@ -30,8 +30,7 @@ export function CallToAction({
       <div className="container-shell">
         <div className="content-shell relative py-16 sm:py-20">
           <div className="max-w-3xl">
-            <span className="gold-chip">{t("badge")}</span>
-            <h2 className="card-title mt-6 text-4xl text-foreground sm:text-5xl lg:text-6xl">
+            <h2 className="card-title text-4xl text-foreground sm:text-5xl lg:text-6xl">
               {t("title")}
             </h2>
             <p className="section-copy mt-5 max-w-2xl text-base sm:text-lg">

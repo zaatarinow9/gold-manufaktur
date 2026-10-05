@@ -960,6 +960,8 @@
                                     "eyebrow":  "Werkstätten",
                                     "title":  "Werkstätten",
                                     "description":  "Werkstätten, Kontakte und Auslastung verwalten.",
+                                    "detail": {"title":"Werkstattinformationen","manager":"Werkstattleitung","employees":"Werkstattmitarbeiter","orders":"Aktuelle Aufträge","deactivate":"Werkstatt deaktivieren","employeeCount":"Mitarbeiterzahl","pending":"Wird gespeichert…","viewDetails":"Details anzeigen"},
+                                    "workshopOrders": {"assign":"Mitarbeiter zuweisen","empty":"Für diese Werkstatt liegen keine Aufträge vor.","pending":"Zuweisung wird gespeichert…","title":"Werkstattaufträge","unassigned":"Nicht zugewiesen"},
                                     "cards":  {
                                                   "contact":  "Kontakt",
                                                   "activeOrders":  "Aktive Aufträge",

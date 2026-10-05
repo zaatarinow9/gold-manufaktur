@@ -67,8 +67,7 @@ export function FeaturedCategories({
             </div>
           ) : (
             <div className="mt-10 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(22,18,13,0.92),rgba(9,9,9,0.98))] px-6 py-12 text-center sm:px-8">
-              <span className="gold-chip">{t("eyebrow")}</span>
-              <h3 className="card-title mt-6 text-3xl text-foreground sm:text-4xl">
+              <h3 className="card-title text-3xl text-foreground sm:text-4xl">
                 {t("emptyTitle")}
               </h3>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted sm:text-base">

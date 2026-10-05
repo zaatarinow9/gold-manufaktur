@@ -32,7 +32,6 @@ export default async function TrackingLookupPage({
                     />
                   </Link>
                   <div className="space-y-3">
-                    <p className="eyebrow">{t("lookup.eyebrow")}</p>
                     <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                       {t("lookup.title")}
                     </h1>

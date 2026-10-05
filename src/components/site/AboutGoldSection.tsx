@@ -25,23 +25,15 @@ export function AboutGoldSection({
                 alt={t("imageAlt")}
                 sizes="(max-width: 1279px) 100vw, 48vw"
                 fallbackContent={
-                  <div className="absolute inset-x-5 bottom-5">
-                    <span className="gold-chip">
-                      {visualProduct?.categoryName || t("eyebrow")}
-                    </span>
-                  </div>
+                  <div />
                 }
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.12),rgba(0,0,0,0.72))]" />
-              <div className="absolute inset-x-5 bottom-5">
-                <span className="gold-chip">{t("eyebrow")}</span>
-              </div>
             </div>
           </div>
 
           <div className="luxury-panel flex h-full flex-col justify-center px-6 py-8 sm:px-8 sm:py-10">
             <SectionHeading
-              eyebrow={t("eyebrow")}
               title={t("title")}
               description={t("description")}
               titleClassName="text-4xl sm:text-5xl xl:text-[4rem]"
