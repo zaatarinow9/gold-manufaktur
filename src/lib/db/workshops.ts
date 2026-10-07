@@ -7,6 +7,7 @@ import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { canAccessWorkshop, logAdminReadError } from "@/lib/db/adminScope";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { TableInsert, TableRow, TableUpdate } from "@/lib/supabase/types";
 
 const workshopInputSchema = z.object({
@@ -267,4 +268,43 @@ export async function setWorkshopActive(workshopId: string, isActive: boolean) {
   }
 
   return data;
+}
+
+/** Deletes only a workshop which has no operational or membership references. */
+export async function permanentlyDeleteEmptyWorkshop(
+  workshopId: string
+) {
+  const supabase = createSupabaseAdminClient();
+  const [{ data: workshop, error: workshopError }, { count: employeeCount, error: employeeError }, { count: orderCount, error: orderError }, { count: notificationCount, error: notificationError }] = await Promise.all([
+    supabase.from("workshops").select("id, name, manager_employee_id").eq("id", workshopId).maybeSingle(),
+    supabase.from("employees").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
+    supabase.from("admin_notifications").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
+  ]);
+
+  if (workshopError || !workshop) throw new Error("WORKSHOP_NOT_FOUND");
+  if (employeeError || orderError || notificationError) throw new Error("WORKSHOP_DELETE_FAILED");
+  if (workshop.manager_employee_id || (employeeCount ?? 0) > 0 || (orderCount ?? 0) > 0 || (notificationCount ?? 0) > 0) {
+    throw new Error("WORKSHOP_NOT_EMPTY");
+  }
+
+  // Re-check notifications immediately before deletion so their cascade FK is
+  // never used as an implicit cleanup path.
+  const { count: finalNotificationCount, error: finalNotificationError } = await supabase
+    .from("admin_notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("workshop_id", workshopId);
+  if (finalNotificationError) throw new Error("WORKSHOP_DELETE_FAILED");
+  if ((finalNotificationCount ?? 0) > 0) throw new Error("WORKSHOP_NOT_EMPTY");
+
+  // The ID-scoped delete repeats the pointer guard. Employee/order FKs prevent
+  // deletion if a concurrent operational assignment appears after the checks.
+  const { data, error } = await supabase
+    .from("workshops")
+    .delete()
+    .eq("id", workshopId)
+    .is("manager_employee_id", null)
+    .select("id, name");
+  if (error || !data?.length) throw new Error("WORKSHOP_NOT_EMPTY");
+  return data[0];
 }

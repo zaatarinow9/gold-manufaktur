@@ -80,17 +80,21 @@ export default async function AdminDashboardPage({
       getScopedAdminNotifications(currentUser),
     ]);
 
-  const recentOrders = [...orders]
+  // The operational overview must not be inflated by cold/reset or deleted rows.
+  const activeOrders = orders.filter(
+    (order) => !order.archivedAt && !order.deletedAt && order.status !== "archived"
+  );
+  const recentOrders = [...activeOrders]
     .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
     .slice(0, 5);
 
   const activeCategories = categories.filter((category) => category.isActive).length;
   const activeProducts = products.filter((product) => product.isActive).length;
-  const newOrders = orders.filter((order) =>
+  const newOrders = activeOrders.filter((order) =>
     ["draft", "sent_to_workshop"].includes(order.status)
   ).length;
-  const inProduction = orders.filter((order) => order.status === "in_production").length;
-  const readyOrders = orders.filter((order) => order.status === "ready").length;
+  const inProduction = activeOrders.filter((order) => order.status === "in_production").length;
+  const readyOrders = activeOrders.filter((order) => order.status === "ready").length;
 
   const stats = [
     {
@@ -292,9 +296,9 @@ export default async function AdminDashboardPage({
             </div>
           </AdminCard>
 
-          <AdminCard title="Notifications" description="Recent updates for your role and workshop.">
+          <AdminCard title={locale === "ar" ? "الإشعارات" : "Benachrichtigungen"} description={locale === "ar" ? "آخر التحديثات المتعلقة بدورك وورشتك." : "Aktuelle Meldungen zu Ihrer Rolle und Werkstatt."}>
             {notifications.length === 0 ? (
-              <p className="text-sm text-muted">No notifications yet.</p>
+              <p className="text-sm text-muted">{locale === "ar" ? "لا توجد إشعارات حتى الآن." : "Noch keine Benachrichtigungen."}</p>
             ) : (
               <div className="space-y-3">
                 {notifications.map((notification) => (
@@ -308,7 +312,7 @@ export default async function AdminDashboardPage({
                         <p className="mt-1 text-sm text-muted">{notification.message}</p>
                       </div>
                       <AdminBadge variant={notification.isRead ? "neutral" : "gold"}>
-                        {notification.isRead ? "Read" : "New"}
+                        {notification.isRead ? (locale === "ar" ? "مقروء" : "Gelesen") : (locale === "ar" ? "جديد" : "Neu")}
                       </AdminBadge>
                     </div>
                     <div className="mt-3 flex items-center justify-between gap-3 text-xs text-muted">
