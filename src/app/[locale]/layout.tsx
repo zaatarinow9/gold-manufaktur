@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
 import { LocaleDocumentSync } from "@/components/site/LocaleDocumentSync";
+import { NavigationProgress } from "@/components/shared/NavigationProgress";
 import { LocaleChrome } from "@/components/site/LocaleChrome";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteNavbar } from "@/components/site/SiteNavbar";
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider>
       <LocaleDocumentSync locale={locale} direction={direction} />
+      <NavigationProgress />
       <div
         className="locale-root"
         dir={direction}

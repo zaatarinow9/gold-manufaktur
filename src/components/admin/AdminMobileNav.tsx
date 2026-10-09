@@ -1,8 +1,9 @@
 "use client";
 
 import clsx from "clsx";
-import { ArrowUpRight, LogOut, X } from "lucide-react";
+import { ArrowUpRight, LoaderCircle, LogOut, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
@@ -37,6 +38,7 @@ export function AdminMobileNav({
   const t = useTranslations("Admin");
   const visibleItems = getVisibleAdminNavItems(currentUser.role);
   const brandLogoAlt = getBrandLogoAlt(locale);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   return (
     <div
@@ -84,12 +86,17 @@ export function AdminMobileNav({
               item.href === "/admin"
                 ? pathname === "/admin"
                 : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isPending = pendingHref === item.href && !isActive;
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={onClose}
+                aria-busy={isPending}
+                onClick={() => {
+                  if (!isActive) setPendingHref(item.href);
+                  onClose();
+                }}
                 className={clsx(
                   "admin-nav-link flex items-center gap-3 rounded-[0.95rem] border px-3.5 py-2.5 text-sm font-medium transition",
                   isActive
@@ -97,7 +104,7 @@ export function AdminMobileNav({
                     : "border-transparent text-muted hover:border-white/8 hover:bg-white/6 hover:text-foreground"
                 )}
               >
-                <item.icon className="h-4 w-4 shrink-0" />
+                {isPending ? <LoaderCircle className="h-4 w-4 shrink-0 animate-spin text-gold" /> : <item.icon className="h-4 w-4 shrink-0" />}
                 <span>{t(getAdminNavLabelKey(item.key))}</span>
                 {navCounts?.[item.key] ? (
                   <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
