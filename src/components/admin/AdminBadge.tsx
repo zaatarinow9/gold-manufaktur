@@ -12,7 +12,7 @@ const variantClasses: Record<NonNullable<AdminBadgeProps["variant"]>, string> = 
   warning: "border-amber-400/24 bg-amber-400/10 text-amber-200",
   danger: "border-rose-400/24 bg-rose-400/10 text-rose-200",
   info: "border-sky-400/24 bg-sky-400/10 text-sky-200",
-  neutral: "border-white/10 bg-white/5 text-muted",
+  neutral: "border-white/10 bg-white/[0.04] text-muted",
 };
 
 export function AdminBadge({
@@ -23,7 +23,7 @@ export function AdminBadge({
   return (
     <span
       className={clsx(
-        "inline-flex items-center rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em]",
+        "inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium",
         variantClasses[variant],
         className
       )}

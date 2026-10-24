@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { AdminCard } from "@/components/admin/AdminCard";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import { getScopedOrders } from "@/lib/db/orders";
 import { createSupabaseServerClient } from "@/lib/supabase/server";

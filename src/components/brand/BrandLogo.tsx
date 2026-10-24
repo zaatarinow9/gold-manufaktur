@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 import Image from "next/image";
 
 type BrandLogoProps = {
@@ -19,7 +19,7 @@ export function BrandLogo({
       width={273}
       height={198}
       priority={priority}
-      className={clsx("brand-logo-image h-auto w-auto", className)}
+      className={twMerge("brand-logo-image h-auto w-auto", className)}
     />
   );
 }
