@@ -34,7 +34,7 @@ export function HeroSection({ imageUrl, visualProduct }: HeroSectionProps) {
         </div>
 
         <div className="relative z-10 order-2 -mt-16 flex items-center px-4 pb-14 sm:px-6 lg:order-1 lg:mt-0 lg:py-20 lg:pe-12 lg:ps-[max(2.5rem,calc((100vw_-_78rem)/2))]">
-          <div className="hero-reveal max-w-[34rem]">
+          <div className="hero-reveal max-w-[36rem]">
             <p className="eyebrow">{t("title")}</p>
             <h1 className="hero-heading mt-4 text-foreground">{t("subtitle")}</h1>
             <p className="mt-6 max-w-[32rem] text-[1.0625rem] leading-8 text-muted">{t("description")}</p>

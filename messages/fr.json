@@ -3,7 +3,7 @@
     "site": {
       "brand": "GoldHelwah GmbH",
       "title": "GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH présente des bijoux en or sélectionnés avec visuels réels, conseil personnalisé et présentation claire à Sarrebruck.",
+      "description": "GoldHelwah GmbH à Sarrebruck : parures de mariée, colliers prénom, bagues et or d’investissement en 21, 18 et 14 carats. Conseil personnel et pièces sur mesure.",
       "keywords": [
         "GoldHelwah GmbH",
         "bijoux en or",
@@ -15,24 +15,24 @@
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah GmbH",
-        "description": "Découvrez des bijoux en or de caractère, des visuels réels et un conseil personnalisé chez GoldHelwah GmbH."
+        "title": "GoldHelwah – Bijoux en or à Sarrebruck",
+        "description": "Parures de mariée, bijoux prénom, chaînes et or d’investissement en 21, 18 et 14 carats. Showroom Breite Straße 9, Sarrebruck."
       },
       "shop": {
         "title": "Collection",
-        "description": "Explorez des pièces sélectionnées, des catégories claires et les détails de la collection GoldHelwah GmbH."
+        "description": "La collection GoldHelwah : parures, bijoux prénom, chaînes, bracelets, bagues et lingots. Demande directement en ligne."
       },
       "contact": {
         "title": "Contact",
-        "description": "Contactez GoldHelwah GmbH pour un conseil, une demande produit ou votre visite du showroom à Sarrebruck."
+        "description": "Showroom Breite Straße 9, Sarrebruck. Téléphone, WhatsApp, e-mail et formulaire de demande."
       },
       "impressum": {
         "title": "Mentions légales",
-        "description": "Mentions légales et coordonnées de GoldHelwah GmbH en un coup d'oeil."
+        "description": "Mentions légales de GoldHelwah GmbH, Sarrebruck."
       },
       "privacy": {
         "title": "Confidentialité",
-        "description": "Informations sur la confidentialité liées à la visite du site, au choix de langue et aux demandes de contact chez GoldHelwah GmbH."
+        "description": "Les données que GoldHelwah traite lorsque vous utilisez ce site ou nous écrivez."
       }
     }
   },
@@ -55,12 +55,12 @@
     "legalTitle": "Informations légales"
   },
   "Footer": {
-    "description": "GoldHelwah GmbH propose des bijoux en or sélectionnés avec soin, un conseil personnalisé et une présentation claire à Sarrebruck.",
+    "description": "Bijoux en or et or d’investissement à Sarrebruck. Conseil personnel, sur mesure à la demande.",
     "navigationTitle": "Pages",
     "contactTitle": "Contact",
     "socialTitle": "Suivez-nous",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Rendez-nous visite à Sarrebruck ou contactez-nous pour un conseil personnalisé.",
+    "legalNote": "Pas de vente en ligne : demande, conseil et remise en personne.",
     "rights": "GoldHelwah GmbH. Tous droits réservés.",
     "socials": {
       "instagram": "Instagram",
@@ -74,11 +74,11 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "subtitle": "Nous façonnons la beauté",
-      "description": "Nous révélons la précision des détails et l’élégance du design, avec un accompagnement personnalisé pour vous guider vers la pièce en or qui correspond à votre présence et à la valeur de l’occasion.",
-      "primaryCta": "Découvrir les produits",
-      "secondaryCta": "Demander un conseil",
+      "title": "GoldHelwah à Sarrebruck",
+      "subtitle": "L’or qui se porte et se transmet.",
+      "description": "Parures de mariée, colliers prénom, bijoux à pièces et or d’investissement en 21, 18 et 14 carats. Choisissez au showroom ou en ligne : nous vous conseillons en personne et réalisons vos pièces sur mesure.",
+      "primaryCta": "Voir la collection",
+      "secondaryCta": "Demander conseil",
       "backgroundAlt": "Visuel principal GoldHelwah GmbH",
       "stats": [
         {
@@ -94,20 +94,20 @@
           "label": "Showroom"
         }
       ],
-      "locationLine": "Showroom Breite Straße, Sarrebruck"
+      "locationLine": "Showroom : Breite Straße 9, Sarrebruck"
     },
     "categories": {
       "eyebrow": "Catégories sélectionnées",
-      "title": "Parcourir par catégorie",
-      "description": "Des chaînes fines à l’or d’investissement – choisissez ce que vous cherchez.",
+      "title": "La collection",
+      "description": "Des chaînes fines du quotidien aux parures de mariée et aux onces d’or.",
       "emptyTitle": "Aucun produit n'est visible pour le moment",
       "emptyText": "Dès que de nouvelles collections sont activées dans le tableau de bord, elles apparaissent ici automatiquement.",
       "allCta": "Toutes les catégories"
     },
     "products": {
       "eyebrow": "Produits sélectionnés",
-      "title": "Pièces choisies",
-      "description": "De vraies photos de notre showroom. Ouvrez une pièce pour voir les détails et envoyer une demande.",
+      "title": "Du showroom",
+      "description": "Ouvrez une pièce pour voir les détails et la demander directement.",
       "sectionCta": "Toute la collection",
       "cardCta": "Voir les détails",
       "emptyTitle": "Aucun produit n'est visible pour le moment",
@@ -125,22 +125,22 @@
     },
     "aboutGold": {
       "eyebrow": "À propos de l'or",
-      "title": "L’or qui demeure.",
-      "description": "L'or est plus qu'un bijou. Il représente la valeur, le souvenir et les moments précieux. Chez GoldHelwah GmbH, nous sélectionnons des pièces à la présence visible et au sens personnel.",
+      "title": "L’or qui reste.",
+      "description": "L’or garde sa valeur et porte les souvenirs d’une génération à l’autre. C’est pourquoi nous prenons le temps pour chaque pièce, au choix comme à la fabrication.",
       "imageAlt": "Détail de bijou en or de GoldHelwah GmbH",
       "points": [
-        "Valeur durable",
-        "Sens personnel",
-        "Savoir-faire visible"
+        "Titre poinçonné",
+        "Fabrication sur mesure",
+        "Remise en personne"
       ],
       "storyLabel": "À propos de GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "À propos de nous",
-      "title": "À propos de GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH propose des bijoux en or sélectionnés, un conseil personnalisé et une présentation claire des produits à Saarbrücken. Notre objectif est d'offrir une sélection calme, fiable et haut de gamme.",
+      "title": "GoldHelwah GmbH",
+      "description": "Notre showroom se trouve Breite Straße, à Sarrebruck. Nous y présentons nos pièces sans hâte, vous conseillons nous-mêmes et accueillons les demandes particulières.",
       "teamLabel": "Notre approche",
-      "story": "L'équipe de GoldHelwah GmbH et la direction privilégient l'échange personnel, une sélection claire et des pièces adaptées au moment comme au style.",
+      "story": "De la première question à la remise, vous traitez directement avec nous, sans intermédiaire.",
       "locationLabel": "Sur place"
     },
     "trust": {
@@ -148,20 +148,20 @@
       "title": "Clair, personnel et proche du produit.",
       "items": [
         {
-          "title": "Conseil personnalisé",
-          "description": "Nous prenons le temps pour votre occasion et votre style."
+          "title": "Un conseil qui prend son temps",
+          "description": "Pour un mariage, un cadeau ou le quotidien : nous écoutons d’abord, puis nous montrons."
         },
         {
-          "title": "Vraies photos",
-          "description": "Chaque photo montre une vraie pièce de notre showroom."
+          "title": "De vraies pièces, de vraies photos",
+          "description": "Chaque photo montre une pièce de notre propre sélection."
         },
         {
-          "title": "Créations sur mesure",
-          "description": "Gravures, tailles et idées personnelles, réalisées en or."
+          "title": "Sur mesure",
+          "description": "Prénoms, gravures, longueurs et tailles : nous transformons votre idée en or."
         },
         {
-          "title": "Retrait à Sarrebruck",
-          "description": "Vous récupérez votre pièce chez nous, en personne."
+          "title": "Remise en main propre",
+          "description": "Nous vous remettons votre pièce nous-mêmes à Sarrebruck."
         }
       ]
     },
@@ -173,8 +173,8 @@
       "secondaryCta": "Appeler"
     },
     "hallmarks": {
-      "title": "L’or en trois titres",
-      "description": "Nous fabriquons et conseillons en 21, 18 et 14 carats – de la pièce légère du quotidien à la parure de mariée.",
+      "title": "21, 18 ou 14 carats",
+      "description": "Le poinçon indique la pureté de l’or : 875, 750 ou 585 millièmes. Nous vous disons franchement lequel convient à votre pièce.",
       "items": [
         {
           "stamp": "875",
@@ -192,20 +192,20 @@
     },
     "customName": {
       "title": "Votre prénom en or",
-      "description": "Colliers prénom, gravures et pièces uniques selon votre idée. Écriture, carats et longueur sont définis avec vous.",
+      "description": "En écriture arabe ou latine, en collier, bracelet ou pendentif. Nous choisissons avec vous l’écriture, le carat et la longueur, puis nous réalisons la pièce.",
       "primaryCta": "Voir les bijoux prénom",
       "secondaryCta": "Parler de votre idée"
     },
     "visit": {
-      "title": "Rendez-nous visite ou écrivez-nous",
-      "description": "Pour vos demandes, conseils et retraits – nous répondons personnellement."
+      "title": "Venez nous voir, ou écrivez-nous",
+      "description": "Nous répondons personnellement."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Collection",
-      "subtitle": "De vraies photos de notre showroom. Choisissez une pièce pour voir les détails et envoyer une demande.",
+      "subtitle": "Ouvrez une pièce pour voir les détails. Prix et poids sur demande.",
       "primaryCta": "Envoyer une demande",
       "secondaryCta": "Contact",
       "stats": {
@@ -228,8 +228,8 @@
       "all": "Tout",
       "resultsSuffix": "modèles",
       "emptyBadge": "Sur demande",
-      "emptyTitle": "Nous vous guidons volontiers vers la pièce adaptée à cette sélection.",
-      "emptyText": "Écrivez-nous si vous recherchez une ligne ou un modèle précis.",
+      "emptyTitle": "Rien n’est en ligne dans cette catégorie pour le moment.",
+      "emptyText": "Nous réalisons beaucoup de pièces sur commande. Décrivez-nous ce que vous cherchez.",
       "resultCount": "{count, plural, =0 {Aucune pièce} one {# pièce} other {# pièces}}"
     },
     "card": {
@@ -246,15 +246,15 @@
       "requestCta": "Envoyer une demande",
       "backCta": "Retour",
       "callCta": "Appeler",
-      "noteTitle": "La suite",
-      "note": "Envoyez une demande : nous revenons vers vous avec le poids, le prix et le délai."
+      "noteTitle": "Et ensuite ?",
+      "note": "Envoyez une demande. Nous vous répondons avec le poids, le prix et le délai de fabrication."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Contact",
       "title": "Contact",
-      "subtitle": "Pour vos demandes, conseils et créations sur mesure. Nous répondons personnellement.",
+      "subtitle": "Une question sur une pièce, une création sur mesure ou un rendez-vous au showroom : écrivez-nous ou appelez-nous.",
       "primaryCta": "Voir la collection",
       "secondaryCta": "Lire la confidentialité"
     },
@@ -274,8 +274,8 @@
     },
     "form": {
       "eyebrow": "Prendre contact",
-      "title": "Prendre contact",
-      "description": "Écrivez-nous pour une demande produit, un conseil ou une création sur mesure.",
+      "title": "Votre message",
+      "description": "Une phrase suffit. Nous revenons vers vous avec tous les détails.",
       "highlights": "Contact",
       "fields": {
         "name": "Nom",
@@ -287,11 +287,11 @@
         "name": "Votre nom",
         "email": "Votre adresse e-mail",
         "phone": "Votre numéro de téléphone",
-        "message": "Quel est le sujet de votre demande ?"
+        "message": "Par exemple : collier prénom en 21 carats, environ 45 cm"
       },
       "submit": "Envoyer le message",
       "submitPending": "Envoi en cours",
-      "success": "Merci. Votre demande a bien été enregistrée.",
+      "success": "Merci ! Votre message nous est bien parvenu. Nous vous répondrons personnellement.",
       "error": "Veuillez vérifier vos informations et réessayer.",
       "validation": {
         "name": "Veuillez indiquer votre nom.",
@@ -323,7 +323,7 @@
   "Impressum": {
     "eyebrow": "Juridique",
     "title": "Mentions légales",
-    "description": "Informations officielles du fournisseur et mentions légales de Gold Helwah.",
+    "description": "Informations selon l’article 5 de la loi allemande sur les services numériques (DDG).",
     "complianceNoticeTitle": "Informations conformément au § 5 DDG",
     "complianceNoticeDescription": "Les informations suivantes s’appliquent au site web de Gold Helwah.",
     "sections": [
@@ -381,8 +381,8 @@
   "Privacy": {
     "eyebrow": "Confidentialité",
     "title": "Informations de confidentialité",
-    "description": "Cette page explique comment vos données personnelles sont traitées lorsque vous visitez le site ou nous contactez.",
-    "intro": "Nous traitons les données personnelles uniquement dans la mesure nécessaire pour fournir le site, mémoriser votre langue et répondre à vos demandes.",
+    "description": "Les données que nous traitons lorsque vous utilisez ce site ou nous écrivez, et pourquoi.",
+    "intro": "Ce site n’a ni boutique en ligne, ni comptes clients, ni paiement. Nous ne traitons que les données techniquement nécessaires et les informations que vous nous envoyez vous-même.",
     "sections": [
       {
         "title": "1. Responsable",
@@ -1993,54 +1993,54 @@
     "phone": "Appeler",
     "backToWebsite": "Retour au site",
     "trackingNumberLabel": "Numéro de suivi",
-    "currentPublicStageLabel": "Étape publique actuelle",
-    "progressTitle": "Progression publique",
-    "progressDescription": "Nous publions seulement trois jalons visibles pour le client.",
+    "currentPublicStageLabel": "Étape actuelle",
+    "progressTitle": "Avancement",
+    "progressDescription": "Votre commande passe par trois étapes. Nous les mettons à jour dès que quelque chose change.",
     "trackAnotherOrder": "Suivre une autre commande",
     "contactSupport": "Contacter le support",
-    "notesTitle": "Mises à jour client",
-    "notesDescription": "Seules les informations destinées au client apparaissent ici.",
+    "notesTitle": "Messages sur votre commande",
+    "notesDescription": "Nos remarques sur votre pièce.",
     "orderReceivedLabel": "Commande reçue",
     "instructionsTitle": "Comment suivre votre commande",
     "instructionsDescription": "Utilisez votre numéro de suivi depuis le menu du site plutôt qu’un lien direct.",
     "instructionsStepOne": "Ouvrez la page d’accueil du site.",
     "instructionsStepTwo": "Cliquez sur « Suivi de commande » dans le menu.",
     "instructionsStepThree": "Saisissez votre numéro de suivi.",
-    "receivedMessage": "Votre commande a été reçue et son statut sera bientôt mis à jour.",
-    "receivedDescription": "Votre commande est enregistrée et attend son premier jalon public.",
-    "currentStageDescription": "C’est l’étape publique actuelle de votre commande.",
-    "completedStageDescription": "Cette étape est déjà terminée.",
-    "upcomingStageDescription": "Cette étape apparaîtra lorsque votre commande y arrivera.",
+    "receivedMessage": "Nous avons bien reçu votre commande. Dès qu’elle sera à l’atelier, vous le verrez ici.",
+    "receivedDescription": "En attente de démarrage.",
+    "currentStageDescription": "Votre commande en est là.",
+    "completedStageDescription": "Terminé.",
+    "upcomingStageDescription": "Pas encore atteint.",
     "lookup": {
       "eyebrow": "Suivi de commande",
-      "title": "Retrouver votre commande",
-      "description": "Saisissez votre numéro de suivi pour consulter les dernières mises à jour publiques de votre commande GoldHelwah.",
-      "helperTitle": "Numéro de suivi disponible ?",
-      "helperDescription": "Vous le trouverez dans l’e-mail de commande et pourrez l’utiliser depuis le menu du site.",
-      "formTitle": "Entrer le numéro de suivi",
-      "formDescription": "Nous ouvrirons ensuite la page en direct pour ce numéro.",
+      "title": "Suivre votre commande",
+      "description": "Avec votre numéro de suivi, vous voyez où en est votre pièce.",
+      "helperTitle": "Pas de numéro sous la main ?",
+      "helperDescription": "Il figure dans l’e-mail de confirmation de votre commande. Ou appelez-nous.",
+      "formTitle": "Numéro de suivi",
+      "formDescription": "Il commence par GH-.",
       "label": "Numéro de suivi",
       "placeholder": "GH-20260618-K7M2QX",
       "submit": "Suivi de commande",
       "emptyError": "Veuillez entrer votre numéro de suivi."
     },
     "support": {
-      "title": "Contacter le support",
-      "description": "Besoin d’aide pour cette commande ? Envoyez-nous un message et notre équipe vous recontactera.",
+      "title": "Une question sur cette commande ?",
+      "description": "Écrivez-nous, nous répondons personnellement.",
       "success": "Votre message a été envoyé.",
       "error": "Nous n’avons pas pu envoyer votre message pour le moment.",
       "messageMin": "Veuillez décrire votre demande en au moins 10 caractères."
     },
     "stages": {
-      "order_in_workshop": "Commande en atelier",
-      "shipping": "Commande en cours d’expédition",
-      "ready_for_pickup": "Prête au retrait"
+      "order_in_workshop": "À l’atelier",
+      "shipping": "En cours d’envoi",
+      "ready_for_pickup": "Prête à retirer"
     }
   },
   "AGB": {
     "eyebrow": "Mentions légales",
     "title": "Conditions générales",
-    "description": "Projet de conditions pour le showroom et les conseils GoldHelwah.",
+    "description": "Conditions pour le conseil, les demandes et les créations sur mesure chez GoldHelwah GmbH.",
     "sections": [
       {
         "title": "Champ d’application",

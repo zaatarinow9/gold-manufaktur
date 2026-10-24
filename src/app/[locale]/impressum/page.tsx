@@ -31,11 +31,8 @@ export default function ImpressumPage() {
     <LegalArticle
       title={t("title")}
       description={t("description")}
-      sections={sections}
-      notes={[
-        { text: t("complianceNoticeDescription"), title: t("complianceNoticeTitle") },
-        { text: t("disclaimerText"), title: t("disclaimerTitle") },
-      ]}
+      intro={t("complianceNoticeDescription")}
+      sections={[...sections, { paragraphs: [t("disclaimerText")], title: t("disclaimerTitle") }]}
     />
   );
 }
