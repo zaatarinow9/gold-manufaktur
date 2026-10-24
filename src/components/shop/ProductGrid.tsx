@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useCallback, useMemo, useState } from "react";
 
-import { trimDisplayHeading } from "@/lib/displayText";
+import { Link } from "@/i18n/navigation";
+import { companyInfo } from "@/lib/site";
 import type { CatalogCategory, CatalogProduct } from "@/types/catalog";
-import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 
 import { CategoryFilter } from "./CategoryFilter";
 import { ProductCard } from "./ProductCard";
@@ -14,113 +15,118 @@ import { ProductGalleryModal } from "./ProductGalleryModal";
 type ProductGridProps = {
   categories: CatalogCategory[];
   initialCategory?: string;
+  initialProduct?: string;
   products: CatalogProduct[];
 };
 
-export function ProductGrid({
-  categories,
-  initialCategory,
-  products,
-}: ProductGridProps) {
-  const t = useTranslations("Shop.grid");
-  const normalizedInitialCategory =
-    initialCategory === "all" ||
-    categories.some((category) => category.slug === initialCategory)
-      ? initialCategory ?? "all"
-      : "all";
-  const [activeCategory, setActiveCategory] = useState(normalizedInitialCategory);
+/** Keep ?category= and ?product= in the address bar so a view can be shared. */
+function syncQuery(key: "category" | "product", value: string | null) {
+  try {
+    const url = new URL(window.location.href);
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
+    window.history.replaceState(window.history.state, "", url);
+  } catch {
+    // Address bar sync is a convenience only.
+  }
+}
+
+export function ProductGrid({ categories, initialCategory, initialProduct, products }: ProductGridProps) {
+  const t = useTranslations("Shop");
+  const nav = useTranslations("Nav");
+
+  const knownCategory = categories.some((category) => category.slug === initialCategory);
+  const [activeCategory, setActiveCategory] = useState(knownCategory ? initialCategory! : "all");
   const [selectedProduct, setSelectedProduct] = useState<CatalogProduct | null>(
-    null
+    () => products.find((product) => product.slug === initialProduct || product.id === initialProduct) ?? null
   );
+
+  const categoryBySlug = useMemo(() => new Map(categories.map((category) => [category.slug, category])), [categories]);
+
+  // Only categories that have pieces are offered as filters, plus the one the visitor came for.
+  const filterItems = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const product of products) counts.set(product.categorySlug, (counts.get(product.categorySlug) ?? 0) + 1);
+    return [
+      { count: products.length, label: t("grid.all"), slug: "all" },
+      ...categories
+        .filter((category) => counts.has(category.slug) || category.slug === activeCategory)
+        .map((category) => ({ count: counts.get(category.slug) ?? 0, label: category.name, slug: category.slug })),
+    ];
+  }, [activeCategory, categories, products, t]);
 
   const filteredProducts =
-    activeCategory === "all"
-      ? products
-      : products.filter((product) => product.categorySlug === activeCategory);
-  const categoryBySlug = new Map(
-    categories.map((category) => [category.slug, category])
-  );
-  const emptyVisual =
-    (activeCategory !== "all"
-      ? categoryBySlug.get(activeCategory)?.imageUrl
-      : undefined) ??
-    categories.find((category) => category.imageUrl)?.imageUrl ??
-    "";
+    activeCategory === "all" ? products : products.filter((product) => product.categorySlug === activeCategory);
+  const activeCategoryName = activeCategory === "all" ? null : categoryBySlug.get(activeCategory)?.name;
 
-  const filterItems = [
-    { slug: "all", label: t("all") },
-    ...categories.map((category) => ({
-      slug: category.slug,
-      label: category.name,
-    })),
-  ];
+  const selectCategory = (slug: string) => {
+    setActiveCategory(slug);
+    syncQuery("category", slug === "all" ? null : slug);
+  };
+
+  const openProduct = (product: CatalogProduct) => {
+    setSelectedProduct(product);
+    syncQuery("product", product.slug);
+  };
+
+  const closeProduct = useCallback(() => {
+    setSelectedProduct(null);
+    syncQuery("product", null);
+  }, []);
 
   return (
-    <section className="section-shell">
+    <section className="pb-20 pt-8 sm:pt-10">
       <div className="container-shell">
-        <div className="content-shell min-w-0 space-y-8">
-          <div className="min-w-0 flex flex-col gap-4">
-            <div>
-              <h2 className="card-title text-4xl text-foreground sm:text-5xl">
-                {trimDisplayHeading(t("title"))}
-              </h2>
-            </div>
+        <div className="content-shell min-w-0">
+          <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <CategoryFilter
+              activeCategory={activeCategory}
+              categories={filterItems}
+              label={t("grid.title")}
+              onSelect={selectCategory}
+            />
+            <p className="shrink-0 text-sm text-text-soft" aria-live="polite">
+              {t("grid.resultCount", { count: filteredProducts.length })}
+            </p>
           </div>
 
-          <CategoryFilter
-            activeCategory={activeCategory}
-            categories={filterItems}
-            onSelect={setActiveCategory}
-          />
-
           {filteredProducts.length > 0 ? (
-            <div className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              {filteredProducts.map((product) => {
-                const category = categoryBySlug.get(product.categorySlug);
-
-                return (
+            <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-9 sm:gap-x-6 md:grid-cols-3 xl:grid-cols-4">
+              {filteredProducts.map((product) => (
+                <li key={product.id} className="min-w-0">
                   <ProductCard
-                    key={product.id}
-                    categoryName={category?.name ?? product.categorySlug}
-                    onOpen={() => setSelectedProduct(product)}
+                    categoryName={categoryBySlug.get(product.categorySlug)?.name ?? product.categoryName}
+                    onOpen={() => openProduct(product)}
                     product={product}
                   />
-                );
-              })}
-            </div>
+                </li>
+              ))}
+            </ul>
           ) : (
-            <div className="rtl-mirror-grid grid min-w-0 gap-6 overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(22,18,13,0.92),rgba(9,9,9,0.96))] lg:grid-cols-[0.78fr_1fr]">
-              <div className="relative min-h-[22rem] overflow-hidden">
-                <LuxuryMedia
-                  src={emptyVisual}
-                  alt={t("emptyTitle")}
-                  sizes="(max-width: 1023px) 100vw, 34vw"
-                  fallbackContent={
-                    <div className="absolute inset-x-5 bottom-5">
-                      <span className="gold-chip">
-                        {categoryBySlug.get(activeCategory)?.name ?? t("emptyBadge")}
-                      </span>
-                    </div>
-                  }
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/82 via-black/24 to-transparent" />
+            <div className="mt-8 border-y border-[var(--border)] py-14 text-center">
+              {activeCategoryName ? <p className="text-sm text-gold-soft">{activeCategoryName}</p> : null}
+              <h2 className="card-title mx-auto mt-2 max-w-xl text-3xl text-foreground">{t("grid.emptyTitle")}</h2>
+              <p className="section-copy mx-auto mt-3 max-w-lg">{t("grid.emptyText")}</p>
+              <div className="mt-7 flex flex-wrap justify-center gap-3">
+                <Link href="/contact" className="gold-button">
+                  {t("hero.primaryCta")}
+                </Link>
+                <a href={companyInfo.whatsappHref} target="_blank" rel="noreferrer" className="ghost-button">
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp
+                </a>
               </div>
-
-              <div className="min-w-0 flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10">
-                <span className="gold-chip">{t("emptyBadge")}</span>
-                <h3 className="card-title mt-6 text-4xl text-foreground sm:text-5xl">
-                  {trimDisplayHeading(t("emptyTitle"))}
-                </h3>
-                <p className="mt-5 max-w-xl text-sm leading-7 text-muted sm:text-base">
-                  {t("emptyText")}
-                </p>
-              </div>
+              {activeCategory !== "all" ? (
+                <button type="button" onClick={() => selectCategory("all")} className="text-link mt-6">
+                  {nav("links.shop")}: {t("grid.all")}
+                </button>
+              ) : null}
             </div>
           )}
 
           <ProductGalleryModal
             category={selectedProduct ? categoryBySlug.get(selectedProduct.categorySlug) : undefined}
-            onClose={() => setSelectedProduct(null)}
+            onClose={closeProduct}
             product={selectedProduct}
           />
         </div>

@@ -509,32 +509,15 @@ export async function getHomepageCatalog(
     getPublicCategories(locale),
     getPublicProducts(locale),
   ]);
-  const featuredProducts = products.filter((product) => product.isFeatured).slice(0, 4);
+  const featuredProducts = products.filter((product) => product.isFeatured).slice(0, 8);
   const featuredIds = new Set(featuredProducts.map((product) => product.id));
   const latestProducts = [...products]
-    .sort((left, right) => {
-      const leftTime = Date.parse(left.createdAt);
-      const rightTime = Date.parse(right.createdAt);
-
-      if (Number.isNaN(leftTime) || Number.isNaN(rightTime)) {
-        return 0;
-      }
-
-      return rightTime - leftTime;
-    })
     .filter((product) => !featuredIds.has(product.id))
-    .slice(0, 4);
+    .sort((left, right) => (Date.parse(right.createdAt) || 0) - (Date.parse(left.createdAt) || 0))
+    .slice(0, 8);
 
-  return {
-    categories: categories.slice(0, 6),
-    featuredProducts,
-    latestProducts:
-      latestProducts.length > 0
-        ? latestProducts
-        : [...products]
-            .sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt))
-            .slice(0, 4),
-  };
+  // The home page lists every category as a compact index.
+  return { categories, featuredProducts, latestProducts };
 }
 
 export async function getPublicProductByIdOrSlug(

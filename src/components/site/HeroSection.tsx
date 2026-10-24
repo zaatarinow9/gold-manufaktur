@@ -1,60 +1,45 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
-import { trimDisplayHeading } from "@/lib/displayText";
-import type { CatalogProduct } from "@/types/catalog";
 import { StaticHeroMedia } from "@/components/site/StaticHeroMedia";
+import { Link } from "@/i18n/navigation";
+import type { CatalogProduct } from "@/types/catalog";
 
 type HeroSectionProps = {
   imageUrl?: string;
   visualProduct?: CatalogProduct | null;
 };
 
-export function HeroSection({
-  imageUrl,
-  visualProduct,
-}: HeroSectionProps) {
+/**
+ * Split hero: the words sit on the dark showroom background, the photo gets
+ * its own half so the jewellery is never covered by text.
+ */
+export function HeroSection({ imageUrl, visualProduct }: HeroSectionProps) {
   const t = useTranslations("Home.hero");
-  const title = trimDisplayHeading(t("title"));
 
   return (
-    <section className="full-bleed-section relative isolate min-h-[80svh] overflow-hidden">
-      <div className="absolute inset-0">
-        <StaticHeroMedia
-          src={imageUrl}
-          fallbackSrc={visualProduct?.imageUrl}
-          alt={t("backgroundAlt")}
-          sizes="100vw"
-          priority
-          imageClassName="hero-zoom"
-          fallbackContent={
-            <div className="absolute inset-x-6 bottom-8 flex justify-center">
-              <span className="gold-chip">
-                {visualProduct?.categoryName || t("eyebrow")}
-              </span>
-            </div>
-          }
-        />
-      </div>
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,5,5,0.24),rgba(5,5,5,0.74),rgba(5,5,5,0.94))]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(196,154,82,0.16),transparent_42%)]" />
-      <div className="gold-glow absolute left-1/2 top-28 h-48 w-48 -translate-x-1/2 rounded-full bg-gold/12 blur-3xl" />
+    <section className="relative overflow-hidden border-b border-[var(--border)]">
+      <div className="grid lg:min-h-[min(46rem,calc(100svh_-_4.5rem))] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+        <div className="relative order-1 aspect-[5/4] overflow-hidden sm:aspect-[16/10] lg:order-2 lg:aspect-auto">
+          <StaticHeroMedia
+            src={imageUrl}
+            fallbackSrc={visualProduct?.imageUrl}
+            alt={t("backgroundAlt")}
+            sizes="(min-width: 1024px) 52vw, 100vw"
+            priority
+            imageClassName="hero-image-settle object-center"
+          />
+          {/* Blend the photo into the page on the text side and at the bottom on mobile. */}
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-background via-background/10 to-transparent lg:bg-linear-to-r lg:from-background lg:via-background/5 lg:to-transparent rtl:lg:bg-linear-to-l" />
+        </div>
 
-      <div className="container-shell relative">
-        <div className="content-shell flex min-h-[80svh] items-center justify-center py-24 sm:py-28 lg:py-32">
-          <div className="hero-copy relative mx-auto flex w-full max-w-[60rem] min-w-0 flex-col items-center text-center">
-            <h1 className="hero-heading hero-title-reveal text-foreground">
-              {title}
-            </h1>
-            <p className="hero-subtitle-reveal section-copy balanced-copy mt-6 max-w-3xl text-base sm:text-lg">
-              {t("subtitle")}
-            </p>
-            <p className="hero-subtitle-reveal balanced-copy mt-3 max-w-3xl text-sm text-foreground/75 sm:text-base">
-              {t("description")}
-            </p>
+        <div className="relative z-10 order-2 -mt-16 flex items-center px-4 pb-14 sm:px-6 lg:order-1 lg:mt-0 lg:py-20 lg:pe-12 lg:ps-[max(2.5rem,calc((100vw_-_78rem)/2))]">
+          <div className="hero-reveal max-w-[36rem]">
+            <p className="eyebrow">{t("title")}</p>
+            <h1 className="hero-heading mt-4 text-foreground">{t("subtitle")}</h1>
+            <p className="mt-6 max-w-[32rem] text-[1.0625rem] leading-8 text-muted">{t("description")}</p>
 
-            <div className="hero-actions hero-actions-reveal rtl-inline-row mt-8 flex flex-wrap justify-center gap-3 sm:mt-10">
+            <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/shop" className="gold-button">
                 {t("primaryCta")}
                 <ArrowRight className="h-4 w-4" />
@@ -63,6 +48,11 @@ export function HeroSection({
                 {t("secondaryCta")}
               </Link>
             </div>
+
+            <p className="mt-10 flex items-center gap-2 text-sm text-text-soft">
+              <MapPin className="h-4 w-4 text-gold" />
+              {t("locationLine")}
+            </p>
           </div>
         </div>
       </div>

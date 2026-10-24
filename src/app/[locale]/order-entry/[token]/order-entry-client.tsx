@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import { LoaderCircle, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
@@ -16,102 +17,6 @@ type OrderEntryClientProps = {
 };
 
 type OptionFieldValue = boolean | number | string | string[];
-
-function getCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      customer: "بيانات العميل",
-      customerEmail: "البريد الإلكتروني",
-      customerName: "اسم العميل",
-      customerPhone: "رقم الهاتف",
-      description:
-        "استخدم هذا الرابط الخاص لإرسال طلب الورشة بشكل منظم وآمن مباشرة إلى لوحة GoldHelwah.",
-      emailInvalid: "يرجى إدخال بريد إلكتروني صحيح.",
-      emailUpdates: "إرسال تحديثات البريد الإلكتروني",
-      emailUpdatesHint:
-        "سيتم إرسال التحديثات فقط عند إدخال بريد إلكتروني صالح.",
-      message: "ملاحظات الطلب",
-      noOptions: "لا توجد خيارات مخصصة لهذا المنتج.",
-      options: "خيارات المنتج",
-      privacy: "رابط خاص ومحمي",
-      product: "المنتج",
-      productRequired: "يرجى اختيار منتج أولاً.",
-      quantity: "الكمية",
-      required: "يرجى تعبئة هذا الحقل.",
-      submit: "إرسال الطلب",
-      submitPending: "جارٍ إرسال الطلب...",
-      success: "تم إنشاء الطلب بنجاح.",
-      title: "طلب من الورشة",
-      trackingCta: "عرض التتبع",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      customer: "Kundendaten",
-      customerEmail: "E-Mail",
-      customerName: "Kundenname",
-      customerPhone: "Telefon",
-      description:
-        "Dieser geschützte Link erfasst Werkstattaufträge direkt und sicher für das GoldHelwah-Dashboard.",
-      emailInvalid: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-      emailUpdates: "E-Mail-Updates senden",
-      emailUpdatesHint:
-        "Updates werden nur versendet, wenn eine gültige E-Mail-Adresse eingetragen ist.",
-      message: "Auftragsnotiz",
-      noOptions: "Diesem Produkt sind keine individuellen Optionen zugewiesen.",
-      options: "Produktoptionen",
-      privacy: "Privater, geschützter Link",
-      product: "Produkt",
-      productRequired: "Bitte wählen Sie zuerst ein Produkt aus.",
-      quantity: "Menge",
-      required: "Bitte füllen Sie dieses Pflichtfeld aus.",
-      submit: "Auftrag senden",
-      submitPending: "Auftrag wird gesendet...",
-      success: "Der Auftrag wurde erfolgreich angelegt.",
-      title: "Werkstattauftrag",
-      trackingCta: "Tracking anzeigen",
-    };
-  }
-
-  return {
-    customer: "Customer details",
-    customerEmail: "Email",
-    customerName: "Customer name",
-    customerPhone: "Phone",
-    description:
-      "Use this private link to send a secure workshop order directly into the GoldHelwah dashboard.",
-    emailInvalid: "Please enter a valid email address.",
-    emailUpdates: "Send email updates",
-    emailUpdatesHint:
-      "Updates are only sent when a valid customer email address is provided.",
-    message: "Order note",
-    noOptions: "No custom options are assigned to this product.",
-    options: "Product options",
-    privacy: "Private protected link",
-    product: "Product",
-    productRequired: "Please choose a product first.",
-    quantity: "Quantity",
-    required: "Please complete this field.",
-    submit: "Send order",
-    submitPending: "Sending order...",
-    success: "The order was created successfully.",
-    title: "Workshop order",
-    trackingCta: "Open tracking",
-  };
-}
-
-function getDefaultMessage(locale: AppLocale, productName: string) {
-  if (locale === "ar") {
-    return `أرغب في طلب ${productName}.`;
-  }
-
-  if (locale === "de") {
-    return `Ich möchte ${productName} beauftragen.`;
-  }
-
-  return `I would like to order ${productName}.`;
-}
 
 function isMissingRequiredValue(type: string, value: OptionFieldValue | undefined) {
   if (type === "boolean") {
@@ -159,7 +64,7 @@ function normalizeFieldValue(
 }
 
 function formatOptionValue(
-  locale: AppLocale,
+  labels: { no: string; yes: string },
   type: string,
   value: OptionFieldValue | undefined
 ) {
@@ -168,15 +73,7 @@ function formatOptionValue(
       return "";
     }
 
-    if (locale === "ar") {
-      return value ? "نعم" : "لا";
-    }
-
-    if (locale === "de") {
-      return value ? "Ja" : "Nein";
-    }
-
-    return value ? "Yes" : "No";
+    return value ? labels.yes : labels.no;
   }
 
   if (Array.isArray(value)) {
@@ -195,7 +92,16 @@ export function OrderEntryClient({
   products,
   token,
 }: OrderEntryClientProps) {
-  const copy = getCopy(locale);
+  const t = useTranslations("OrderEntry");
+  const copy = Object.fromEntries(
+    ([
+      "customer", "customerEmail", "customerName", "customerPhone", "description", "emailInvalid",
+      "emailUpdates", "emailUpdatesHint", "message", "noOptions", "options", "privacy", "product",
+      "productRequired", "quantity", "required", "submit", "submitPending", "success", "title", "trackingCta",
+    ] as const).map((key) => [key, t(key)])
+  ) as Record<string, string>;
+  const yesNo = useMemo(() => ({ no: t("no"), yes: t("yes") }), [t]);
+  const getDefaultMessage = (productName: string) => t("defaultMessage", { product: productName });
   const [isPending, startTransition] = useTransition();
   const [productId, setProductId] = useState(products[0]?.id ?? "");
   const [quantity, setQuantity] = useState("1");
@@ -204,7 +110,7 @@ export function OrderEntryClient({
   const [customerPhone, setCustomerPhone] = useState("");
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(true);
   const [message, setMessage] = useState(() =>
-    products[0] ? getDefaultMessage(locale, products[0].name) : ""
+    products[0] ? getDefaultMessage(products[0].name) : ""
   );
   const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -220,7 +126,7 @@ export function OrderEntryClient({
   const canSendEmailUpdates = customerEmail.trim().length > 0;
   const emailUpdatesChecked = canSendEmailUpdates ? emailUpdatesEnabled : false;
   const inputClassName =
-    "w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
+    "site-form-control";
 
   const summaryRows = useMemo(
     () => [
@@ -231,12 +137,12 @@ export function OrderEntryClient({
           productOptions.length === 0
             ? copy.noOptions
             : productOptions
-                .map((field) => formatOptionValue(locale, field.type, optionValues[field.id]))
+                .map((field) => formatOptionValue(yesNo, field.type, optionValues[field.id]))
                 .filter(Boolean)
                 .join(" | ") || "-",
       },
     ],
-    [copy.noOptions, copy.options, copy.quantity, locale, optionValues, productOptions, quantity]
+    [copy.noOptions, copy.options, copy.quantity, optionValues, productOptions, quantity, yesNo]
   );
 
   const handleSubmit = () => {
@@ -350,7 +256,7 @@ export function OrderEntryClient({
       <div className="content-shell grid gap-6 xl:grid-cols-[0.78fr_1.22fr]">
         <section className="luxury-panel flex flex-col justify-between px-6 py-8 sm:px-8 sm:py-10">
           <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-gold-soft">
+            <p className="text-sm text-gold-soft">
               {copy.privacy}
             </p>
             <h1 className="mt-6 text-4xl font-semibold text-foreground sm:text-5xl">
@@ -362,8 +268,8 @@ export function OrderEntryClient({
           </div>
 
           {selectedProduct ? (
-            <div className="mt-8 rounded-[28px] border border-white/10 bg-black/24 p-4 sm:p-5">
-              <div className="relative aspect-[4/4.6] overflow-hidden rounded-[20px] border border-white/10 bg-black/20">
+            <div className="mt-8 rounded-xl border border-[var(--border)] bg-black/20 p-4 sm:p-5">
+              <div className="relative aspect-[4/4.6] overflow-hidden rounded-xl border border-[var(--border)] bg-black/20">
                 <LuxuryMedia
                   src={selectedProduct.imageUrl}
                   alt={selectedProduct.name}
@@ -371,7 +277,7 @@ export function OrderEntryClient({
                 />
               </div>
               <div className="mt-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-gold-soft">
+                <p className="text-sm text-gold-soft">
                   {selectedProduct.categoryName}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold text-foreground">
@@ -387,7 +293,7 @@ export function OrderEntryClient({
 
         <section className="luxury-panel px-6 py-8 sm:px-8 sm:py-10">
           <div className="space-y-6">
-            <div className="rounded-[26px] border border-white/10 bg-black/18 p-4 sm:p-5">
+            <div className="rounded-xl border border-[var(--border)] bg-black/20 p-4 sm:p-5">
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="flex flex-col gap-2 text-sm text-foreground">
                   <span>{copy.product}</span>
@@ -403,7 +309,7 @@ export function OrderEntryClient({
                         products.find((product) => product.id === nextProductId) ?? null;
 
                       setProductId(nextProductId);
-                      setMessage(nextProduct ? getDefaultMessage(locale, nextProduct.name) : "");
+                      setMessage(nextProduct ? getDefaultMessage(nextProduct.name) : "");
                       setOptionValues({});
                       setFieldErrors({});
                       setSuccessTrackingNumber(null);
@@ -440,7 +346,7 @@ export function OrderEntryClient({
               </div>
             </div>
 
-            <div className="rounded-[26px] border border-white/10 bg-black/18 p-4 sm:p-5">
+            <div className="rounded-xl border border-[var(--border)] bg-black/20 p-4 sm:p-5">
               <p className="muted-label">{copy.customer}</p>
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <label className="flex flex-col gap-2 text-sm text-foreground">
@@ -477,13 +383,13 @@ export function OrderEntryClient({
                     ) : null}
                   </label>
                   <div className="space-y-2">
-                    <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
+                    <label className="flex items-center gap-2 text-sm text-foreground">
                       <input
                         type="checkbox"
                         checked={emailUpdatesChecked}
                         disabled={!canSendEmailUpdates}
                         onChange={(event) => setEmailUpdatesEnabled(event.target.checked)}
-                        className="h-4 w-4 accent-[#c49a52] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="h-4 w-4 accent-[var(--gold)] disabled:cursor-not-allowed disabled:opacity-40"
                       />
                       {copy.emailUpdates}
                     </label>
@@ -511,7 +417,7 @@ export function OrderEntryClient({
               </div>
             </div>
 
-            <div className="rounded-[26px] border border-white/10 bg-black/18 p-4 sm:p-5">
+            <div className="rounded-xl border border-[var(--border)] bg-black/20 p-4 sm:p-5">
               <p className="muted-label">{copy.options}</p>
               {productOptions.length === 0 ? (
                 <p className="mt-4 text-sm text-muted">{copy.noOptions}</p>
@@ -593,12 +499,12 @@ export function OrderEntryClient({
                           className="flex flex-col gap-2 text-sm text-foreground md:col-span-2"
                         >
                           <span>{field.label}</span>
-                          <div className="rounded-[22px] border border-white/10 bg-black/30 px-4 py-4">
+                          <div className="rounded-xl border border-[var(--border)] bg-black/20 px-4 py-4">
                             <div className="flex flex-wrap gap-3">
                               {field.values.map((value) => (
                                 <label
                                   key={`${field.id}-${value.value}`}
-                                  className="rtl-inline-row flex items-center gap-2"
+                                  className="flex items-center gap-2"
                                 >
                                   <input
                                     type="checkbox"
@@ -616,7 +522,7 @@ export function OrderEntryClient({
                                         };
                                       })
                                     }
-                                    className="h-4 w-4 accent-[#c49a52]"
+                                    className="h-4 w-4 accent-[var(--gold)]"
                                   />
                                   {value.label}
                                 </label>
@@ -634,7 +540,7 @@ export function OrderEntryClient({
                       return (
                         <label
                           key={field.id}
-                          className="rtl-inline-row flex items-center gap-2 rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-foreground md:col-span-2"
+                          className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-black/20 px-4 py-3.5 text-sm text-foreground md:col-span-2"
                         >
                           <input
                             type="checkbox"
@@ -645,7 +551,7 @@ export function OrderEntryClient({
                                 [field.id]: event.target.checked,
                               }))
                             }
-                            className="h-4 w-4 accent-[#c49a52]"
+                            className="h-4 w-4 accent-[var(--gold)]"
                           />
                           {field.label}
                         </label>
@@ -704,7 +610,7 @@ export function OrderEntryClient({
               />
             </label>
 
-            <div className="rounded-[26px] border border-white/10 bg-black/18 p-4 sm:p-5">
+            <div className="rounded-xl border border-[var(--border)] bg-black/20 p-4 sm:p-5">
               <div className="flex items-center gap-2 text-sm text-gold-soft">
                 <ShieldCheck className="h-4 w-4" />
                 {copy.privacy}
@@ -730,13 +636,13 @@ export function OrderEntryClient({
             </button>
 
             {submitError ? (
-              <div className="rounded-[20px] border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+              <div className="rounded-xl border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
                 {submitError}
               </div>
             ) : null}
 
             {successTrackingNumber ? (
-              <div className="rounded-[20px] border border-gold/25 bg-gold/10 px-4 py-4 text-sm text-gold-soft">
+              <div className="rounded-xl border border-gold/25 bg-gold/10 px-4 py-4 text-sm text-gold-soft">
                 <p>{copy.success}</p>
                 <p className="mt-2 text-foreground">{successTrackingNumber}</p>
                 <div className="mt-4">

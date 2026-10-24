@@ -3,7 +3,7 @@
     "site": {
       "brand": "Gold Helwah",
       "title": "Gold Helwah",
-      "description": "Gold Helwah präsentiert einen luxuriösen Goldschmuck-Showroom mit echten Produktbildern, mehrsprachiger Navigation und persönlichem Kundenservice.",
+      "description": "GoldHelwah GmbH in Saarbrücken: Brautsets, Namensketten, Ringe und Anlagegold in 21, 18 und 14 Karat. Persönliche Beratung und Anfertigung nach Maß.",
       "keywords": [
         "Gold Helwah",
         "Goldschmuck",
@@ -15,24 +15,24 @@
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah GmbH",
-        "description": "Gold Helwah inszeniert Goldschmuck als elegante, mehrsprachige Showroom-Website mit starkem Hero, Kontaktformular und Kartenansicht."
+        "title": "GoldHelwah – Goldschmuck in Saarbrücken",
+        "description": "Brautsets, Namensschmuck, Ketten und Anlagegold in 21, 18 und 14 Karat. Showroom in der Breiten Straße 9, Saarbrücken."
       },
       "shop": {
         "title": "Kollektion",
-        "description": "Bildstarker Katalogbereich mit echten Produktfotos, Kategorien und Produktdetails ohne Warenkorb oder Checkout."
+        "description": "Die Kollektion von GoldHelwah: Schmucksets, Namensschmuck, Ketten, Armbänder, Ringe und Goldbarren. Anfrage direkt online."
       },
       "contact": {
         "title": "Kontakt",
-        "description": "Kontaktseite für Beratungen, Produktanfragen und die Wegbeschreibung zu Gold Helwah."
+        "description": "Showroom in der Breiten Straße 9, Saarbrücken. Telefon, WhatsApp, E-Mail und Anfrageformular."
       },
       "impressum": {
         "title": "Impressum",
-        "description": "Vorbereitete Impressumsseite für Gold Helwah mit echten Kontaktangaben und klar markierten Pflichtfeldern."
+        "description": "Impressum der GoldHelwah GmbH, Saarbrücken."
       },
       "privacy": {
         "title": "Datenschutz",
-        "description": "Datenschutzhinweise für die aktuelle Gold Helwah Showroom-Website ohne Checkout oder Zahlungsabwicklung."
+        "description": "Welche Daten GoldHelwah erhebt, wenn Sie diese Website nutzen oder uns schreiben."
       }
     }
   },
@@ -50,32 +50,35 @@
       "impressum": "Impressum",
       "privacy": "Datenschutz",
       "agb": "AGB"
-    }
+    },
+    "call": "Anrufen",
+    "legalTitle": "Rechtliches"
   },
   "Footer": {
-    "description": "Luxuriöser Goldschmuck mit persönlicher Beratung in Saarbrücken.",
+    "description": "Goldschmuck und Anlagegold aus Saarbrücken. Persönlich beraten, auf Wunsch nach Maß gefertigt.",
     "navigationTitle": "Seiten",
     "contactTitle": "Kontakt",
-    "socialTitle": "Social Media",
+    "socialTitle": "Folgen Sie uns",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Showroom und Katalog ohne Onlinekauf.",
+    "legalNote": "Kein Onlineverkauf – Anfrage, Beratung und Übergabe persönlich.",
     "rights": "Gold Helwah. Alle Rechte vorbehalten.",
     "socials": {
-      "instagram": "Instagram folgt",
-      "facebook": "Facebook folgt",
-      "tiktok": "TikTok folgt",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
       "snapchat": "Snapchat",
-      "whatsapp": "WhatsApp öffnen"
-    }
+      "whatsapp": "WhatsApp"
+    },
+    "legalTitle": "Rechtliches"
   },
   "Home": {
     "hero": {
       "eyebrow": "Gold Helwah",
-      "title": "GoldHelwah GmbH",
-      "subtitle": "Wir formen Schönheit",
-      "description": "Wir spiegeln die Präzision der Details und die Eleganz des Designs wider – mit persönlicher Beratung, die Sie zu dem Goldstück führt, das zu Ihrer Ausstrahlung und zum Wert des Anlasses passt.",
-      "primaryCta": "Produkte entdecken",
-      "secondaryCta": "Kundenservice kontaktieren",
+      "title": "GoldHelwah in Saarbrücken",
+      "subtitle": "Gold zum Tragen und Weitergeben.",
+      "description": "Brautsets, Namensketten, Münzschmuck und Anlagegold in 21, 18 und 14 Karat. Wählen Sie im Showroom oder online – wir beraten persönlich und fertigen auf Wunsch nach Maß.",
+      "primaryCta": "Kollektion ansehen",
+      "secondaryCta": "Beratung anfragen",
       "backgroundAlt": "Gold Helwah Hero-Komposition",
       "stats": [
         {
@@ -90,20 +93,22 @@
           "value": "Saarbrücken",
           "label": "Showroom"
         }
-      ]
+      ],
+      "locationLine": "Showroom: Breite Straße 9, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Ausgewählte Kategorien",
-      "title": "Ausgewählte Linien und Kollektionen.",
-      "description": "Sechs Kategorien führen direkt in den Showroom.",
+      "title": "Die Kollektion",
+      "description": "Von der feinen Alltagskette bis zum Brautset und zur Goldunze.",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
-      "emptyText": "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch."
+      "emptyText": "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch.",
+      "allCta": "Alle Kategorien"
     },
     "products": {
       "eyebrow": "Ausgewählte Produkte",
-      "title": "Bilderstark und bewusst reduziert.",
-      "description": "Vier ausgewählte Modelle zeigen den Charakter der Kollektion.",
-      "sectionCta": "Zum Showroom",
+      "title": "Aus dem Showroom",
+      "description": "Öffnen Sie ein Stück, um Details zu sehen und direkt anzufragen.",
+      "sectionCta": "Zur Kollektion",
       "cardCta": "Details ansehen",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
       "emptyText": "Aktivieren Sie Produkte im Dashboard oder kontaktieren Sie uns für eine persönliche Auswahl."
@@ -121,20 +126,21 @@
     "aboutGold": {
       "eyebrow": "Über Gold",
       "title": "Gold, das bleibt.",
-      "description": "Gold steht für Wert, Erinnerung und besondere Momente. Bei GoldHelwah GmbH finden Sie Stücke, die sichtbar wirken und persönlich Bedeutung tragen.",
+      "description": "Gold behält seinen Wert und trägt Erinnerungen über Generationen. Darum geben wir jedem Stück Zeit – bei der Auswahl wie bei der Fertigung.",
       "imageAlt": "Goldschmuck von GoldHelwah GmbH in warmer Nahaufnahme",
       "points": [
-        "Bleibender Wert",
-        "Persönliche Bedeutung",
-        "Sichtbare Handwerksqualität"
-      ]
+        "Gestempelter Feingehalt",
+        "Fertigung nach Maß",
+        "Persönliche Übergabe"
+      ],
+      "storyLabel": "Über GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "Über uns",
-      "title": "Über GoldHelwah GmbH",
-      "description": "In Saarbrücken verbinden wir ausgewählten Goldschmuck mit persönlicher Beratung und einer klaren, vertrauensvollen Präsentation.",
+      "title": "GoldHelwah GmbH",
+      "description": "Unser Showroom liegt in der Breiten Straße in Saarbrücken. Hier zeigen wir unsere Stücke in Ruhe, beraten Sie selbst und nehmen Sonderwünsche auf.",
       "teamLabel": "Unser Ansatz",
-      "story": "Das Team und die Geschäftsführung von GoldHelwah GmbH setzen auf persönliche Beratung, eine klare Auswahl und Stücke, die zu Anlass und Träger passen.",
+      "story": "Von der ersten Frage bis zur Übergabe sprechen Sie direkt mit uns – ohne Umwege.",
       "locationLabel": "Vor Ort"
     },
     "trust": {
@@ -142,20 +148,20 @@
       "title": "Klar, persönlich und nah am Produkt.",
       "items": [
         {
-          "title": "Persönliche Beratung",
-          "description": "Direkt und individuell abgestimmt."
+          "title": "Beratung, die sich Zeit nimmt",
+          "description": "Für die Hochzeit, ein Geschenk oder jeden Tag: Wir hören erst zu, dann zeigen wir."
         },
         {
-          "title": "Echte Produktbilder",
-          "description": "Die Auswahl zeigt reale Modelle."
+          "title": "Echte Stücke, echte Fotos",
+          "description": "Jedes Foto zeigt ein Stück aus unserer eigenen Auswahl."
         },
         {
-          "title": "Designs nach Wunsch",
-          "description": "Jede Idee, die Ihnen in den Sinn kommt, können wir in ein besonderes Goldstück mit schönen Details verwandeln – von Namensgravuren und Größenanpassungen bis hin zu persönlichen Akzenten, die Ihren Stil widerspiegeln."
+          "title": "Nach Maß gefertigt",
+          "description": "Namen, Gravuren, Längen und Größen – wir setzen Ihre Idee in Gold um."
         },
         {
-          "title": "Abholung in Saarbrücken",
-          "description": "Persönlich vor Ort erreichbar."
+          "title": "Persönliche Übergabe",
+          "description": "Ihr Stück übergeben wir Ihnen persönlich in Saarbrücken."
         }
       ]
     },
@@ -165,13 +171,41 @@
       "description": "Wir beraten Sie gerne zu Auswahl, Sonderwünschen und Abholung.",
       "primaryCta": "Shop ansehen",
       "secondaryCta": "Anrufen"
+    },
+    "hallmarks": {
+      "title": "21, 18 oder 14 Karat",
+      "description": "Der Stempel im Gold zeigt den Feingehalt: 875, 750 oder 585 Teile Gold von tausend. Wir sagen Ihnen offen, welcher zu Ihrem Stück passt.",
+      "items": [
+        {
+          "stamp": "875",
+          "label": "21 Karat"
+        },
+        {
+          "stamp": "750",
+          "label": "18 Karat"
+        },
+        {
+          "stamp": "585",
+          "label": "14 Karat"
+        }
+      ]
+    },
+    "customName": {
+      "title": "Ihr Name in Gold",
+      "description": "In arabischer oder lateinischer Schrift, als Kette, Armband oder Anhänger. Schrift, Karat und Länge legen wir gemeinsam fest – dann fertigen wir das Stück für Sie.",
+      "primaryCta": "Namensschmuck ansehen",
+      "secondaryCta": "Idee besprechen"
+    },
+    "visit": {
+      "title": "Kommen Sie vorbei – oder schreiben Sie uns",
+      "description": "Wir antworten persönlich."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "Gold Helwah",
       "title": "Kollektion",
-      "subtitle": "Echte Produktbilder, klare Auswahl und persönliche Beratung.",
+      "subtitle": "Öffnen Sie ein Stück für Details. Preis und Gewicht nennen wir Ihnen auf Anfrage.",
       "primaryCta": "Anfrage senden",
       "secondaryCta": "Kontakt",
       "stats": {
@@ -190,15 +224,17 @@
     },
     "grid": {
       "eyebrow": "Kollektion",
-      "title": "Nach Kategorie entdecken.",
+      "title": "Kategorien",
       "all": "Alle",
       "resultsSuffix": "Modelle",
       "emptyBadge": "Bald verfügbar",
-      "emptyTitle": "Weitere Modelle folgen in Kürze.",
-      "emptyText": "Schreiben Sie uns gern, wenn Sie eine bestimmte Linie suchen."
+      "emptyTitle": "In dieser Kategorie ist gerade nichts online.",
+      "emptyText": "Vieles fertigen wir auf Anfrage. Beschreiben Sie uns, was Sie suchen.",
+      "resultCount": "{count, plural, =0 {Keine Stücke} one {# Stück} other {# Stücke}}"
     },
     "card": {
-      "cta": "Details"
+      "cta": "Details",
+      "personalization": "Name nach Wunsch möglich"
     },
     "modal": {
       "close": "Schließen",
@@ -208,14 +244,17 @@
       "galleryCountSuffix": "Bilder",
       "tagsLabel": "Merkmale",
       "requestCta": "Anfrage senden",
-      "backCta": "Zurück"
+      "backCta": "Zurück",
+      "callCta": "Anrufen",
+      "noteTitle": "So geht es weiter",
+      "note": "Senden Sie eine Anfrage. Wir melden uns mit Gewicht, Preis und Fertigungszeit."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Kontakt",
-      "title": "Kontaktieren Sie Gold Helwah ohne Umwege.",
-      "subtitle": "Für Produktanfragen, Beratung und die Route zum Showroom steht hier alles Wesentliche bereit.",
+      "title": "Kontakt",
+      "subtitle": "Eine Frage zu einem Stück, eine Sonderanfertigung oder ein Termin im Showroom – schreiben Sie uns oder rufen Sie an.",
       "primaryCta": "Zur Kollektion",
       "secondaryCta": "Datenschutz lesen"
     },
@@ -235,8 +274,8 @@
     },
     "form": {
       "eyebrow": "Kontakt aufnehmen",
-      "title": "Kontakt aufnehmen",
-      "description": "Schreiben Sie uns für Produktanfragen, Beratung oder Sonderanfertigungen.",
+      "title": "Ihre Nachricht",
+      "description": "Ein Satz genügt. Wir melden uns mit allen Details.",
       "highlights": "Kontakt",
       "fields": {
         "name": "Name",
@@ -248,18 +287,25 @@
         "name": "Ihr Name",
         "email": "Ihre E-Mail-Adresse",
         "phone": "Ihre Telefonnummer",
-        "message": "Worum geht es bei Ihrer Anfrage?"
+        "message": "Zum Beispiel: Namenskette in 21 Karat, etwa 45 cm"
       },
       "submit": "Nachricht senden",
       "submitPending": "Wird gesendet",
-      "success": "Vielen Dank. Ihre Anfrage wurde erfasst.",
+      "success": "Danke! Ihre Nachricht ist bei uns angekommen. Wir melden uns persönlich.",
       "error": "Bitte prüfen Sie Ihre Angaben und versuchen Sie es erneut.",
       "validation": {
         "name": "Bitte geben Sie Ihren Namen an.",
         "email": "Bitte geben Sie eine gültige E-Mail-Adresse an.",
         "phone": "Bitte geben Sie eine gültige Telefonnummer an.",
         "message": "Bitte schreiben Sie eine kurze Nachricht."
-      }
+      },
+      "productTitle": "Ihre Anfrage zu",
+      "optionsTitle": "Ihre Wünsche",
+      "requestTitle": "Anfrage zu diesem Stück",
+      "requiredField": "Bitte füllen Sie dieses Feld aus.",
+      "productDefaultMessage": "Ich interessiere mich für dieses Schmuckstück und wünsche weitere Informationen.",
+      "optional": "optional",
+      "allRequired": "Alle Felder sind Pflichtfelder."
     },
     "location": {
       "eyebrow": "Standort",
@@ -269,99 +315,113 @@
       "phoneLabel": "Telefon",
       "routeCta": "Route planen",
       "callCta": "Anrufen",
-      "mapTitle": "Standort von Gold Helwah auf Google Maps"
+      "mapTitle": "Standort von Gold Helwah auf Google Maps",
+      "emailLabel": "E-Mail",
+      "whatsappCta": "WhatsApp"
     }
   },
   "Impressum": {
     "eyebrow": "Rechtliches",
     "title": "Impressum",
-    "description": "Diese Seite stellt die rechtliche Grundstruktur bereit. Nicht bestätigte Pflichtangaben bleiben bewusst als Platzhalter markiert.",
-    "complianceNoticeTitle": "Wichtiger Hinweis",
-    "complianceNoticeDescription": "Die folgenden Felder markieren bewusst Angaben, die nicht erfunden werden sollten. Vor der Veröffentlichung müssen Rechtsform, Vertretung und steuerliche Angaben verbindlich ergänzt werden.",
+    "description": "Angaben gemäß § 5 DDG.",
+    "complianceNoticeTitle": "Angaben gemäß § 5 DDG",
+    "complianceNoticeDescription": "Die folgenden Angaben gelten für die Website von Gold Helwah.",
     "sections": [
       {
-        "title": "Anbieterkennzeichnung",
+        "title": "Anbieter",
         "lines": [
           "Gold Helwah",
+          "Inh. Khaled Helwah",
           "Breite Straße 9, 66115 Saarbrücken",
-          "[Rechtsform ergänzen]",
-          "[Vertretungsberechtigte Person ergänzen]"
+          "Deutschland"
         ]
       },
       {
         "title": "Kontakt",
         "lines": [
-          "+49 173 5371225",
-          "info@goldhelwah.de",
-          "Showroom: Breite Straße 9, 66115 Saarbrücken"
+          "Bei Fragen helfen wir Ihnen gern weiter:",
+          "Telefon: +49 173 537 1225",
+          "E-Mail: info@goldhelwah.de"
         ]
       },
       {
-        "title": "Register und Steuern",
+        "title": "Umsatzsteuer-ID",
         "lines": [
-          "[Handelsregister und Registergericht ergänzen]",
-          "[Umsatzsteuer-ID oder Steuernummer ergänzen]"
+          "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:",
+          "DE313207537"
         ]
       },
       {
-        "title": "Verantwortlich für Inhalte",
-        "lines": "[Verantwortliche Person gemäß geltendem Medienrecht ergänzen]"
+        "title": "Vertreten durch",
+        "lines": "Khaled Helwah"
       },
       {
-        "title": "Hinweis zur Website",
+        "title": "Haftung für Links",
         "lines": [
-          "Die Website ist als Katalog und Showroom konzipiert.",
-          "Es gibt keine Bestell-, Checkout- oder Zahlungsfunktion."
+          "Unsere Website enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte keine Gewähr übernehmen.",
+          "Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich.",
+          "Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zu diesem Zeitpunkt nicht erkennbar.",
+          "Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen."
+        ]
+      },
+      {
+        "title": "Haftung für Inhalte",
+        "lines": [
+          "Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.",
+          "Als Diensteanbieter sind wir gemäß § 5 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.",
+          "Nach § 5 DDG sind wir nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.",
+          "Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.",
+          "Eine diesbezügliche Haftung ist erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir diese Inhalte umgehend entfernen."
         ]
       }
     ],
-    "disclaimerTitle": "Pflege und Aktualisierung",
-    "disclaimerText": "Sobald weitere Dienste, Formulare oder echte Unternehmensdaten integriert werden, sollte diese Seite erneut rechtlich geprüft und aktualisiert werden."
+    "disclaimerTitle": "Urheberrecht",
+    "disclaimerText": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet und entsprechende Inhalte gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen."
   },
   "Privacy": {
     "eyebrow": "Datenschutz",
     "title": "Datenschutzhinweise",
-    "description": "Diese Datenschutzhinweise decken den aktuellen Funktionsumfang des Showrooms ab.",
-    "intro": "Da keine Konten, Bestellungen oder Zahlungsabläufe integriert sind, bleibt die Datenverarbeitung bewusst schlank. Vor dem Launch sollten alle finalen Dienste erneut geprüft werden.",
+    "description": "Welche Daten wir verarbeiten, wenn Sie diese Website nutzen oder uns schreiben – und wozu.",
+    "intro": "Diese Website hat keinen Onlineshop, keine Kundenkonten und keine Zahlungsfunktion. Wir verarbeiten nur technisch notwendige Daten und die Angaben, die Sie uns selbst senden.",
     "sections": [
       {
         "title": "1. Verantwortliche Stelle",
         "paragraphs": [
-          "Verantwortlich ist Gold Helwah, Breite Straße 9, 66115 Saarbrücken, Telefon +49 173 5371225, E-Mail info@goldhelwah.de.",
-          "Nach Eintragung der finalen Angaben sollten Impressum und Datenschutz inhaltlich aufeinander abgestimmt werden."
+          "Verantwortlich für die Datenverarbeitung auf dieser Website ist Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, Telefon +49 173 537 1225, E-Mail info@goldhelwah.de.",
+          "Bei Fragen zum Datenschutz oder wenn Sie Ihre Rechte wahrnehmen möchten, können Sie uns jederzeit kontaktieren."
         ]
       },
       {
         "title": "2. Technische Verbindungsdaten",
         "paragraphs": [
-          "Beim Aufruf der Website können technisch notwendige Daten wie IP-Adresse, Zeitpunkt, Browsertyp und angeforderte Inhalte verarbeitet werden.",
-          "Die Verarbeitung dient der sicheren und stabilen Bereitstellung der Website."
+          "Beim Aufruf der Website können technisch notwendige Daten wie IP-Adresse, Datum und Uhrzeit, Browserinformationen und aufgerufene Seiten verarbeitet werden.",
+          "Diese Verarbeitung ist erforderlich, um die Website sicher und zuverlässig bereitzustellen."
         ]
       },
       {
-        "title": "3. Kontaktanfragen",
+        "title": "3. Kontakt- und Anfragen",
         "paragraphs": [
-          "Wenn Sie das Kontaktformular nutzen oder telefonisch Kontakt aufnehmen, werden Ihre Angaben ausschließlich zur Bearbeitung Ihrer Anfrage verwendet.",
-          "Welche Daten konkret erforderlich sind, hängt vom Anlass und vom Produktinteresse ab."
+          "Wenn Sie uns per Kontaktformular, E-Mail, Telefon oder WhatsApp kontaktieren, verarbeiten wir Ihre Angaben ausschließlich zur Bearbeitung Ihrer Anfrage.",
+          "Welche Daten verarbeitet werden, hängt vom Gegenstand Ihrer Anfrage und den Informationen ab, die Sie uns mitteilen."
         ]
       },
       {
-        "title": "4. Sprache und Cookies",
+        "title": "4. Spracheinstellung und notwendige Cookies",
         "paragraphs": [
-          "Die Website unterstützt mehrere Sprachen. Dabei kann eine Spracheinstellung technisch gespeichert werden.",
-          "Dies dient ausschließlich dazu, die Seite bei späteren Aufrufen in der gewählten Sprache anzuzeigen."
+          "Die Website unterstützt mehrere Sprachen und kann Ihre gewählte Sprache aus technischen Gründen speichern.",
+          "Diese Information wird ausschließlich genutzt, um die Website bei späteren Besuchen in Ihrer bevorzugten Sprache anzuzeigen."
         ]
       },
       {
-        "title": "5. Kein Konto, kein Checkout, keine Zahlung",
+        "title": "5. Ihre Rechte",
         "paragraphs": [
-          "Aktuell werden über die Website keine Kundenkonten geführt, keine Bestellungen entgegengenommen und keine Zahlungsdaten verarbeitet.",
-          "Falls später Shop- oder Zahlungsfunktionen hinzukommen, muss diese Datenschutzerklärung erweitert werden."
+          "Sie haben das Recht, Auskunft über Ihre gespeicherten personenbezogenen Daten zu verlangen und, sofern die gesetzlichen Voraussetzungen vorliegen, deren Berichtigung, Löschung oder die Einschränkung der Verarbeitung zu verlangen.",
+          "Außerdem können Sie der Verarbeitung widersprechen oder eine erteilte Einwilligung mit Wirkung für die Zukunft widerrufen."
         ]
       }
     ],
-    "noticeTitle": "Aktualisierungspflicht",
-    "noticeText": "Jede spätere Integration weiterer Tools, Dienste oder Kontaktprozesse sollte eine erneute datenschutzrechtliche Aktualisierung auslösen."
+    "noticeTitle": "Aktueller Stand",
+    "noticeText": "Wir überprüfen diese Datenschutzhinweise regelmäßig und passen sie an, wenn sich unsere Website, unsere Kommunikationswege oder gesetzliche Pflichten ändern."
   },
   "Admin": {
     "siteImages": {
@@ -897,9 +957,9 @@
       "groupCount": "{count} Gruppen"
     },
     "orders": {
-      "eyebrow": "Bestellungen",
-      "title": "Bestellungen",
-      "description": "Bestellungen und Kundenstatus verfolgen.",
+      "eyebrow": "Aufträge",
+      "title": "Aufträge",
+      "description": "Aufträge verfolgen, zuweisen und den Status für Kunden aktualisieren.",
       "filtersTitle": "Aufträge filtern",
       "filtersDescription": "Suche nach Auftrag, Produkt, Kunde oder Werkstatt.",
       "searchPlaceholder": "Auftrag, Produkt oder Kunde suchen",
@@ -1933,53 +1993,54 @@
     "phone": "Anrufen",
     "backToWebsite": "Zur Website",
     "trackingNumberLabel": "Tracking-Nummer",
-    "currentPublicStageLabel": "Aktueller öffentlicher Status",
-    "progressTitle": "Öffentlicher Fortschritt",
-    "progressDescription": "Wir veröffentlichen nur drei kundenrelevante Meilensteine für Ihren Auftrag.",
+    "currentPublicStageLabel": "Aktueller Stand",
+    "progressTitle": "Fortschritt",
+    "progressDescription": "Ihr Auftrag durchläuft drei Schritte. Wir aktualisieren den Stand, sobald sich etwas ändert.",
     "trackAnotherOrder": "Weiteren Auftrag verfolgen",
     "contactSupport": "Kundenservice kontaktieren",
-    "notesTitle": "Kundeninformationen",
-    "notesDescription": "Hier werden nur kundenrelevante Aktualisierungen angezeigt.",
+    "notesTitle": "Nachrichten zu Ihrem Auftrag",
+    "notesDescription": "Hinweise von uns zu Ihrem Stück.",
     "orderReceivedLabel": "Auftrag eingegangen",
     "instructionsTitle": "So verfolgen Sie Ihren Auftrag",
     "instructionsDescription": "Nutzen Sie Ihre Tracking-Nummer über das Website-Menü statt eines direkten Tracking-Links.",
     "instructionsStepOne": "Öffnen Sie die Startseite der Website.",
     "instructionsStepTwo": "Klicken Sie im Menü auf „Auftrag verfolgen“.",
     "instructionsStepThree": "Geben Sie Ihre Tracking-Nummer ein.",
-    "receivedMessage": "Wir haben Ihren Auftrag erhalten und aktualisieren den öffentlichen Status zeitnah.",
-    "receivedDescription": "Ihr Auftrag wurde erfasst und wartet auf seinen ersten öffentlichen Meilenstein.",
-    "currentStageDescription": "Dies ist der aktuelle öffentliche Meilenstein Ihres Auftrags.",
-    "completedStageDescription": "Dieser Meilenstein wurde bereits abgeschlossen.",
-    "upcomingStageDescription": "Dieser Meilenstein erscheint, sobald Ihr Auftrag ihn erreicht.",
+    "receivedMessage": "Ihr Auftrag ist eingegangen. Sobald er in der Werkstatt ist, sehen Sie es hier.",
+    "receivedDescription": "Wartet auf den Start.",
+    "currentStageDescription": "Hier steht Ihr Auftrag gerade.",
+    "completedStageDescription": "Erledigt.",
+    "upcomingStageDescription": "Noch nicht erreicht.",
     "lookup": {
       "eyebrow": "Auftrag verfolgen",
-      "title": "Auftrag nachsehen",
-      "description": "Geben Sie Ihre Tracking-Nummer ein, um die neuesten öffentlichen Updates zu Ihrem GoldHelwah-Auftrag zu sehen.",
-      "helperTitle": "Nummer nicht zur Hand?",
-      "helperDescription": "Die Tracking-Nummer finden Sie in Ihrer Auftrags-E-Mail und können sie über das Website-Menü verwenden.",
-      "formTitle": "Tracking-Nummer eingeben",
-      "formDescription": "Wir öffnen die aktuelle Auftragsseite für diese Tracking-Nummer.",
+      "title": "Auftrag verfolgen",
+      "description": "Mit Ihrer Tracking-Nummer sehen Sie, wo Ihr Stück gerade ist.",
+      "helperTitle": "Keine Nummer zur Hand?",
+      "helperDescription": "Sie steht in der Bestätigungs-E-Mail zu Ihrem Auftrag. Oder rufen Sie uns kurz an.",
+      "formTitle": "Tracking-Nummer",
+      "formDescription": "Sie beginnt mit GH-.",
       "label": "Tracking-Nummer",
-      "placeholder": "GH-20260618-0001",
+      "placeholder": "GH-20260618-K7M2QX",
       "submit": "Auftrag verfolgen",
       "emptyError": "Bitte geben Sie Ihre Tracking-Nummer ein."
     },
     "support": {
-      "title": "Kundenservice kontaktieren",
-      "description": "Benötigen Sie Hilfe zu diesem Auftrag? Senden Sie uns eine Nachricht, unser Team meldet sich bei Ihnen.",
+      "title": "Fragen zu diesem Auftrag?",
+      "description": "Schreiben Sie uns – wir antworten persönlich.",
       "success": "Ihre Nachricht wurde gesendet.",
-      "error": "Ihre Nachricht konnte gerade nicht gesendet werden."
+      "error": "Ihre Nachricht konnte gerade nicht gesendet werden.",
+      "messageMin": "Bitte beschreiben Sie Ihr Anliegen in mindestens 10 Zeichen."
     },
     "stages": {
-      "order_in_workshop": "Auftrag in der Werkstatt",
-      "shipping": "Auftrag wird versendet",
+      "order_in_workshop": "In der Werkstatt",
+      "shipping": "Im Versand",
       "ready_for_pickup": "Bereit zur Abholung"
     }
   },
   "AGB": {
     "eyebrow": "Rechtliches",
     "title": "Allgemeine Geschäftsbedingungen",
-    "description": "Entwurf für die Bedingungen der GoldHelwah-Showroom- und Beratungswebsite.",
+    "description": "Bedingungen für Beratung, Anfragen und Anfertigungen bei der GoldHelwah GmbH.",
     "sections": [
       {
         "title": "Geltungsbereich",
@@ -2028,5 +2089,33 @@
     "luxury": "Luxuskarte",
     "image": "Bildfunktion",
     "announcement": "Ankündigungsbanner"
+  },
+  "OrderEntry": {
+    "customer": "Kundendaten",
+    "customerEmail": "E-Mail",
+    "customerName": "Kundenname",
+    "customerPhone": "Telefon",
+    "description": "Dieser geschützte Link erfasst Werkstattaufträge direkt und sicher für das GoldHelwah-Dashboard.",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "emailUpdates": "E-Mail-Updates senden",
+    "emailUpdatesHint": "Updates werden nur versendet, wenn eine gültige E-Mail-Adresse eingetragen ist.",
+    "message": "Auftragsnotiz",
+    "noOptions": "Diesem Produkt sind keine individuellen Optionen zugewiesen.",
+    "options": "Produktoptionen",
+    "privacy": "Privater, geschützter Link",
+    "product": "Produkt",
+    "productRequired": "Bitte wählen Sie zuerst ein Produkt aus.",
+    "quantity": "Menge",
+    "required": "Bitte füllen Sie dieses Pflichtfeld aus.",
+    "submit": "Auftrag senden",
+    "submitPending": "Auftrag wird gesendet …",
+    "success": "Der Auftrag wurde erfolgreich angelegt.",
+    "title": "Werkstattauftrag",
+    "trackingCta": "Tracking anzeigen",
+    "defaultMessage": "Ich möchte {product} beauftragen.",
+    "yes": "Ja",
+    "no": "Nein",
+    "unavailableTitle": "Werkstattauftrag derzeit nicht verfügbar",
+    "unavailableDescription": "Es sind aktuell keine aktiven Produkte für diesen Link hinterlegt."
   }
 }

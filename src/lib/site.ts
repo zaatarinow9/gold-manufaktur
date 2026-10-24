@@ -6,11 +6,16 @@ import { getPhoneHref, normalizePhoneNumber } from "@/lib/phone";
 export const siteName = "GoldHelwah GmbH";
 export const brandLogoPath = "/brand/goldhelwah-logo.svg";
 
+/** Main pages shown in the header. */
 export const siteNavigation = [
   { href: "/", key: "home" },
   { href: "/shop", key: "shop" },
   { href: "/tracking", key: "tracking" },
   { href: "/contact", key: "contact" },
+] as const;
+
+/** Legal pages, linked from the footer and the mobile menu. */
+export const legalNavigation = [
   { href: "/impressum", key: "impressum" },
   { href: "/datenschutz", key: "privacy" },
   { href: "/agb", key: "agb" },
@@ -34,6 +39,7 @@ export const companyInfo = {
   emailHref: "mailto:info@goldhelwah.de",
   phoneDisplay: "+49 173 5371225",
   phoneHref: getPhoneHref(companyPhoneNumber),
+  whatsappHref: `https://wa.me/${companyPhoneNumber.replace(/\D/g, "")}`,
   instagramHref: "https://www.instagram.com/gold.helwah",
   facebookHref: "https://www.facebook.com/Gold.Helwah",
   tiktokHref: "https://www.tiktok.com/@gold.helwah",

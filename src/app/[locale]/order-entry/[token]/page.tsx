@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { getPublicProducts } from "@/lib/db/catalog";
@@ -24,31 +25,13 @@ export default async function OrderEntryPage({
   const products = await getPublicProducts(locale);
 
   if (products.length === 0) {
-    const unavailableTitle =
-      locale === "ar"
-        ? "طلب الورشة غير متاح حالياً"
-        : locale === "de"
-          ? "Werkstattauftrag derzeit nicht verfügbar"
-          : "Workshop order currently unavailable";
-    const unavailableDescription =
-      locale === "ar"
-        ? "لا توجد منتجات نشطة مرتبطة بهذا الرابط حالياً."
-        : locale === "de"
-          ? "Es sind aktuell keine aktiven Produkte für diesen Link hinterlegt."
-          : "There are currently no active products assigned to this link.";
+    const t = await getTranslations({ locale, namespace: "OrderEntry" });
 
     return (
-      <div className="container-shell py-16">
-        <div className="content-shell rounded-[32px] border border-white/10 bg-black/30 px-6 py-10 text-center sm:px-8">
-          <p className="text-sm uppercase tracking-[0.24em] text-gold-soft">
-            GoldHelwah
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold text-foreground">
-            {unavailableTitle}
-          </h1>
-          <p className="mt-4 text-base leading-7 text-muted">
-            {unavailableDescription}
-          </p>
+      <div className="container-shell">
+        <div className="content-shell py-20 text-center">
+          <h1 className="section-heading text-foreground">{t("unavailableTitle")}</h1>
+          <p className="section-copy mx-auto mt-4 max-w-lg">{t("unavailableDescription")}</p>
         </div>
       </div>
     );

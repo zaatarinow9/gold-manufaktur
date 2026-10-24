@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import clsx from "clsx";
+import { MessageCircle, Phone, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
-import { Link } from "@/i18n/navigation";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
+import { Link } from "@/i18n/navigation";
+import { companyInfo } from "@/lib/site";
 import type { CatalogCategory, CatalogProduct } from "@/types/catalog";
 
 type ProductGalleryModalProps = {
@@ -14,196 +16,120 @@ type ProductGalleryModalProps = {
   product: CatalogProduct | null;
 };
 
-export function ProductGalleryModal({
-  category,
-  onClose,
-  product,
-}: ProductGalleryModalProps) {
-  const t = useTranslations("Shop.modal");
-  const locale = useLocale();
-  const [selectedImageState, setSelectedImageState] = useState<{
-    image: string;
-    productId: string | null;
-  }>({
-    image: "",
-    productId: null,
-  });
+export function ProductGalleryModal({ category, onClose, product }: ProductGalleryModalProps) {
+  const t = useTranslations("Shop");
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const [selected, setSelected] = useState<{ image: string; productId: string | null }>({ image: "", productId: null });
 
   useEffect(() => {
-    if (!product) {
-      return;
-    }
-
-    const originalOverflow = document.body.style.overflow;
-
+    if (!product) return;
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
     };
-
-    window.addEventListener("keydown", handleKeyDown);
-
+    window.addEventListener("keydown", onKeyDown);
     return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+      previousFocus?.focus?.();
     };
   }, [onClose, product]);
 
-  if (!product) {
-    return null;
-  }
+  if (!product) return null;
 
-  const images = product.gallery.length > 0
-    ? product.gallery
-    : product.imageUrl
-      ? [product.imageUrl]
-      : [];
-  const activeImage =
-    selectedImageState.productId === product.id && selectedImageState.image
-      ? selectedImageState.image
-      : images[0] ?? "";
-  const personalizationNote = locale === "ar"
-    ? "يمكن تخصيص الاسم لهذا المنتج"
-    : locale === "de"
-      ? "Namenspersonalisierung möglich"
-      : locale === "fr"
-        ? "Personnalisation du nom possible"
-        : locale === "tr"
-          ? "Isim kisilestirmesi mumkun"
-          : "Name personalization available";
+  const images = product.gallery.length > 0 ? product.gallery : product.imageUrl ? [product.imageUrl] : [];
+  const activeImage = selected.productId === product.id && selected.image ? selected.image : images[0] ?? "";
+  const categoryName = category?.name ?? product.categoryName ?? t("modal.fallbackCategory");
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-start justify-center bg-black/82 px-4 py-4 backdrop-blur-xl sm:items-center sm:py-6"
+      className="fixed inset-0 z-[70] flex items-end justify-center bg-black/80 backdrop-blur-sm sm:items-center sm:p-6"
       role="dialog"
       aria-modal="true"
-      aria-label={product.name}
+      aria-labelledby="product-dialog-title"
     >
-      <button
-        type="button"
-        aria-label={t("close")}
-        className="absolute inset-0"
-        onClick={onClose}
-      />
+      <button type="button" aria-label={t("modal.close")} tabIndex={-1} className="absolute inset-0 cursor-default" onClick={onClose} />
 
-      <div className="relative z-10 flex max-h-[calc(100dvh-2rem)] w-full max-w-7xl flex-col overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(20,16,12,0.96),rgba(8,8,8,0.98))] shadow-[0_38px_100px_rgba(0,0,0,0.46)]">
+      <div className="relative z-10 flex max-h-[94dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-[var(--radius-panel)] border border-[var(--border-strong)] bg-surface shadow-2xl sm:rounded-[var(--radius-panel)]">
         <button
+          ref={closeRef}
           type="button"
           onClick={onClose}
-          aria-label={t("close")}
-          className="absolute end-4 top-4 z-20 rounded-full border border-white/10 bg-black/60 p-2 text-gold-soft transition hover:border-gold/40 hover:text-foreground"
+          aria-label={t("modal.close")}
+          className="absolute end-3 top-3 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/55 text-foreground backdrop-blur transition hover:bg-black/75"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <div className="rtl-mirror-grid grid min-h-0 overflow-y-auto overscroll-contain lg:grid-cols-[1.18fr_0.82fr]">
-          <div className="min-w-0 border-b border-white/8 lg:border-b-0 lg:border-e lg:border-white/8">
-            <div className="relative aspect-[4/4.5] bg-[radial-gradient(circle_at_30%_20%,rgba(232,201,135,0.18),transparent_40%),linear-gradient(180deg,#111,#050505)] sm:aspect-[4/5]">
-              <LuxuryMedia
-                src={activeImage}
-                alt={product.name}
-                sizes="(max-width: 1023px) 100vw, 60vw"
-                fallbackContent={
-                  <div className="absolute inset-x-5 bottom-5">
-                    <span className="gold-chip">
-                      {category?.name ?? t("fallbackCategory")}
-                    </span>
-                  </div>
-                }
-              />
+        <div className="grid min-h-0 overflow-y-auto overscroll-contain md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="min-w-0">
+            <div className="relative aspect-square bg-surface-strong">
+              <LuxuryMedia src={activeImage} alt={product.name} sizes="(min-width: 768px) 55vw, 100vw" />
             </div>
-
-            {images.length > 0 ? (
-              <div className="flex min-w-0 gap-3 overflow-x-auto p-4 sm:p-5">
+            {images.length > 1 ? (
+              <div className="flex gap-2 overflow-x-auto p-3" role="group" aria-label={t("modal.galleryLabel")}>
                 {images.map((image, index) => {
                   const isActive = image === activeImage;
-
                   return (
                     <button
                       key={`${product.id}-${image}-${index}`}
                       type="button"
-                      onClick={() =>
-                        setSelectedImageState({ image, productId: product.id })
-                      }
-                      className={`relative h-24 w-20 shrink-0 overflow-hidden rounded-2xl border transition ${
-                        isActive
-                          ? "border-gold/50 shadow-[0_18px_35px_rgba(196,154,82,0.18)]"
-                          : "border-white/10 hover:border-gold/30"
-                      }`}
+                      aria-pressed={isActive}
+                      aria-label={`${product.name} ${index + 1}`}
+                      onClick={() => setSelected({ image, productId: product.id })}
+                      className={clsx(
+                        "relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition",
+                        isActive ? "border-gold" : "border-transparent opacity-70 hover:opacity-100"
+                      )}
                     >
-                      <LuxuryMedia
-                        src={image}
-                        alt={`${product.name} ${index + 1}`}
-                        sizes="80px"
-                      />
+                      <LuxuryMedia src={image} alt="" sizes="64px" />
                     </button>
                   );
                 })}
               </div>
-            ) : (
-              <div className="p-4 sm:p-5">
-                <div className="rounded-[24px] border border-white/10 bg-black/24 px-5 py-5 text-start">
-                  <span className="gold-chip">{category?.name ?? t("fallbackCategory")}</span>
-                  <p className="mt-4 text-sm leading-6 text-muted">
-                    {product.shortDescription}
-                  </p>
-                </div>
-              </div>
-            )}
+            ) : null}
           </div>
 
-          <div className="min-w-0 space-y-6 p-6 text-start sm:p-8">
-            <div className="min-w-0 space-y-4">
-              <span className="gold-chip">{category?.name ?? t("fallbackCategory")}</span>
-              <div>
-                <h3 className="text-3xl font-semibold text-foreground [overflow-wrap:anywhere] sm:text-4xl">
-                  {product.name}
-                </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-muted [overflow-wrap:anywhere] sm:text-base">
-                  {product.shortDescription}
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-[22px] border border-white/10 bg-black/28 p-5">
-              <p className="muted-label">{t("categoryLabel")}</p>
-              <p className="mt-3 text-sm text-foreground [overflow-wrap:anywhere] sm:text-base">
-                {category?.name ?? t("fallbackCategory")}
-              </p>
-              {product.supportsNameCustomization ? (
-                <p className="mt-3 text-xs uppercase tracking-[0.18em] text-gold-soft">
-                  {personalizationNote}
-                </p>
-              ) : null}
-            </div>
-
-            <div className="rounded-[24px] border border-white/10 bg-black/28 p-5">
-              <p className="muted-label">{t("tagsLabel")}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
+          <div className="flex min-w-0 flex-col p-6 sm:p-8">
+            <p className="text-sm text-gold-soft">{categoryName}</p>
+            <h2 id="product-dialog-title" className="card-title mt-1.5 text-3xl text-foreground [overflow-wrap:anywhere] sm:text-4xl">
+              {product.name}
+            </h2>
+            {product.shortDescription ? (
+              <p className="section-copy mt-4 [overflow-wrap:anywhere]">{product.shortDescription}</p>
+            ) : null}
+            {product.supportsNameCustomization ? (
+              <p className="mt-3 text-sm text-gold-soft">{t("card.personalization")}</p>
+            ) : null}
+            {product.tags.length > 0 ? (
+              <ul className="mt-5 flex flex-wrap gap-2" aria-label={t("modal.tagsLabel")}>
                 {product.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="max-w-full rounded-full border border-white/10 bg-white/4 px-3 py-2 text-xs uppercase tracking-[0.18em] text-gold-soft [overflow-wrap:anywhere]"
-                  >
-                    {tag}
-                  </span>
+                  <li key={tag} className="gold-chip">{tag}</li>
                 ))}
-              </div>
+              </ul>
+            ) : null}
+
+            <div className="mt-6 border-t border-[var(--border)] pt-5">
+              <p className="font-medium text-foreground">{t("modal.noteTitle")}</p>
+              <p className="mt-1 text-[0.9375rem] leading-7 text-muted">{t("modal.note")}</p>
             </div>
 
-            <div className="rtl-inline-row flex flex-wrap gap-3">
-              <Link
-                href={`/contact?product=${encodeURIComponent(product.slug)}`}
-                className="gold-button"
-              >
-                {t("requestCta")}
+            <div className="mt-auto grid grid-cols-2 gap-3 pt-7">
+              <Link href={`/contact?product=${encodeURIComponent(product.slug)}`} className="gold-button col-span-2">
+                {t("modal.requestCta")}
               </Link>
-              <button type="button" onClick={onClose} className="ghost-button">
-                {t("backCta")}
-              </button>
+              <a href={companyInfo.whatsappHref} target="_blank" rel="noreferrer" className="ghost-button">
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </a>
+              <a href={companyInfo.phoneHref} className="ghost-button">
+                <Phone className="h-4 w-4" />
+                {t("modal.callCta")}
+              </a>
             </div>
           </div>
         </div>

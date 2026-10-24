@@ -1,18 +1,69 @@
 @import "tailwindcss";
 @import "./admin.css";
 
+/* ------------------------------------------------------------------ */
+/* Fonts (self-hosted, SIL OFL)                                        */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: "Bodoni Moda";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  src: url("/fonts/bodoni-moda-latin-opsz-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Bodoni Moda";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  src: url("/fonts/bodoni-moda-latin-ext-opsz-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Hanken Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/hanken-grotesk-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Hanken Grotesk";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("/fonts/hanken-grotesk-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tokens                                                              */
+/* Warm "showroom at night": dark oud-brown base taken from the        */
+/* shadows of the product photos, champagne text, one gold accent.     */
+/* ------------------------------------------------------------------ */
+
 :root {
-  --background: #060606;
-  --foreground: #f7f1e3;
-  --surface: #111111;
-  --surface-strong: #17120d;
-  --surface-soft: #231c14;
-  --border: rgba(196, 154, 82, 0.26);
-  --gold: #c49a52;
-  --gold-soft: #e8c987;
-  --gold-deep: #8a6430;
-  --muted: #c7b99e;
-  --text-soft: #8f846f;
+  --background: #0f0b07;
+  --foreground: #f4ecdc;
+  --surface: #16110b;
+  --surface-strong: #1c150d;
+  --surface-soft: #251c12;
+  --border: rgba(232, 205, 143, 0.15);
+  --border-strong: rgba(232, 205, 143, 0.32);
+  --gold: #c9a35a;
+  --gold-soft: #e8cd8f;
+  --gold-deep: #8d6a33;
+  --muted: #c2b398;
+  --text-soft: #94876e;
+  --radius-media: 14px;
+  --radius-panel: 18px;
+  --site-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --site-body: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
 }
 
 @theme inline {
@@ -27,11 +78,16 @@
   --color-gold-deep: var(--gold-deep);
   --color-muted: var(--muted);
   --color-text-soft: var(--text-soft);
-  --font-body: var(--font-inter);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-cormorant);
-  --font-serif: var(--font-cormorant);
+  --font-body: var(--site-body);
+  --font-sans: var(--site-body);
+  --font-display: var(--site-display);
+  --font-serif: var(--site-display);
 }
+
+@layer base {
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
 
 * {
   box-sizing: border-box;
@@ -39,23 +95,23 @@
 
 html {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   background-color: var(--background);
   color: var(--foreground);
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   max-width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   font-family: var(--font-body), sans-serif;
-  background:
-    radial-gradient(circle at top, rgba(196, 154, 82, 0.18), transparent 34%),
-    radial-gradient(circle at 20% 20%, rgba(196, 154, 82, 0.08), transparent 24%),
-    linear-gradient(180deg, #050505 0%, #080808 45%, #0d0905 100%);
+  font-size: 1rem;
+  background: var(--background);
   color: var(--foreground);
-  line-height: 1.6;
+  line-height: 1.65;
+  font-feature-settings: "kern", "liga";
 }
 
 a {
@@ -79,30 +135,20 @@ button {
   font: inherit;
 }
 
-.brand-lockup {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.9rem;
-  min-width: 0;
-}
-
-.brand-lockup-copy {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  gap: 0.12rem;
-}
-
-.brand-name {
+::selection {
+  background: rgba(201, 163, 90, 0.35);
   color: var(--foreground);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+}
+
+:where(.site-shell) :focus-visible {
+  outline: 2px solid var(--gold-soft);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 .brand-subtitle {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 
@@ -136,25 +182,19 @@ button {
   min-height: 100%;
 }
 
+}
+
+@layer components {
+/* ------------------------------------------------------------------ */
+/* Layout                                                              */
+/* ------------------------------------------------------------------ */
+
 .site-shell {
   position: relative;
   display: flex;
   min-height: 100vh;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.site-shell::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 96px 96px;
-  mask-image: radial-gradient(circle at center, black 32%, transparent 84%);
-  opacity: 0.16;
+  overflow-x: clip;
 }
 
 .container-shell {
@@ -166,17 +206,11 @@ button {
   margin-inline: auto;
   width: 100%;
   min-width: 0;
-  max-width: 96rem;
-}
-
-.text-shell {
-  width: 100%;
-  min-width: 0;
-  max-width: 48rem;
+  max-width: 78rem;
 }
 
 .section-shell {
-  padding-block: clamp(4.5rem, 7vw, 6.5rem);
+  padding-block: clamp(4rem, 8vw, 7rem);
 }
 
 .full-bleed-section {
@@ -184,73 +218,54 @@ button {
   width: 100%;
 }
 
+/* A quiet raised surface. Used sparingly: forms, dialogs, info blocks. */
 .luxury-panel {
   border: 1px solid var(--border);
-  border-radius: 32px;
-  background:
-    linear-gradient(180deg, rgba(24, 20, 14, 0.9), rgba(10, 10, 10, 0.94));
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(18px);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
 }
 
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: var(--gold-soft);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-}
-
-.eyebrow::before {
-  content: "";
-  display: block;
-  width: 2.75rem;
+/* Hairline divider that fades at both ends. */
+.gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border-strong) 18%, var(--border-strong) 82%, transparent);
 }
+
+/* ------------------------------------------------------------------ */
+/* Typography                                                          */
+/* ------------------------------------------------------------------ */
 
 .site-heading,
 .hero-heading,
 .section-heading,
 .section-title,
 .card-title {
+  max-inline-size: 100%;
+  font-family: var(--font-display), serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  letter-spacing: -0.012em;
   text-wrap: balance;
 }
 
-.site-heading,
-.hero-heading,
-.section-heading,
-.section-title,
-.card-title {
-  font-family: var(--font-display), serif;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+.hero-heading {
+  font-size: clamp(2.6rem, 5.6vw, 4.75rem);
+  line-height: 1;
 }
 
 .section-title {
-  font-size: clamp(2.45rem, 5.4vw, 4.95rem);
-  line-height: 1.08;
-}
-
-.hero-heading {
-  font-size: clamp(2.8rem, 6.1vw, 5.85rem);
-  line-height: 1.06;
-  max-inline-size: 15ch;
+  font-size: clamp(2.5rem, 5.2vw, 4.25rem);
+  line-height: 1.04;
 }
 
 .section-heading {
-  font-size: clamp(2.2rem, 4.6vw, 4.2rem);
-  line-height: 1.1;
+  font-size: clamp(2rem, 3.8vw, 3.25rem);
+  line-height: 1.08;
 }
 
 .card-title {
   line-height: 1.12;
-  letter-spacing: -0.03em;
 }
 
 .font-display {
@@ -267,151 +282,206 @@ button {
 
 .section-copy {
   color: var(--muted);
-  line-height: 1.85;
+  line-height: 1.75;
 }
 
-.hero-heading,
-.site-heading,
-.section-heading,
-.section-title,
-.card-title {
-  max-inline-size: 100%;
+/* Small gold text above a heading, only where it carries information. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gold-soft);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.muted-label {
+  color: var(--text-soft);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Actions                                                             */
+/* ------------------------------------------------------------------ */
+
+.gold-button,
+.ghost-button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.2;
+  padding: 0.8rem 1.4rem;
+  white-space: nowrap;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .gold-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.625rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
-  color: #150f09;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  padding: 0.95rem 1.5rem;
-  text-transform: uppercase;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease,
-    opacity 160ms ease;
-  box-shadow: 0 18px 40px rgba(196, 154, 82, 0.24);
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, #ecd39a, var(--gold) 92%);
+  color: #1a1209;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .gold-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 22px 46px rgba(196, 154, 82, 0.3);
+  background: linear-gradient(180deg, #f3dfae, #d4ae67 92%);
+}
+
+.gold-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .ghost-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.625rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(10, 10, 10, 0.55);
+  border: 1px solid var(--border-strong);
+  background: transparent;
   color: var(--foreground);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  padding: 0.95rem 1.5rem;
-  text-transform: uppercase;
-  transition:
-    transform 160ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease;
 }
 
 .ghost-button:hover {
-  transform: translateY(-1px);
-  border-color: rgba(232, 201, 135, 0.4);
-  background: rgba(19, 19, 19, 0.78);
+  border-color: var(--gold-soft);
+  background: rgba(232, 205, 143, 0.06);
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--gold-soft);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(232, 205, 143, 0.35);
+  text-underline-offset: 0.3em;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.text-link:hover {
+  color: var(--foreground);
+  text-decoration-color: currentColor;
 }
 
 .gold-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  border: 1px solid rgba(232, 201, 135, 0.22);
+  gap: 0.4rem;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(196, 154, 82, 0.1);
+  background: rgba(201, 163, 90, 0.08);
   color: var(--gold-soft);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  padding: 0.45rem 0.85rem;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  padding: 0.3rem 0.75rem;
 }
 
-.muted-label {
-  color: var(--text-soft);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
+/* ------------------------------------------------------------------ */
+/* Hallmark stamp — the purity marks struck into real gold.            */
+/* ------------------------------------------------------------------ */
 
-.visual-ring {
+.hallmark {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 5.25rem;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.6rem 1.05rem 0.55rem;
   position: relative;
+  color: var(--gold-soft);
+  line-height: 1;
 }
 
-.visual-ring::after {
+.hallmark::after {
   content: "";
   position: absolute;
-  inset: 10%;
-  border: 1px solid rgba(232, 201, 135, 0.14);
-  border-radius: 999px;
+  inset: 3px;
+  border: 1px solid rgba(201, 163, 90, 0.4);
+  border-radius: inherit;
   pointer-events: none;
 }
 
-.hero-zoom {
-  animation: hero-zoom 18s ease-out infinite alternate;
+.hallmark-number {
+  font-family: var(--site-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: lining-nums;
+  letter-spacing: 0.02em;
 }
 
-.hero-title-reveal {
-  animation: hero-title-reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+.hallmark-karat {
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
-.hero-subtitle-reveal {
-  animation: fade-up 900ms ease-out both;
-  animation-delay: 120ms;
-}
-
-.hero-actions-reveal {
-  animation: fade-up 900ms ease-out both;
-  animation-delay: 220ms;
-}
-
-.fade-up {
-  animation: fade-up 820ms ease-out both;
-}
-
-.gold-glow {
-  animation: glow-shift 9s ease-in-out infinite;
-}
-
-.float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-.float-delay {
-  animation: float-delay 9s ease-in-out infinite;
-}
-
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]),
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .locale-root,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-shell {
-  font-family: var(--font-thmanyah), system-ui, sans-serif;
-}
+/* ------------------------------------------------------------------ */
+/* Forms                                                               */
+/* ------------------------------------------------------------------ */
 
 .site-form-control {
-  line-height: 1.55;
-  min-height: 3.2rem;
-  padding-block: 0.7rem;
+  width: 100%;
+  min-height: 3.1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 0.7rem 0.95rem;
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: start;
+  outline: none;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.site-form-control::placeholder {
+  color: var(--text-soft);
+}
+
+.site-form-control:hover {
+  border-color: var(--border-strong);
+}
+
+.site-form-control:focus {
+  border-color: var(--gold-soft);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(201, 163, 90, 0.18);
+}
+
+.site-form-control[aria-invalid="true"] {
+  border-color: rgba(251, 113, 133, 0.55);
 }
 
 .site-form-control:is(textarea) {
-  line-height: 1.65;
+  line-height: 1.6;
+}
+
+select.site-form-control {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--gold-soft) 50%), linear-gradient(135deg, var(--gold-soft) 50%, transparent 50%);
+  background-position: calc(100% - 1.15rem) 55%, calc(100% - 0.8rem) 55%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+  padding-inline-end: 2.25rem;
+}
+
+html[dir="rtl"] select.site-form-control {
+  background-position: 1.15rem 55%, 0.8rem 55%;
 }
 
 html[dir="rtl"] .site-form-control:not([dir="ltr"]) {
@@ -419,196 +489,113 @@ html[dir="rtl"] .site-form-control:not([dir="ltr"]) {
   text-align: start;
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) {
-  --font-body: var(--font-thmanyah);
-  --font-sans: var(--font-thmanyah);
-  --font-display: var(--font-thmanyah);
-  --font-serif: var(--font-thmanyah);
+.site-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--foreground);
+  font-size: 0.9375rem;
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) button,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) input,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) textarea,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) select {
-  font-family: var(--font-thmanyah), system-ui, sans-serif;
+.site-field-label {
+  font-weight: 500;
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .font-display,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .font-body,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .font-serif,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .heading,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-heading,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .hero-heading,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-heading,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-title,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .card-title {
-  font-family: var(--font-thmanyah), system-ui, sans-serif;
+.site-field-optional {
+  margin-inline-start: 0.4rem;
+  color: var(--text-soft);
+  font-size: 0.8125rem;
+  font-weight: 400;
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h1,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h2,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h3,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h4,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h5,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) h6 {
-  font-family: var(--font-thmanyah), system-ui, sans-serif;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: 0;
+.site-field-hint {
+  color: var(--text-soft);
+  font-size: 0.8125rem;
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) p,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) span,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) a,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) li,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) label,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) td,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) th {
-  font-family: var(--font-thmanyah), system-ui, sans-serif;
+.site-field-error {
+  color: #fda4af;
+  font-size: 0.8125rem;
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-title,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .card-title,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-heading,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .hero-heading,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .section-heading {
-  line-height: 1.22;
-  letter-spacing: 0;
+/* ------------------------------------------------------------------ */
+/* Media                                                               */
+/* ------------------------------------------------------------------ */
+
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-media);
+  background: var(--surface-strong);
 }
 
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .gold-button,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .ghost-button,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .site-nav-link,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .mobile-menu-link,
-:is(html[lang="ar"], body[data-locale="ar"], .locale-root[data-locale="ar"]) .language-switcher-trigger {
-  font-weight: 600;
+.scroll-rail {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 0.875rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) {
-  text-align: start;
+.scroll-rail::-webkit-scrollbar {
+  display: none;
 }
 
-html[dir="rtl"] body,
-body[data-dir="rtl"],
-.locale-root[data-dir="rtl"] {
-  direction: rtl;
+.scroll-rail > * {
+  scroll-snap-align: start;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .hero-heading,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .section-heading,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .section-title,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .card-title {
-  letter-spacing: 0;
+/* Directional icons point the reading way in Arabic. */
+html[dir="rtl"] .site-shell :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right, .lucide-chevron-right, .lucide-chevron-left) {
+  transform: scaleX(-1);
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-mirror-grid {
-  direction: rtl;
+/* ------------------------------------------------------------------ */
+/* Motion: one reveal on the hero, nothing else moves by itself.       */
+/* ------------------------------------------------------------------ */
+
+.hero-reveal > * {
+  animation: hero-reveal 900ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-row-reverse {
-  flex-direction: row-reverse;
+.hero-reveal > *:nth-child(2) {
+  animation-delay: 90ms;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-items-start {
-  align-items: flex-start;
-  text-align: start;
+.hero-reveal > *:nth-child(3) {
+  animation-delay: 180ms;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-justify-start {
-  justify-content: flex-start;
+.hero-reveal > *:nth-child(n + 4) {
+  animation-delay: 260ms;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .eyebrow {
-  letter-spacing: 0.18em;
+.hero-image-settle {
+  animation: hero-image-settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-button,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .ghost-button,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-chip,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .eyebrow,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .brand-lockup {
-  flex-direction: row-reverse;
-}
-
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-button,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .ghost-button,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .gold-chip,
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .muted-label {
-  letter-spacing: 0.04em;
-}
-
-:is(html[dir="rtl"], body[data-dir="rtl"], .locale-root[data-dir="rtl"]) .rtl-inline-row {
-  flex-direction: row-reverse;
-}
-
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes float-delay {
-  0%,
-  100% {
-    transform: translateY(-6px);
-  }
-
-  50% {
-    transform: translateY(6px);
-  }
-}
-
-@keyframes hero-zoom {
-  0% {
-    transform: scale(1.04);
-  }
-
-  100% {
-    transform: scale(1.12);
-  }
-}
-
-@keyframes fade-up {
-  0% {
+@keyframes hero-reveal {
+  from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(14px);
   }
 
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
-@keyframes hero-title-reveal {
-  0% {
-    opacity: 0;
-    transform: translateY(24px);
-    filter: blur(8px);
+@keyframes hero-image-settle {
+  from {
+    transform: scale(1.06);
   }
 
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes glow-shift {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: translateX(-50%) scale(0.92);
-  }
-
-  50% {
-    opacity: 0.85;
-    transform: translateX(-50%) scale(1.06);
+  to {
+    transform: scale(1);
   }
 }
 
@@ -622,6 +609,51 @@ body[data-dir="rtl"],
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* Arabic                                                              */
+/* ------------------------------------------------------------------ */
+
+:is(html[lang="ar"], .locale-root[data-locale="ar"]) {
+  --font-body: var(--font-thmanyah);
+  --font-sans: var(--font-thmanyah);
+  --font-display: var(--font-thmanyah);
+  --font-serif: var(--font-thmanyah);
+}
+
+:is(html[lang="ar"], .locale-root[data-locale="ar"]),
+:is(html[lang="ar"], .locale-root[data-locale="ar"]) :is(.locale-root, .site-shell, button, input, textarea, select, h1, h2, h3, h4, h5, h6, p, span, a, li, label, td, th) {
+  font-family: var(--font-thmanyah), system-ui, sans-serif;
+}
+
+:is(html[lang="ar"], .locale-root[data-locale="ar"]) :is(.site-heading, .hero-heading, .section-heading, .section-title, .card-title, h1, h2, h3) {
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+:is(html[lang="ar"], .locale-root[data-locale="ar"]) .hero-heading {
+  font-size: clamp(2.6rem, 6vw, 4.75rem);
+  line-height: 1.2;
+}
+
+:is(html[lang="ar"], .locale-root[data-locale="ar"]) :is(.gold-button, .ghost-button, .eyebrow, .muted-label, .gold-chip) {
+  letter-spacing: 0;
+}
+
+:is(html[lang="ar"], .locale-root[data-locale="ar"]) .hallmark-number {
+  font-family: var(--site-display);
+}
+
+html[dir="rtl"] body,
+.locale-root[data-dir="rtl"] {
+  direction: rtl;
+  text-align: start;
+}
+
+/* ------------------------------------------------------------------ */
+/* Breakpoints                                                         */
+/* ------------------------------------------------------------------ */
+
 @media (min-width: 640px) {
   .container-shell {
     padding-inline: 1.5rem;
@@ -630,8 +662,9 @@ body[data-dir="rtl"],
 
 @media (min-width: 1024px) {
   .container-shell {
-    padding-inline: 2rem;
+    padding-inline: 2.5rem;
   }
+}
 }
 
 .admin-login-shell {

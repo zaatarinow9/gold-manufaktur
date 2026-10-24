@@ -6,7 +6,7 @@ export type AdminTableColumn<Row> = {
   align?: Align;
   cell: (row: Row) => React.ReactNode;
   className?: string;
-  header: string;
+  header: React.ReactNode;
   id: string;
 };
 
@@ -35,29 +35,36 @@ export function AdminTable<Row>({
 
   return (
     <>
+      {/* Phones: one card per row. The first column is the card heading, the
+          trailing actions column sits at the bottom, everything else is a
+          label/value line. */}
       <div className="space-y-3 lg:hidden">
-        {rows.map((row) => (
-          <div
-            key={getRowKey(row)}
-            className="admin-panel-raised p-4"
-          >
-            {cardTitle ? (
-              <div className="border-b border-white/8 pb-3 text-sm font-semibold text-foreground">
-                {cardTitle(row)}
-              </div>
-            ) : null}
-            <div className={clsx("grid gap-3", cardTitle ? "pt-3" : "")}>
-              {columns.map((column) => (
-                <div key={column.id} className="grid gap-1">
-                  <span className="text-xs font-semibold text-muted">
-                    {column.header}
-                  </span>
-                  <div className="text-sm text-foreground">{column.cell(row)}</div>
+        {rows.map((row) => {
+          const [lead, ...rest] = columns;
+          const actions = rest.filter((column) => column.id === "action" || column.id === "actions");
+          const fields = rest.filter((column) => !actions.includes(column));
+
+          return (
+            <div key={getRowKey(row)} className="admin-panel-raised p-4">
+              <div className="text-sm text-foreground">{lead ? lead.cell(row) : cardTitle?.(row)}</div>
+              {fields.length > 0 ? (
+                <dl className="mt-3 grid gap-2.5 border-t border-white/8 pt-3">
+                  {fields.map((column) => (
+                    <div key={column.id} className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)] gap-3">
+                      <dt className="text-xs font-medium text-muted">{column.header}</dt>
+                      <dd className="min-w-0 text-sm text-foreground">{column.cell(row)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
+              {actions.map((column) => (
+                <div key={column.id} className="mt-3 border-t border-white/8 pt-3">
+                  {column.cell(row)}
                 </div>
               ))}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="hidden overflow-x-auto lg:block">

@@ -3,7 +3,7 @@
     "site": {
       "brand": "GoldHelwah GmbH",
       "title": "GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH, gerçek ürün görselleri, kişisel danışmanlık ve net bir sunumla seçilmiş altın takılar sunar.",
+      "description": "Saarbrücken’de GoldHelwah GmbH: 21, 18 ve 14 ayar gelin setleri, isim kolyeleri, yüzükler ve yatırımlık altın. Kişisel danışmanlık ve siparişe özel üretim.",
       "keywords": [
         "GoldHelwah GmbH",
         "altın takı",
@@ -15,24 +15,24 @@
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah GmbH",
-        "description": "GoldHelwah GmbH'de karakterli altın takıları, gerçek görselleri ve kişisel danışmanlığı keşfedin."
+        "title": "GoldHelwah – Saarbrücken’de altın takı",
+        "description": "21, 18 ve 14 ayar gelin setleri, isim takıları, zincirler ve yatırımlık altın. Showroom: Breite Straße 9, Saarbrücken."
       },
       "shop": {
         "title": "Koleksiyon",
-        "description": "GoldHelwah GmbH koleksiyonunda seçilmiş parçaları, net kategorileri ve ürün detaylarını inceleyin."
+        "description": "GoldHelwah koleksiyonu: takı setleri, isim takıları, zincirler, bilezikler, yüzükler ve külçe altın. Talebinizi online gönderin."
       },
       "contact": {
         "title": "İletişim",
-        "description": "Danışmanlık, ürün talepleri ve Saarbrücken’deki showroom ziyareti için GoldHelwah GmbH ile iletişime geçin."
+        "description": "Showroom: Breite Straße 9, Saarbrücken. Telefon, WhatsApp, e-posta ve talep formu."
       },
       "impressum": {
         "title": "Yasal Bilgiler",
-        "description": "GoldHelwah GmbH için yasal bilgiler ve iletişim detayları tek sayfada."
+        "description": "GoldHelwah GmbH, Saarbrücken – yasal bilgiler."
       },
       "privacy": {
         "title": "Gizlilik",
-        "description": "GoldHelwah GmbH'de site ziyareti, dil seçimi ve iletişim talepleriyle ilgili gizlilik bilgileri."
+        "description": "Bu siteyi kullandığınızda veya bize yazdığınızda GoldHelwah’ın işlediği veriler."
       }
     }
   },
@@ -50,15 +50,17 @@
       "privacy": "Gizlilik",
       "agb": "Genel Koşullar",
       "tracking": "Sipariş Takibi"
-    }
+    },
+    "call": "Ara",
+    "legalTitle": "Yasal bilgiler"
   },
   "Footer": {
-    "description": "GoldHelwah GmbH, özenle seçilmiş altın takılar, kişisel danışmanlık ve Saarbrücken'de net bir sunum deneyimi sunar.",
+    "description": "Saarbrücken’den altın takılar ve yatırımlık altın. Kişisel danışmanlık, isteğe göre özel üretim.",
     "navigationTitle": "Sayfalar",
     "contactTitle": "İletişim",
     "socialTitle": "Bizi takip edin",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Saarbrücken'de bizi ziyaret edin ya da kişisel danışmanlık için bize ulaşın.",
+    "legalNote": "Online satış yok – talep, danışmanlık ve teslimat yüz yüze.",
     "rights": "GoldHelwah GmbH. Tüm haklari saklidir.",
     "socials": {
       "instagram": "Instagram",
@@ -66,16 +68,17 @@
       "tiktok": "TikTok",
       "snapchat": "Snapchat",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "legalTitle": "Yasal bilgiler"
   },
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "subtitle": "Güzelliği işliyoruz",
-      "description": "Detayların inceliğini ve tasarımın zarafetini yansıtır; kişisel danışmanlıkla, duruşunuza ve özel anınızın değerine yakışan altın parçayı seçmenizde size rehberlik ederiz.",
-      "primaryCta": "ürünleri kesfet",
-      "secondaryCta": "Danışmanlık isteyin",
+      "title": "Saarbrücken’de GoldHelwah",
+      "subtitle": "Takılan, miras kalan altın.",
+      "description": "21, 18 ve 14 ayar gelin setleri, isim kolyeleri, sikkeli takılar ve yatırımlık altın. Showroom’da ya da online seçin; sizi bizzat bilgilendirir, isterseniz özel olarak üretiriz.",
+      "primaryCta": "Koleksiyonu gör",
+      "secondaryCta": "Danışmanlık iste",
       "backgroundAlt": "GoldHelwah GmbH ana görseli",
       "stats": [
         {
@@ -90,21 +93,23 @@
           "value": "Saarbrücken",
           "label": "Showroom"
         }
-      ]
+      ],
+      "locationLine": "Showroom: Breite Straße 9, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Seçili Kategoriler",
-      "title": "İlk bakışta dikkat çeken koleksiyonlar.",
-      "description": "Seriler, setler ve öne çıkan altın parçalar arasından seçim yapın.",
+      "title": "Koleksiyon",
+      "description": "Günlük ince zincirlerden gelin setlerine ve altın onslarına kadar.",
       "emptyTitle": "Şu anda görünen ürün bulunmuyor",
-      "emptyText": "Panelde yeni koleksiyonlar etkinleştirildiğinde burada otomatik olarak görünecekler."
+      "emptyText": "Panelde yeni koleksiyonlar etkinleştirildiğinde burada otomatik olarak görünecekler.",
+      "allCta": "Tüm kategoriler"
     },
     "products": {
       "eyebrow": "Seçili ürünler",
-      "title": "Gerçek görseller. Net seçim. Karakter sahibi altın.",
-      "description": "Farkli kategorilerden özenle seçilmiş parçalar.",
-      "sectionCta": "Showroomu aç",
-      "cardCta": "Detaylari gör",
+      "title": "Showroom’dan",
+      "description": "Ayrıntıları görmek ve doğrudan talep etmek için bir parçayı açın.",
+      "sectionCta": "Tüm koleksiyon",
+      "cardCta": "Ayrıntıları gör",
       "emptyTitle": "Şu anda görünen ürün bulunmuyor",
       "emptyText": "Ürünleri panelden etkinleştirin veya size özel seçim için bizimle iletişime geçin."
     },
@@ -120,21 +125,22 @@
     },
     "aboutGold": {
       "eyebrow": "Altın hakkında",
-      "title": "Kalan altın.",
-      "description": "Altın sadece bir takı değildir. Değer, hatıra ve özel anları taşır. GoldHelwah GmbH'de görünürlüğü güçlü ve kişisel anlamı olan parçalar sunuyoruz.",
+      "title": "Kalıcı altın.",
+      "description": "Altın değerini korur ve anıları nesilden nesile taşır. Bu yüzden her parçaya hem seçerken hem üretirken zaman ayırırız.",
       "imageAlt": "GoldHelwah GmbH'den altın takı detayı",
       "points": [
-        "Kalıcı değer",
-        "Kişisel anlam",
-        "Görünür işçilik"
-      ]
+        "Damgalı ayar",
+        "Siparişe özel üretim",
+        "Elden teslim"
+      ],
+      "storyLabel": "GoldHelwah hakkında"
     },
     "aboutCompany": {
       "eyebrow": "Hakkımızda",
-      "title": "GoldHelwah GmbH hakkında",
-      "description": "GoldHelwah GmbH, Saarbrücken'de seçilmiş altın takılar, kişisel danışmanlık ve net ürün sunumu sunar. Hedefimiz müşterilere sakin, güven veren ve kaliteli bir seçim sunmaktır.",
+      "title": "GoldHelwah GmbH",
+      "description": "Showroom’umuz Saarbrücken’de, Breite Straße’de. Burada parçalarımızı acele etmeden gösterir, sizi bizzat bilgilendirir ve özel istekleri alırız.",
       "teamLabel": "Yaklaşımımız",
-      "story": "GoldHelwah GmbH ekibi ve yönetimi, kişisel görüşmelere, net seçime ve hem ana hem de stile uyan parçalara odaklanır.",
+      "story": "İlk sorunuzdan teslimata kadar doğrudan bizimle görüşürsünüz, aracı olmadan.",
       "locationLabel": "Adres"
     },
     "trust": {
@@ -142,20 +148,20 @@
       "title": "Net, kişisel ve ürüne yakın.",
       "items": [
         {
-          "title": "Kişisel danışmanlık",
-          "description": "Doğrudan ve bireysel ilerler."
+          "title": "Acele etmeyen danışmanlık",
+          "description": "Düğün, hediye ya da günlük kullanım için: önce dinler, sonra gösteririz."
         },
         {
-          "title": "Gerçek ürün görselleri",
-          "description": "Seçim gerçek modelleri gösterir."
+          "title": "Gerçek parçalar, gerçek fotoğraflar",
+          "description": "Her fotoğraf kendi seçkimizden bir parçayı gösterir."
         },
         {
-          "title": "Kişiye Özel Tasarımlar",
-          "description": "Aklınıza gelen her fikir, isim işlemelerinden ölçü ayarlamalarına ve tarzınızı yansıtan özel dokunuşlara kadar güzel detaylarla benzersiz bir altın parçaya dönüştürülebilir."
+          "title": "Siparişe özel üretim",
+          "description": "İsimler, gravürler, uzunluklar ve ölçüler: fikrinizi altına dönüştürürüz."
         },
         {
-          "title": "Saarbrücken'de teslim",
-          "description": "Yerinde kişisel olarak ulaşılabilir."
+          "title": "Elden teslim",
+          "description": "Parçanızı Saarbrücken’de size bizzat teslim ederiz."
         }
       ]
     },
@@ -165,13 +171,41 @@
       "description": "Seçim, özel istekler ve teslim için size memnuniyetle yardımcı oluruz.",
       "primaryCta": "Shop'u görüntüle",
       "secondaryCta": "Ara"
+    },
+    "hallmarks": {
+      "title": "21, 18 veya 14 ayar",
+      "description": "Altındaki damga saflığı gösterir: binde 875, 750 veya 585 altın. Parçanıza hangisinin uygun olduğunu size açıkça söyleriz.",
+      "items": [
+        {
+          "stamp": "875",
+          "label": "21 ayar"
+        },
+        {
+          "stamp": "750",
+          "label": "18 ayar"
+        },
+        {
+          "stamp": "585",
+          "label": "14 ayar"
+        }
+      ]
+    },
+    "customName": {
+      "title": "Adınız altında",
+      "description": "Arap veya Latin harfleriyle; kolye, bilezik ya da kolye ucu olarak. Yazı tipini, ayarı ve uzunluğu sizinle birlikte belirler, parçayı sizin için üretiriz.",
+      "primaryCta": "İsim takılarını gör",
+      "secondaryCta": "Fikrinizi konuşalım"
+    },
+    "visit": {
+      "title": "Bize uğrayın ya da yazın",
+      "description": "Size bizzat yanıt veririz."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Koleksiyon",
-      "subtitle": "Gerçek ürün görselleri, net seçim ve kişisel danışmanlık.",
+      "subtitle": "Ayrıntılar için bir parçayı açın. Fiyat ve gramajı talep üzerine iletiriz.",
       "primaryCta": "Talep gönder",
       "secondaryCta": "İletişim",
       "stats": {
@@ -190,15 +224,17 @@
     },
     "grid": {
       "eyebrow": "Koleksiyon",
-      "title": "Kategoriye göre kesfedin.",
+      "title": "Kategoriler",
       "all": "Tümü",
       "resultsSuffix": "model",
       "emptyBadge": "Talep üzerine",
-      "emptyTitle": "Bu seçim için size uygun parçayı birlikte belirleyebiliriz.",
-      "emptyText": "Belirli bir seri ya da model arıyorsanız bize yazın."
+      "emptyTitle": "Bu kategoride şu anda online parça yok.",
+      "emptyText": "Birçok parçayı siparişe özel üretiyoruz. Ne aradığınızı bize anlatın.",
+      "resultCount": "{count, plural, =0 {Parça yok} other {# parça}}"
     },
     "card": {
-      "cta": "Detaylar"
+      "cta": "Detaylar",
+      "personalization": "İsim kişiselleştirme mümkün"
     },
     "modal": {
       "close": "Kapat",
@@ -208,14 +244,17 @@
       "galleryCountSuffix": "görsel",
       "tagsLabel": "özellikler",
       "requestCta": "Talep gönder",
-      "backCta": "Geri"
+      "backCta": "Geri",
+      "callCta": "Ara",
+      "noteTitle": "Sonraki adım",
+      "note": "Talep gönderin; gramaj, fiyat ve üretim süresiyle size dönelim."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "İletişim",
-      "title": "GoldHelwah GmbH ile doğrudan iletişime geçin.",
-      "subtitle": "ürün talepleri, danismanlik ve showroom yol tarifi için gereken her sey burada hazir.",
+      "title": "İletişim",
+      "subtitle": "Bir parça hakkında soru, özel sipariş ya da showroom randevusu için bize yazın veya arayın.",
       "primaryCta": "Koleksiyonu görüntüle",
       "secondaryCta": "Gizliliği oku"
     },
@@ -235,8 +274,8 @@
     },
     "form": {
       "eyebrow": "İletişime geçin",
-      "title": "İletişime geçin",
-      "description": "Ürün soruları, danışmanlık veya özel üretim için bize yazın.",
+      "title": "Mesajınız",
+      "description": "Tek bir cümle yeter. Tüm ayrıntılarla size dönüş yaparız.",
       "highlights": "İletişim",
       "fields": {
         "name": "Ad",
@@ -248,18 +287,25 @@
         "name": "Adınız",
         "email": "E-posta adresiniz",
         "phone": "Telefon numaranız",
-        "message": "Talebiniz hangi konu hakkında?"
+        "message": "Örneğin: 21 ayar isim kolyesi, yaklaşık 45 cm"
       },
       "submit": "Mesaj gönder",
       "submitPending": "Gönderiliyor",
-      "success": "Teşekkür ederiz. Talebiniz kaydedildi.",
+      "success": "Teşekkürler! Mesajınız bize ulaştı. Size bizzat dönüş yapacağız.",
       "error": "Lütfen bilgilerinizi kontrol edip tekrar deneyin.",
       "validation": {
         "name": "Lütfen adinizi girin.",
         "email": "Lütfen geçerli bir e-posta adresi girin.",
         "phone": "Lütfen geçerli bir telefon numarasi girin.",
         "message": "Lütfen kisa bir mesaj yazin."
-      }
+      },
+      "productTitle": "Talebiniz",
+      "optionsTitle": "İstekleriniz",
+      "requestTitle": "Bu parçayı talep edin",
+      "requiredField": "Lütfen bu alanı doldurun.",
+      "productDefaultMessage": "Bu parçayla ilgileniyorum ve daha fazla bilgi almak istiyorum.",
+      "optional": "isteğe bağlı",
+      "allRequired": "Tüm alanlar zorunludur."
     },
     "location": {
       "eyebrow": "Konum",
@@ -269,13 +315,15 @@
       "phoneLabel": "Telefon",
       "routeCta": "Yol tarifi al",
       "callCta": "Ara",
-      "mapTitle": "Google Maps üzerinde GoldHelwah GmbH konumu"
+      "mapTitle": "Google Maps üzerinde GoldHelwah GmbH konumu",
+      "emailLabel": "E-posta",
+      "whatsappCta": "WhatsApp"
     }
   },
   "Impressum": {
     "eyebrow": "Yasal",
     "title": "Yasal bilgiler",
-    "description": "Gold Helwah için resmi sağlayıcı bilgileri ve yasal açıklamalar.",
+    "description": "Alman Dijital Hizmetler Yasası (DDG) madde 5’e göre bilgiler.",
     "complianceNoticeTitle": "§ 5 DDG uyarınca bilgiler",
     "complianceNoticeDescription": "Aşağıdaki bilgiler Gold Helwah web sitesi için geçerlidir.",
     "sections": [
@@ -333,8 +381,8 @@
   "Privacy": {
     "eyebrow": "Gizlilik",
     "title": "Gizlilik bilgileri",
-    "description": "Bu sayfa, web sitesini ziyaret ettiğinizde veya bizimle iletişime geçtiğinizde kişisel verilerinizin nasıl işlendiğini açıklar.",
-    "intro": "Kişisel verileri yalnızca web sitesini sunmak, dil tercihinizi saklamak ve taleplerinize yanıt vermek için gerekli olduğu ölçüde işliyoruz.",
+    "description": "Bu siteyi kullandığınızda veya bize yazdığınızda hangi verileri neden işlediğimiz.",
+    "intro": "Bu sitede online mağaza, müşteri hesabı veya ödeme işlevi yoktur. Yalnızca teknik olarak gerekli verileri ve bize kendiniz gönderdiğiniz bilgileri işleriz.",
     "sections": [
       {
         "title": "1. Sorumlu taraf",
@@ -1945,53 +1993,54 @@
     "phone": "Ara",
     "backToWebsite": "Siteye dön",
     "trackingNumberLabel": "Takip numarası",
-    "currentPublicStageLabel": "Güncel genel aşama",
-    "progressTitle": "Genel ilerleme",
-    "progressDescription": "Müşteriler için yalnızca üç görünür aşama yayınlıyoruz.",
+    "currentPublicStageLabel": "Güncel adım",
+    "progressTitle": "İlerleme",
+    "progressDescription": "Siparişiniz üç adımdan geçer. Bir şey değiştiğinde hemen güncelleriz.",
     "trackAnotherOrder": "Başka bir siparişi takip et",
     "contactSupport": "Destek iletişimi",
-    "notesTitle": "Müşteri güncellemeleri",
-    "notesDescription": "Burada yalnızca müşteriye açık notlar ve güncellemeler görünür.",
+    "notesTitle": "Siparişinizle ilgili mesajlar",
+    "notesDescription": "Parçanızla ilgili notlarımız.",
     "orderReceivedLabel": "Sipariş alındı",
     "instructionsTitle": "Sipariş nasıl takip edilir",
     "instructionsDescription": "Takip numaranızı doğrudan bağlantı yerine site menüsü üzerinden kullanın.",
     "instructionsStepOne": "Web sitesinin ana sayfasını açın.",
     "instructionsStepTwo": "Menüden \"Sipariş Takibi\" seçeneğine tıklayın.",
     "instructionsStepThree": "Takip numaranızı girin.",
-    "receivedMessage": "Siparişiniz alındı ve durumu yakında güncellenecek.",
-    "receivedDescription": "Siparişiniz kaydedildi ve ilk genel aşamayı bekliyor.",
-    "currentStageDescription": "Bu, siparişinizin güncel genel aşamasıdır.",
-    "completedStageDescription": "Bu aşama zaten tamamlandı.",
-    "upcomingStageDescription": "Siparişiniz bu noktaya geldiğinde bu aşama görünecek.",
+    "receivedMessage": "Siparişinizi aldık. Atölyeye geçtiğinde burada göreceksiniz.",
+    "receivedDescription": "Başlaması bekleniyor.",
+    "currentStageDescription": "Siparişiniz şu anda burada.",
+    "completedStageDescription": "Tamamlandı.",
+    "upcomingStageDescription": "Henüz ulaşılmadı.",
     "lookup": {
       "eyebrow": "Sipariş Takibi",
-      "title": "Siparişinizi bulun",
-      "description": "GoldHelwah siparişinizin son genel güncellemelerini görmek için takip numaranızı girin.",
-      "helperTitle": "Numara yanınızda mı?",
-      "helperDescription": "Bu numarayı sipariş e-postasında bulabilir ve site menüsü üzerinden kullanabilirsiniz.",
-      "formTitle": "Takip numarasını girin",
-      "formDescription": "Ardından bu numaranın canlı sipariş sayfasını açacağız.",
+      "title": "Siparişinizi takip edin",
+      "description": "Takip numaranızla parçanızın şu anda nerede olduğunu görebilirsiniz.",
+      "helperTitle": "Numara elinizde değil mi?",
+      "helperDescription": "Sipariş onay e-postanızda yer alır. Ya da bizi kısaca arayın.",
+      "formTitle": "Takip numarası",
+      "formDescription": "GH- ile başlar.",
       "label": "Takip numarası",
-      "placeholder": "GH-20260618-0001",
+      "placeholder": "GH-20260618-K7M2QX",
       "submit": "Sipariş Takibi",
       "emptyError": "Lütfen takip numaranızı girin."
     },
     "support": {
-      "title": "Destek iletişimi",
-      "description": "Bu siparişle ilgili yardıma ihtiyacınız varsa bize mesaj gönderin, ekibimiz size dönsün.",
+      "title": "Bu siparişle ilgili sorunuz mu var?",
+      "description": "Bize yazın, size bizzat yanıt veririz.",
       "success": "Mesajınız gönderildi.",
-      "error": "Mesajınız şu anda gönderilemedi."
+      "error": "Mesajınız şu anda gönderilemedi.",
+      "messageMin": "Lütfen talebinizi en az 10 karakterle açıklayın."
     },
     "stages": {
-      "order_in_workshop": "Sipariş atölyede",
-      "shipping": "Sipariş kargoya veriliyor",
-      "ready_for_pickup": "Teslime hazır"
+      "order_in_workshop": "Atölyede",
+      "shipping": "Kargoda",
+      "ready_for_pickup": "Teslim almaya hazır"
     }
   },
   "AGB": {
     "eyebrow": "Yasal",
     "title": "Genel Koşullar",
-    "description": "GoldHelwah showroom ve danışmanlık sitesi için taslak koşullar.",
+    "description": "GoldHelwah GmbH’de danışmanlık, talepler ve özel üretim koşulları.",
     "sections": [
       {
         "title": "Kapsam",
@@ -2040,5 +2089,33 @@
     "luxury": "Lüks kart",
     "image": "Görsel öne çıkarma",
     "announcement": "Duyuru bandı"
+  },
+  "OrderEntry": {
+    "customer": "Müşteri bilgileri",
+    "customerEmail": "E-posta",
+    "customerName": "Müşteri adı",
+    "customerPhone": "Telefon",
+    "description": "Bu özel bağlantı ile atölye siparişini güvenli şekilde doğrudan GoldHelwah paneline gönderebilirsiniz.",
+    "emailInvalid": "Lütfen geçerli bir e-posta adresi girin.",
+    "emailUpdates": "E-posta güncellemeleri gönder",
+    "emailUpdatesHint": "Güncellemeler yalnızca geçerli bir e-posta adresi girildiğinde gönderilir.",
+    "message": "Sipariş notu",
+    "noOptions": "Bu ürüne özel seçenek atanmamış.",
+    "options": "Ürün seçenekleri",
+    "privacy": "Özel ve korumalı bağlantı",
+    "product": "Ürün",
+    "productRequired": "Lütfen önce bir ürün seçin.",
+    "quantity": "Adet",
+    "required": "Lütfen bu alanı doldurun.",
+    "submit": "Siparişi gönder",
+    "submitPending": "Sipariş gönderiliyor…",
+    "success": "Sipariş başarıyla oluşturuldu.",
+    "title": "Atölye siparişi",
+    "trackingCta": "Takibi aç",
+    "defaultMessage": "{product} sipariş etmek istiyorum.",
+    "yes": "Evet",
+    "no": "Hayır",
+    "unavailableTitle": "Atölye siparişi şu anda kullanılamıyor",
+    "unavailableDescription": "Bu bağlantıya şu anda bağlı aktif ürün bulunmuyor."
   }
 }

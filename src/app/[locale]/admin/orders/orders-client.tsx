@@ -8,15 +8,11 @@ import { useTranslations } from "next-intl";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminButton, getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
-import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminTabs } from "@/components/admin/AdminTabs";
-import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import {
   getAssignmentStatusMessageKey,
-  getAssignmentStatusVariant,
 } from "@/lib/admin/assignmentStatus";
 import {
   useAdminPrivacyMode,
@@ -109,28 +105,6 @@ function useOrdersUiCopy() {
   };
 }
 
-function getQueueLabel(
-  key: Exclude<OrderTabKey, "all">,
-  uiCopy: ReturnType<typeof useOrdersUiCopy>
-) {
-  switch (key) {
-    case "pending":
-      return uiCopy.pending;
-    case "assigned":
-      return uiCopy.assigned;
-    case "in_progress":
-      return uiCopy.inProgress;
-    case "shipped":
-      return uiCopy.shipped;
-    case "completed":
-      return uiCopy.completed;
-    case "cancelled":
-      return uiCopy.cancelled;
-    case "archived":
-      return uiCopy.archived;
-  }
-}
-
 export function AdminOrdersClient({
   canCreate,
   currentUserRole,
@@ -221,30 +195,27 @@ export function AdminOrdersClient({
     [orders, t, uiCopy]
   );
 
+  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(locale, { dateStyle: "medium" }), [locale]);
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : dateFormatter.format(date);
+  };
+
   const columns: AdminTableColumn<OrderListRecord>[] = [
     {
       id: "order",
       header: t("orders.table.order"),
       cell: (order) => (
-        <div className="space-y-1">
+        <div className="min-w-0 space-y-0.5">
           <p className="font-semibold text-foreground">
             {detailsHidden ? uiCopy.privacyHidden : order.internalOrderNumber}
           </p>
+          <p className="truncate text-sm text-muted">
+            {detailsHidden ? "GoldHelwah" : order.previewProductName || "–"}
+          </p>
           <p className="text-xs text-muted">
-            {detailsHidden ? "GoldHelwah" : order.previewProductName || "-"}
+            <bdi>{detailsHidden ? privacyCopy.hidden : order.trackingNumber}</bdi>
           </p>
-        </div>
-      ),
-    },
-    {
-      id: "trackingNumber",
-      header: t("orders.table.trackingNumber"),
-      cell: (order) => (
-        <div className="space-y-1">
-          <p className="font-medium text-foreground">
-            {detailsHidden ? privacyCopy.hidden : order.trackingNumber}
-          </p>
-          <p className="text-xs text-muted">{t(`trackingStatus.${order.trackingStatus}`)}</p>
         </div>
       ),
     },
@@ -252,13 +223,15 @@ export function AdminOrdersClient({
       id: "customer",
       header: t("orders.table.customer"),
       cell: (order) => (
-        <div className="space-y-1">
+        <div className="min-w-0 space-y-0.5">
           <p className="text-foreground">
             {detailsHidden ? uiCopy.privacyHidden : order.customerName || t("common.noCustomer")}
           </p>
-          <p className="text-xs text-muted">
-            {detailsHidden ? privacyCopy.hidden : order.customerEmail || "-"}
-          </p>
+          {order.customerEmail || detailsHidden ? (
+            <p className="truncate text-xs text-muted">
+              <bdi>{detailsHidden ? privacyCopy.hidden : order.customerEmail}</bdi>
+            </p>
+          ) : null}
         </div>
       ),
     },
@@ -266,49 +239,51 @@ export function AdminOrdersClient({
       id: "worker",
       header: uiCopy.assignedWorker,
       cell: (order) => (
-        <div className="space-y-1">
-          <p className="text-foreground">
-            {detailsHidden
-              ? uiCopy.privacyHidden
-              : order.assignedWorkerEmail || order.employeeName || uiCopy.noWorker}
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate text-foreground">
+            {detailsHidden ? uiCopy.privacyHidden : order.workshopName || order.employeeName || uiCopy.noWorker}
           </p>
-          <p className="text-xs text-muted">
-            {detailsHidden ? privacyCopy.hidden : order.workshopName || "-"}
-          </p>
+          {!detailsHidden && (order.employeeName || order.assignedWorkerEmail) && order.workshopName ? (
+            <p className="truncate text-xs text-muted">
+              <bdi>{order.employeeName || order.assignedWorkerEmail}</bdi>
+            </p>
+          ) : null}
+          <p className="text-xs text-muted">{t(getAssignmentStatusMessageKey(order.assignmentStatus))}</p>
         </div>
       ),
     },
     {
       id: "status",
       header: t("orders.table.status"),
-      cell: (order) => (
-        <div className="flex flex-wrap gap-2">
-          <AdminBadge variant="gold">
-            {order.publicTrackingStage
-              ? t(`publicTrackingStage.${order.publicTrackingStage}`)
-              : t("orders.noPublicStage")}
-          </AdminBadge>
-          <AdminBadge variant="info">{t(`trackingStatus.${order.trackingStatus}`)}</AdminBadge>
-          <AdminBadge variant={getAssignmentStatusVariant(order.assignmentStatus)}>
-            {t(getAssignmentStatusMessageKey(order.assignmentStatus))}
-          </AdminBadge>
-          <AdminBadge variant={getOrderTabKey(order) === "pending" ? "danger" : "neutral"}>
-            {getQueueLabel(getOrderTabKey(order), uiCopy)}
-          </AdminBadge>
-        </div>
-      ),
+      cell: (order) => {
+        const queue = getOrderTabKey(order);
+        return (
+          <div className="space-y-1">
+            <AdminBadge
+              variant={
+                queue === "pending" ? "danger" : queue === "completed" ? "success" : queue === "cancelled" || queue === "archived" ? "neutral" : "info"
+              }
+            >
+              {t(`trackingStatus.${order.trackingStatus}`)}
+            </AdminBadge>
+            <p className="text-xs text-muted">
+              {order.publicTrackingStage ? t(`publicTrackingStage.${order.publicTrackingStage}`) : t("orders.noPublicStage")}
+            </p>
+          </div>
+        );
+      },
     },
     {
       id: "updatedAt",
       header: t("orders.table.dueDate"),
-      cell: (order) => order.dueDate || order.updatedAt.slice(0, 10),
+      cell: (order) => <span className="whitespace-nowrap">{formatDate(order.dueDate || order.updatedAt)}</span>,
     },
     {
       id: "action",
       align: "end",
-      header: t("orders.table.action"),
+      header: <span className="sr-only">{t("orders.table.action")}</span>,
       cell: (order) => (
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="flex justify-end gap-2">
           <button
             type="button"
             className={getAdminButtonClassName({ size: "sm", variant: "ghost" })}
@@ -369,29 +344,30 @@ export function AdminOrdersClient({
         </p>
       </div>
 
-      <AdminCard title={t("orders.filtersTitle")} description={t("orders.filtersDescription")}>
-        <AdminToolbar>
-          <AdminInput
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <label className="relative block sm:max-w-sm sm:flex-1">
+          <span className="sr-only">{t("common.search")}</span>
+          <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            type="search"
+            className="admin-input admin-input-with-icon"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            label={t("common.search")}
             placeholder={t("orders.searchPlaceholder")}
-            icon={<Search className="h-4 w-4" />}
           />
-          <AdminSelect
-            value={assignedFilter}
-            onChange={(event) => setAssignedFilter(event.target.value)}
-            label={uiCopy.assignedWorker}
-          >
-            <option value="all">{t("common.all")}</option>
+        </label>
+        <label className="block sm:w-64">
+          <span className="sr-only">{uiCopy.assignedWorker}</span>
+          <select className="admin-select" value={assignedFilter} onChange={(event) => setAssignedFilter(event.target.value)}>
+            <option value="all">{uiCopy.assignedWorker}: {t("common.all")}</option>
             {workerChoices.map((email) => (
               <option key={email} value={email}>
                 {email}
               </option>
             ))}
-          </AdminSelect>
-        </AdminToolbar>
-      </AdminCard>
+          </select>
+        </label>
+      </div>
 
       {selectedOrder ? (
         <div ref={selectedCardRef}>

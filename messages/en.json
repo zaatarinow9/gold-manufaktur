@@ -3,7 +3,7 @@
     "site": {
       "brand": "GoldHelwah GmbH",
       "title": "GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH presents selected gold jewelry with real product imagery, personal consultation, and a clear showroom experience in Saarbrücken.",
+      "description": "GoldHelwah GmbH in Saarbrücken: bridal sets, name necklaces, rings and investment gold in 21, 18 and 14 karat. Personal advice and made-to-order pieces.",
       "keywords": [
         "GoldHelwah GmbH",
         "gold jewelry",
@@ -15,24 +15,24 @@
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah GmbH",
-        "description": "Discover gold jewelry with presence, real imagery, and personal consultation at GoldHelwah GmbH."
+        "title": "GoldHelwah – Gold jewellery in Saarbrücken",
+        "description": "Bridal sets, name jewellery, chains and investment gold in 21, 18 and 14 karat. Showroom at Breite Straße 9, Saarbrücken."
       },
       "shop": {
         "title": "Collection",
-        "description": "Explore selected pieces, categories, and product details in the GoldHelwah GmbH collection."
+        "description": "The GoldHelwah collection: jewellery sets, name jewellery, chains, bracelets, rings and gold bars. Send a request online."
       },
       "contact": {
         "title": "Contact",
-        "description": "Contact GoldHelwah GmbH for consultation, product inquiries, and your visit to the showroom in Saarbrücken."
+        "description": "Showroom at Breite Straße 9, Saarbrücken. Phone, WhatsApp, email and request form."
       },
       "impressum": {
         "title": "Legal Notice",
-        "description": "Legal details and contact information for GoldHelwah GmbH at a glance."
+        "description": "Legal notice of GoldHelwah GmbH, Saarbrücken."
       },
       "privacy": {
         "title": "Privacy",
-        "description": "Privacy information for website visits, language preferences, and contact requests at GoldHelwah GmbH."
+        "description": "Which data GoldHelwah processes when you use this website or write to us."
       }
     }
   },
@@ -50,15 +50,17 @@
       "privacy": "Privacy",
       "agb": "Terms & Conditions",
       "tracking": "Track order"
-    }
+    },
+    "call": "Call",
+    "legalTitle": "Legal"
   },
   "Footer": {
-    "description": "GoldHelwah GmbH offers selected gold jewelry, personal consultation, and a clear presentation experience in Saarbrücken.",
+    "description": "Gold jewellery and investment gold from Saarbrücken. Personal advice, made to order on request.",
     "navigationTitle": "Pages",
     "contactTitle": "Contact",
     "socialTitle": "Follow us",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Visit us in Saarbrücken or contact us for personal consultation.",
+    "legalNote": "No online sales – requests, advice and handover in person.",
     "rights": "GoldHelwah GmbH. All rights reserved.",
     "socials": {
       "instagram": "Instagram",
@@ -66,16 +68,17 @@
       "tiktok": "TikTok",
       "snapchat": "Snapchat",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "legalTitle": "Legal"
   },
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "subtitle": "We craft beauty",
-      "description": "We reflect the precision of detail and the elegance of design, with personal consultation that guides you toward the gold piece that suits your presence and the value of the occasion.",
-      "primaryCta": "Discover products",
-      "secondaryCta": "Request consultation",
+      "title": "GoldHelwah in Saarbrücken",
+      "subtitle": "Gold to wear, and to pass on.",
+      "description": "Bridal sets, name necklaces, coin jewellery and investment gold in 21, 18 and 14 karat. Choose in our showroom or online – we advise you in person and make pieces to order.",
+      "primaryCta": "View the collection",
+      "secondaryCta": "Ask for advice",
       "backgroundAlt": "GoldHelwah GmbH hero composition",
       "stats": [
         {
@@ -90,20 +93,22 @@
           "value": "Saarbrücken",
           "label": "Showroom"
         }
-      ]
+      ],
+      "locationLine": "Showroom: Breite Straße 9, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Selected Categories",
-      "title": "Collections that catch the eye immediately.",
-      "description": "Choose from lines, sets, and standout gold pieces.",
+      "title": "The collection",
+      "description": "From fine everyday chains to bridal sets and gold ounces.",
       "emptyTitle": "No products are currently visible",
-      "emptyText": "As soon as new collections are activated in the dashboard, they will appear here automatically."
+      "emptyText": "As soon as new collections are activated in the dashboard, they will appear here automatically.",
+      "allCta": "All categories"
     },
     "products": {
       "eyebrow": "Selected Products",
-      "title": "Real imagery. Clear selection. Gold with character.",
-      "description": "Selected jewelry pieces across different categories.",
-      "sectionCta": "Open showroom",
+      "title": "From the showroom",
+      "description": "Open a piece to see the details and ask about it directly.",
+      "sectionCta": "Full collection",
       "cardCta": "View details",
       "emptyTitle": "No products are currently visible",
       "emptyText": "Activate products in the dashboard or contact us for a personal selection."
@@ -121,20 +126,21 @@
     "aboutGold": {
       "eyebrow": "About gold",
       "title": "Gold that lasts.",
-      "description": "Gold is more than jewelry. It stands for value, memory, and meaningful moments. At GoldHelwah GmbH, we present pieces chosen for visual presence and personal significance.",
+      "description": "Gold keeps its value and carries memories across generations. That is why we give every piece time – in choosing it and in making it.",
       "imageAlt": "Gold jewelry detail from GoldHelwah GmbH",
       "points": [
-        "Lasting value",
-        "Personal meaning",
-        "Visible craftsmanship"
-      ]
+        "Hallmarked purity",
+        "Made to order",
+        "Personal handover"
+      ],
+      "storyLabel": "About GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "About us",
-      "title": "About GoldHelwah GmbH",
-      "description": "In Saarbrücken, GoldHelwah GmbH combines selected gold jewelry with personal consultation and a clear, trustworthy presentation.",
+      "title": "GoldHelwah GmbH",
+      "description": "Our showroom is on Breite Straße in Saarbrücken. Here we show our pieces without hurry, advise you ourselves and take on special requests.",
       "teamLabel": "Our approach",
-      "story": "The GoldHelwah GmbH team and management focus on personal advice, a clear selection, and pieces that suit both the occasion and the wearer.",
+      "story": "From your first question to the handover, you deal with us directly – no detours.",
       "locationLabel": "On site"
     },
     "trust": {
@@ -142,20 +148,20 @@
       "title": "Clear, personal, and close to the product.",
       "items": [
         {
-          "title": "Personal consultation",
-          "description": "Direct and individually guided."
+          "title": "Advice that takes its time",
+          "description": "For a wedding, a gift or every day: we listen first, then we show."
         },
         {
-          "title": "Real product imagery",
-          "description": "The selection shows real pieces."
+          "title": "Real pieces, real photos",
+          "description": "Every photo shows a piece from our own selection."
         },
         {
-          "title": "Custom Designs",
-          "description": "Any idea you have can be transformed into a unique gold piece with beautiful details, from name engraving and size adjustments to personal touches that reflect your style."
+          "title": "Made to order",
+          "description": "Names, engravings, lengths and sizes – we turn your idea into gold."
         },
         {
-          "title": "Pickup in Saarbruecken",
-          "description": "Available in person on site."
+          "title": "Handed over in person",
+          "description": "We hand your piece to you ourselves in Saarbrücken."
         }
       ]
     },
@@ -165,13 +171,41 @@
       "description": "We are happy to guide you through selection, special requests, and personal consultation.",
       "primaryCta": "View shop",
       "secondaryCta": "Call now"
+    },
+    "hallmarks": {
+      "title": "21, 18 or 14 karat",
+      "description": "The stamp in the gold shows its purity: 875, 750 or 585 parts gold per thousand. We tell you honestly which one suits your piece.",
+      "items": [
+        {
+          "stamp": "875",
+          "label": "21 karat"
+        },
+        {
+          "stamp": "750",
+          "label": "18 karat"
+        },
+        {
+          "stamp": "585",
+          "label": "14 karat"
+        }
+      ]
+    },
+    "customName": {
+      "title": "Your name in gold",
+      "description": "In Arabic or Latin script, as a necklace, bracelet or pendant. We choose the lettering, karat and length with you – then make the piece for you.",
+      "primaryCta": "See name jewellery",
+      "secondaryCta": "Discuss your idea"
+    },
+    "visit": {
+      "title": "Visit us, or write to us",
+      "description": "We reply personally."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Collection",
-      "subtitle": "Real product imagery, clear selection, and personal consultation.",
+      "subtitle": "Open a piece for details. We send price and weight on request.",
       "primaryCta": "Request consultation",
       "secondaryCta": "Call us",
       "stats": {
@@ -190,15 +224,17 @@
     },
     "grid": {
       "eyebrow": "Collection",
-      "title": "Discover by category.",
+      "title": "Categories",
       "all": "All",
       "resultsSuffix": "pieces",
       "emptyBadge": "On request",
-      "emptyTitle": "We are happy to guide you to the right piece for this selection.",
-      "emptyText": "Contact us if you are looking for a specific line or model."
+      "emptyTitle": "Nothing in this category is online right now.",
+      "emptyText": "We make many pieces to order. Tell us what you are looking for.",
+      "resultCount": "{count, plural, =0 {No pieces} one {# piece} other {# pieces}}"
     },
     "card": {
-      "cta": "Details"
+      "cta": "Details",
+      "personalization": "Custom name available"
     },
     "modal": {
       "close": "Close",
@@ -208,14 +244,17 @@
       "galleryCountSuffix": "images",
       "tagsLabel": "Details",
       "requestCta": "Send inquiry",
-      "backCta": "Back"
+      "backCta": "Back",
+      "callCta": "Call",
+      "noteTitle": "What happens next",
+      "note": "Send a request. We will reply with weight, price and making time."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Contact",
-      "title": "Personal consultation starts with clear contact.",
-      "subtitle": "For product inquiries, appointments, and directions to the showroom, you will find the fastest ways to reach GoldHelwah GmbH here.",
+      "title": "Contact",
+      "subtitle": "A question about a piece, a custom order or a showroom appointment – write to us or call.",
       "primaryCta": "View collection",
       "secondaryCta": "Read privacy"
     },
@@ -235,8 +274,8 @@
     },
     "form": {
       "eyebrow": "Get in touch",
-      "title": "Get in touch",
-      "description": "Write to us for product inquiries, consultation, or custom-made jewelry.",
+      "title": "Your message",
+      "description": "One sentence is enough. We will get back to you with all the details.",
       "highlights": "Contact",
       "fields": {
         "name": "Name",
@@ -248,18 +287,25 @@
         "name": "Your name",
         "email": "Your email address",
         "phone": "Your phone number",
-        "message": "What is your inquiry about?"
+        "message": "For example: name necklace in 21 karat, about 45 cm"
       },
       "submit": "Send message",
       "submitPending": "Sending",
-      "success": "Thank you. Your inquiry has been recorded.",
+      "success": "Thank you! Your message has reached us. We will be in touch personally.",
       "error": "Please check your details and try again.",
       "validation": {
         "name": "Please enter your name.",
         "email": "Please enter a valid email address.",
         "phone": "Please enter a valid phone number.",
         "message": "Please add a short message."
-      }
+      },
+      "productTitle": "Your request about",
+      "optionsTitle": "Your wishes",
+      "requestTitle": "Request this piece",
+      "requiredField": "Please complete this field.",
+      "productDefaultMessage": "I am interested in this piece and would like more information.",
+      "optional": "optional",
+      "allRequired": "All fields are required."
     },
     "location": {
       "eyebrow": "Location",
@@ -269,13 +315,15 @@
       "phoneLabel": "Phone",
       "routeCta": "Plan route",
       "callCta": "Call",
-      "mapTitle": "GoldHelwah GmbH location on Google Maps"
+      "mapTitle": "GoldHelwah GmbH location on Google Maps",
+      "emailLabel": "Email",
+      "whatsappCta": "WhatsApp"
     }
   },
   "Impressum": {
     "eyebrow": "Legal",
     "title": "Legal notice",
-    "description": "Official provider information and legal notices for Gold Helwah.",
+    "description": "Information pursuant to Section 5 DDG (German Digital Services Act).",
     "complianceNoticeTitle": "Information according to § 5 DDG",
     "complianceNoticeDescription": "The following information applies to the Gold Helwah website.",
     "sections": [
@@ -333,8 +381,8 @@
   "Privacy": {
     "eyebrow": "Privacy",
     "title": "Privacy information",
-    "description": "This page explains how personal data is processed when you visit the website or contact us.",
-    "intro": "We process personal data only to the extent required to provide the website, store your language preference, and respond to inquiries.",
+    "description": "Which data we process when you use this website or write to us – and why.",
+    "intro": "This website has no online shop, no customer accounts and no payment function. We only process technically necessary data and the details you send us yourself.",
     "sections": [
       {
         "title": "1. Responsible party",
@@ -1945,53 +1993,54 @@
     "phone": "Call",
     "backToWebsite": "Back to website",
     "trackingNumberLabel": "Tracking number",
-    "currentPublicStageLabel": "Current public stage",
-    "progressTitle": "Public progress",
-    "progressDescription": "We only publish three customer-facing milestones for your order.",
+    "currentPublicStageLabel": "Current step",
+    "progressTitle": "Progress",
+    "progressDescription": "Your order goes through three steps. We update them as soon as anything changes.",
     "trackAnotherOrder": "Track another order",
     "contactSupport": "Contact support",
-    "notesTitle": "Customer updates",
-    "notesDescription": "Only customer-facing updates are shown here.",
+    "notesTitle": "Messages about your order",
+    "notesDescription": "Notes from us about your piece.",
     "orderReceivedLabel": "Order received",
     "instructionsTitle": "How to track your order",
     "instructionsDescription": "Use your tracking number from the website menu instead of a direct tracking link.",
     "instructionsStepOne": "Open the website homepage.",
     "instructionsStepTwo": "Click \"Track order\" in the menu.",
     "instructionsStepThree": "Enter your tracking number.",
-    "receivedMessage": "We received your order and will update the public status soon.",
-    "receivedDescription": "Your order has been recorded and is waiting for its first public milestone.",
-    "currentStageDescription": "This is the current public milestone for your order.",
-    "completedStageDescription": "This stage has already been completed.",
-    "upcomingStageDescription": "This stage will appear once your order reaches it.",
+    "receivedMessage": "We have received your order. Once it reaches the workshop, you will see it here.",
+    "receivedDescription": "Waiting to start.",
+    "currentStageDescription": "Your order is here now.",
+    "completedStageDescription": "Done.",
+    "upcomingStageDescription": "Not reached yet.",
     "lookup": {
       "eyebrow": "Track order",
-      "title": "Look up your order",
-      "description": "Enter your tracking number to see the latest public updates for your GoldHelwah order.",
-      "helperTitle": "Need your number?",
-      "helperDescription": "You can find the tracking number in your order email and use it from the website menu.",
-      "formTitle": "Enter your tracking number",
-      "formDescription": "We will open the live order page for this tracking number.",
+      "title": "Track your order",
+      "description": "With your tracking number you can see where your piece is right now.",
+      "helperTitle": "No number at hand?",
+      "helperDescription": "It is in the confirmation email for your order. Or give us a quick call.",
+      "formTitle": "Tracking number",
+      "formDescription": "It starts with GH-.",
       "label": "Tracking number",
-      "placeholder": "GH-20260618-0001",
+      "placeholder": "GH-20260618-K7M2QX",
       "submit": "Track order",
       "emptyError": "Please enter your tracking number."
     },
     "support": {
-      "title": "Contact support",
-      "description": "Need help with this order? Send us a message and our team will follow up.",
+      "title": "Questions about this order?",
+      "description": "Write to us – we reply personally.",
       "success": "Your message has been sent.",
-      "error": "We could not send your message right now."
+      "error": "We could not send your message right now.",
+      "messageMin": "Please describe your request in at least 10 characters."
     },
     "stages": {
-      "order_in_workshop": "Order in workshop",
-      "shipping": "Order is being shipped",
+      "order_in_workshop": "In the workshop",
+      "shipping": "On its way",
       "ready_for_pickup": "Ready for pickup"
     }
   },
   "AGB": {
     "eyebrow": "Legal",
     "title": "Terms & Conditions",
-    "description": "Draft terms for the GoldHelwah showroom and consultation website.",
+    "description": "Terms for advice, requests and made-to-order work at GoldHelwah GmbH.",
     "sections": [
       {
         "title": "Scope",
@@ -2040,5 +2089,33 @@
     "luxury": "Luxury card",
     "image": "Image feature",
     "announcement": "Announcement banner"
+  },
+  "OrderEntry": {
+    "customer": "Customer details",
+    "customerEmail": "Email",
+    "customerName": "Customer name",
+    "customerPhone": "Phone",
+    "description": "Use this private link to send a secure workshop order directly into the GoldHelwah dashboard.",
+    "emailInvalid": "Please enter a valid email address.",
+    "emailUpdates": "Send email updates",
+    "emailUpdatesHint": "Updates are only sent when a valid customer email address is provided.",
+    "message": "Order note",
+    "noOptions": "No custom options are assigned to this product.",
+    "options": "Product options",
+    "privacy": "Private protected link",
+    "product": "Product",
+    "productRequired": "Please choose a product first.",
+    "quantity": "Quantity",
+    "required": "Please complete this field.",
+    "submit": "Send order",
+    "submitPending": "Sending order…",
+    "success": "The order was created successfully.",
+    "title": "Workshop order",
+    "trackingCta": "Open tracking",
+    "defaultMessage": "I would like to order {product}.",
+    "yes": "Yes",
+    "no": "No",
+    "unavailableTitle": "Workshop order currently unavailable",
+    "unavailableDescription": "There are currently no active products assigned to this link."
   }
 }

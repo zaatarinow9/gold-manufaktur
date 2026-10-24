@@ -1,6 +1,7 @@
 "use client";
 
 type CategoryFilterItem = {
+  count: number;
   label: string;
   slug: string;
 };
@@ -8,31 +9,36 @@ type CategoryFilterItem = {
 type CategoryFilterProps = {
   activeCategory: string;
   categories: CategoryFilterItem[];
+  label: string;
   onSelect: (slug: string) => void;
 };
 
-export function CategoryFilter({
-  activeCategory,
-  categories,
-  onSelect,
-}: CategoryFilterProps) {
+/** One scrollable row of category chips on phones, wrapping on larger screens. */
+export function CategoryFilter({ activeCategory, categories, label, onSelect }: CategoryFilterProps) {
   return (
-    <div className="rtl-inline-row flex w-full min-w-0 flex-wrap gap-3 overflow-x-auto pb-2 md:overflow-visible">
+    <div
+      role="group"
+      aria-label={label}
+      className="scroll-rail -mx-4 min-w-0 px-4 sm:mx-0 sm:flex sm:flex-wrap sm:gap-2 sm:overflow-visible sm:px-0"
+    >
       {categories.map((category) => {
         const isActive = category.slug === activeCategory;
-
         return (
           <button
             key={category.slug}
             type="button"
+            aria-pressed={isActive}
             onClick={() => onSelect(category.slug)}
-            className={`inline-flex max-w-full items-center rounded-full border px-4 py-2.5 text-start text-sm font-medium [overflow-wrap:anywhere] transition ${
+            className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-[0.9375rem] font-medium transition ${
               isActive
-                ? "border-gold/30 bg-gold text-[#140d07] shadow-[0_16px_35px_rgba(196,154,82,0.18)]"
-                : "border-white/10 bg-white/4 text-muted hover:border-gold/25 hover:bg-white/6 hover:text-foreground"
+                ? "border-gold bg-gold text-[#1a1209]"
+                : "border-[var(--border-strong)] text-muted hover:border-gold-soft hover:text-foreground"
             }`}
           >
             {category.label}
+            <span className={`text-[0.8125rem] tabular-nums ${isActive ? "text-[#1a1209]/70" : "text-text-soft"}`}>
+              {category.count}
+            </span>
           </button>
         );
       })}

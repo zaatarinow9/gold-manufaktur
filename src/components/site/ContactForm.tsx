@@ -8,17 +8,13 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import type { CatalogProduct } from "@/types/catalog";
-import {
-  focusFirstInvalidField,
-  getRequiredFieldBadge,
-} from "@/lib/admin/clientForm";
+import { focusFirstInvalidField } from "@/lib/admin/clientForm";
 import {
   contactInquiryDefaults,
   contactInquirySchema,
   type ContactInquiryInput,
 } from "@/lib/contact";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
-import { SectionHeading } from "./SectionHeading";
 
 type SubmissionState = "error" | "idle" | "success";
 
@@ -27,18 +23,6 @@ type ContactFormProps = {
 };
 
 type OptionFieldValue = boolean | number | string | string[];
-
-function getProductDefaultMessage(locale: string) {
-  if (locale === "ar") {
-    return "أنا مهتم بهذا المنتج وأرغب بالحصول على مزيد من التفاصيل.";
-  }
-
-  if (locale === "de") {
-    return "Ich interessiere mich für dieses Schmuckstück und wünsche weitere Informationen.";
-  }
-
-  return "I am interested in this piece and would like to receive more information.";
-}
 
 function normalizeFieldValue(type: string, value: OptionFieldValue): boolean | number | string | string[] | null {
   if (type === "boolean") {
@@ -93,45 +77,47 @@ function isMissingRequiredValue(type: string, value: OptionFieldValue | undefine
   return typeof value !== "string" || value.trim().length === 0;
 }
 
-function getProductFormCopy(locale: string) {
-  if (locale === "ar") {
-    return {
-      optionsTitle: "تفاصيل الطلب",
-      productTitle: "المنتج المحدد",
-      requiredField: "يرجى تعبئة هذا الحقل.",
-      requestTitle: "طلب هذا المنتج",
-    };
-  }
 
-  if (locale === "de") {
-    return {
-      optionsTitle: "Anfrage-Details",
-      productTitle: "Ausgewähltes Produkt",
-      requiredField: "Bitte füllen Sie dieses Pflichtfeld aus.",
-      requestTitle: "Anfrage zu diesem Produkt",
-    };
-  }
+type FieldShellProps = {
+  children: React.ReactNode;
+  error?: string | null;
+  errorId?: string;
+  hint?: string;
+  label: string;
+  optionalLabel?: string;
+  as?: "label" | "div";
+};
 
-  return {
-    optionsTitle: "Request details",
-    productTitle: "Selected product",
-    requiredField: "Please complete this required field.",
-    requestTitle: "Request this product",
-  };
+function FieldShell({ as = "label", children, error, errorId, hint, label, optionalLabel }: FieldShellProps) {
+  const Tag = as;
+  return (
+    <Tag className="site-field">
+      <span className="site-field-label">
+        {label}
+        {optionalLabel ? <span className="site-field-optional">{optionalLabel}</span> : null}
+      </span>
+      {children}
+      {hint ? <span className="site-field-hint">{hint}</span> : null}
+      {error ? (
+        <span id={errorId} role="alert" className="site-field-error">
+          {error}
+        </span>
+      ) : null}
+    </Tag>
+  );
 }
 
 export function ContactForm({ product }: ContactFormProps) {
   const t = useTranslations("Contact.form");
+  const shop = useTranslations("Shop.card");
   const locale = useLocale();
-  const copy = getProductFormCopy(locale);
-  const requiredLabel = getRequiredFieldBadge(locale);
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
   const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const [optionErrors, setOptionErrors] = useState<Record<string, string>>({});
 
   const defaultMessage = useMemo(
-    () => (product ? getProductDefaultMessage(locale) : contactInquiryDefaults.message),
-    [locale, product]
+    () => (product ? t("productDefaultMessage") : contactInquiryDefaults.message),
+    [product, t]
   );
 
   const getValidationMessage = (message?: string) =>
@@ -164,7 +150,7 @@ export function ContactForm({ product }: ContactFormProps) {
             return [];
           }
 
-          return [[field.id, copy.requiredField]];
+          return [[field.id, t("requiredField")]];
         })
       );
 
@@ -249,408 +235,243 @@ export function ContactForm({ product }: ContactFormProps) {
     );
   };
 
-  const inputClassName =
-    "site-form-control w-full rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-start text-sm text-foreground outline-none transition placeholder:text-text-soft focus:border-gold/40 focus:bg-black/40";
+  const clearOptionError = (fieldId: string) =>
+    setOptionErrors((current) => {
+      const next = { ...current };
+      delete next[fieldId];
+      return next;
+    });
 
-  return (
-    <section className="section-shell">
-      <div className="container-shell">
-        <div className="content-shell grid gap-6 xl:grid-cols-[0.62fr_1.38fr] xl:items-stretch">
-          <div className="luxury-panel flex h-full flex-col justify-center px-6 py-8 sm:px-8">
-            <SectionHeading
-              title={product ? copy.requestTitle : t("title")}
-              description={t("description")}
-              titleClassName="text-4xl sm:text-5xl"
-              descriptionClassName="max-w-md text-base leading-7"
-            />
-          </div>
+  const setOptionValue = (fieldId: string, value: OptionFieldValue) => {
+    clearOptionError(fieldId);
+    setOptionValues((current) => ({ ...current, [fieldId]: value }));
+  };
 
-          <div className="luxury-panel px-6 py-8 sm:px-8">
-            <form
-              className="space-y-5 text-start"
-              noValidate
-              onSubmit={handleSubmit(onValid, onInvalid)}
-            >
-              {product ? (
-                <div className="rounded-[26px] border border-white/10 bg-black/20 p-4 sm:p-5">
-                  <p className="muted-label">{copy.productTitle}</p>
-                  <div className="mt-4 grid gap-4 md:grid-cols-[140px_1fr]">
-                    <div className="relative aspect-[4/4.6] overflow-hidden rounded-[20px] border border-white/10 bg-black/30">
-                      <LuxuryMedia
-                        src={product.imageUrl}
-                        alt={product.name}
-                        sizes="140px"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-xs uppercase tracking-[0.18em] text-gold-soft">
-                        {product.categoryName}
-                      </p>
-                      <h3 className="text-2xl font-semibold text-foreground">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm leading-6 text-muted">
-                        {product.shortDescription}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
+  const renderOptionField = (field: (typeof productOptions)[number]) => {
+    const errorText = optionErrors[field.id];
+    const hint = field.helpText || undefined;
+    const optionalLabel = field.isRequired ? undefined : t("optional");
+    const currentValue = optionValues[field.id];
+    const invalid = Boolean(errorText);
 
-              {productOptions.length > 0 ? (
-                <div className="rounded-[26px] border border-white/10 bg-black/20 p-4 sm:p-5">
-                  <p className="muted-label">{copy.optionsTitle}</p>
-                  <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    {productOptions.map((field) => {
-                      const errorText = optionErrors[field.id];
-                      const helperText = field.helpText || field.placeholder;
-                      const commonWrapperClass = "flex flex-col gap-2 text-sm text-foreground";
-                      const currentValue = optionValues[field.id];
+    if (field.type === "textarea") {
+      return (
+        <FieldShell key={field.id} label={field.label} hint={hint} error={errorText} optionalLabel={optionalLabel}>
+          <textarea
+            className="site-form-control resize-y"
+            rows={4}
+            aria-invalid={invalid}
+            value={typeof currentValue === "string" ? currentValue : ""}
+            placeholder={field.placeholder}
+            onChange={(event) => setOptionValue(field.id, event.target.value)}
+          />
+        </FieldShell>
+      );
+    }
 
-                      if (field.type === "textarea") {
-                        return (
-                          <label key={field.id} className={commonWrapperClass}>
-                            <span>
-                              {field.label}
-                              {field.isRequired ? (
-                                <span className="ms-2 text-[0.72rem] text-muted">
-                                  {requiredLabel}
-                                </span>
-                              ) : null}
-                            </span>
-                            <textarea
-                              className={clsx(
-                                inputClassName,
-                                "min-h-32 resize-y",
-                                errorText && "border-rose-400/40 focus:border-rose-300/60"
-                              )}
-                              value={typeof currentValue === "string" ? currentValue : ""}
-                              placeholder={field.placeholder}
-                              onChange={(event) => {
-                                setOptionErrors((current) => {
-                                  const next = { ...current };
-                                  delete next[field.id];
-                                  return next;
-                                });
-                                setOptionValues((current) => ({
-                                  ...current,
-                                  [field.id]: event.target.value,
-                                }));
-                              }}
-                            />
-                            {helperText ? <span className="text-xs text-muted">{helperText}</span> : null}
-                            {errorText ? <span className="text-xs text-rose-300">{errorText}</span> : null}
-                          </label>
-                        );
-                      }
+    if (field.type === "select") {
+      return (
+        <FieldShell key={field.id} label={field.label} hint={hint} error={errorText} optionalLabel={optionalLabel}>
+          <select
+            className="site-form-control"
+            aria-invalid={invalid}
+            value={typeof currentValue === "string" ? currentValue : ""}
+            onChange={(event) => setOptionValue(field.id, event.target.value)}
+          >
+            <option value="">{field.placeholder || "–"}</option>
+            {field.values.map((value) => (
+              <option key={`${field.id}-${value.value}`} value={value.value}>
+                {value.label}
+              </option>
+            ))}
+          </select>
+        </FieldShell>
+      );
+    }
 
-                      if (field.type === "select") {
-                        return (
-                          <label key={field.id} className={commonWrapperClass}>
-                            <span>
-                              {field.label}
-                              {field.isRequired ? (
-                                <span className="ms-2 text-[0.72rem] text-muted">
-                                  {requiredLabel}
-                                </span>
-                              ) : null}
-                            </span>
-                            <select
-                              className={clsx(
-                                inputClassName,
-                                errorText && "border-rose-400/40 focus:border-rose-300/60"
-                              )}
-                              value={typeof currentValue === "string" ? currentValue : ""}
-                              onChange={(event) => {
-                                setOptionErrors((current) => {
-                                  const next = { ...current };
-                                  delete next[field.id];
-                                  return next;
-                                });
-                                setOptionValues((current) => ({
-                                  ...current,
-                                  [field.id]: event.target.value,
-                                }));
-                              }}
-                            >
-                              <option value="">{field.placeholder || field.label}</option>
-                              {field.values.map((value) => (
-                                <option key={`${field.id}-${value.value}`} value={value.value}>
-                                  {value.label}
-                                </option>
-                              ))}
-                            </select>
-                            {helperText ? <span className="text-xs text-muted">{helperText}</span> : null}
-                            {errorText ? <span className="text-xs text-rose-300">{errorText}</span> : null}
-                          </label>
-                        );
-                      }
-
-                      if (field.type === "multi_select") {
-                        const selectedValues = Array.isArray(currentValue)
-                          ? currentValue
-                          : [];
-
-                        return (
-                          <div key={field.id} className={commonWrapperClass}>
-                            <span>
-                              {field.label}
-                              {field.isRequired ? (
-                                <span className="ms-2 text-[0.72rem] text-muted">
-                                  {requiredLabel}
-                                </span>
-                              ) : null}
-                            </span>
-                            <div className="rounded-[22px] border border-white/10 bg-black/30 px-4 py-4">
-                              <div className="flex flex-wrap gap-3">
-                                {field.values.map((value) => {
-                                  const isChecked = selectedValues.includes(value.value);
-
-                                  return (
-                                    <label
-                                      key={`${field.id}-${value.value}`}
-                                      className="rtl-inline-row flex items-center gap-2 text-sm text-foreground"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        checked={isChecked}
-                                        onChange={(event) => {
-                                          setOptionErrors((current) => {
-                                            const next = { ...current };
-                                            delete next[field.id];
-                                            return next;
-                                          });
-                                          setOptionValues((current) => {
-                                            const existing = Array.isArray(current[field.id])
-                                              ? (current[field.id] as string[])
-                                              : [];
-                                            return {
-                                              ...current,
-                                              [field.id]: event.target.checked
-                                                ? [...existing, value.value]
-                                                : existing.filter((item) => item !== value.value),
-                                            };
-                                          });
-                                        }}
-                                        className="h-4 w-4 accent-[#c49a52]"
-                                      />
-                                      {value.label}
-                                    </label>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                            {helperText ? <span className="text-xs text-muted">{helperText}</span> : null}
-                            {errorText ? <span className="text-xs text-rose-300">{errorText}</span> : null}
-                          </div>
-                        );
-                      }
-
-                      if (field.type === "boolean") {
-                        return (
-                          <div key={field.id} className={commonWrapperClass}>
-                            <span>{field.label}</span>
-                            <label className="rtl-inline-row flex items-center gap-2 rounded-[22px] border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-foreground">
-                              <input
-                                type="checkbox"
-                                checked={optionValues[field.id] === true}
-                                onChange={(event) => {
-                                  setOptionErrors((current) => {
-                                    const next = { ...current };
-                                    delete next[field.id];
-                                    return next;
-                                  });
-                                  setOptionValues((current) => ({
-                                    ...current,
-                                    [field.id]: event.target.checked,
-                                  }));
-                                }}
-                                className="h-4 w-4 accent-[#c49a52]"
-                              />
-                              {field.helpText || field.label}
-                            </label>
-                            {errorText ? <span className="text-xs text-rose-300">{errorText}</span> : null}
-                          </div>
-                        );
-                      }
-
-                      return (
-                        <label key={field.id} className={commonWrapperClass}>
-                          <span>
-                            {field.label}
-                            {field.isRequired ? (
-                              <span className="ms-2 text-[0.72rem] text-muted">
-                                {requiredLabel}
-                              </span>
-                            ) : null}
-                          </span>
-                          <input
-                            className={clsx(
-                              inputClassName,
-                              errorText && "border-rose-400/40 focus:border-rose-300/60"
-                            )}
-                            type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
-                            value={
-                              typeof currentValue === "number"
-                                ? String(currentValue)
-                                : typeof currentValue === "string"
-                                  ? currentValue
-                                  : ""
-                            }
-                            placeholder={field.placeholder}
-                            onChange={(event) => {
-                              setOptionErrors((current) => {
-                                const next = { ...current };
-                                delete next[field.id];
-                                return next;
-                              });
-                              setOptionValues((current) => ({
-                                ...current,
-                                [field.id]:
-                                  field.type === "number"
-                                    ? event.target.value
-                                    : event.target.value,
-                              }));
-                            }}
-                          />
-                          {helperText ? <span className="text-xs text-muted">{helperText}</span> : null}
-                          {errorText ? <span className="text-xs text-rose-300">{errorText}</span> : null}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="grid gap-5 md:grid-cols-2">
-                <label className="flex flex-col gap-2 text-sm text-foreground">
-                  <span>
-                    {t("fields.name")}
-                    <span className="ms-2 text-[0.72rem] text-muted">{requiredLabel}</span>
-                  </span>
-                  <input
-                    {...register("name")}
-                    id="name"
-                    className={clsx(
-                      inputClassName,
-                      errors.name && "border-rose-400/40 focus:border-rose-300/60"
-                    )}
-                    placeholder={t("placeholders.name")}
-                    autoComplete="name"
-                    aria-describedby={errors.name ? "name-error" : undefined}
-                    aria-invalid={Boolean(errors.name)}
-                  />
-                  {getValidationMessage(errors.name?.message) ? (
-                    <span id="name-error" className="text-xs text-rose-300">
-                      {getValidationMessage(errors.name?.message)}
-                    </span>
-                  ) : null}
-                </label>
-
-                <label className="flex flex-col gap-2 text-sm text-foreground">
-                  <span>
-                    {t("fields.email")}
-                    <span className="ms-2 text-[0.72rem] text-muted">{requiredLabel}</span>
-                  </span>
-                  <input
-                    {...register("email")}
-                    id="email"
-                    dir="ltr"
-                    className={clsx(
-                      inputClassName,
-                      errors.email && "border-rose-400/40 focus:border-rose-300/60"
-                    )}
-                    placeholder={t("placeholders.email")}
-                    autoComplete="email"
-                    aria-describedby={errors.email ? "email-error" : undefined}
-                    aria-invalid={Boolean(errors.email)}
-                  />
-                  {getValidationMessage(errors.email?.message) ? (
-                    <span id="email-error" className="text-xs text-rose-300">
-                      {getValidationMessage(errors.email?.message)}
-                    </span>
-                  ) : null}
-                </label>
-              </div>
-
-              <label className="flex flex-col gap-2 text-sm text-foreground">
-                <span>
-                  {t("fields.phone")}
-                  <span className="ms-2 text-[0.72rem] text-muted">{requiredLabel}</span>
-                </span>
-                <input
-                  {...register("phone")}
-                  id="phone"
+    if (field.type === "multi_select") {
+      const selectedValues = Array.isArray(currentValue) ? currentValue : [];
+      return (
+        <FieldShell key={field.id} as="div" label={field.label} hint={hint} error={errorText} optionalLabel={optionalLabel}>
+          <div className="flex flex-wrap gap-2">
+            {field.values.map((value) => {
+              const isChecked = selectedValues.includes(value.value);
+              return (
+                <label
+                  key={`${field.id}-${value.value}`}
                   className={clsx(
-                    inputClassName,
-                    errors.phone && "border-rose-400/40 focus:border-rose-300/60"
-                  )}
-                  placeholder={t("placeholders.phone")}
-                  autoComplete="tel"
-                  dir="ltr"
-                  inputMode="tel"
-                  type="tel"
-                  aria-describedby={errors.phone ? "phone-error" : undefined}
-                  aria-invalid={Boolean(errors.phone)}
-                />
-                {getValidationMessage(errors.phone?.message) ? (
-                  <span id="phone-error" className="text-xs text-rose-300">
-                    {getValidationMessage(errors.phone?.message)}
-                  </span>
-                ) : null}
-              </label>
-
-              <label className="flex flex-col gap-2 text-sm text-foreground">
-                <span>
-                  {t("fields.message")}
-                  <span className="ms-2 text-[0.72rem] text-muted">{requiredLabel}</span>
-                </span>
-                <textarea
-                  {...register("message")}
-                  id="message"
-                  className={clsx(
-                    inputClassName,
-                    "min-h-44 resize-y",
-                    errors.message && "border-rose-400/40 focus:border-rose-300/60"
-                  )}
-                  placeholder={t("placeholders.message")}
-                  aria-describedby={errors.message ? "message-error" : undefined}
-                  aria-invalid={Boolean(errors.message)}
-                />
-                {getValidationMessage(errors.message?.message) ? (
-                  <span id="message-error" className="text-xs text-rose-300">
-                    {getValidationMessage(errors.message?.message)}
-                  </span>
-                ) : null}
-              </label>
-
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <button type="submit" disabled={isSubmitting} className="gold-button">
-                  {isSubmitting ? (
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Send className="h-4 w-4" />
-                  )}
-                  {isSubmitting ? t("submitPending") : t("submit")}
-                </button>
-              </div>
-
-              {submissionState !== "idle" ? (
-                <div
-                  className={clsx(
-                    "rounded-[20px] border px-4 py-3 text-sm",
-                    submissionState === "success"
-                      ? "border-gold/25 bg-gold/10 text-gold-soft"
-                      : "border-rose-400/25 bg-rose-400/10 text-rose-200"
+                    "inline-flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition",
+                    isChecked
+                      ? "border-gold bg-gold/15 text-foreground"
+                      : "border-[var(--border-strong)] text-muted hover:text-foreground"
                   )}
                 >
-                  {submissionState === "success" ? t("success") : t("error")}
-                </div>
-              ) : null}
-            </form>
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={isChecked}
+                    onChange={(event) =>
+                      setOptionValue(
+                        field.id,
+                        event.target.checked
+                          ? [...selectedValues, value.value]
+                          : selectedValues.filter((item) => item !== value.value)
+                      )
+                    }
+                  />
+                  {value.label}
+                </label>
+              );
+            })}
           </div>
+        </FieldShell>
+      );
+    }
+
+    if (field.type === "boolean") {
+      return (
+        <div key={field.id} className="site-field">
+          <label className="flex cursor-pointer items-start gap-3 text-foreground">
+            <input
+              type="checkbox"
+              className="mt-1 h-4 w-4 shrink-0 accent-[var(--gold)]"
+              checked={currentValue === true}
+              onChange={(event) => setOptionValue(field.id, event.target.checked)}
+            />
+            <span>
+              <span className="site-field-label block">{field.label}</span>
+              {hint ? <span className="site-field-hint block">{hint}</span> : null}
+            </span>
+          </label>
+          {errorText ? <span role="alert" className="site-field-error">{errorText}</span> : null}
         </div>
-      </div>
-    </section>
+      );
+    }
+
+    return (
+      <FieldShell key={field.id} label={field.label} hint={hint} error={errorText} optionalLabel={optionalLabel}>
+        <input
+          className="site-form-control"
+          aria-invalid={invalid}
+          type={field.type === "number" ? "number" : field.type === "date" ? "date" : "text"}
+          inputMode={field.type === "number" ? "decimal" : undefined}
+          value={typeof currentValue === "number" ? String(currentValue) : typeof currentValue === "string" ? currentValue : ""}
+          placeholder={field.placeholder}
+          onChange={(event) => setOptionValue(field.id, event.target.value)}
+        />
+      </FieldShell>
+    );
+  };
+
+  const fieldError = (name: keyof ContactInquiryInput) => getValidationMessage(errors[name]?.message);
+
+  return (
+    <div className="luxury-panel p-5 sm:p-8">
+      <form className="space-y-6 text-start" noValidate onSubmit={handleSubmit(onValid, onInvalid)}>
+        {product ? (
+          <div className="flex items-center gap-4 border-b border-[var(--border)] pb-6">
+            <div className="media-frame relative h-20 w-20 shrink-0">
+              <LuxuryMedia src={product.imageUrl} alt="" sizes="80px" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm text-text-soft">{t("productTitle")}</p>
+              <h3 className="card-title mt-0.5 text-2xl text-foreground">{product.name}</h3>
+              {product.categoryName ? <p className="text-sm text-muted">{product.categoryName}</p> : null}
+              {product.supportsNameCustomization ? (
+                <p className="mt-1 text-sm text-gold-soft">{shop("personalization")}</p>
+              ) : null}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h3 className="card-title text-[1.75rem] text-foreground">{t("title")}</h3>
+            <p className="mt-1.5 text-[0.9375rem] text-muted">{t("description")}</p>
+          </div>
+        )}
+
+        {productOptions.length > 0 ? (
+          <fieldset className="space-y-5">
+            <legend className="mb-4 font-semibold text-foreground">{t("optionsTitle")}</legend>
+            <div className="grid gap-5 md:grid-cols-2">{productOptions.map(renderOptionField)}</div>
+          </fieldset>
+        ) : null}
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <FieldShell label={t("fields.name")} error={fieldError("name")} errorId="name-error">
+            <input
+              {...register("name")}
+              id="name"
+              className="site-form-control"
+              placeholder={t("placeholders.name")}
+              autoComplete="name"
+              aria-describedby={errors.name ? "name-error" : undefined}
+              aria-invalid={Boolean(errors.name)}
+            />
+          </FieldShell>
+          <FieldShell label={t("fields.phone")} error={fieldError("phone")} errorId="phone-error">
+            <input
+              {...register("phone")}
+              id="phone"
+              className="site-form-control"
+              placeholder={t("placeholders.phone")}
+              autoComplete="tel"
+              dir="ltr"
+              inputMode="tel"
+              type="tel"
+              aria-describedby={errors.phone ? "phone-error" : undefined}
+              aria-invalid={Boolean(errors.phone)}
+            />
+          </FieldShell>
+        </div>
+
+        <FieldShell label={t("fields.email")} error={fieldError("email")} errorId="email-error">
+          <input
+            {...register("email")}
+            id="email"
+            dir="ltr"
+            type="email"
+            className="site-form-control"
+            placeholder={t("placeholders.email")}
+            autoComplete="email"
+            aria-describedby={errors.email ? "email-error" : undefined}
+            aria-invalid={Boolean(errors.email)}
+          />
+        </FieldShell>
+
+        <FieldShell label={t("fields.message")} error={fieldError("message")} errorId="message-error">
+          <textarea
+            {...register("message")}
+            id="message"
+            className="site-form-control resize-y"
+            rows={6}
+            placeholder={t("placeholders.message")}
+            aria-describedby={errors.message ? "message-error" : undefined}
+            aria-invalid={Boolean(errors.message)}
+          />
+        </FieldShell>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-text-soft">{t("allRequired")}</p>
+          <button type="submit" disabled={isSubmitting} className="gold-button">
+            {isSubmitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {isSubmitting ? t("submitPending") : t("submit")}
+          </button>
+        </div>
+
+        {submissionState !== "idle" ? (
+          <p
+            role="status"
+            className={clsx(
+              "rounded-xl border px-4 py-3 text-sm",
+              submissionState === "success"
+                ? "border-gold/30 bg-gold/10 text-gold-soft"
+                : "border-rose-400/30 bg-rose-400/10 text-rose-200"
+            )}
+          >
+            {submissionState === "success" ? t("success") : t("error")}
+          </p>
+        ) : null}
+      </form>
+    </div>
   );
 }
