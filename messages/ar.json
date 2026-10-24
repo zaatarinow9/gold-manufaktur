@@ -962,7 +962,8 @@
         "in_progress": "قيد المتابعة",
         "resolved": "تم الحل",
         "closed": "مغلقة"
-      }
+      },
+      "resultCount": "{count, plural, =0 {لا توجد طلبات} one {طلب واحد} two {طلبان} few {# طلبات} many {# طلبًا} other {# طلب}}"
     },
     "workshops": {
       "eyebrow": "الجهات المنفذة",

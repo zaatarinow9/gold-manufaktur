@@ -981,7 +981,8 @@
         "in_progress": "In progress",
         "resolved": "Resolved",
         "closed": "Closed"
-      }
+      },
+      "resultCount": "{count, plural, =0 {No orders} one {# order} other {# orders}}"
     },
     "workshops": {
       "eyebrow": "Workshops",

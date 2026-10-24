@@ -365,7 +365,7 @@ export function AdminOrdersClient({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <AdminTabs tabs={tabs} value={tab} onChange={(value) => setTab(value as OrderTabKey)} />
         <p className="text-sm text-muted">
-          {t("products.resultCount", { count: filteredOrders.length })}
+          {t("orders.resultCount", { count: filteredOrders.length })}
         </p>
       </div>
 
