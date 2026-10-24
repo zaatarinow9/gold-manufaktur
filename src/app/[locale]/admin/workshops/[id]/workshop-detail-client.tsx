@@ -11,6 +11,7 @@ import {
   sendWorkshopManagerInviteAction,
   toggleWorkshopActiveAction,
 } from "@/app/[locale]/admin/workshops/actions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionPendingBar } from "@/components/admin/AdminActionPendingBar";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminButton, getAdminButtonClassName } from "@/components/admin/AdminButton";
@@ -27,6 +28,7 @@ type Props = { employees: EmployeeAccountRecord[]; locale: AppLocale; workshop: 
 export function WorkshopDetailClient({ employees, locale, workshop }: Props) {
   const t = useTranslations("Admin.workshops.detail");
   const tc = useTranslations("Admin");
+  const confirm = useAdminConfirm();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
@@ -130,8 +132,8 @@ export function WorkshopDetailClient({ employees, locale, workshop }: Props) {
         <AdminButton
           variant="danger"
           disabled={pending}
-          onClick={() => {
-            if (window.confirm(t("deleteConfirm", { name: workshop.name }))) {
+          onClick={async () => {
+            if (await confirm({ title: t("deleteConfirm", { name: workshop.name }), description: t("dangerHint") })) {
               run(
                 () => permanentlyDeleteWorkshopAction(locale, workshop.id),
                 () => router.push(`/${locale}/admin/workshops`)

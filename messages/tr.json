@@ -427,9 +427,9 @@
     "siteImages": {
       "title": "Site görselleri",
       "description": "Herkese açık site bölümleri için görsel değişiklikleri yükleyin. Ürün görselleri etkilenmez.",
-      "homepageHero": "Ana sayfa kahraman görseli",
-      "shopHero": "Mağaza kahraman görseli",
-      "promoPopup": "Promosyon penceresi",
+      "homepageHero": "Ana sayfa",
+      "shopHero": "Mağaza",
+      "promoPopup": "Pencere görseli",
       "upload": "Görsel yükle",
       "replace": "Görseli değiştir",
       "reset": "Varsayılan görseli kullan",
@@ -438,7 +438,7 @@
       "uploadError": "Görsel yüklenemedi.",
       "invalidFile": "Geçerli bir görsel dosyası seçin.",
       "productsExcluded": "Ürün görselleri ayrı yönetilir ve burada değiştirilmez.",
-      "usesDefault": "Varsayılan görsel kullanılıyor.",
+      "usesDefault": "Özel görsel yok",
       "resetSuccess": "Varsayılan görsel geri yüklendi."
     },
     "orderReset": {
@@ -526,7 +526,7 @@
       "products": "Ürünler",
       "categories": "Kategoriler",
       "gallery": "Yeni sipariş",
-      "options": "Ürün seçenekleri",
+      "options": "Sipariş soruları",
       "orders": "Siparişler",
       "workshops": "Atölyeler",
       "employees": "Çalışanlar",
@@ -582,7 +582,8 @@
       "saveStatus": "Durumu kaydet",
       "logout": "Çıkış yap",
       "cancel": "İptal",
-      "backToTasks": "Görevlerime dön"
+      "backToTasks": "Görevlerime dön",
+      "confirm": "Onayla"
     },
     "common": {
       "noAccessTitle": "Erişim kısıtlı",
@@ -658,7 +659,9 @@
         "readyOrdersHint": "Teslim veya alım için hazır",
         "employees": "Çalışanlar",
         "employeesHint": "Mevcut role göre görünür",
-        "activeOrders": "Aktif siparişler"
+        "activeOrders": "Aktif siparişler",
+        "inquiries": "Açık talepler",
+        "inquiriesHint": "Yanıt bekleyen müşteriler"
       },
       "recentOrdersTitle": "Son siparişler",
       "recentOrdersDescription": "Son siparişler ve durumlar.",
@@ -681,7 +684,28 @@
       "noNotifications": "Henüz bildirim yok.",
       "unread": "Okunmadı",
       "workshopOrders": "{count, plural, =0 {sipariş yok} other {# sipariş}}",
-      "onTimeRate": "%{rate} zamanında"
+      "onTimeRate": "%{rate} zamanında",
+      "catalog": {
+        "title": "Katalog",
+        "description": "Mağazada görünenler ve hâlâ eksik olanlar.",
+        "visible": "Mağazadaki ürünler",
+        "hidden": "Gizli ürünler",
+        "noPhoto": "Fotoğrafsız ürünler",
+        "emptyCategories": "Ürünsüz kategoriler"
+      },
+      "markAllRead": "Tümünü okundu yap",
+      "markRead": "Okundu olarak işaretle",
+      "clearAll": "Tümünü sil",
+      "clearAllConfirm": "Tüm bildirimler silinsin mi?",
+      "clearAllText": "Siparişler, talepler ve diğer veriler aynen kalır. Yalnızca bu listedeki bildirimler silinir.",
+      "notificationStale": "Kayıt artık mevcut değil",
+      "notificationActions": "“{title}” için işlemler",
+      "notificationsMessages": {
+        "markedRead": "Okundu olarak işaretlendi.",
+        "deleted": "Bildirim silindi.",
+        "cleared": "Tüm bildirimler silindi.",
+        "failed": "İşlem başarısız oldu. Lütfen tekrar deneyin."
+      }
     },
     "login": {
       "title": "Gold Helwah Yönetim",
@@ -742,7 +766,7 @@
         "activated": "Ürün artık mağazada görünüyor.",
         "deactivated": "Ürün mağazada gizlendi.",
         "deleted": "Ürün silindi.",
-        "duplicated": "Kopya oluşturuldu.",
+        "duplicated": "Kopya oluşturuldu. Şimdilik gizli; düzenleyip mağazada görünür yapın.",
         "featuredOn": "Artık ana sayfada gösteriliyor.",
         "featuredOff": "Ana sayfadan kaldırıldı.",
         "softDeleted": "Ürün hâlâ siparişlerde kullanıldığı için yalnızca gizlendi."
@@ -1031,7 +1055,7 @@
         "sendInvite": "Davet gönder",
         "resendInvite": "Daveti yeniden gönder",
         "dangerTitle": "Atölyeyi sil",
-        "dangerHint": "Yalnızca hiçbir çalışan veya sipariş bağlı değilse mümkündür.",
+        "dangerHint": "Çalışanlar korunur. Atölyeye sipariş atanmışken mümkün değildir.",
         "deleteWorkshop": "Atölyeyi kalıcı olarak sil",
         "deleteConfirm": "“{name}” atölyesi kalıcı olarak silinsin mi?",
         "account": {
@@ -1121,7 +1145,12 @@
         "shift": "Vardiya",
         "notes": "Notlar",
         "active": "Çalışan aktif"
-      }
+      },
+      "deleteConfirm": "{name} silinsin mi?",
+      "deleteConfirmText": "Çalışan silinir ve bağlı hesabı kapatılır. Siparişi olan çalışanlar yalnızca devre dışı bırakılabilir.",
+      "deleted": "Çalışan silindi.",
+      "deleteHasOrders": "Bu çalışanın siparişleri var, silinemez. Bunun yerine devre dışı bırakın.",
+      "deleteFailed": "Çalışan silinemedi."
     },
     "attendance": {
       "eyebrow": "Mesai",
@@ -1340,7 +1369,7 @@
     },
     "settingsClient": {
       "title": "Ayarlar",
-      "description": "Bildirim adreslerini, harici sipariş giriş bağlantısını ve kullanıcıları tek yerden yönetin.",
+      "description": "Web sitesi, e-postalar, erişimler ve veriler; bölümlere göre düzenlendi.",
       "diagnosticsTitle": "Ayar tanılaması",
       "notificationTitle": "Bildirimler",
       "adminEmail": "Sipariş ve talep bildirim e-postası",
@@ -1388,11 +1417,14 @@
       "inviteAgain": "Yeni bağlantı gönder",
       "roleOwner": "Sahip",
       "roleAdmin": "Yönetici",
-      "roleEmployee": "Çalışan"
+      "roleEmployee": "Çalışan",
+      "userDeleteConfirm": "{name} erişimi silinsin mi?",
+      "userDeleteText": "Bu kişi artık giriş yapamayacak.",
+      "userActions": "{name} için işlemler"
     },
     "navGroups": {
       "orders": "Günlük işler",
-      "catalog": "Katalog",
+      "catalog": "Mağaza",
       "team": "Ekip",
       "customers": "Müşteriler",
       "system": "Sistem"
@@ -1411,7 +1443,7 @@
       "optional": "isteğe bağlı",
       "otherLanguages": "Diğer diller",
       "otherLanguagesStatus": "{total} dilden {count} tanesi çevrildi – isteğe bağlı",
-      "fallbackHint": "Boş alanlarda sitede otomatik olarak Almanca metin gösterilir."
+      "fallbackHint": "Boş diller, sitede otomatik olarak yukarıda yazdığınız metni gösterir."
     },
     "imageUploader": {
       "addPhotos": "Fotoğraf ekle",
@@ -1463,7 +1495,7 @@
     "productEditor": {
       "titleNew": "Yeni ürün",
       "titleEdit": "Ürünü düzenle",
-      "descriptionNew": "Fotoğraf, ad ve kategori yeterli – gerisi isteğe bağlı.",
+      "descriptionNew": "Bir fotoğraf, bir ad ve bir kategori yeterli; gerisi isteğe bağlı.",
       "requiredHint": "* işaretli alanlar zorunludur.",
       "create": "Ürünü ekle",
       "save": "Değişiklikleri kaydet",
@@ -1471,22 +1503,22 @@
       "photosTitle": "Fotoğraflar",
       "photosHint": "İlk fotoğraf mağazadaki ana fotoğraftır.",
       "textTitle": "Ad ve açıklama",
-      "textHint": "Almanca ve Arapça zorunlu, diğer diller isteğe bağlıdır.",
+      "textHint": "Kendi dilinizde yazmanız yeterli. Diğer diller isteğe bağlı.",
       "nameLabel": "Ürün adı",
       "descriptionLabel": "Açıklama",
-      "categoryTitle": "Kategori ve müşteri bilgileri",
+      "categoryTitle": "Kategori",
       "categoryLabel": "Kategori",
       "noCategory": "Kategorisiz",
       "optionGroupLabel": "Müşteri bilgileri",
       "optionGroupHelper": "Müşterinin talep sırasında gireceği bilgiler, örn. isim veya ayar.",
-      "noOptionGroup": "Ek bilgi gerekmiyor",
+      "noOptionGroup": "Soru yok",
       "optionGroupPreview": "Müşteriden istenecek: {fields}",
       "optionGroupEmpty": "Bu grupta henüz alan yok.",
       "visibilityTitle": "Görünürlük",
       "visibleLabel": "Mağazada göster",
       "visibleHint": "Gizli ürünler kayıtlı kalır ama müşteriler göremez.",
       "featuredLabel": "Ana sayfada öne çıkar",
-      "featuredHint": "“Seçili ürünler” bölümünde görünür (ilk dördü).",
+      "featuredHint": "Ana sayfada “Showroom’dan” bölümünde görünür.",
       "advancedTitle": "Diğer ayarlar",
       "advancedHint": "Ürün kodu, web adresi, sıra ve etiketler – otomatik doldurulur.",
       "skuLabel": "Ürün kodu",
@@ -1497,7 +1529,17 @@
       "sortOrderLabel": "Sıra",
       "sortOrderHelper": "Küçük sayılar önce görünür.",
       "tagsLabel": "Etiketler",
-      "tagsHelper": "Ürün sayfasında küçük etiketler olarak görünür. Virgülle ayırın."
+      "tagsHelper": "Ürün sayfasında küçük etiketler olarak görünür. Virgülle ayırın.",
+      "categoryHint": "Ürünün mağazada nerede görüneceğini seçin. Kategori yoksa buradan hemen oluşturun.",
+      "newCategory": "Yeni kategori",
+      "newCategoryPlaceholder": "Kategori adı",
+      "newCategoryCreate": "Oluştur",
+      "quickCategoryFailed": "Kategori oluşturulamadı.",
+      "customerTitle": "Müşteri neleri belirtmeli?",
+      "customerHint": "Bu ürün talep edilirken sorulan sorular; örneğin gravür için isim veya ayar.",
+      "noOptionGroupHint": "Müşteri yalnızca adını, iletişim bilgisini ve mesajını gönderir.",
+      "manageQuestions": "Soruları düzenle",
+      "saveAndNext": "Kaydet ve sonrakini ekle"
     },
     "categoriesPage": {
       "title": "Kategoriler",
@@ -1535,8 +1577,8 @@
       }
     },
     "optionsPage": {
-      "title": "Ürün seçenekleri",
-      "description": "Müşterilerin talep veya sipariş sırasında yanıtladığı sorular – örn. yapılacak isim veya ayar. Soruları setlerde toplayın ve ürün eklerken bir set seçin.",
+      "title": "Sipariş soruları",
+      "description": "Müşterilerin bir ürünü talep ederken belirttikleri; örneğin gravür için isim veya ayar. Soruları setlerde toplayın ve ürün içinde seti seçin.",
       "addGroup": "Yeni set",
       "addField": "Soru ekle",
       "renameGroup": "Seti yeniden adlandır",
@@ -1564,7 +1606,7 @@
       "presetsHint": "Bir şablon tüm dilleri doldurur – sonra her şeyi değiştirebilirsiniz.",
       "typeTitle": "Cevap türü",
       "questionTitle": "Soru",
-      "questionHint": "Almanca ve Arapça zorunlu, diğer diller isteğe bağlıdır.",
+      "questionHint": "Kendi dilinizde yazmanız yeterli. Diğer diller isteğe bağlı.",
       "labelLabel": "Soru",
       "helpLabel": "Alanın altındaki ipucu",
       "placeholderLabel": "Alan içindeki örnek",
@@ -1955,7 +1997,8 @@
       "PERMISSION_DENIED": "Bunun için yetkiniz yok.",
       "WORKSHOP_DELETED": "Atölye silindi.",
       "WORKSHOP_NOT_EMPTY": "Atölye ancak hiçbir çalışan veya sipariş bağlı değilse silinebilir.",
-      "FAILED": "İşlem tamamlanamadı."
+      "FAILED": "İşlem tamamlanamadı.",
+      "WORKSHOP_HAS_ORDERS": "Bu atölyenin hâlâ siparişleri var. Önce siparişleri başka bir atölyeye aktarın veya atölyeyi devre dışı bırakın."
     },
     "workshopsPage": {
       "description": "Siparişlerinizi üreten atölyeler; iletişim kişisi ve güncel iş yüküyle.",
@@ -1980,7 +2023,50 @@
       "notesLabel": "İç notlar",
       "notesHelper": "Yalnızca yönetim görebilir.",
       "activeLabel": "Aktif",
-      "activeHint": "Aktif olmayan atölyelere yeni sipariş atanamaz."
+      "activeHint": "Aktif olmayan atölyelere yeni sipariş atanamaz.",
+      "deleteConfirm": "“{name}” atölyesi silinsin mi?",
+      "deleteConfirmText": "{count, plural, =0 {Atölye kalıcı olarak silinecek.} other {Atölye kalıcı olarak silinecek. # çalışan sistemde kalır ve başka bir atölyeye aktarılabilir.}}"
+    },
+    "settingsSections": {
+      "website": "Web sitesi",
+      "emails": "E-postalar",
+      "orderLink": "Sipariş bağlantısı",
+      "access": "Erişimler",
+      "data": "Veriler ve sıfırlama",
+      "imagesTitle": "Site görselleri",
+      "imagesText": "Ana sayfadaki büyük görsel ve mağaza başlığının yanındaki görsel. Kendi görseliniz yoksa bir ürün fotoğrafı kullanılır.",
+      "homeHeroHint": "Şu an: otomatik olarak bir ürün fotoğrafı.",
+      "shopHeroHint": "Şu an: görsel yok, yalnızca başlık.",
+      "promoTitle": "Kampanya penceresi",
+      "promoText": "Ana sayfa açıldığında ziyaretçilere bir kampanya gösteren küçük pencere; örneğin bayramlarda.",
+      "promoEnabledHint": "Kapalıyken ziyaretçiler hiçbir şey görmez; girdiğiniz bilgiler kayıtlı kalır.",
+      "promoContent": "İçerik",
+      "promoLook": "Görünüm",
+      "promoWhen": "Zaman aralığı",
+      "promoImageHint": "İsteğe bağlı. Pencerenin içinde gösterilir.",
+      "emailsText": "Mağazanın yeni siparişler, talepler ve destek mesajları için e-posta gönderdiği adresler.",
+      "adminEmailHint": "Yeni siparişleri ve ürün taleplerini alır.",
+      "supportEmailHint": "Müşterilerin bir siparişle ilgili sorularını alır.",
+      "ownerEmailHint": "Önemli sistem bildirimlerini alır.",
+      "orderLinkText": "Ortakların (örneğin bir şube veya atölye) giriş yapmadan sipariş girebildiği özel bağlantı.",
+      "expiresHint": "Bağlantının süresi dolmasın istiyorsanız boş bırakın.",
+      "rotateHint": "Yeni bir bağlantı oluşturur. Eski bağlantı çalışmaz hâle gelir; yanlış kişiye ulaştıysa işe yarar.",
+      "accessText": "Panele kimin giriş yapabileceği ve neleri görebileceği.",
+      "you": "siz",
+      "userEditorText": "Kişiye şifresini belirlemesi için bir e-posta gönderilir.",
+      "userEmailHint": "Giriş için kullanılır.",
+      "roleHint": {
+        "super_admin": "Ayarlar ve erişimler dahil her şeyi görür ve değiştirir.",
+        "admin": "Siparişleri, çalışanları ve talepleri yönetir; ayarlara erişemez.",
+        "employee": "Yalnızca kendi görevlerini görür."
+      }
+    },
+    "settingsData": {
+      "notificationsTitle": "Bildirimleri temizle",
+      "notificationsText": "Genel bakıştaki tüm bildirimleri kaldırır. Siparişler ve talepler korunur.",
+      "clearNotificationsButton": "Bildirimleri temizle",
+      "clearNotificationsConfirm": "Tüm bildirimler silinsin mi?",
+      "clearNotificationsText": "Siparişler, talepler ve diğer veriler aynen kalır."
     }
   },
   "Tracking": {
@@ -2073,22 +2159,22 @@
     "description": "Hero görseli ve promosyon penceresi ayarları.",
     "homeHero": "Ana sayfa hero görseli URL’si",
     "shopHero": "Mağaza hero görseli URL’si",
-    "enabled": "Promosyon penceresini etkinleştir",
-    "showOnce": "Ziyaretçi başına bir kez göster",
-    "promoTitle": "Promosyon başlığı",
-    "promoDescription": "Promosyon açıklaması",
-    "ctaText": "Eylem çağrısı metni",
-    "ctaUrl": "Eylem çağrısı bağlantısı",
+    "enabled": "Kampanya penceresini göster",
+    "showOnce": "Her ziyaretçiye yalnızca bir kez göster",
+    "promoTitle": "Başlık",
+    "promoDescription": "Kısa metin",
+    "ctaText": "Düğme metni",
+    "ctaUrl": "Düğme bağlantısı",
     "imageUrl": "Promosyon görseli URL’si",
-    "videoUrl": "Tanıtım videosu bağlantısı",
-    "start": "Promosyon başlangıcı",
-    "end": "Promosyon bitişi",
-    "style": "Tanıtım stili",
+    "videoUrl": "Video bağlantısı (isteğe bağlı)",
+    "start": "Gösterim başlangıcı",
+    "end": "Gösterim bitişi",
+    "style": "Düzen",
     "save": "Kaydet",
     "reset": "Hero görsellerini sıfırla",
-    "luxury": "Lüks kart",
-    "image": "Görsel öne çıkarma",
-    "announcement": "Duyuru bandı"
+    "luxury": "Metinli kart",
+    "image": "Büyük görsel",
+    "announcement": "İnce banner"
   },
   "OrderEntry": {
     "customer": "Müşteri bilgileri",
@@ -2117,5 +2203,8 @@
     "no": "Hayır",
     "unavailableTitle": "Atölye siparişi şu anda kullanılamıyor",
     "unavailableDescription": "Bu bağlantıya şu anda bağlı aktif ürün bulunmuyor."
+  },
+  "Common": {
+    "loading": "Yükleniyor…"
   }
 }

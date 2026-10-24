@@ -12,6 +12,7 @@ import {
   saveCategoryAction,
   toggleCategoryActiveAction,
 } from "@/app/[locale]/admin/categories/actions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
@@ -76,11 +77,13 @@ function CategoryEditor({
   initialState,
   locale,
   onClose,
+  onDelete,
   onSaved,
 }: {
   initialState: CategoryFormState;
   locale: AppLocale;
   onClose: () => void;
+  onDelete?: () => Promise<boolean>;
   onSaved: (message: string) => void;
 }) {
   const t = useTranslations("Admin.categoriesPage");
@@ -134,6 +137,17 @@ function CategoryEditor({
         <div className="flex flex-wrap items-center justify-between gap-3">
           {formMessage ? (
             <p role="alert" className="text-sm text-rose-300">{formMessage}</p>
+          ) : onDelete ? (
+            <AdminButton
+              variant="ghost"
+              className="text-rose-300 hover:text-rose-200"
+              onClick={async () => {
+                if (await onDelete()) onClose();
+              }}
+            >
+              <Trash2 />
+              {tc("buttons.delete")}
+            </AdminButton>
           ) : (
             <span className="text-xs text-muted">{tc("productEditor.requiredHint")}</span>
           )}
@@ -243,6 +257,7 @@ function CategoryEditor({
 export function AdminCategoriesClient({ categories, locale }: AdminCategoriesClientProps) {
   const t = useTranslations("Admin.categoriesPage");
   const tc = useTranslations("Admin");
+  const confirm = useAdminConfirm();
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [search, setSearch] = useState("");
@@ -270,6 +285,18 @@ export function AdminCategoriesClient({ categories, locale }: AdminCategoriesCli
       setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
       if (result.ok) router.refresh();
     });
+  };
+
+  const deleteCategory = async (category: AdminCategoryRecord) => {
+    const title =
+      category.productCount > 0
+        ? t("deleteConfirmWithProducts", { count: category.productCount, name: category.displayName })
+        : t("deleteConfirm", { name: category.displayName });
+    if (!(await confirm({ title }))) return false;
+    const result = await deleteCategoryAction(locale, category.id);
+    setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+    if (result.ok) router.refresh();
+    return result.ok;
   };
 
   const openEditor = (category: AdminCategoryRecord | null) => {
@@ -376,18 +403,7 @@ export function AdminCategoriesClient({ categories, locale }: AdminCategoriesCli
                     danger: true,
                     icon: Trash2,
                     label: tc("buttons.delete"),
-                    onSelect: () => {
-                      const message =
-                        category.productCount > 0
-                          ? t("deleteConfirmWithProducts", {
-                              count: category.productCount,
-                              name: category.displayName,
-                            })
-                          : t("deleteConfirm", { name: category.displayName });
-                      if (window.confirm(message)) {
-                        runAction(() => deleteCategoryAction(locale, category.id));
-                      }
-                    },
+                    onSelect: () => void deleteCategory(category),
                   },
                 ]}
               />
@@ -402,6 +418,7 @@ export function AdminCategoriesClient({ categories, locale }: AdminCategoriesCli
           locale={locale}
           initialState={createCategoryForm(editing.category, categories.length + 1)}
           onClose={() => setEditing(null)}
+          onDelete={editing.category ? () => deleteCategory(editing.category!) : undefined}
           onSaved={(message) => {
             setEditing(null);
             setFeedback({ message, tone: "success" });

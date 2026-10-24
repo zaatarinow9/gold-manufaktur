@@ -12,6 +12,8 @@ export type AdminNotificationRecord = {
   id: string;
   isRead: boolean;
   linkPath: string;
+  /** The order or record it points to no longer exists. */
+  isStale?: boolean;
   message: string;
   title: string;
   type:
@@ -90,18 +92,66 @@ export async function getScopedAdminNotifications(
     return [];
   }
 
-  return data
+  const visible = data
     .filter((notification) => canViewNotification(viewer, notification))
-    .slice(0, limit)
-    .map((notification) => ({
+    .slice(0, limit);
+
+  // Links to orders that were reset or deleted would open an empty page.
+  const orderIds = visible
+    .map((notification) => notification.link_path?.match(/^\/admin\/orders\/([0-9a-f-]{36})/i)?.[1])
+    .filter((id): id is string => Boolean(id));
+  let existingOrderIds = new Set<string>();
+  if (orderIds.length > 0) {
+    const { data: existing } = await supabase.from("orders").select("id").in("id", orderIds);
+    existingOrderIds = new Set((existing ?? []).map((row) => row.id));
+  }
+
+  return visible.map((notification) => {
+    const linkedOrderId = notification.link_path?.match(/^\/admin\/orders\/([0-9a-f-]{36})/i)?.[1];
+    const isStale = Boolean(linkedOrderId && !existingOrderIds.has(linkedOrderId));
+    return {
       createdAt: notification.created_at,
       id: notification.id,
       isRead: notification.is_read,
-      linkPath: notification.link_path ?? "",
+      isStale,
+      linkPath: isStale ? "" : notification.link_path ?? "",
       message: notification.message,
       title: notification.title,
       type: notification.type,
-    }));
+    };
+  });
+}
+
+async function getVisibleNotificationIds(viewer: AdminViewer, ids?: string[]) {
+  const supabase = createSupabaseAdminClient();
+  let query = supabase.from("admin_notifications").select("id, employee_id, profile_id, workshop_id");
+  if (ids) query = query.in("id", ids);
+  const { data, error } = await query;
+  if (error) throw new Error("NOTIFICATION_UPDATE_FAILED");
+  return (data ?? []).filter((row) => canViewNotification(viewer, row)).map((row) => row.id);
+}
+
+/** Marks one notification, or every visible one, as read. */
+export async function markAdminNotificationsRead(viewer: AdminViewer, ids?: string[]) {
+  const visibleIds = await getVisibleNotificationIds(viewer, ids);
+  if (visibleIds.length === 0) return 0;
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase
+    .from("admin_notifications")
+    .update({ is_read: true, read_at: new Date().toISOString() })
+    .in("id", visibleIds);
+  if (error) throw new Error("NOTIFICATION_UPDATE_FAILED");
+  return visibleIds.length;
+}
+
+/** Deletes one notification, or every visible one. */
+export async function deleteAdminNotifications(viewer: AdminViewer, ids?: string[]) {
+  const visibleIds = await getVisibleNotificationIds(viewer, ids);
+  if (visibleIds.length === 0) return 0;
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase.from("admin_notifications").delete().in("id", visibleIds);
+  if (error) throw new Error("NOTIFICATION_UPDATE_FAILED");
+  return visibleIds.length;
 }
 
 export async function createAdminNotification(input: CreateAdminNotificationInput) {

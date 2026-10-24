@@ -427,9 +427,9 @@
     "siteImages": {
       "title": "Website-Bilder",
       "description": "Laden Sie Bildüberschreibungen für öffentliche Website-Bereiche hoch. Produktbilder bleiben unverändert.",
-      "homepageHero": "Startseiten-Hero",
-      "shopHero": "Shop-Hero",
-      "promoPopup": "Promo-Popup",
+      "homepageHero": "Startseite",
+      "shopHero": "Shop",
+      "promoPopup": "Bild im Aktions-Fenster",
       "upload": "Bild hochladen",
       "replace": "Bild ersetzen",
       "reset": "Standardbild verwenden",
@@ -438,7 +438,7 @@
       "uploadError": "Bild konnte nicht hochgeladen werden.",
       "invalidFile": "Wählen Sie eine gültige Bilddatei aus.",
       "productsExcluded": "Produktbilder werden separat verwaltet und hier nicht geändert.",
-      "usesDefault": "Standardbild wird verwendet.",
+      "usesDefault": "Kein eigenes Bild",
       "resetSuccess": "Standardbild wiederhergestellt."
     },
     "orderReset": {
@@ -526,7 +526,7 @@
       "products": "Produkte",
       "categories": "Kategorien",
       "gallery": "Neuer Auftrag",
-      "options": "Produktoptionen",
+      "options": "Bestellfragen",
       "orders": "Aufträge",
       "workshops": "Werkstätten",
       "employees": "Mitarbeiter",
@@ -582,7 +582,8 @@
       "saveStatus": "Status speichern",
       "logout": "Abmelden",
       "cancel": "Abbrechen",
-      "backToTasks": "Zurück zu meinen Aufgaben"
+      "backToTasks": "Zurück zu meinen Aufgaben",
+      "confirm": "Bestätigen"
     },
     "common": {
       "noAccessTitle": "Zugriff eingeschränkt",
@@ -658,7 +659,9 @@
         "readyOrdersHint": "Fertig für Übergabe oder Abholung",
         "employees": "Mitarbeiter",
         "employeesHint": "Im System",
-        "activeOrders": "Aktive Aufträge"
+        "activeOrders": "Aktive Aufträge",
+        "inquiries": "Offene Anfragen",
+        "inquiriesHint": "Kunden warten auf Antwort"
       },
       "recentOrdersTitle": "Neueste Aufträge",
       "recentOrdersDescription": "Neueste Aufträge und Status.",
@@ -681,7 +684,28 @@
       "noNotifications": "Noch keine Benachrichtigungen.",
       "unread": "Ungelesen",
       "workshopOrders": "{count, plural, =0 {keine Aufträge} one {# Auftrag} other {# Aufträge}}",
-      "onTimeRate": "{rate} % pünktlich"
+      "onTimeRate": "{rate} % pünktlich",
+      "catalog": {
+        "title": "Katalog",
+        "description": "Was im Shop sichtbar ist – und was noch fehlt.",
+        "visible": "Produkte im Shop",
+        "hidden": "Ausgeblendete Produkte",
+        "noPhoto": "Produkte ohne Foto",
+        "emptyCategories": "Kategorien ohne Produkte"
+      },
+      "markAllRead": "Alle gelesen",
+      "markRead": "Als gelesen markieren",
+      "clearAll": "Alle löschen",
+      "clearAllConfirm": "Alle Benachrichtigungen löschen?",
+      "clearAllText": "Aufträge, Anfragen und andere Daten bleiben unverändert. Nur die Hinweise in dieser Liste werden entfernt.",
+      "notificationStale": "Eintrag existiert nicht mehr",
+      "notificationActions": "Aktionen für „{title}“",
+      "notificationsMessages": {
+        "markedRead": "Als gelesen markiert.",
+        "deleted": "Benachrichtigung gelöscht.",
+        "cleared": "Alle Benachrichtigungen wurden gelöscht.",
+        "failed": "Das hat nicht geklappt. Bitte versuchen Sie es erneut."
+      }
     },
     "login": {
       "title": "Admin-Zugang für Gold Helwah",
@@ -764,7 +788,7 @@
         "activated": "Das Produkt ist jetzt im Shop sichtbar.",
         "deactivated": "Das Produkt wurde im Shop ausgeblendet.",
         "deleted": "Produkt gelöscht.",
-        "duplicated": "Kopie angelegt.",
+        "duplicated": "Kopie angelegt. Sie ist noch ausgeblendet – bearbeiten Sie sie und schalten Sie sie dann im Shop sichtbar.",
         "featuredOn": "Wird jetzt auf der Startseite gezeigt.",
         "featuredOff": "Von der Startseite entfernt.",
         "softDeleted": "Das Produkt wird noch in Aufträgen verwendet und wurde deshalb nur ausgeblendet."
@@ -1084,7 +1108,7 @@
         "sendInvite": "Einladung senden",
         "resendInvite": "Einladung erneut senden",
         "dangerTitle": "Werkstatt löschen",
-        "dangerHint": "Nur möglich, wenn keine Mitarbeiter und Aufträge mehr zugeordnet sind.",
+        "dangerHint": "Mitarbeiter bleiben erhalten. Nicht möglich, solange der Werkstatt Aufträge zugeordnet sind.",
         "deleteWorkshop": "Werkstatt endgültig löschen",
         "deleteConfirm": "Werkstatt „{name}“ endgültig löschen?",
         "account": {
@@ -1174,7 +1198,12 @@
         "shift": "Schicht",
         "notes": "Notizen",
         "active": "Mitarbeiter ist aktiv"
-      }
+      },
+      "deleteConfirm": "{name} löschen?",
+      "deleteConfirmText": "Der Mitarbeiter wird entfernt und ein verknüpftes Konto wird deaktiviert. Mitarbeiter mit Aufträgen können nur deaktiviert werden.",
+      "deleted": "Der Mitarbeiter wurde gelöscht.",
+      "deleteHasOrders": "Dieser Mitarbeiter hat Aufträge und kann nicht gelöscht werden. Deaktivieren Sie ihn stattdessen.",
+      "deleteFailed": "Der Mitarbeiter konnte nicht gelöscht werden."
     },
     "attendance": {
       "eyebrow": "Arbeitszeiten",
@@ -1340,7 +1369,7 @@
     },
     "settingsClient": {
       "title": "Einstellungen",
-      "description": "Website-Einstellungen, Benachrichtigungen und Benutzer an einem Ort verwalten.",
+      "description": "Website, E-Mails, Zugänge und Daten – nach Bereichen geordnet.",
       "diagnosticsTitle": "Systemstatus",
       "notificationTitle": "Benachrichtigungen",
       "adminEmail": "E-Mail für Auftrags- und Anfragebenachrichtigungen",
@@ -1388,11 +1417,14 @@
       "inviteAgain": "Neuen Link senden",
       "roleOwner": "Hauptadministrator",
       "roleAdmin": "Administrator",
-      "roleEmployee": "Mitarbeiter"
+      "roleEmployee": "Mitarbeiter",
+      "userDeleteConfirm": "Zugang von {name} löschen?",
+      "userDeleteText": "Die Person kann sich danach nicht mehr anmelden.",
+      "userActions": "Aktionen für {name}"
     },
     "navGroups": {
       "orders": "Tagesgeschäft",
-      "catalog": "Katalog",
+      "catalog": "Shop",
       "team": "Team",
       "customers": "Kunden",
       "system": "System"
@@ -1411,7 +1443,7 @@
       "optional": "optional",
       "otherLanguages": "Weitere Sprachen",
       "otherLanguagesStatus": "{count} von {total} übersetzt – optional",
-      "fallbackHint": "Leere Felder zeigen auf der Website automatisch den deutschen Text."
+      "fallbackHint": "Leere Sprachen zeigen auf der Website automatisch den Text, den Sie oben eingegeben haben."
     },
     "imageUploader": {
       "addPhotos": "Fotos hinzufügen",
@@ -1471,22 +1503,22 @@
       "photosTitle": "Fotos",
       "photosHint": "Das erste Foto ist das Hauptfoto im Shop.",
       "textTitle": "Name und Beschreibung",
-      "textHint": "Deutsch und Arabisch sind Pflicht, die übrigen Sprachen optional.",
+      "textHint": "In Ihrer Sprache genügt. Weitere Sprachen sind optional.",
       "nameLabel": "Produktname",
       "descriptionLabel": "Beschreibung",
-      "categoryTitle": "Kategorie und Kundenangaben",
+      "categoryTitle": "Kategorie",
       "categoryLabel": "Kategorie",
       "noCategory": "Ohne Kategorie",
       "optionGroupLabel": "Kundenangaben",
       "optionGroupHelper": "Was Kunden bei einer Anfrage angeben, z. B. Name oder Karat.",
-      "noOptionGroup": "Keine Angaben nötig",
+      "noOptionGroup": "Keine Fragen",
       "optionGroupPreview": "Kunden werden gefragt nach: {fields}",
       "optionGroupEmpty": "Diese Gruppe enthält noch keine Felder.",
       "visibilityTitle": "Sichtbarkeit",
       "visibleLabel": "Im Shop anzeigen",
       "visibleHint": "Ausgeblendete Produkte bleiben gespeichert, sind aber für Kunden unsichtbar.",
       "featuredLabel": "Auf der Startseite hervorheben",
-      "featuredHint": "Erscheint im Bereich „Ausgewählte Produkte“ (die ersten vier).",
+      "featuredHint": "Erscheint auf der Startseite im Bereich „Aus dem Showroom“.",
       "advancedTitle": "Weitere Einstellungen",
       "advancedHint": "Artikelnummer, Adresse, Reihenfolge und Schlagwörter – wird automatisch ausgefüllt.",
       "skuLabel": "Artikelnummer",
@@ -1497,7 +1529,17 @@
       "sortOrderLabel": "Reihenfolge",
       "sortOrderHelper": "Kleinere Zahlen erscheinen zuerst.",
       "tagsLabel": "Schlagwörter",
-      "tagsHelper": "Erscheinen als kleine Etiketten in der Produktansicht. Mit Kommas trennen."
+      "tagsHelper": "Erscheinen als kleine Etiketten in der Produktansicht. Mit Kommas trennen.",
+      "categoryHint": "Wählen Sie, wo das Produkt im Shop erscheint. Fehlt eine Kategorie, legen Sie sie hier direkt an.",
+      "newCategory": "Neue Kategorie",
+      "newCategoryPlaceholder": "Name der Kategorie",
+      "newCategoryCreate": "Anlegen",
+      "quickCategoryFailed": "Die Kategorie konnte nicht angelegt werden.",
+      "customerTitle": "Was soll der Kunde angeben?",
+      "customerHint": "Fragen, die beim Anfragen dieses Produkts gestellt werden – z. B. Name für die Gravur oder Karat.",
+      "noOptionGroupHint": "Der Kunde schickt nur Name, Kontakt und Nachricht.",
+      "manageQuestions": "Fragen bearbeiten",
+      "saveAndNext": "Speichern & nächstes"
     },
     "categoriesPage": {
       "title": "Kategorien",
@@ -1535,8 +1577,8 @@
       }
     },
     "optionsPage": {
-      "title": "Produktoptionen",
-      "description": "Fragen, die Kunden bei einer Anfrage oder Bestellung beantworten – z. B. der gewünschte Name oder das Karat. Fassen Sie Fragen in Sets zusammen und weisen Sie ein Set beim Produkt zu.",
+      "title": "Bestellfragen",
+      "description": "Was Kunden beim Anfragen eines Produkts angeben – z. B. den Namen für die Gravur oder das Karat. Fassen Sie Fragen in Sets zusammen und wählen Sie das Set im Produkt aus.",
       "addGroup": "Neues Set",
       "addField": "Frage hinzufügen",
       "renameGroup": "Set umbenennen",
@@ -1564,7 +1606,7 @@
       "presetsHint": "Eine Vorlage füllt alle Sprachen aus – danach können Sie alles anpassen.",
       "typeTitle": "Art der Antwort",
       "questionTitle": "Frage",
-      "questionHint": "Deutsch und Arabisch sind Pflicht, weitere Sprachen optional.",
+      "questionHint": "In Ihrer Sprache genügt. Weitere Sprachen sind optional.",
       "labelLabel": "Frage",
       "helpLabel": "Hinweis unter dem Feld",
       "placeholderLabel": "Beispiel im Feld",
@@ -1955,7 +1997,8 @@
       "PERMISSION_DENIED": "Sie haben dafür keine Berechtigung.",
       "WORKSHOP_DELETED": "Die Werkstatt wurde gelöscht.",
       "WORKSHOP_NOT_EMPTY": "Die Werkstatt kann erst gelöscht werden, wenn keine Mitarbeiter und Aufträge mehr zugeordnet sind.",
-      "FAILED": "Die Aktion konnte nicht abgeschlossen werden."
+      "FAILED": "Die Aktion konnte nicht abgeschlossen werden.",
+      "WORKSHOP_HAS_ORDERS": "Diese Werkstatt hat noch Aufträge. Weisen Sie die Aufträge zuerst einer anderen Werkstatt zu oder deaktivieren Sie die Werkstatt."
     },
     "workshopsPage": {
       "description": "Werkstätten, die Ihre Aufträge fertigen – mit Ansprechpartner und aktueller Auslastung.",
@@ -1980,7 +2023,50 @@
       "notesLabel": "Interne Notizen",
       "notesHelper": "Nur für die Verwaltung sichtbar.",
       "activeLabel": "Aktiv",
-      "activeHint": "Inaktiven Werkstätten können keine neuen Aufträge zugewiesen werden."
+      "activeHint": "Inaktiven Werkstätten können keine neuen Aufträge zugewiesen werden.",
+      "deleteConfirm": "Werkstatt „{name}“ löschen?",
+      "deleteConfirmText": "{count, plural, =0 {Die Werkstatt wird endgültig entfernt.} one {Die Werkstatt wird endgültig entfernt. # Mitarbeiter bleibt erhalten und kann einer anderen Werkstatt zugeordnet werden.} other {Die Werkstatt wird endgültig entfernt. # Mitarbeiter bleiben erhalten und können einer anderen Werkstatt zugeordnet werden.}}"
+    },
+    "settingsSections": {
+      "website": "Website",
+      "emails": "E-Mails",
+      "orderLink": "Auftragslink",
+      "access": "Zugänge",
+      "data": "Daten & Zurücksetzen",
+      "imagesTitle": "Bilder der Website",
+      "imagesText": "Großes Bild auf der Startseite und neben dem Shop-Titel. Ohne eigenes Bild wird ein Produktfoto verwendet.",
+      "homeHeroHint": "Aktuell: automatisch ein Produktfoto.",
+      "shopHeroHint": "Aktuell: kein Bild, nur der Titel.",
+      "promoTitle": "Aktions-Fenster",
+      "promoText": "Ein kleines Fenster, das Besuchern beim Öffnen der Startseite eine Aktion zeigt – z. B. zu Feiertagen.",
+      "promoEnabledHint": "Ausgeschaltet sehen Besucher nichts, Ihre Eingaben bleiben gespeichert.",
+      "promoContent": "Inhalt",
+      "promoLook": "Aussehen",
+      "promoWhen": "Zeitraum",
+      "promoImageHint": "Optional. Wird im Aktions-Fenster angezeigt.",
+      "emailsText": "Wohin der Shop E-Mails über neue Aufträge, Anfragen und Support-Nachrichten schickt.",
+      "adminEmailHint": "Erhält neue Aufträge und Produktanfragen.",
+      "supportEmailHint": "Erhält Fragen von Kunden zu einem Auftrag.",
+      "ownerEmailHint": "Erhält wichtige Systemmeldungen.",
+      "orderLinkText": "Ein privater Link, über den Partner – z. B. eine Filiale oder Werkstatt – Aufträge ohne Login eintragen können.",
+      "expiresHint": "Leer lassen, wenn der Link nicht ablaufen soll.",
+      "rotateHint": "Erstellt einen neuen Link. Der alte Link funktioniert danach nicht mehr – nützlich, wenn er in falsche Hände geraten ist.",
+      "accessText": "Wer sich im Dashboard anmelden darf und was diese Person sehen kann.",
+      "you": "Sie",
+      "userEditorText": "Die Person erhält eine E-Mail, um ihr Passwort festzulegen.",
+      "userEmailHint": "Wird für die Anmeldung verwendet.",
+      "roleHint": {
+        "super_admin": "Sieht und ändert alles, auch Einstellungen und Zugänge.",
+        "admin": "Verwaltet Aufträge, Mitarbeiter und Anfragen – keine Einstellungen.",
+        "employee": "Sieht nur die eigenen Aufgaben."
+      }
+    },
+    "settingsData": {
+      "notificationsTitle": "Benachrichtigungen leeren",
+      "notificationsText": "Entfernt alle Hinweise aus der Übersicht. Aufträge und Anfragen bleiben erhalten.",
+      "clearNotificationsButton": "Benachrichtigungen leeren",
+      "clearNotificationsConfirm": "Alle Benachrichtigungen löschen?",
+      "clearNotificationsText": "Aufträge, Anfragen und andere Daten bleiben unverändert."
     }
   },
   "Tracking": {
@@ -2073,22 +2159,22 @@
     "description": "Hero-Bildüberschreibungen und Aktions-Popup-Einstellungen.",
     "homeHero": "URL des Startseiten-Hero-Bildes",
     "shopHero": "URL des Shop-Hero-Bildes",
-    "enabled": "Aktions-Popup aktivieren",
-    "showOnce": "Einmal pro Besucher anzeigen",
-    "promoTitle": "Aktionstitel",
-    "promoDescription": "Aktionsbeschreibung",
-    "ctaText": "CTA-Text",
-    "ctaUrl": "CTA-URL",
+    "enabled": "Aktions-Fenster anzeigen",
+    "showOnce": "Jedem Besucher nur einmal zeigen",
+    "promoTitle": "Überschrift",
+    "promoDescription": "Kurzer Text",
+    "ctaText": "Text auf dem Knopf",
+    "ctaUrl": "Ziel des Knopfes (Link)",
     "imageUrl": "URL des Aktionsbildes",
-    "videoUrl": "URL des Aktionsvideos",
-    "start": "Aktionsbeginn",
-    "end": "Aktionsende",
-    "style": "Aktionsstil",
+    "videoUrl": "Video-Link (optional)",
+    "start": "Anzeigen ab",
+    "end": "Anzeigen bis",
+    "style": "Darstellung",
     "save": "Speichern",
     "reset": "Hero-Bilder zurücksetzen",
-    "luxury": "Luxuskarte",
-    "image": "Bildfunktion",
-    "announcement": "Ankündigungsbanner"
+    "luxury": "Karte mit Text",
+    "image": "Großes Bild",
+    "announcement": "Schmales Banner"
   },
   "OrderEntry": {
     "customer": "Kundendaten",
@@ -2117,5 +2203,8 @@
     "no": "Nein",
     "unavailableTitle": "Werkstattauftrag derzeit nicht verfügbar",
     "unavailableDescription": "Es sind aktuell keine aktiven Produkte für diesen Link hinterlegt."
+  },
+  "Common": {
+    "loading": "Wird geladen …"
   }
 }

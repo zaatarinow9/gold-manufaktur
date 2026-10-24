@@ -1,17 +1,17 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Plus, Settings2, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 
-import { saveProductAction } from "@/app/[locale]/admin/products/actions";
+import { quickCreateCategoryAction, saveProductAction } from "@/app/[locale]/admin/products/actions";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
 import { AdminImageUploader } from "@/components/admin/AdminImageUploader";
 import { AdminInput } from "@/components/admin/AdminInput";
-import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminSwitch } from "@/components/admin/AdminSwitch";
 import { AdminTranslationFields } from "@/components/admin/AdminTranslationFields";
+import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import type {
   AdminCategoryRecord,
@@ -84,7 +84,9 @@ type ProductEditorProps = {
   initialState: ProductFormState;
   locale: AppLocale;
   onClose: () => void;
-  onSaved: (message: string) => void;
+  /** Shown for existing products; resolves true when the product was deleted. */
+  onDelete?: () => Promise<boolean>;
+  onSaved: (message: string, options?: { addAnother?: boolean; categoryId?: string }) => void;
 };
 
 export function ProductEditor({
@@ -93,6 +95,7 @@ export function ProductEditor({
   initialState,
   locale,
   onClose,
+  onDelete,
   onSaved,
 }: ProductEditorProps) {
   const t = useTranslations("Admin.productEditor");
@@ -103,6 +106,30 @@ export function ProductEditor({
   const [isSaving, startSaving] = useTransition();
   const [isUploading, setIsUploading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [extraCategories, setExtraCategories] = useState<{ id: string; name: string }[]>([]);
+  const [newCategoryOpen, setNewCategoryOpen] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [isCreatingCategory, startCreatingCategory] = useTransition();
+  const categoryChoices = [
+    ...categories.map((category) => ({ hidden: !category.isActive, id: category.id, name: category.displayName })),
+    ...extraCategories.map((category) => ({ hidden: false, id: category.id, name: category.name })),
+  ];
+
+  const createCategoryInline = () => {
+    const name = newCategoryName.trim();
+    if (!name) return;
+    startCreatingCategory(async () => {
+      const result = await quickCreateCategoryAction(locale, name);
+      if (!result.ok || !result.category) {
+        setErrors((current) => ({ ...current, categoryId: result.message }));
+        return;
+      }
+      setExtraCategories((current) => [...current, result.category!]);
+      update("categoryId", result.category.id);
+      setNewCategoryName("");
+      setNewCategoryOpen(false);
+    });
+  };
   const isNew = !form.id;
   const selectedGroup = groups.find((group) => group.id === form.optionGroupId) ?? null;
   const advancedHasError = advancedFields.some((field) => errors[field]);
@@ -121,7 +148,7 @@ export function ProductEditor({
     });
   };
 
-  const submit = () => {
+  const submit = (addAnother = false) => {
     setFormMessage(null);
 
     startSaving(async () => {
@@ -169,7 +196,7 @@ export function ProductEditor({
         return;
       }
 
-      onSaved(result.message);
+      onSaved(result.message, { addAnother, categoryId: form.categoryId });
     });
   };
 
@@ -180,21 +207,40 @@ export function ProductEditor({
       title={isNew ? t("titleNew") : t("titleEdit")}
       description={isNew ? t("descriptionNew") : form.name[locale] || form.name.de}
       footer={
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="space-y-3">
           {formMessage ? (
             <p role="alert" className="text-sm text-rose-300">
               {formMessage}
             </p>
-          ) : (
-            <span className="text-xs text-muted">{t("requiredHint")}</span>
-          )}
-          <div className="ms-auto flex gap-2">
-            <AdminButton variant="ghost" onClick={onClose}>
-              {tc("buttons.cancel")}
-            </AdminButton>
-            <AdminButton variant="primary" onClick={submit} disabled={isSaving || isUploading}>
-              {isSaving ? t("saving") : isNew ? t("create") : t("save")}
-            </AdminButton>
+          ) : null}
+          <div className="flex flex-wrap items-center gap-2">
+            {onDelete ? (
+              <AdminButton
+                variant="ghost"
+                className="text-rose-300 hover:text-rose-200"
+                onClick={async () => {
+                  if (await onDelete()) onClose();
+                }}
+              >
+                <Trash2 />
+                {tc("buttons.delete")}
+              </AdminButton>
+            ) : (
+              <span className="text-xs text-muted">{t("requiredHint")}</span>
+            )}
+            <div className="ms-auto flex flex-wrap justify-end gap-2">
+              <AdminButton variant="ghost" onClick={onClose}>
+                {tc("buttons.cancel")}
+              </AdminButton>
+              {isNew ? (
+                <AdminButton variant="secondary" onClick={() => submit(true)} disabled={isSaving || isUploading}>
+                  {t("saveAndNext")}
+                </AdminButton>
+              ) : null}
+              <AdminButton variant="primary" onClick={() => submit()} disabled={isSaving || isUploading}>
+                {isSaving ? t("saving") : isNew ? t("create") : t("save")}
+              </AdminButton>
+            </div>
           </div>
         </div>
       }
@@ -238,47 +284,104 @@ export function ProductEditor({
         />
       </AdminFormSection>
 
-      <AdminFormSection title={t("categoryTitle")}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <AdminSelect
-            id="categoryId"
-            label={t("categoryLabel")}
-            value={form.categoryId}
-            errorText={errors.categoryId}
-            onChange={(event) => update("categoryId", event.target.value)}
-          >
-            <option value="">{t("noCategory")}</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.displayName}
-                {category.isActive ? "" : ` (${tc("common.hidden")})`}
-              </option>
-            ))}
-          </AdminSelect>
-          <AdminSelect
-            id="optionGroupId"
-            label={t("optionGroupLabel")}
-            helperText={t("optionGroupHelper")}
-            value={form.optionGroupId}
-            onChange={(event) => update("optionGroupId", event.target.value)}
-          >
-            <option value="">{t("noOptionGroup")}</option>
-            {groups.map((group) => (
-              <option key={group.id} value={group.id}>
-                {group.displayName}
-              </option>
-            ))}
-          </AdminSelect>
+      <AdminFormSection title={t("categoryTitle")} hint={t("categoryHint")}>
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("categoryLabel")} id="categoryId">
+          {categoryChoices.map((category) => {
+            const selected = form.categoryId === category.id;
+            return (
+              <button
+                key={category.id}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                className="admin-chip"
+                onClick={() => update("categoryId", selected ? "" : category.id)}
+              >
+                {selected ? <Check className="h-3.5 w-3.5" /> : null}
+                {category.name}
+                {category.hidden ? <span className="text-xs opacity-70">({tc("common.hidden")})</span> : null}
+              </button>
+            );
+          })}
+          {newCategoryOpen ? (
+            <span className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+              <input
+                autoFocus
+                className="admin-input h-9 w-56 py-1.5"
+                placeholder={t("newCategoryPlaceholder")}
+                aria-label={t("newCategory")}
+                value={newCategoryName}
+                onChange={(event) => setNewCategoryName(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    createCategoryInline();
+                  }
+                  if (event.key === "Escape") setNewCategoryOpen(false);
+                }}
+              />
+              <AdminButton size="sm" variant="primary" onClick={createCategoryInline} disabled={isCreatingCategory || !newCategoryName.trim()}>
+                {t("newCategoryCreate")}
+              </AdminButton>
+              <AdminButton size="sm" variant="ghost" onClick={() => setNewCategoryOpen(false)}>
+                {tc("buttons.cancel")}
+              </AdminButton>
+            </span>
+          ) : (
+            <button type="button" className="admin-chip border-dashed" onClick={() => setNewCategoryOpen(true)}>
+              <Plus className="h-3.5 w-3.5" />
+              {t("newCategory")}
+            </button>
+          )}
         </div>
-        {selectedGroup ? (
-          <div className="mt-3 rounded-[0.625rem] border border-white/[0.06] bg-white/[0.02] px-3 py-2.5 text-sm text-muted">
-            {selectedGroup.options.length > 0
-              ? t("optionGroupPreview", {
-                  fields: selectedGroup.options.map((option) => option.displayLabel).join(", "),
-                })
-              : t("optionGroupEmpty")}
-          </div>
+        {errors.categoryId ? (
+          <p role="alert" className="mt-2 text-xs text-rose-300">
+            {errors.categoryId}
+          </p>
         ) : null}
+      </AdminFormSection>
+
+      <AdminFormSection title={t("customerTitle")} hint={t("customerHint")}>
+        <div className="grid gap-2" role="radiogroup" aria-label={t("customerTitle")}>
+          {[{ displayName: t("noOptionGroup"), id: "", options: [] as AdminOptionGroupRecord["options"] }, ...groups].map((group) => {
+            const selected = form.optionGroupId === group.id;
+            return (
+              <button
+                key={group.id || "none"}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => update("optionGroupId", group.id)}
+                className={`flex items-start gap-3 rounded-[0.75rem] border px-3.5 py-3 text-start transition ${
+                  selected ? "border-gold/50 bg-gold/[0.07]" : "border-white/[0.07] hover:border-white/15"
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
+                    selected ? "border-gold bg-gold" : "border-white/30"
+                  }`}
+                >
+                  {selected ? <span className="h-1.5 w-1.5 rounded-full bg-[#1a1209]" /> : null}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-medium text-foreground">{group.displayName}</span>
+                  <span className="mt-0.5 block text-xs text-muted">
+                    {group.id
+                      ? group.options.length > 0
+                        ? group.options.map((option) => option.displayLabel).join(", ")
+                        : t("optionGroupEmpty")
+                      : t("noOptionGroupHint")}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <Link href="/admin/options" className="admin-button admin-button-ghost admin-button-sm mt-3">
+          <Settings2 />
+          {t("manageQuestions")}
+        </Link>
       </AdminFormSection>
 
       <AdminFormSection title={t("visibilityTitle")}>

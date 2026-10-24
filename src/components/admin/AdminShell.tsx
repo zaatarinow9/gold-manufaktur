@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
 import type { AdminUser } from "@/types/admin";
 
+import { AdminConfirmProvider } from "./AdminConfirm";
 import { AdminHeader } from "./AdminHeader";
 import { AdminMobileNav } from "./AdminMobileNav";
 import { AdminPrivacyProvider } from "./AdminPrivacyMode";
@@ -40,23 +41,25 @@ export function AdminShell({
   return (
     <AdminPrivacyProvider>
       <div className="admin-shell">
-        <AdminMobileNav
-          currentUser={currentUser}
-          isOpen={isMobileNavOpen}
-          navCounts={navCounts}
-          onClose={closeMobileNav}
-        />
-        <AdminSidebar currentUser={currentUser} navCounts={navCounts} />
-        <div className="flex min-h-screen min-w-0 flex-col lg:ps-[16.5rem]">
-          <AdminHeader
+        <AdminConfirmProvider>
+          <AdminMobileNav
             currentUser={currentUser}
+            isOpen={isMobileNavOpen}
             navCounts={navCounts}
-            onOpenNav={() => setIsMobileNavOpen(true)}
+            onClose={closeMobileNav}
           />
-          <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-            <div className="admin-content">{children}</div>
-          </main>
-        </div>
+          <AdminSidebar currentUser={currentUser} navCounts={navCounts} />
+          <div className="flex min-h-screen min-w-0 flex-col lg:ps-[16.5rem]">
+            <AdminHeader
+              currentUser={currentUser}
+              navCounts={navCounts}
+              onOpenNav={() => setIsMobileNavOpen(true)}
+            />
+            <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+              <div className="admin-content">{children}</div>
+            </main>
+          </div>
+        </AdminConfirmProvider>
       </div>
     </AdminPrivacyProvider>
   );

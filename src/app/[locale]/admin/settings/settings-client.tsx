@@ -8,7 +8,26 @@ import {
   useSyncExternalStore,
   useTransition,
 } from "react";
-import { useRouter } from "next/navigation";
+import {
+  AlertTriangle,
+  BellOff,
+  Copy,
+  Database,
+  Globe,
+  KeyRound,
+  Link2,
+  type LucideIcon,
+  Mail,
+  Pencil,
+  Plus,
+  Power,
+  RefreshCw,
+  Send,
+  Trash2,
+  Upload,
+  Users,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import {
@@ -28,13 +47,18 @@ import {
   getOrderResetCountAction,
   resetOrdersToColdArchiveAction,
 } from "@/app/[locale]/admin/settings/order-reset-actions";
+import { clearNotificationsAction } from "@/app/[locale]/admin/notification-actions";
+import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
+import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
 import { AdminActionPendingBar } from "@/components/admin/AdminActionPendingBar";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
+import { AdminSwitch } from "@/components/admin/AdminSwitch";
 import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
 import type { AppLocale } from "@/i18n/routing";
 import { getRequiredFieldBadge } from "@/lib/admin/clientForm";
@@ -84,11 +108,9 @@ type SiteImageResponse = {
   success: boolean;
 };
 
-const SITE_IMAGE_SLOTS: StaticSiteImageSlot[] = [
-  "homepageHero",
-  "shopHero",
-  "promoPopupImage",
-];
+type SettingsSection = "access" | "data" | "emails" | "orderLink" | "website";
+
+const settingsSections: SettingsSection[] = ["website", "emails", "orderLink", "access", "data"];
 
 function createUserForm(): UserFormState {
   return {
@@ -160,6 +182,26 @@ export function AdminSettingsClient({
   const loading = useTranslations("Admin.loading");
   const siteImagesCopy = useTranslations("Admin.siteImages");
   const publicVisuals = useTranslations("PublicVisuals");
+  const sectionCopy = useTranslations("Admin.settingsSections");
+  const dataCopy = useTranslations("Admin.settingsData");
+  const confirm = useAdminConfirm();
+  const searchParams = useSearchParams();
+  const requestedSection = searchParams.get("section") as SettingsSection | null;
+  const [section, setSection] = useState<SettingsSection>(
+    requestedSection && settingsSections.includes(requestedSection) ? requestedSection : "website"
+  );
+  const [userEditorOpen, setUserEditorOpen] = useState(false);
+
+  const selectSection = (next: SettingsSection) => {
+    setSection(next);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("section", next);
+      window.history.replaceState(window.history.state, "", url);
+    } catch {
+      // Remembering the section in the address bar is a convenience only.
+    }
+  };
   const userEmailLabel = settingsCopy("email");
   const userInactiveLabel = settingsCopy("inactive");
   const activateUserLabel = settingsCopy("activate");
@@ -285,18 +327,6 @@ export function AdminSettingsClient({
         refreshPage();
       }
     });
-  };
-
-  const getSiteImageLabel = (slot: StaticSiteImageSlot) => {
-    if (slot === "homepageHero") {
-      return siteImagesCopy("homepageHero");
-    }
-
-    if (slot === "shopHero") {
-      return siteImagesCopy("shopHero");
-    }
-
-    return siteImagesCopy("promoPopup");
   };
 
   const getSiteImageErrorMessage = (error?: string) => {
@@ -500,6 +530,7 @@ export function AdminSettingsClient({
 
       if (result.ok || result.shouldRefresh) {
         setUserFormState(createUserForm());
+        setUserEditorOpen(false);
         refreshPage();
       }
     });
@@ -553,8 +584,12 @@ export function AdminSettingsClient({
     });
   };
 
-  const handleUserDelete = (user: ManagedAdminUserRecord) => {
-    if (!window.confirm(settingsCopy("userDelete"))) {
+  const handleUserDelete = async (user: ManagedAdminUserRecord) => {
+    const confirmed = await confirm({
+      description: settingsCopy("userDeleteText"),
+      title: settingsCopy("userDeleteConfirm", { name: user.displayName || user.email }),
+    });
+    if (!confirmed) {
       return;
     }
 
@@ -572,569 +607,583 @@ export function AdminSettingsClient({
     });
   };
 
+  const handleClearNotifications = async () => {
+    const confirmed = await confirm({
+      confirmLabel: dataCopy("clearNotificationsButton"),
+      description: dataCopy("clearNotificationsText"),
+      title: dataCopy("clearNotificationsConfirm"),
+    });
+    if (!confirmed) return;
+    runPendingAction("executing", async () => {
+      const result = await clearNotificationsAction(locale);
+      pushFeedback(result.ok ? "success" : "error", result.message);
+      if (result.ok) refreshPage();
+    });
+  };
+
+  const sections: { icon: LucideIcon; id: SettingsSection; label: string }[] = [
+    { icon: Globe, id: "website", label: sectionCopy("website") },
+    { icon: Mail, id: "emails", label: sectionCopy("emails") },
+    { icon: Link2, id: "orderLink", label: sectionCopy("orderLink") },
+    ...(canManageUsers
+      ? [
+          { icon: Users, id: "access" as const, label: sectionCopy("access") },
+          { icon: Database, id: "data" as const, label: sectionCopy("data") },
+        ]
+      : []),
+  ];
+
+  const renderSiteImage = (slot: StaticSiteImageSlot, label: string, hint: string) => {
+    const previewUrl = siteImagePreviewUrls[slot];
+    const hasPreview = previewUrl.trim().length > 0;
+    return (
+      <div key={slot} className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative aspect-[16/10] w-40 shrink-0 overflow-hidden rounded-[0.75rem] border border-white/8 bg-black/30 sm:w-48">
+          <LuxuryMedia
+            src={previewUrl || undefined}
+            alt={label}
+            sizes="(max-width: 640px) 100vw, 12rem"
+            fallbackContent={
+              <div className="absolute inset-0 flex items-center justify-center px-3 text-center text-xs text-muted">
+                {siteImagesCopy("usesDefault")}
+              </div>
+            }
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-medium text-foreground">{label}</p>
+          <p className="mt-0.5 text-sm text-muted">{hasPreview ? siteImagesCopy("currentImage") : hint}</p>
+          <input
+            ref={(node) => {
+              fileInputRefs.current[slot] = node;
+            }}
+            type="file"
+            accept={STATIC_SITE_IMAGE_INPUT_ACCEPT}
+            className="hidden"
+            onChange={(event) => handleSiteImageUpload(slot, event)}
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <AdminButton
+              size="sm"
+              variant="secondary"
+              onClick={() => fileInputRefs.current[slot]?.click()}
+              disabled={isPending || !diagnosticsReady}
+            >
+              <Upload />
+              {hasPreview ? siteImagesCopy("replace") : siteImagesCopy("upload")}
+            </AdminButton>
+            {hasPreview ? (
+              <AdminButton
+                size="sm"
+                variant="ghost"
+                onClick={() => handleSiteImageReset(slot)}
+                disabled={isPending || !diagnosticsReady}
+              >
+                {siteImagesCopy("reset")}
+              </AdminButton>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       <AdminActionPendingBar active={isPending} label={pendingAction === "resetting" ? orderReset("processing") : loading(pendingAction)} />
-      <AdminPageHeader
-        eyebrow={settingsCopy("title")}
-        title={settingsCopy("title")}
-        description={settingsCopy("description")}
-      />
+      <AdminPageHeader title={settingsCopy("title")} description={settingsCopy("description")} />
 
       {feedback ? (
-        <div
-          className={
-            feedback.kind === "success"
-              ? "rounded-[1rem] border border-gold/18 bg-gold/10 px-4 py-3 text-sm text-foreground"
-              : "rounded-[1rem] border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm text-rose-100"
-          }
-        >
+        <div className="admin-notice" data-tone={feedback.kind} role="status">
           {feedback.message}
         </div>
       ) : null}
 
       {!diagnosticsReady ? (
-        <div className="rounded-[1rem] border border-rose-400/25 bg-rose-400/10 px-4 py-4 text-sm text-rose-100">
+        <div className="admin-notice" data-tone="error">
           <p className="font-semibold">{settingsCopy("diagnosticsTitle")}</p>
-          <p className="mt-2">{initialSettings.diagnostics.message}</p>
-          <div className="mt-3 space-y-1 text-xs text-rose-100/90">
+          <p className="mt-1">{initialSettings.diagnostics.message}</p>
+          <div className="mt-2 space-y-0.5 text-xs opacity-90">
             <p>{`${diagnosticsEnvironmentLabel}: ${initialSettings.diagnostics.environmentLabel}`}</p>
             <p>{`${diagnosticsSiteUrlLabel}: ${initialSettings.diagnostics.siteBaseUrl}`}</p>
             {initialSettings.diagnostics.missingEnvVars.length > 0 ? (
-              <p>
-                {`${diagnosticsMissingEnvLabel}: ${initialSettings.diagnostics.missingEnvVars.join(", ")}`}
-              </p>
+              <p>{`${diagnosticsMissingEnvLabel}: ${initialSettings.diagnostics.missingEnvVars.join(", ")}`}</p>
             ) : null}
             {initialSettings.diagnostics.suggestedMigration ? (
-              <p>
-                {`${diagnosticsMigrationLabel}: ${initialSettings.diagnostics.suggestedMigration}`}
-              </p>
+              <p>{`${diagnosticsMigrationLabel}: ${initialSettings.diagnostics.suggestedMigration}`}</p>
             ) : null}
           </div>
         </div>
       ) : null}
 
       {usersWarning ? (
-        <div className="rounded-[1rem] border border-amber-400/25 bg-amber-400/10 px-4 py-4 text-sm text-amber-50">
+        <div className="admin-notice" data-tone="warning">
           {usersWarning}
         </div>
       ) : null}
 
-      <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <AdminCard
-          title={settingsCopy("notificationTitle")}
-          description={diagnosticsReady ? undefined : initialSettings.diagnostics.message ?? undefined}
-          action={
-            <AdminButton
-              variant="primary"
-              onClick={handleSaveNotifications}
-              disabled={isPending || !diagnosticsReady}
-            >
-              {settingsCopy("save")}
-            </AdminButton>
-          }
-        >
-          <div className="grid gap-4 xl:grid-cols-2">
-            <AdminInput
-              id="adminNotificationEmail"
-              name="adminNotificationEmail"
-              type="email"
-              label={settingsCopy("adminEmail")}
-              value={adminNotificationEmail}
-              requiredLabel={requiredLabel}
-              placeholder="service@goldhelwah.de"
-              onChange={(event) => setAdminNotificationEmail(event.target.value)}
-            />
-            <AdminInput
-              id="supportNotificationEmail"
-              name="supportNotificationEmail"
-              type="email"
-              label={settingsCopy("supportEmail")}
-              value={supportNotificationEmail}
-              placeholder="support@goldhelwah.de"
-              onChange={(event) => setSupportNotificationEmail(event.target.value)}
-            />
-            <div className="xl:col-span-2">
-              <AdminInput
-                id="ownerEmail"
-                name="ownerEmail"
-                type="email"
-                label={settingsCopy("ownerEmail")}
-                value={ownerEmail}
-                placeholder="owner@goldhelwah.de"
-                onChange={(event) => setOwnerEmail(event.target.value)}
-              />
-            </div>
-          </div>
-        </AdminCard>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[13rem_minmax(0,1fr)]">
+        <nav aria-label={settingsCopy("title")} className="min-w-0 lg:sticky lg:top-6 lg:self-start">
+          <ul className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:gap-1 lg:overflow-visible lg:pb-0">
+            {sections.map((item) => (
+              <li key={item.id} className="shrink-0">
+                <button
+                  type="button"
+                  aria-current={section === item.id ? "page" : undefined}
+                  onClick={() => selectSection(item.id)}
+                  className="admin-nav-link w-full whitespace-nowrap"
+                >
+                  <item.icon />
+                  <span>{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-        <AdminCard title={settingsCopy("smtpTitle")}>
-          <div className="space-y-4">
-            <AdminBadge variant={initialSettings.smtpStatus.configured ? "success" : "danger"}>
-              {initialSettings.smtpStatus.configured ? settingsCopy("smtpConfigured") : settingsCopy("smtpMissing")}
-            </AdminBadge>
-            <div className="space-y-2 text-sm text-muted">
-              <p>{`${initialSettings.smtpStatus.fromName} <${initialSettings.smtpStatus.fromAddress || "-"}>`}</p>
-              {initialSettings.smtpStatus.missing.length > 0 ? (
-                <p>{initialSettings.smtpStatus.missing.join(", ")}</p>
-              ) : null}
-            </div>
-          </div>
-        </AdminCard>
-      </section>
+        <div className="min-w-0 space-y-6">
+          {section === "website" ? (
+            <>
+              <AdminCard title={sectionCopy("imagesTitle")} description={sectionCopy("imagesText")}>
+                <div className="space-y-5 divide-y divide-white/[0.05] [&>*+*]:pt-5">
+                  {renderSiteImage("homepageHero", siteImagesCopy("homepageHero"), sectionCopy("homeHeroHint"))}
+                  {renderSiteImage("shopHero", siteImagesCopy("shopHero"), sectionCopy("shopHeroHint"))}
+                </div>
+                <p className="mt-5 text-sm text-text-soft">{siteImagesCopy("productsExcluded")}</p>
+              </AdminCard>
 
-      <section className="space-y-6">
-        <AdminCard
-          title={settingsCopy("orderEntryTitle")}
-          description={settingsCopy("orderEntryDescription")}
-          action={
-            <div className="flex gap-2">
-              <AdminButton
-                variant="secondary"
-                onClick={handleSaveOrderEntry}
-                disabled={isPending || !diagnosticsReady}
-              >
-                {settingsCopy("save")}
-              </AdminButton>
-              <AdminButton
-                variant="primary"
-                onClick={handleRotateLink}
-                disabled={isPending || !diagnosticsReady}
-              >
-                {settingsCopy("rotateLink")}
-              </AdminButton>
-            </div>
-          }
-        >
-          <div className="space-y-4">
-            <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-              <input
-                type="checkbox"
-                checked={orderEntryEnabled}
-                onChange={(event) => setOrderEntryEnabled(event.target.checked)}
-                className="h-4 w-4 accent-[#c49a52]"
-              />
-              {settingsCopy("orderEntryEnabled")}
-            </label>
-
-            <AdminInput
-              id="orderEntryExpiresAt"
-              name="orderEntryExpiresAt"
-              type="datetime-local"
-              label={settingsCopy("expiresAt")}
-              value={orderEntryExpiresAt}
-              onChange={(event) => setOrderEntryExpiresAt(event.target.value)}
-            />
-
-            {orderEntryFullUrl ? (
-              <AdminInput
-                id="orderEntryFullUrl"
-                name="orderEntryFullUrl"
-                label={settingsCopy("fullLinkLabel")}
-                value={orderEntryFullUrl}
-                helperText={settingsCopy("fullLinkHelp")}
-                readOnly
-                className="font-mono text-xs"
-              />
-            ) : (
-              <p className="text-sm text-muted">{settingsCopy("linkDisabled")}</p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-2">
-              <AdminButton
-                size="sm"
-                variant="ghost"
-                onClick={handleCopyOrderEntryLink}
-                disabled={!orderEntryFullUrl}
-              >
-                {settingsCopy("copyLink")}
-              </AdminButton>
-              <AdminBadge variant={orderEntryEnabled ? "success" : "neutral"}>
-                {orderEntryEnabled ? settingsCopy("statusEnabled") : settingsCopy("statusDisabled")}
-              </AdminBadge>
-              {initialSettings.orderEntryRotatedAt ? (
-                <AdminBadge variant="info">
-                  {settingsCopy("rotatedAt")}:{" "}
-                  {initialSettings.orderEntryRotatedAt.slice(0, 16).replace("T", " ")}
-                </AdminBadge>
-              ) : null}
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-              <AdminInput
-                id="orderEntryRecipientEmail"
-                name="orderEntryRecipientEmail"
-                type="email"
-                label={settingsCopy("linkRecipient")}
-                value={linkRecipientEmail}
-                helperText={settingsCopy("linkRecipientHelp")}
-                placeholder="email@example.com"
-                onChange={(event) => setLinkRecipientEmail(event.target.value)}
-              />
-              <AdminButton
-                variant="primary"
-                onClick={handleSendOrderEntryLinkEmail}
-                disabled={
-                  isPending ||
-                  !diagnosticsReady ||
-                  !orderEntryEnabled ||
-                  linkRecipientEmail.trim().length === 0
+              <AdminCard
+                title={sectionCopy("promoTitle")}
+                description={sectionCopy("promoText")}
+                action={
+                  <AdminButton variant="primary" onClick={handleSavePublicVisuals} disabled={isPending || !diagnosticsReady}>
+                    {isPending && pendingAction === "saving" ? loading("saving") : publicVisuals("save")}
+                  </AdminButton>
                 }
               >
-                {settingsCopy("sendLink")}
-              </AdminButton>
-            </div>
-          </div>
-        </AdminCard>
+                <div className="space-y-6">
+                  <AdminSwitch
+                    checked={promo.enabled}
+                    onChange={(checked) => setPromo({ ...promo, enabled: checked })}
+                    label={publicVisuals("enabled")}
+                    description={sectionCopy("promoEnabledHint")}
+                  />
 
-      </section>
+                  <div className={promo.enabled ? "space-y-6" : "space-y-6 opacity-60"}>
+                    <AdminFormSection title={sectionCopy("promoContent")}>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <AdminInput
+                          id="promoTitle"
+                          label={publicVisuals("promoTitle")}
+                          value={promo.title}
+                          onChange={(event) => setPromo({ ...promo, title: event.target.value })}
+                        />
+                        <AdminInput
+                          id="promoDescription"
+                          label={publicVisuals("promoDescription")}
+                          value={promo.description}
+                          onChange={(event) => setPromo({ ...promo, description: event.target.value })}
+                        />
+                        <AdminInput
+                          id="promoCtaText"
+                          label={publicVisuals("ctaText")}
+                          value={promo.ctaText}
+                          onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })}
+                        />
+                        <AdminInput
+                          id="promoCtaUrl"
+                          label={publicVisuals("ctaUrl")}
+                          dir="ltr"
+                          value={promo.ctaUrl}
+                          placeholder="https://..."
+                          onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })}
+                        />
+                      </div>
+                    </AdminFormSection>
 
-      <section className="space-y-6">
-        <AdminCard title={siteImagesCopy("title")} description={siteImagesCopy("description")}>
-          <div className="space-y-4">
-            <div className="grid gap-5 lg:grid-cols-3">
-              {SITE_IMAGE_SLOTS.map((slot) => {
-                const previewUrl = siteImagePreviewUrls[slot];
-                const hasPreview = previewUrl.trim().length > 0;
+                    <AdminFormSection title={sectionCopy("promoLook")}>
+                      <div className="space-y-5">
+                        {renderSiteImage("promoPopupImage", siteImagesCopy("promoPopup"), sectionCopy("promoImageHint"))}
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <AdminSelect
+                            id="promoStyle"
+                            label={publicVisuals("style")}
+                            value={promo.style}
+                            onChange={(event) => setPromo({ ...promo, style: event.target.value as typeof promo.style })}
+                          >
+                            <option value="luxury">{publicVisuals("luxury")}</option>
+                            <option value="image">{publicVisuals("image")}</option>
+                            <option value="announcement">{publicVisuals("announcement")}</option>
+                          </AdminSelect>
+                          <AdminInput
+                            id="promoVideoUrl"
+                            label={publicVisuals("videoUrl")}
+                            dir="ltr"
+                            value={promo.videoUrl}
+                            placeholder="https://..."
+                            onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })}
+                          />
+                        </div>
+                      </div>
+                    </AdminFormSection>
 
-                return (
-                  <article
-                    key={slot}
-                    className="space-y-3 rounded-[1rem] border border-white/10 bg-white/4 p-4"
-                  >
-                    <div className="relative h-40 overflow-hidden rounded-[1rem] border border-white/8 bg-black/30">
-                      <LuxuryMedia
-                        src={previewUrl || undefined}
-                        alt={getSiteImageLabel(slot)}
-                        sizes="(max-width: 1024px) 100vw, 30vw"
-                        fallbackContent={
-                          <div className="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-muted">
-                            {siteImagesCopy("usesDefault")}
-                          </div>
-                        }
-                      />
+                    <AdminFormSection title={sectionCopy("promoWhen")}>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <AdminInput
+                          id="promoStartsAt"
+                          type="datetime-local"
+                          label={publicVisuals("start")}
+                          value={toLocalDateTimeInput(promo.startsAt)}
+                          onChange={(event) => setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })}
+                        />
+                        <AdminInput
+                          id="promoEndsAt"
+                          type="datetime-local"
+                          label={publicVisuals("end")}
+                          value={toLocalDateTimeInput(promo.endsAt)}
+                          onChange={(event) => setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })}
+                        />
+                      </div>
+                      <div className="mt-4">
+                        <AdminSwitch
+                          checked={promo.showOnce}
+                          onChange={(checked) => setPromo({ ...promo, showOnce: checked })}
+                          label={publicVisuals("showOnce")}
+                        />
+                      </div>
+                    </AdminFormSection>
+                  </div>
+                </div>
+              </AdminCard>
+            </>
+          ) : null}
+
+          {section === "emails" ? (
+            <>
+              <AdminCard
+                title={settingsCopy("notificationTitle")}
+                description={sectionCopy("emailsText")}
+                action={
+                  <AdminButton variant="primary" onClick={handleSaveNotifications} disabled={isPending || !diagnosticsReady}>
+                    {settingsCopy("save")}
+                  </AdminButton>
+                }
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <AdminInput
+                    id="adminNotificationEmail"
+                    type="email"
+                    dir="ltr"
+                    label={settingsCopy("adminEmail")}
+                    helperText={sectionCopy("adminEmailHint")}
+                    value={adminNotificationEmail}
+                    placeholder="service@goldhelwah.de"
+                    onChange={(event) => setAdminNotificationEmail(event.target.value)}
+                  />
+                  <AdminInput
+                    id="supportNotificationEmail"
+                    type="email"
+                    dir="ltr"
+                    label={settingsCopy("supportEmail")}
+                    helperText={sectionCopy("supportEmailHint")}
+                    value={supportNotificationEmail}
+                    placeholder="support@goldhelwah.de"
+                    onChange={(event) => setSupportNotificationEmail(event.target.value)}
+                  />
+                  <AdminInput
+                    id="ownerEmail"
+                    type="email"
+                    dir="ltr"
+                    wrapperClassName="sm:col-span-2"
+                    label={settingsCopy("ownerEmail")}
+                    helperText={sectionCopy("ownerEmailHint")}
+                    value={ownerEmail}
+                    placeholder="owner@goldhelwah.de"
+                    onChange={(event) => setOwnerEmail(event.target.value)}
+                  />
+                </div>
+              </AdminCard>
+
+              <AdminCard title={settingsCopy("smtpTitle")}>
+                <div className="flex flex-wrap items-center gap-3">
+                  <AdminBadge variant={initialSettings.smtpStatus.configured ? "success" : "danger"}>
+                    {initialSettings.smtpStatus.configured ? settingsCopy("smtpConfigured") : settingsCopy("smtpMissing")}
+                  </AdminBadge>
+                  <p className="text-sm text-muted">
+                    <bdi>{`${initialSettings.smtpStatus.fromName} <${initialSettings.smtpStatus.fromAddress || "–"}>`}</bdi>
+                  </p>
+                </div>
+                {initialSettings.smtpStatus.missing.length > 0 ? (
+                  <p className="mt-3 text-sm text-muted">{initialSettings.smtpStatus.missing.join(", ")}</p>
+                ) : null}
+              </AdminCard>
+            </>
+          ) : null}
+
+          {section === "orderLink" ? (
+            <AdminCard title={settingsCopy("orderEntryTitle")} description={sectionCopy("orderLinkText")}>
+              <div className="space-y-6">
+                <AdminSwitch
+                  checked={orderEntryEnabled}
+                  onChange={setOrderEntryEnabled}
+                  label={settingsCopy("orderEntryEnabled")}
+                  description={orderEntryEnabled ? settingsCopy("statusEnabled") : settingsCopy("linkDisabled")}
+                />
+
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                  <AdminInput
+                    id="orderEntryExpiresAt"
+                    type="datetime-local"
+                    label={settingsCopy("expiresAt")}
+                    helperText={sectionCopy("expiresHint")}
+                    value={orderEntryExpiresAt}
+                    onChange={(event) => setOrderEntryExpiresAt(event.target.value)}
+                  />
+                  <AdminButton variant="primary" onClick={handleSaveOrderEntry} disabled={isPending || !diagnosticsReady}>
+                    {settingsCopy("save")}
+                  </AdminButton>
+                </div>
+
+                {orderEntryEnabled && orderEntryFullUrl ? (
+                  <AdminFormSection title={settingsCopy("fullLinkLabel")} hint={settingsCopy("fullLinkHelp")}>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <input readOnly dir="ltr" className="admin-input font-mono text-xs" value={orderEntryFullUrl} aria-label={settingsCopy("fullLinkLabel")} />
+                      <AdminButton variant="secondary" onClick={handleCopyOrderEntryLink}>
+                        <Copy />
+                        {settingsCopy("copyLink")}
+                      </AdminButton>
                     </div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+                      <AdminInput
+                        id="orderEntryRecipientEmail"
+                        type="email"
+                        dir="ltr"
+                        label={settingsCopy("linkRecipient")}
+                        helperText={settingsCopy("linkRecipientHelp")}
+                        value={linkRecipientEmail}
+                        placeholder="email@example.com"
+                        onChange={(event) => setLinkRecipientEmail(event.target.value)}
+                      />
+                      <AdminButton
+                        variant="secondary"
+                        onClick={handleSendOrderEntryLinkEmail}
+                        disabled={isPending || !diagnosticsReady || linkRecipientEmail.trim().length === 0}
+                      >
+                        <Send />
+                        {settingsCopy("sendLink")}
+                      </AdminButton>
+                    </div>
+                  </AdminFormSection>
+                ) : null}
 
-                    <div className="space-y-1">
-                      <p className="font-semibold text-foreground">{getSiteImageLabel(slot)}</p>
-                      <p className="text-sm text-muted">
-                        {hasPreview
-                          ? siteImagesCopy("currentImage")
-                          : siteImagesCopy("usesDefault")}
+                <AdminFormSection title={settingsCopy("rotateLink")} hint={sectionCopy("rotateHint")}>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <AdminButton
+                      variant="ghost"
+                      onClick={async () => {
+                        const confirmed = await confirm({
+                          confirmLabel: settingsCopy("rotateLink"),
+                          danger: false,
+                          description: sectionCopy("rotateHint"),
+                          title: settingsCopy("rotateLink"),
+                        });
+                        if (confirmed) handleRotateLink();
+                      }}
+                      disabled={isPending || !diagnosticsReady}
+                    >
+                      <RefreshCw />
+                      {settingsCopy("rotateLink")}
+                    </AdminButton>
+                    {initialSettings.orderEntryRotatedAt ? (
+                      <span className="text-sm text-text-soft">
+                        {settingsCopy("rotatedAt")}: {initialSettings.orderEntryRotatedAt.slice(0, 16).replace("T", " ")}
+                      </span>
+                    ) : null}
+                  </div>
+                </AdminFormSection>
+              </div>
+            </AdminCard>
+          ) : null}
+
+          {section === "access" && canManageUsers ? (
+            <AdminCard
+              title={settingsCopy("userListTitle")}
+              description={sectionCopy("accessText")}
+              action={
+                <AdminButton
+                  variant="primary"
+                  onClick={() => {
+                    setUserFormState(createUserForm());
+                    setUserEditorOpen(true);
+                  }}
+                >
+                  <Plus />
+                  {settingsCopy("userCreate")}
+                </AdminButton>
+              }
+              contentClassName="p-0"
+            >
+              <ul className="divide-y divide-white/[0.05]">
+                {initialUsers.map((user) => (
+                  <li key={user.id} className="flex flex-wrap items-center gap-3 px-5 py-3.5">
+                    <div className="min-w-0 flex-1">
+                      <p className="flex flex-wrap items-center gap-2 font-medium text-foreground">
+                        {user.displayName || user.email}
+                        {user.id === currentUserId ? <span className="text-xs text-text-soft">({sectionCopy("you")})</span> : null}
+                      </p>
+                      <p className="truncate text-sm text-muted">
+                        <bdi>{user.email}</bdi>
                       </p>
                     </div>
-
-                    <input
-                      ref={(node) => {
-                        fileInputRefs.current[slot] = node;
-                      }}
-                      type="file"
-                      accept={STATIC_SITE_IMAGE_INPUT_ACCEPT}
-                      className="hidden"
-                      onChange={(event) => handleSiteImageUpload(slot, event)}
+                    <AdminBadge variant="info">
+                      {user.role === "super_admin" ? settingsCopy("roleOwner") : user.role === "admin" ? settingsCopy("roleAdmin") : settingsCopy("roleEmployee")}
+                    </AdminBadge>
+                    {!user.isActive ? <AdminBadge variant="danger">{userInactiveLabel}</AdminBadge> : null}
+                    <AdminActionMenu
+                      label={settingsCopy("userActions", { name: user.displayName || user.email })}
+                      items={[
+                        {
+                          icon: Pencil,
+                          label: settingsCopy("userEdit"),
+                          onSelect: () => {
+                            setUserFormState(createUserEditForm(user));
+                            setUserEditorOpen(true);
+                          },
+                        },
+                        { icon: Mail, label: settingsCopy("inviteAgain"), onSelect: () => handleUserInvite(user) },
+                        ...(user.isActive ? [{ icon: KeyRound, label: resetPasswordLabel, onSelect: () => handleUserPasswordReset(user) }] : []),
+                        ...(user.id !== currentUserId
+                          ? [
+                              { icon: Power, label: user.isActive ? deactivateUserLabel : activateUserLabel, onSelect: () => handleUserToggle(user) },
+                              { danger: true, icon: Trash2, label: settingsCopy("userDelete"), onSelect: () => void handleUserDelete(user) },
+                            ]
+                          : []),
+                      ]}
                     />
+                  </li>
+                ))}
+              </ul>
+            </AdminCard>
+          ) : null}
 
-                    <div className="flex flex-wrap gap-2">
-                      <AdminButton
-                        size="sm"
-                        variant="primary"
-                        onClick={() => fileInputRefs.current[slot]?.click()}
-                        disabled={isPending || !diagnosticsReady}
-                      >
-                        {hasPreview ? siteImagesCopy("replace") : siteImagesCopy("upload")}
-                      </AdminButton>
-                      <AdminButton
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleSiteImageReset(slot)}
-                        disabled={isPending || !diagnosticsReady || !hasPreview}
-                      >
-                        {siteImagesCopy("reset")}
-                      </AdminButton>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+          {section === "data" && canManageUsers ? (
+            <>
+              <AdminCard title={dataCopy("notificationsTitle")} description={dataCopy("notificationsText")}>
+                <AdminButton variant="secondary" onClick={() => void handleClearNotifications()} disabled={isPending}>
+                  <BellOff />
+                  {dataCopy("clearNotificationsButton")}
+                </AdminButton>
+              </AdminCard>
 
-            <p className="text-sm text-muted">{siteImagesCopy("productsExcluded")}</p>
-          </div>
-        </AdminCard>
+              <section className="rounded-[1rem] border border-rose-400/25 bg-rose-400/[0.04] p-5">
+                <h2 className="flex items-center gap-2 font-semibold text-rose-200">
+                  <AlertTriangle className="h-4 w-4" />
+                  {orderReset("title")}
+                </h2>
+                <p className="mt-1.5 text-sm leading-6 text-muted">{orderReset("description")}</p>
+                <p className="mt-1 text-sm text-text-soft">{orderReset("excludedNote")}</p>
+                <AdminButton className="mt-4" variant="danger" onClick={openOrderReset} disabled={isPending}>
+                  {orderReset("button")}
+                </AdminButton>
+              </section>
+            </>
+          ) : null}
+        </div>
+      </div>
 
-        <AdminCard
-          title={publicVisuals("title")}
-          description={publicVisuals("description")}
-          action={
-            <AdminButton
-              variant="primary"
-              onClick={handleSavePublicVisuals}
-              disabled={isPending || !diagnosticsReady}
-            >
-              {isPending && pendingAction === "saving"
-                ? loading("saving")
-                : publicVisuals("save")}
-            </AdminButton>
-          }
-        >
-          <div className="grid gap-4 lg:grid-cols-2">
-            <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-              <input
-                type="checkbox"
-                checked={promo.enabled}
-                onChange={(event) => setPromo({ ...promo, enabled: event.target.checked })}
-              />
-              {publicVisuals("enabled")}
-            </label>
-            <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-              <input
-                type="checkbox"
-                checked={promo.showOnce}
-                onChange={(event) => setPromo({ ...promo, showOnce: event.target.checked })}
-              />
-              {publicVisuals("showOnce")}
-            </label>
-            <AdminInput
-              id="promoTitle"
-              name="promoTitle"
-              label={publicVisuals("promoTitle")}
-              value={promo.title}
-              onChange={(event) => setPromo({ ...promo, title: event.target.value })}
-            />
-            <AdminInput
-              id="promoCtaText"
-              name="promoCtaText"
-              label={publicVisuals("ctaText")}
-              value={promo.ctaText}
-              onChange={(event) => setPromo({ ...promo, ctaText: event.target.value })}
-            />
-            <AdminInput
-              id="promoDescription"
-              name="promoDescription"
-              label={publicVisuals("promoDescription")}
-              value={promo.description}
-              onChange={(event) => setPromo({ ...promo, description: event.target.value })}
-            />
-            <AdminInput
-              id="promoCtaUrl"
-              name="promoCtaUrl"
-              label={publicVisuals("ctaUrl")}
-              value={promo.ctaUrl}
-              placeholder="https://..."
-              onChange={(event) => setPromo({ ...promo, ctaUrl: event.target.value })}
-            />
-            <AdminInput
-              id="promoVideoUrl"
-              name="promoVideoUrl"
-              label={publicVisuals("videoUrl")}
-              value={promo.videoUrl}
-              placeholder="https://..."
-              onChange={(event) => setPromo({ ...promo, videoUrl: event.target.value })}
-            />
-            <AdminInput
-              id="promoStartsAt"
-              name="promoStartsAt"
-              type="datetime-local"
-              label={publicVisuals("start")}
-              value={toLocalDateTimeInput(promo.startsAt)}
-              onChange={(event) =>
-                setPromo({ ...promo, startsAt: fromLocalDateTimeInput(event.target.value) })
-              }
-            />
-            <AdminInput
-              id="promoEndsAt"
-              name="promoEndsAt"
-              type="datetime-local"
-              label={publicVisuals("end")}
-              value={toLocalDateTimeInput(promo.endsAt)}
-              onChange={(event) =>
-                setPromo({ ...promo, endsAt: fromLocalDateTimeInput(event.target.value) })
-              }
-            />
-            <AdminSelect
-              id="promoStyle"
-              name="promoStyle"
-              label={publicVisuals("style")}
-              value={promo.style}
-              onChange={(event) =>
-                setPromo({ ...promo, style: event.target.value as typeof promo.style })
-              }
-            >
-              <option value="luxury">{publicVisuals("luxury")}</option>
-              <option value="image">{publicVisuals("image")}</option>
-              <option value="announcement">{publicVisuals("announcement")}</option>
-            </AdminSelect>
-          </div>
-        </AdminCard>
-      </section>
-
-      {canManageUsers ? (
-        <AdminCard title={orderReset("title")} description={orderReset("description")}>
-          <div className="space-y-4">
-            <p className="text-sm text-muted">{orderReset("excludedNote")}</p>
-            <AdminButton variant="danger" onClick={openOrderReset} disabled={isPending}>
-              {orderReset("button")}
-            </AdminButton>
-          </div>
-        </AdminCard>
-      ) : null}
       {orderResetOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-labelledby="order-reset-title">
-          <div className="w-full max-w-lg space-y-5 rounded-[1rem] border border-white/10 bg-[#191714] p-6 shadow-2xl">
+        <div className="fixed inset-0 z-[90] flex items-end justify-center p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="order-reset-title">
+          <div className="admin-drawer-backdrop" aria-hidden="true" />
+          <div className="relative z-[91] w-full max-w-lg space-y-5 rounded-[1rem] border border-[var(--admin-line)] bg-[var(--admin-raised)] p-6 shadow-2xl">
             <div className="space-y-2">
-              <h2 id="order-reset-title" className="text-xl font-semibold text-foreground">{orderReset("confirmTitle")}</h2>
+              <h2 id="order-reset-title" className="text-lg font-semibold text-foreground">{orderReset("confirmTitle")}</h2>
               <p className="text-sm leading-6 text-muted">{orderReset("confirmDescription")}</p>
-              <p className="text-sm font-medium text-foreground">{orderReset("currentOrderCount")}: {orderResetCount ?? 0}</p>
+              <p className="text-sm font-medium text-foreground">
+                {orderReset("currentOrderCount")}: {orderResetCount ?? 0}
+              </p>
             </div>
-            <label className="rtl-inline-row flex items-start gap-2 text-sm text-foreground">
-              <input type="checkbox" checked={orderResetConfirmed} disabled={isPending} onChange={(event) => setOrderResetConfirmed(event.target.checked)} className="mt-1 h-4 w-4 accent-[#c49a52]" />
+            <label className="flex items-start gap-2 text-sm text-foreground">
+              <input
+                type="checkbox"
+                checked={orderResetConfirmed}
+                disabled={isPending}
+                onChange={(event) => setOrderResetConfirmed(event.target.checked)}
+                className="mt-1 h-4 w-4 accent-[#c49a52]"
+              />
               <span>{orderReset("confirmCheckbox")}</span>
             </label>
             <div className="flex flex-wrap justify-end gap-3">
-              <AdminButton variant="ghost" onClick={() => setOrderResetOpen(false)} disabled={isPending}>{orderReset("cancel")}</AdminButton>
-              <AdminButton variant="danger" onClick={executeOrderReset} disabled={isPending || !orderResetConfirmed}>{orderReset("confirm")}</AdminButton>
+              <AdminButton variant="ghost" onClick={() => setOrderResetOpen(false)} disabled={isPending}>
+                {orderReset("cancel")}
+              </AdminButton>
+              <AdminButton variant="danger" onClick={executeOrderReset} disabled={isPending || !orderResetConfirmed}>
+                {orderReset("confirm")}
+              </AdminButton>
             </div>
           </div>
         </div>
       ) : null}
-      <AdminCard
-        title={settingsCopy("userListTitle")}
-        description={!canManageUsers ? settingsCopy("manageUsersHint") : undefined}
-        action={
-          canManageUsers ? (
-            <AdminButton variant="primary" onClick={handleUserSubmit} disabled={isPending}>
+
+      <AdminDrawer
+        open={userEditorOpen}
+        onClose={() => setUserEditorOpen(false)}
+        title={userFormState.id ? settingsCopy("userEdit") : settingsCopy("userCreate")}
+        description={sectionCopy("userEditorText")}
+        footer={
+          <div className="flex justify-end gap-2">
+            <AdminButton variant="ghost" onClick={() => setUserEditorOpen(false)}>
+              {orderReset("cancel")}
+            </AdminButton>
+            <AdminButton
+              variant="primary"
+              onClick={handleUserSubmit}
+              disabled={isPending || !userFormState.email.trim() || !userFormState.displayName.trim()}
+            >
               {userFormState.id ? settingsCopy("userSave") : settingsCopy("userCreate")}
             </AdminButton>
-          ) : undefined
+          </div>
         }
       >
-        <div className="space-y-6">
-          <div className="grid gap-4 xl:grid-cols-2">
+        <AdminFormSection title={settingsCopy("userListTitle")}>
+          <div className="grid gap-4">
             <AdminInput
               id="userDisplayName"
-              name="userDisplayName"
               label={settingsCopy("userDisplayName")}
-              value={userFormState.displayName}
+              required
               requiredLabel={requiredLabel}
-              onChange={(event) =>
-                setUserFormState((current) => ({
-                  ...current,
-                  displayName: event.target.value,
-                }))
-              }
+              value={userFormState.displayName}
+              onChange={(event) => setUserFormState((current) => ({ ...current, displayName: event.target.value }))}
             />
             <AdminInput
               id="userEmail"
-              name="userEmail"
               type="email"
+              dir="ltr"
               label={userEmailLabel}
-              value={userFormState.email}
+              required
               requiredLabel={requiredLabel}
-              onChange={(event) =>
-                setUserFormState((current) => ({
-                  ...current,
-                  email: event.target.value,
-                }))
-              }
+              helperText={sectionCopy("userEmailHint")}
+              value={userFormState.email}
+              onChange={(event) => setUserFormState((current) => ({ ...current, email: event.target.value }))}
             />
             <AdminSelect
               id="userRole"
-              name="userRole"
               label={settingsCopy("role")}
+              helperText={sectionCopy(`roleHint.${userFormState.role}`)}
               value={userFormState.role}
-              onChange={(event) =>
-                setUserFormState((current) => ({
-                  ...current,
-                  role: event.target.value as ManagedAdminRole,
-                }))
-              }
+              onChange={(event) => setUserFormState((current) => ({ ...current, role: event.target.value as ManagedAdminRole }))}
             >
               <option value="super_admin">{settingsCopy("roleOwner")}</option>
               <option value="admin">{settingsCopy("roleAdmin")}</option>
               <option value="employee">{settingsCopy("roleEmployee")}</option>
             </AdminSelect>
-            <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-              <input
-                type="checkbox"
-                checked={userFormState.isActive}
-                onChange={(event) =>
-                  setUserFormState((current) => ({
-                    ...current,
-                    isActive: event.target.checked,
-                  }))
-                }
-                className="h-4 w-4 accent-[#c49a52]"
-              />
-              {settingsCopy("userActive")}
-            </label>
+            <AdminSwitch
+              checked={userFormState.isActive}
+              onChange={(checked) => setUserFormState((current) => ({ ...current, isActive: checked }))}
+              label={settingsCopy("userActive")}
+            />
           </div>
-
-          <div className="grid gap-4">
-            {initialUsers.map((user) => (
-              <article
-                key={user.id}
-                className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="font-semibold text-foreground">{user.displayName}</p>
-                    <p className="text-sm text-muted">{user.email}</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <AdminBadge variant={user.isActive ? "success" : "danger"}>
-                      {user.isActive ? settingsCopy("userActive") : userInactiveLabel}
-                    </AdminBadge>
-                    <AdminBadge variant="info">{user.role === "super_admin" ? settingsCopy("roleOwner") : user.role === "admin" ? settingsCopy("roleAdmin") : settingsCopy("roleEmployee")}</AdminBadge>
-                  </div>
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <AdminButton
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setUserFormState(createUserEditForm(user))}
-                    disabled={!canManageUsers || isPending}
-                  >
-                    {settingsCopy("userEdit")}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleUserInvite(user)}
-                    disabled={!canManageUsers || isPending}
-                  >
-                    {settingsCopy("inviteAgain")}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleUserPasswordReset(user)}
-                    disabled={!canManageUsers || !user.isActive || isPending}
-                  >
-                    {resetPasswordLabel}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleUserToggle(user)}
-                    disabled={!canManageUsers || isPending}
-                  >
-                    {user.isActive ? deactivateUserLabel : activateUserLabel}
-                  </AdminButton>
-                  {user.id !== currentUserId ? (
-                    <AdminButton
-                      size="sm"
-                      variant="danger"
-                      onClick={() => handleUserDelete(user)}
-                      disabled={!canManageUsers || isPending}
-                    >
-                      {settingsCopy("userDelete")}
-                    </AdminButton>
-                  ) : null}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </AdminCard>
+        </AdminFormSection>
+      </AdminDrawer>
     </div>
   );
 }

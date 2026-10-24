@@ -10,6 +10,8 @@ import {
 } from "@/lib/admin/orderWorkflow";
 import type { AdminActionResult } from "@/lib/admin/actionResult";
 import { requireAdminAccess } from "@/lib/admin/auth";
+import { createRequiredAuditLog } from "@/lib/db/auditLogs";
+import { deleteEmployeeRecord } from "@/lib/db/employees";
 import {
   getAdminDecoyUnavailableMessage,
   isAdminDecoyEnabled,
@@ -400,6 +402,36 @@ export async function linkEmployeeAccountAction(
         t,
         copy.formErrorFallback
       ),
+      ok: false,
+    };
+  }
+}
+
+export async function deleteEmployeeAction(locale: AppLocale, employeeId: string): Promise<AdminActionResult> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+
+  if (access.state !== "authenticated" || !access.user) {
+    return { message: t("common.noAccessText"), ok: false };
+  }
+
+  if (await isAdminDecoyEnabled()) {
+    return { message: getAdminDecoyUnavailableMessage(locale), ok: false };
+  }
+
+  try {
+    const removed = await deleteEmployeeRecord(employeeId);
+    await createRequiredAuditLog({
+      action: "employee_deleted",
+      actorEmail: access.user.email,
+      metadata: { employeeId: removed.id, employeeName: removed.name },
+    });
+    revalidateEmployeeViews();
+    return { message: t("employees.deleted"), ok: true, shouldRefresh: true };
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    return {
+      message: code === "EMPLOYEE_HAS_ORDERS" ? t("employees.deleteHasOrders") : t("employees.deleteFailed"),
       ok: false,
     };
   }

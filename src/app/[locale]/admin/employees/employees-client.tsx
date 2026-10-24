@@ -2,19 +2,21 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { KeyRound, Link2, Mail, Pencil, Plus, Power, Search } from "lucide-react";
+import { KeyRound, Link2, Mail, Pencil, Plus, Power, Search, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
 import {
   linkEmployeeAccountAction,
   saveEmployeeAction,
+  deleteEmployeeAction,
   sendEmployeeInviteAction,
   sendEmployeePasswordResetAction,
   toggleEmployeeActiveAction,
 } from "@/app/[locale]/admin/employees/actions";
 import { AdminActionMenu, type AdminActionMenuItem } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
@@ -119,6 +121,7 @@ export function AdminEmployeesClient({
 }: AdminEmployeesClientProps) {
   const t = useTranslations("Admin");
   const router = useRouter();
+  const confirm = useAdminConfirm();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [workshopFilter, setWorkshopFilter] = useState("all");
@@ -293,6 +296,18 @@ export function AdminEmployeesClient({
             icon: Power,
             label: employee.isActive ? t("buttons.deactivate") : t("buttons.activate"),
             onSelect: () => runRowAction(() => toggleEmployeeActiveAction(locale, employee.id, !employee.isActive)),
+          },
+          {
+            danger: true,
+            icon: Trash2,
+            label: t("buttons.delete"),
+            onSelect: async () => {
+              const confirmed = await confirm({
+                description: t("employees.deleteConfirmText"),
+                title: t("employees.deleteConfirm", { name: employee.fullName }),
+              });
+              if (confirmed) runRowAction(() => deleteEmployeeAction(locale, employee.id));
+            },
           },
         ];
 
