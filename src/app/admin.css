@@ -1,0 +1,807 @@
+/*
+ * Admin dashboard styles.
+ *
+ * Tokens: one warm-black ground, one raised surface, hairline gold borders,
+ * gold reserved for the primary action and the active navigation item.
+ * Direction-aware: everything uses logical properties and plain flex rows,
+ * so Arabic (RTL) mirrors naturally without row-reverse hacks.
+ */
+
+@layer components {
+  .admin-shell {
+    --admin-bg: #0b0a08;
+    --admin-sidebar: #0e0c0a;
+    --admin-surface: #14120f;
+    --admin-raised: #1b1814;
+    --admin-field: #100e0c;
+    --admin-line: rgba(232, 201, 135, 0.09);
+    --admin-line-strong: rgba(232, 201, 135, 0.2);
+    --admin-text: #f4eee2;
+    --admin-muted: #b5a88f;
+    --admin-soft: #8a806d;
+    --admin-radius: 0.875rem;
+    --admin-radius-sm: 0.625rem;
+
+    position: relative;
+    min-height: 100vh;
+    background:
+      radial-gradient(60rem 28rem at 70% -10%, rgba(196, 154, 82, 0.07), transparent 70%),
+      var(--admin-bg);
+    color: var(--admin-text);
+    font-family: var(--font-body), sans-serif;
+  }
+
+  :is(html[lang="ar"]) .admin-shell {
+    font-family: var(--font-thmanyah), system-ui, sans-serif;
+  }
+
+  .admin-content {
+    width: 100%;
+    min-width: 0;
+    max-width: 88rem;
+    margin-inline: auto;
+  }
+
+  /* ---------- Brand ---------- */
+  .admin-brand {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .admin-brand-subtitle {
+    white-space: nowrap;
+    color: var(--admin-muted);
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .admin-sidebar {
+    background: var(--admin-sidebar);
+    border-inline-end: 1px solid var(--admin-line);
+  }
+
+  .admin-nav-group-label {
+    padding-inline: 0.75rem;
+    margin-block: 1.1rem 0.35rem;
+    color: var(--admin-soft);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .admin-nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.5rem;
+    padding-inline: 0.75rem;
+    border-radius: var(--admin-radius-sm);
+    color: var(--admin-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 140ms ease, color 140ms ease;
+  }
+
+  .admin-nav-link:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--admin-text);
+  }
+
+  .admin-nav-link[aria-current="page"] {
+    background: rgba(196, 154, 82, 0.12);
+    color: var(--admin-text);
+  }
+
+  .admin-nav-link[aria-current="page"]::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 0.55rem;
+    width: 3px;
+    border-radius: 999px;
+    background: var(--gold);
+  }
+
+  .admin-nav-link svg {
+    flex-shrink: 0;
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .admin-nav-link[aria-current="page"] svg {
+    color: var(--gold-soft);
+  }
+
+  .admin-nav-count {
+    margin-inline-start: auto;
+    min-width: 1.4rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: var(--gold);
+    color: #1a1209;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .admin-sidebar-scroll {
+    scrollbar-width: none;
+  }
+
+  .admin-sidebar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---------- Header ---------- */
+  .admin-topbar {
+    background: rgba(11, 10, 8, 0.86);
+    border-bottom: 1px solid var(--admin-line);
+    backdrop-filter: blur(14px);
+  }
+
+  /* ---------- Panels ---------- */
+  .admin-panel {
+    border: 1px solid var(--admin-line);
+    border-radius: var(--admin-radius);
+    background: var(--admin-surface);
+  }
+
+  .admin-panel-raised {
+    border: 1px solid var(--admin-line);
+    border-radius: var(--admin-radius-sm);
+    background: var(--admin-raised);
+  }
+
+  .admin-heading {
+    font-family: var(--font-display), serif;
+    font-size: clamp(1.85rem, 2.6vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  :is(html[lang="ar"]) .admin-heading {
+    font-family: var(--font-thmanyah), system-ui, sans-serif;
+    font-size: clamp(1.6rem, 2.2vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .admin-page-kicker {
+    color: var(--gold-soft);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  /* ---------- Buttons ---------- */
+  .admin-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.6rem;
+    padding-inline: 1rem;
+    border: 1px solid transparent;
+    border-radius: var(--admin-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.1;
+    white-space: nowrap;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+  }
+
+  .admin-button:focus-visible,
+  .admin-icon-button:focus-visible,
+  .admin-nav-link:focus-visible,
+  .admin-chip:focus-visible,
+  .admin-switch:focus-visible {
+    outline: 2px solid var(--gold-soft);
+    outline-offset: 2px;
+  }
+
+  .admin-button svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .admin-button-primary {
+    border-color: rgba(232, 201, 135, 0.4);
+    background: linear-gradient(180deg, #dcb877, var(--gold));
+    color: #1a1209;
+  }
+
+  .admin-button-primary:hover {
+    background: linear-gradient(180deg, #e6c588, #cfa55c);
+  }
+
+  .admin-button-secondary {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--admin-raised);
+    color: var(--admin-text);
+  }
+
+  .admin-button-secondary:hover {
+    border-color: var(--admin-line-strong);
+    background: #221e19;
+  }
+
+  .admin-button-ghost {
+    background: transparent;
+    color: var(--admin-muted);
+  }
+
+  .admin-button-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--admin-text);
+  }
+
+  .admin-button-danger {
+    border-color: rgba(244, 63, 94, 0.28);
+    background: rgba(127, 29, 29, 0.32);
+    color: #fecdd3;
+  }
+
+  .admin-button-danger:hover {
+    border-color: rgba(251, 113, 133, 0.45);
+    background: rgba(136, 19, 55, 0.45);
+  }
+
+  .admin-button-sm {
+    min-height: 2.15rem;
+    padding-inline: 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .admin-button:disabled,
+  .admin-icon-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .admin-icon-button {
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--admin-radius-sm);
+    background: var(--admin-raised);
+    color: var(--admin-text);
+    transition: background-color 140ms ease, border-color 140ms ease;
+  }
+
+  .admin-icon-button:hover {
+    border-color: var(--admin-line-strong);
+    background: #221e19;
+  }
+
+  .admin-icon-button-quiet {
+    border-color: transparent;
+    background: transparent;
+    color: var(--admin-muted);
+  }
+
+  .admin-icon-button-quiet:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--admin-text);
+  }
+
+  /* ---------- Fields ---------- */
+  .admin-label {
+    display: block;
+    color: var(--admin-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .admin-required {
+    margin-inline-start: 0.3rem;
+    color: #f0a3a3;
+    font-weight: 500;
+  }
+
+  .admin-optional {
+    margin-inline-start: 0.35rem;
+    color: var(--admin-soft);
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+
+  .admin-input,
+  .admin-select,
+  .admin-textarea {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--admin-radius-sm);
+    background: var(--admin-field);
+    color: var(--admin-text);
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    text-align: start;
+    transition: border-color 140ms ease, box-shadow 140ms ease;
+  }
+
+  .admin-input,
+  .admin-select {
+    min-height: 2.75rem;
+  }
+
+  .admin-textarea {
+    min-height: 6.5rem;
+    resize: vertical;
+  }
+
+  .admin-input-with-icon {
+    padding-inline-start: 2.5rem;
+  }
+
+  .admin-select {
+    appearance: none;
+    padding-inline-end: 2.4rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7.5 5 5 5-5' stroke='%23b5a88f' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-position: right 0.8rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+  }
+
+  html[dir="rtl"] .admin-select {
+    background-position: left 0.8rem center;
+  }
+
+  .admin-select option {
+    background: #100e0c;
+    color: var(--admin-text);
+  }
+
+  .admin-input::placeholder,
+  .admin-textarea::placeholder {
+    color: rgba(181, 168, 143, 0.55);
+  }
+
+  .admin-input:hover,
+  .admin-select:hover,
+  .admin-textarea:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .admin-input:focus,
+  .admin-select:focus,
+  .admin-textarea:focus {
+    outline: none;
+    border-color: rgba(232, 201, 135, 0.45);
+    box-shadow: 0 0 0 3px rgba(196, 154, 82, 0.14);
+  }
+
+  .admin-input[aria-invalid="true"],
+  .admin-select[aria-invalid="true"],
+  .admin-textarea[aria-invalid="true"] {
+    border-color: rgba(248, 113, 113, 0.55);
+  }
+
+  .admin-helper {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--admin-soft);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .admin-readonly-field {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--admin-radius-sm);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.6rem 0.85rem;
+    color: var(--admin-text);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .admin-readonly-field-gold {
+    border-color: rgba(232, 201, 135, 0.18);
+    background: rgba(196, 154, 82, 0.08);
+    color: var(--gold-soft);
+    font-weight: 600;
+  }
+
+  .admin-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--admin-radius-sm);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem 0.9rem;
+  }
+
+  /* ---------- Toggle switch ---------- */
+  .admin-switch {
+    position: relative;
+    display: inline-flex;
+    width: 2.6rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    transition: background-color 160ms ease;
+  }
+
+  .admin-switch::after {
+    content: "";
+    position: absolute;
+    top: 0.1875rem;
+    inset-inline-start: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 999px;
+    background: #f4eee2;
+    transition: transform 160ms ease;
+  }
+
+  .admin-switch[aria-checked="true"] {
+    background: var(--gold);
+  }
+
+  .admin-switch[aria-checked="true"]::after {
+    transform: translateX(1.1rem);
+    background: #1a1209;
+  }
+
+  html[dir="rtl"] .admin-switch[aria-checked="true"]::after {
+    transform: translateX(-1.1rem);
+  }
+
+  /* ---------- Chips / segmented filters ---------- */
+  .admin-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.2rem;
+    padding-inline: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    color: var(--admin-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+  }
+
+  .admin-chip:hover {
+    color: var(--admin-text);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .admin-chip[aria-pressed="true"] {
+    border-color: rgba(232, 201, 135, 0.4);
+    background: rgba(196, 154, 82, 0.14);
+    color: var(--admin-text);
+  }
+
+  .admin-chip-count {
+    color: var(--admin-soft);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-chip[aria-pressed="true"] .admin-chip-count {
+    color: var(--gold-soft);
+  }
+
+  /* ---------- Drawer (side editor) ---------- */
+  .admin-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: rgba(0, 0, 0, 0.62);
+    backdrop-filter: blur(3px);
+  }
+
+  .admin-drawer {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    z-index: 71;
+    display: flex;
+    width: min(46rem, 100vw);
+    flex-direction: column;
+    background: var(--admin-surface);
+    border-inline-start: 1px solid var(--admin-line);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+    animation: admin-drawer-in 200ms ease-out;
+  }
+
+  html[dir="rtl"] .admin-drawer {
+    animation-name: admin-drawer-in-rtl;
+  }
+
+  .admin-drawer-header,
+  .admin-drawer-footer {
+    flex-shrink: 0;
+    padding: 1rem 1.25rem;
+  }
+
+  .admin-drawer-header {
+    border-bottom: 1px solid var(--admin-line);
+  }
+
+  .admin-drawer-footer {
+    border-top: 1px solid var(--admin-line);
+    background: rgba(11, 10, 8, 0.6);
+  }
+
+  .admin-drawer-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1.25rem;
+  }
+
+  .admin-form-section + .admin-form-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--admin-line);
+  }
+
+  .admin-form-section-title {
+    color: var(--admin-text);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .admin-form-section-hint {
+    margin-top: 0.2rem;
+    color: var(--admin-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  /* ---------- Image upload ---------- */
+  .admin-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 8rem;
+    border: 1.5px dashed rgba(232, 201, 135, 0.25);
+    border-radius: var(--admin-radius);
+    background: rgba(196, 154, 82, 0.04);
+    color: var(--admin-muted);
+    text-align: center;
+    padding: 1rem;
+    cursor: pointer;
+    transition: border-color 140ms ease, background-color 140ms ease;
+  }
+
+  .admin-dropzone:hover,
+  .admin-dropzone[data-dragging="true"] {
+    border-color: rgba(232, 201, 135, 0.55);
+    background: rgba(196, 154, 82, 0.08);
+  }
+
+  .admin-dropzone:focus-within {
+    outline: 2px solid var(--gold-soft);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Menus ---------- */
+  .admin-menu {
+    position: absolute;
+    z-index: 40;
+    min-width: 12rem;
+    padding: 0.35rem;
+    border: 1px solid var(--admin-line-strong);
+    border-radius: var(--admin-radius-sm);
+    background: #1a1713;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .admin-menu-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.65rem;
+    border-radius: 0.45rem;
+    color: var(--admin-text);
+    font-size: 0.875rem;
+    text-align: start;
+  }
+
+  .admin-menu-item:hover,
+  .admin-menu-item:focus-visible {
+    background: rgba(255, 255, 255, 0.06);
+    outline: none;
+  }
+
+  .admin-menu-item[data-danger="true"] {
+    color: #fda4af;
+  }
+
+  .admin-menu-item svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: var(--admin-muted);
+  }
+
+  .admin-menu-item[data-danger="true"] svg {
+    color: #fda4af;
+  }
+
+  /* ---------- Toolbar, stepper, empty state ---------- */
+  .admin-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-toolbar-grid {
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  }
+
+  .admin-toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .admin-stepper {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+
+  .admin-stepper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-stepper-item {
+    display: flex;
+    min-width: 10rem;
+    flex: 1 0 10rem;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--admin-radius-sm);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.75rem 0.9rem;
+    text-align: start;
+    transition: border-color 140ms ease, background-color 140ms ease;
+  }
+
+  .admin-stepper-item:hover {
+    border-color: rgba(232, 201, 135, 0.2);
+  }
+
+  .admin-stepper-item-active {
+    border-color: rgba(232, 201, 135, 0.35);
+    background: rgba(196, 154, 82, 0.1);
+  }
+
+  .admin-stepper-item-complete:not(.admin-stepper-item-active) {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .admin-stepper-index {
+    display: inline-flex;
+    width: 1.8rem;
+    height: 1.8rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--gold-soft);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .admin-stepper-item-active .admin-stepper-index {
+    background: var(--gold);
+    color: #1a1209;
+  }
+
+  .admin-stepper-label {
+    color: var(--admin-text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .admin-empty-state {
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    border-radius: var(--admin-radius);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1.25rem;
+    color: var(--admin-muted);
+  }
+
+  .admin-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    border: 1px solid rgba(232, 201, 135, 0.22);
+    border-radius: var(--admin-radius-sm);
+    background: rgba(196, 154, 82, 0.08);
+    padding: 0.75rem 0.9rem;
+    color: var(--admin-text);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .admin-notice[data-tone="error"] {
+    border-color: rgba(248, 113, 113, 0.3);
+    background: rgba(127, 29, 29, 0.22);
+    color: #fecaca;
+  }
+
+  .admin-notice[data-tone="success"] {
+    border-color: rgba(52, 211, 153, 0.28);
+    background: rgba(6, 78, 59, 0.25);
+    color: #bbf7d0;
+  }
+
+  .admin-shell [data-numeric],
+  .admin-shell .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 1024px) {
+    .admin-toolbar {
+      flex-direction: row;
+      align-items: end;
+      justify-content: space-between;
+    }
+
+    .admin-toolbar-grid {
+      flex: 1;
+    }
+
+    .admin-toolbar-actions {
+      justify-content: flex-end;
+    }
+
+    .admin-stepper-item {
+      min-width: 0;
+    }
+  }
+}
+
+/* Plain flex rows inside the dashboard: RTL already mirrors them. The global
+   .rtl-inline-row rule reverses rows for the public site, which would undo
+   that mirroring here, so it is reset (outside the layer to win the cascade). */
+html[dir="rtl"] .admin-shell .rtl-inline-row {
+  flex-direction: row;
+}
+
+@keyframes admin-drawer-in {
+  from { transform: translateX(2rem); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes admin-drawer-in-rtl {
+  from { transform: translateX(-2rem); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-drawer { animation: none; }
+  .admin-switch, .admin-switch::after { transition: none; }
+}

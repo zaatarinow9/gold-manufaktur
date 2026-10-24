@@ -22,7 +22,7 @@ export function ProductCard({
   const personalizationNote = locale === "ar"
     ? "يمكن تخصيص الاسم لهذا المنتج"
     : locale === "de"
-      ? "Namenspersonalisierung moeglich"
+      ? "Namenspersonalisierung möglich"
       : locale === "fr"
         ? "Personnalisation du nom possible"
         : locale === "tr"

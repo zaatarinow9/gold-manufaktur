@@ -1,38 +1,148 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { ArrowLeft, Mail, Power, Trash2, UserCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
 
-import { assignWorkshopManagerAction, permanentlyDeleteWorkshopAction, sendWorkshopManagerInviteAction, toggleWorkshopActiveAction } from "@/app/[locale]/admin/workshops/actions";
+import {
+  assignWorkshopManagerAction,
+  permanentlyDeleteWorkshopAction,
+  sendWorkshopManagerInviteAction,
+  toggleWorkshopActiveAction,
+} from "@/app/[locale]/admin/workshops/actions";
 import { AdminActionPendingBar } from "@/components/admin/AdminActionPendingBar";
-import { AdminButton } from "@/components/admin/AdminButton";
+import { AdminBadge } from "@/components/admin/AdminBadge";
+import { AdminButton, getAdminButtonClassName } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminStatCard } from "@/components/admin/AdminStatCard";
+import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
-import type { WorkshopRecord } from "@/lib/db/workshops";
 import type { EmployeeAccountRecord } from "@/lib/db/employeeAccounts";
+import type { WorkshopRecord } from "@/lib/db/workshops";
 
 type Props = { employees: EmployeeAccountRecord[]; locale: AppLocale; workshop: WorkshopRecord };
 
 export function WorkshopDetailClient({ employees, locale, workshop }: Props) {
   const t = useTranslations("Admin.workshops.detail");
-  const common = useTranslations("Admin.common");
+  const tc = useTranslations("Admin");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const isArabic = locale === "ar";
+  const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
 
-  return <div className="space-y-6">
-    <AdminActionPendingBar active={pending} label={t("pending")} />
-    <AdminPageHeader eyebrow={t("title")} title={workshop.name} description={workshop.description || workshop.location} />
-    {feedback ? <p className="rounded-xl border border-gold/20 bg-gold/10 p-3 text-sm">{feedback}</p> : null}
-    <AdminCard title={t("title")}><dl className="grid gap-3 text-sm sm:grid-cols-2"><div><dt className="text-muted">{t("employeeCount")}</dt><dd>{workshop.employeeCount}</dd></div><div><dt className="text-muted">{t("orders")}</dt><dd>{workshop.activeOrders}</dd></div><div><dt className="text-muted">{t("manager")}</dt><dd>{workshop.contactName || "—"}</dd></div><div><dt className="text-muted">{t("orders")}</dt><dd>{workshop.isActive ? common("active") : common("inactive")}</dd></div></dl></AdminCard>
-    <AdminCard title={t("manager")}><p className="text-sm text-muted">{workshop.contactName || "—"}</p></AdminCard>
-    <AdminCard title={t("employees")}><p className="text-sm text-muted">{workshop.employeeCount}</p></AdminCard>
-    <AdminCard title={isArabic ? "مدير الورشة" : "Werkstattleitung"}><div className="space-y-3">{employees.map((employee) => <div key={employee.id} className="flex flex-wrap items-center justify-between gap-3 text-sm"><span>{employee.fullName}</span>{employee.accountStatus === "active" ? <AdminButton size="sm" disabled={pending} onClick={() => startTransition(async () => { const result = await assignWorkshopManagerAction(locale, { employeeId: employee.id, workshopId: workshop.id }); setFeedback(result.message); if (result.ok) router.refresh(); })}>{isArabic ? "تعيين مدير الورشة" : "Als Leitung ernennen"}</AdminButton> : <AdminButton size="sm" disabled={pending} onClick={() => startTransition(async () => { const result = await sendWorkshopManagerInviteAction(locale, employee.id); setFeedback(result.message); if (result.ok) router.refresh(); })}>{employee.accountStatus === "invited" ? (isArabic ? "إعادة إرسال الدعوة" : "Einladung erneut senden") : (isArabic ? "إرسال دعوة" : "Einladung senden")}</AdminButton>}</div>)}</div></AdminCard>
-    <AdminCard title={t("orders")}><p className="text-sm text-muted">{workshop.activeOrders}</p></AdminCard>
-    {workshop.isActive ? <AdminButton variant="danger" disabled={pending} onClick={() => startTransition(async () => { const result = await toggleWorkshopActiveAction(locale, workshop.id, false); setFeedback(result.message); if (result.ok) router.refresh(); })}>{t("deactivate")}</AdminButton> : null}
-    <AdminButton variant="danger" disabled={pending} onClick={() => { if (window.confirm(isArabic ? "سيتم حذف الورشة الفارغة نهائيًا. هل تريد المتابعة؟" : "Die leere Werkstatt wird endgültig gelöscht. Fortfahren?")) startTransition(async () => { const result = await permanentlyDeleteWorkshopAction(locale, workshop.id); setFeedback(result.message); if (result.ok) router.push("/admin/workshops"); }); }}>{isArabic ? "حذف الورشة نهائيًا" : "Werkstatt endgültig löschen"}</AdminButton>
-  </div>;
+  const run = (task: () => Promise<{ message: string; ok: boolean }>, afterSuccess?: () => void) => {
+    startTransition(async () => {
+      const result = await task();
+      setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+      if (result.ok) {
+        if (afterSuccess) afterSuccess();
+        else router.refresh();
+      }
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <AdminActionPendingBar active={pending} label={t("pending")} />
+      <Link href="/admin/workshops" className={getAdminButtonClassName({ size: "sm", variant: "ghost" })}>
+        <ArrowLeft className="rtl:rotate-180" />
+        {tc("nav.workshops")}
+      </Link>
+      <AdminPageHeader
+        title={workshop.name}
+        meta={
+          <AdminBadge variant={workshop.isActive ? "success" : "neutral"}>
+            {workshop.isActive ? tc("common.active") : tc("common.inactive")}
+          </AdminBadge>
+        }
+        description={workshop.description || workshop.location || undefined}
+        actions={
+          <AdminButton
+            variant="secondary"
+            disabled={pending}
+            onClick={() => run(() => toggleWorkshopActiveAction(locale, workshop.id, !workshop.isActive))}
+          >
+            <Power />
+            {workshop.isActive ? t("deactivate") : t("activate")}
+          </AdminButton>
+        }
+      />
+
+      {feedback ? (
+        <div className="admin-notice" data-tone={feedback.tone} role="status">{feedback.message}</div>
+      ) : null}
+
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+        <AdminStatCard label={t("employeeCount")} value={workshop.employeeCount} />
+        <AdminStatCard label={t("orders")} value={workshop.activeOrders} />
+        <AdminStatCard className="col-span-2 lg:col-span-1" label={t("manager")} value={workshop.contactName || "–"} />
+      </section>
+
+      <AdminCard title={t("employees")} description={t("employeesHint")} contentClassName="p-0">
+        {employees.length === 0 ? (
+          <p className="px-5 py-6 text-sm text-muted">{t("noEmployees")}</p>
+        ) : (
+          <ul className="divide-y divide-white/[0.05]">
+            {employees.map((employee) => {
+              const isManager = Boolean(workshop.contactName) && employee.fullName === workshop.contactName;
+              return (
+                <li key={employee.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="flex flex-wrap items-center gap-2 font-medium text-foreground">
+                      {employee.fullName}
+                      {isManager ? <AdminBadge variant="gold">{t("managerBadge")}</AdminBadge> : null}
+                    </p>
+                    <p className="text-sm text-muted">
+                      <bdi>{employee.email || "–"}</bdi> · {t(`account.${employee.accountStatus}`)}
+                    </p>
+                  </div>
+                  {isManager ? null : employee.accountStatus === "active" ? (
+                    <AdminButton
+                      size="sm"
+                      disabled={pending}
+                      onClick={() =>
+                        run(() => assignWorkshopManagerAction(locale, { employeeId: employee.id, workshopId: workshop.id }))
+                      }
+                    >
+                      <UserCheck />
+                      {t("appointManager")}
+                    </AdminButton>
+                  ) : (
+                    <AdminButton
+                      size="sm"
+                      variant="ghost"
+                      disabled={pending}
+                      onClick={() => run(() => sendWorkshopManagerInviteAction(locale, employee.id))}
+                    >
+                      <Mail />
+                      {employee.accountStatus === "invited" ? t("resendInvite") : t("sendInvite")}
+                    </AdminButton>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </AdminCard>
+
+      <AdminCard title={t("dangerTitle")} description={t("dangerHint")}>
+        <AdminButton
+          variant="danger"
+          disabled={pending}
+          onClick={() => {
+            if (window.confirm(t("deleteConfirm", { name: workshop.name }))) {
+              run(
+                () => permanentlyDeleteWorkshopAction(locale, workshop.id),
+                () => router.push(`/${locale}/admin/workshops`)
+              );
+            }
+          }}
+        >
+          <Trash2 />
+          {t("deleteWorkshop")}
+        </AdminButton>
+      </AdminCard>
+    </div>
+  );
 }

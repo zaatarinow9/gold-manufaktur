@@ -1,11 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import clsx from "clsx";
+import {
+  AlignLeft,
+  Calendar,
+  CheckSquare,
+  ChevronDown,
+  Eye,
+  EyeOff,
+  Hash,
+  ListChecks,
+  ListOrdered,
+  Pencil,
+  Plus,
+  Trash2,
+  Type,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
 
-import type { AppLocale } from "@/i18n/routing";
 import {
   deleteOptionAction,
   deleteOptionGroupAction,
@@ -13,35 +29,52 @@ import {
   saveOptionGroupAction,
   toggleOptionActiveAction,
 } from "@/app/[locale]/admin/options/actions";
+import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminButton } from "@/components/admin/AdminButton";
-import { AdminCard } from "@/components/admin/AdminCard";
-import { AdminInput } from "@/components/admin/AdminInput";
+import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { AdminSelect } from "@/components/admin/AdminSelect";
-import { AdminTextarea } from "@/components/admin/AdminTextarea";
-import { AdminToolbar } from "@/components/admin/AdminToolbar";
-import {
-  focusFirstInvalidField,
-  getRequiredFieldBadge,
-  scrollCardIntoView,
-} from "@/lib/admin/clientForm";
+import { AdminSwitch } from "@/components/admin/AdminSwitch";
+import { AdminTranslationFields } from "@/components/admin/AdminTranslationFields";
+import type { AppLocale } from "@/i18n/routing";
+import { nextEditorKey } from "@/lib/admin/editorKey";
+import type { OptionValueLabels } from "@/lib/catalog/optionValues";
 import type {
   AdminOptionGroupRecord,
   AdminOptionRecord,
   LocalizedText,
 } from "@/lib/db/adminCatalog";
+import { localeLabels } from "@/lib/site";
 import type { OptionType } from "@/types/admin";
 
-type OptionGroupFormState = {
-  id?: string;
-  isActive: boolean;
-  key: string;
-  name: LocalizedText;
-  sortOrder: number;
+type AdminOptionsClientProps = {
+  groups: AdminOptionGroupRecord[];
+  locale: AppLocale;
+  options: AdminOptionRecord[];
 };
 
-type OptionFormState = {
+/** Field types the order and inquiry forms can render. */
+const fieldTypes = ["text", "textarea", "number", "select", "multi_select", "boolean", "date"] as const;
+type FieldType = (typeof fieldTypes)[number];
+
+const fieldTypeIcons: Record<FieldType, LucideIcon> = {
+  boolean: CheckSquare,
+  date: Calendar,
+  multi_select: ListChecks,
+  number: Hash,
+  select: ListOrdered,
+  text: Type,
+  textarea: AlignLeft,
+};
+
+const presetKeys = ["engraving", "karat", "weight", "note"] as const;
+type PresetKey = (typeof presetKeys)[number];
+
+type ChoiceRow = { id: string; labels: Record<"de" | "ar", string>; extra?: OptionValueLabels; value: string };
+
+type FieldFormState = {
+  choices: ChoiceRow[];
   groupId: string;
   helpText: LocalizedText;
   id?: string;
@@ -51,1400 +84,619 @@ type OptionFormState = {
   label: LocalizedText;
   placeholder: LocalizedText;
   sortOrder: number;
-  type: OptionType;
-  valuesText: string;
+  type: FieldType;
 };
 
-type AdminOptionsClientProps = {
-  groups: AdminOptionGroupRecord[];
-  locale: AppLocale;
-  options: AdminOptionRecord[];
+type GroupFormState = {
+  id?: string;
+  isActive: boolean;
+  key: string;
+  name: LocalizedText;
+  sortOrder: number;
 };
 
-type PresetKey = "customer_note" | "karat" | "name_text" | "weight_grams";
-type OptionEditorKind =
-  | "checkbox"
-  | "customer_note"
-  | "karat"
-  | "name_text"
-  | "number"
-  | "select"
-  | "text"
-  | "textarea"
-  | "weight";
+const emptyText = (): LocalizedText => ({ ar: "", de: "", en: "", fr: "", tr: "" });
+const newRowId = () => Math.random().toString(36).slice(2, 10);
 
-const editableLocales = ["de", "ar", "en", "fr", "tr"] as const;
-const lastOptionGroupStorageKey = "goldhelwah:last-option-group-id";
-const optionEditorKinds: OptionEditorKind[] = [
-  "text",
-  "number",
-  "textarea",
-  "select",
-  "checkbox",
-  "karat",
-  "weight",
-  "customer_note",
-  "name_text",
-];
-
-function createEmptyLocalizedText(): LocalizedText {
-  return {
-    ar: "",
-    de: "",
-    en: "",
-    fr: "",
-    tr: "",
-  };
+function toFieldType(type: OptionType): FieldType {
+  return (fieldTypes as readonly string[]).includes(type) ? (type as FieldType) : "text";
 }
 
-function createOptionGroupForm(groups: AdminOptionGroupRecord[]): OptionGroupFormState {
-  return {
-    isActive: true,
-    key: "",
-    name: createEmptyLocalizedText(),
-    sortOrder: groups.length + 1,
-  };
-}
+function createFieldForm(option: AdminOptionRecord | null, groupId: string, sortOrder: number): FieldFormState {
+  if (!option) {
+    return {
+      choices: [],
+      groupId,
+      helpText: emptyText(),
+      isActive: true,
+      isRequired: false,
+      key: "",
+      label: emptyText(),
+      placeholder: emptyText(),
+      sortOrder,
+      type: "text",
+    };
+  }
 
-function createEditGroupForm(group: AdminOptionGroupRecord): OptionGroupFormState {
   return {
-    id: group.id,
-    isActive: group.isActive,
-    key: group.key,
-    name: group.name,
-    sortOrder: group.sortOrder,
-  };
-}
-
-function getNextOptionSortOrder(
-  groups: AdminOptionGroupRecord[],
-  groupId?: string
-) {
-  const targetGroup = groups.find((group) => group.id === groupId) ?? groups[0] ?? null;
-  return (targetGroup?.options.length ?? 0) + 1;
-}
-
-function createOptionForm(groups: AdminOptionGroupRecord[], groupId?: string): OptionFormState {
-  return {
-    groupId: groupId ?? groups[0]?.id ?? "",
-    helpText: createEmptyLocalizedText(),
-    isActive: true,
-    isRequired: false,
-    key: "",
-    label: createEmptyLocalizedText(),
-    placeholder: createEmptyLocalizedText(),
-    sortOrder: getNextOptionSortOrder(groups, groupId),
-    type: "text",
-    valuesText: "",
-  };
-}
-
-function createEditOptionForm(option: AdminOptionRecord): OptionFormState {
-  return {
+    choices: option.values.map((choice) => {
+      const { de, ar, ...extra } = choice.labels ?? {};
+      return {
+        extra,
+        id: newRowId(),
+        labels: { ar: ar ?? "", de: de ?? choice.label },
+        value: choice.value,
+      };
+    }),
     groupId: option.groupId,
-    helpText: option.helpText,
+    helpText: { ...option.helpText },
     id: option.id,
     isActive: option.isActive,
     isRequired: option.isRequired,
     key: option.key,
-    label: option.label,
-    placeholder: option.placeholder,
+    label: { ...option.label },
+    placeholder: { ...option.placeholder },
     sortOrder: option.sortOrder,
-    type: option.type,
-    valuesText: option.values.map((value) => `${value.label}:${value.value}`).join("\n"),
+    type: toFieldType(option.type),
   };
 }
 
-function updateLocalizedText(
-  current: LocalizedText,
-  locale: keyof LocalizedText,
-  value: string
-) {
-  return {
-    ...current,
-    [locale]: value,
-  };
-}
-
-function parseOptionValues(valuesText: string) {
-  return valuesText
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const separatorIndex = line.indexOf(":");
-
-      if (separatorIndex === -1) {
-        return {
-          label: line,
-          value: line,
-        };
-      }
-
-      return {
-        label: line.slice(0, separatorIndex).trim(),
-        value: line.slice(separatorIndex + 1).trim(),
-      };
-    })
-    .filter((value) => value.label && value.value);
-}
-
-function getStoredOptionGroupId(groups: AdminOptionGroupRecord[]) {
-  if (typeof window === "undefined") {
-    return "";
-  }
-
-  const stored = window.localStorage.getItem(lastOptionGroupStorageKey);
-
-  if (!stored) {
-    return "";
-  }
-
-  return groups.some((group) => group.id === stored) ? stored : "";
-}
-
-function saveStoredOptionGroupId(groupId: string) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  if (!groupId) {
-    window.localStorage.removeItem(lastOptionGroupStorageKey);
-    return;
-  }
-
-  window.localStorage.setItem(lastOptionGroupStorageKey, groupId);
-}
-
-function getOptionsUiCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      addField: "إضافة حقل",
-      createGroup: "إنشاء مجموعة",
-      deleteFieldConfirm: "هل تريد حذف هذا الحقل من النظام؟",
-      deleteGroupConfirm: "هل تريد حذف مجموعة الخيارات بالكامل؟",
-      description:
-        "أنشئ مجموعات خيارات واضحة، ثم أضف الحقول التي تظهر فقط مع المنتجات المرتبطة بهذه المجموعة.",
-      empty: "لا توجد مجموعات خيارات بعد.",
-      fieldCount: (count: number) => `${count} حقل`,
-      fieldsTitle: "الحقول",
-      groupFilter: "مجموعة الخيارات",
-      groupHelper: "تُستخدم المجموعات لربط حقول محددة بالمنتج المناسب فقط.",
-      helpTextLabel: "نص المساعدة",
-      inactive: "معطل",
-      keyLabel: "المفتاح",
-      placeholderLabel: "النص المبدئي",
-      presetCustomerNote: "ملاحظات العميل",
-      presetKarat: "عيار 14 / 18 / 21",
-      presetName: "اسم العميل",
-      presetWeight: "الوزن بالغرام",
-      presetsTitle: "إعدادات سريعة للمجوهرات",
-      searchPlaceholder: "ابحث في المجموعات أو الحقول",
-      sortOrderLabel: "الترتيب",
-      title: "مجموعات الخيارات",
-      typeLabel: "النوع",
-      valuesHelper: "سطر لكل قيمة. يمكن استخدام الصيغة label:value.",
-      valuesLabel: "القيم",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      addField: "Feld anlegen",
-      createGroup: "Gruppe anlegen",
-      deleteFieldConfirm: "Soll dieses Feld aus dem System entfernt werden?",
-      deleteGroupConfirm: "Soll diese Optionsgruppe komplett entfernt werden?",
-      description:
-        "Erstellen Sie klare Optionsgruppen und pflegen Sie darin nur die Felder, die zu den verknuepften Produkten gehoeren.",
-      empty: "Es sind noch keine Optionsgruppen vorhanden.",
-      fieldCount: (count: number) => `${count} Felder`,
-      fieldsTitle: "Felder",
-      groupFilter: "Optionsgruppe",
-      groupHelper:
-        "Gruppen werden direkt am Produkt ausgewaehlt und halten die Formulare bewusst schlank.",
-      helpTextLabel: "Hilfetext",
-      inactive: "Inaktiv",
-      keyLabel: "Schluessel",
-      placeholderLabel: "Platzhalter",
-      presetCustomerNote: "Kundennotiz",
-      presetKarat: "Legierung 14 / 18 / 21",
-      presetName: "Namensfeld",
-      presetWeight: "Gewicht in Gramm",
-      presetsTitle: "Schnellvorlagen fuer Schmuck",
-      searchPlaceholder: "Nach Gruppen oder Feldern suchen",
-      sortOrderLabel: "Sortierung",
-      title: "Optionsgruppen",
-      typeLabel: "Feldtyp",
-      valuesHelper: "Eine Zeile pro Wert. Optional im Format label:value.",
-      valuesLabel: "Auswahlwerte",
-    };
-  }
-
-  return {
-    addField: "Add field",
-    createGroup: "Create group",
-    deleteFieldConfirm: "Remove this field from the system?",
-    deleteGroupConfirm: "Remove this option group completely?",
-    description:
-      "Create clean option groups and keep only the fields that belong to the products using that group.",
-    empty: "No option groups yet.",
-    fieldCount: (count: number) => `${count} fields`,
-    fieldsTitle: "Fields",
-    groupFilter: "Option group",
-    groupHelper:
-      "Groups are selected on the product and keep customer/admin forms focused.",
-    helpTextLabel: "Help text",
-    inactive: "Inactive",
-    keyLabel: "Key",
-    placeholderLabel: "Placeholder",
-    presetCustomerNote: "Customer note",
-    presetKarat: "Karat 14 / 18 / 21",
-    presetName: "Name field",
-    presetWeight: "Weight in grams",
-    presetsTitle: "Jewelry quick presets",
-    searchPlaceholder: "Search groups or fields",
-    sortOrderLabel: "Sort order",
-    title: "Option groups",
-    typeLabel: "Field type",
-    valuesHelper: "One line per value. Optional format: label:value.",
-    valuesLabel: "Values",
-  };
-}
-
-function buildPreset(
-  preset: PresetKey,
-  locale: AppLocale
-): Pick<OptionFormState, "helpText" | "key" | "label" | "placeholder" | "type" | "valuesText"> {
-  const customerNoteDe = "Kundennotiz";
-  const customerNoteAr = "ملاحظات العميل";
-  const nameDe = "Name";
-  const nameAr = "الاسم";
-  const weightDe = "Gewicht";
-  const weightAr = "الوزن";
-  const karatDe = "Legierung";
-  const karatAr = "العيار";
-
-  switch (preset) {
-    case "karat":
-      return {
-        helpText: {
-          ar: "اختر العيار المناسب لهذا الطلب.",
-          de: "Waehlen Sie die gewuenschte Legierung.",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        key: "gold-karat",
-        label: {
-          ar: karatAr,
-          de: karatDe,
-          en: "Karat",
-          fr: "",
-          tr: "",
-        },
-        placeholder: createEmptyLocalizedText(),
-        type: "select",
-        valuesText: "14:14\n18:18\n21:21",
-      };
-    case "weight_grams":
-      return {
-        helpText: {
-          ar: "أدخل الوزن المطلوب بالغرام.",
-          de: "Gewuenschtes Gewicht in Gramm.",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        key: "weight-grams",
-        label: {
-          ar: weightAr,
-          de: weightDe,
-          en: "Weight",
-          fr: "",
-          tr: "",
-        },
-        placeholder: {
-          ar: "مثال: 12.5",
-          de: "z. B. 12,5",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        type: "number",
-        valuesText: "",
-      };
-    case "name_text":
-      return {
-        helpText: {
-          ar: "يمكن إدخال الاسم بأي أحرف أو رموز.",
-          de: "Der Name darf beliebige Zeichen enthalten.",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        key: "name-text",
-        label: {
-          ar: nameAr,
-          de: nameDe,
-          en: "Name",
-          fr: "",
-          tr: "",
-        },
-        placeholder: {
-          ar: locale === "ar" ? "اكتب الاسم المطلوب" : "اكتب الاسم المطلوب",
-          de: "Gewuenschten Namen eingeben",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        type: "text",
-        valuesText: "",
-      };
-    case "customer_note":
-    default:
-      return {
-        helpText: {
-          ar: "ملاحظات إضافية من العميل.",
-          de: "Zusaetzliche Hinweise des Kunden.",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        key: "customer-note",
-        label: {
-          ar: customerNoteAr,
-          de: customerNoteDe,
-          en: "Customer note",
-          fr: "",
-          tr: "",
-        },
-        placeholder: {
-          ar: "أي تفاصيل إضافية",
-          de: "Weitere Hinweise",
-          en: "",
-          fr: "",
-          tr: "",
-        },
-        type: "textarea",
-        valuesText: "",
-      };
-  }
-}
-
-function resolveOptionEditorKind(
-  option: Pick<OptionFormState, "key" | "type">
-): OptionEditorKind {
-  if (option.key === "gold-karat") {
-    return "karat";
-  }
-
-  if (option.key === "weight-grams") {
-    return "weight";
-  }
-
-  if (option.key === "name-text") {
-    return "name_text";
-  }
-
-  if (option.key === "customer-note") {
-    return "customer_note";
-  }
-
-  if (option.type === "boolean") {
-    return "checkbox";
-  }
-
-  if (option.type === "number") {
-    return "number";
-  }
-
-  if (option.type === "textarea") {
-    return "textarea";
-  }
-
-  if (option.type === "select") {
-    return "select";
-  }
-
-  return "text";
-}
-
-function applyOptionEditorKind(
-  current: OptionFormState,
-  kind: OptionEditorKind,
-  locale: AppLocale
-): OptionFormState {
-  if (kind === "karat") {
-    return {
-      ...current,
-      ...buildPreset("karat", locale),
-      type: "select",
-    } satisfies OptionFormState;
-  }
-
-  if (kind === "weight") {
-    return {
-      ...current,
-      ...buildPreset("weight_grams", locale),
-      type: "number",
-    } satisfies OptionFormState;
-  }
-
-  if (kind === "name_text") {
-    return {
-      ...current,
-      ...buildPreset("name_text", locale),
-      type: "text",
-    } satisfies OptionFormState;
-  }
-
-  if (kind === "customer_note") {
-    return {
-      ...current,
-      ...buildPreset("customer_note", locale),
-      type: "textarea",
-    } satisfies OptionFormState;
-  }
-
-  if (kind === "checkbox") {
-    return {
-      ...current,
-      type: "boolean",
-      valuesText: "",
-    };
-  }
-
-  return {
-    ...current,
-    type: kind as Extract<OptionType, "number" | "select" | "text" | "textarea">,
-    valuesText: kind === "select" ? current.valuesText : "",
-  };
-}
-
-function getOptionEditorKindLabel(kind: OptionEditorKind, locale: AppLocale) {
-  if (locale === "ar") {
-    switch (kind) {
-      case "checkbox":
-        return "مربع اختيار";
-      case "customer_note":
-        return "ملاحظات الزبون";
-      case "karat":
-        return "عيار";
-      case "name_text":
-        return "اسم";
-      case "number":
-        return "رقم";
-      case "select":
-        return "قائمة اختيار";
-      case "text":
-        return "نص";
-      case "textarea":
-        return "ملاحظات طويلة";
-      case "weight":
-        return "وزن";
-    }
-  }
-
-  if (locale === "de") {
-    switch (kind) {
-      case "checkbox":
-        return "Checkbox";
-      case "customer_note":
-        return "Kundennotiz";
-      case "karat":
-        return "Legierung";
-      case "name_text":
-        return "Namensfeld";
-      case "number":
-        return "Zahl";
-      case "select":
-        return "Auswahl";
-      case "text":
-        return "Text";
-      case "textarea":
-        return "Mehrzeilig";
-      case "weight":
-        return "Gewicht";
-    }
-  }
-
-  switch (kind) {
-    case "checkbox":
-      return "Checkbox";
-    case "customer_note":
-      return "Customer note";
-    case "karat":
-      return "Karat";
-    case "name_text":
-      return "Name field";
-    case "number":
-      return "Number";
-    case "select":
-      return "Select";
-    case "text":
-      return "Text";
-    case "textarea":
-      return "Textarea";
-    case "weight":
-      return "Weight";
-  }
-}
-
-export function AdminOptionsClient({
+function FieldEditor({
   groups,
+  initialState,
   locale,
-  options,
-}: AdminOptionsClientProps) {
-  const t = useTranslations("Admin");
-  const uiCopy = getOptionsUiCopy(locale);
-  const addFieldLabel =
-    locale === "ar"
-      ? "إضافة خيار"
-      : locale === "de"
-        ? "Option anlegen"
-        : "Add option";
-  const createGroupLabel =
-    locale === "ar"
-      ? "إضافة مجموعة"
-      : locale === "de"
-        ? "Gruppe anlegen"
-        : "Add group";
+  onClose,
+  onSaved,
+}: {
+  groups: AdminOptionGroupRecord[];
+  initialState: FieldFormState;
+  locale: AppLocale;
+  onClose: () => void;
+  onSaved: (message: string) => void;
+}) {
+  const t = useTranslations("Admin.optionsPage");
+  const tc = useTranslations("Admin");
+  const [form, setForm] = useState(initialState);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formMessage, setFormMessage] = useState<string | null>(null);
+  const [isSaving, startSaving] = useTransition();
+  const isNew = !form.id;
+  const hasChoices = form.type === "select" || form.type === "multi_select";
+  const hasPlaceholder = form.type === "text" || form.type === "textarea" || form.type === "number";
+
+  const applyPreset = (preset: PresetKey) => {
+    const read = (key: string) =>
+      Object.fromEntries(
+        (["de", "ar", "en", "fr", "tr"] as const).map((language) => [
+          language,
+          t(`presets.${preset}.${key}.${language}`),
+        ])
+      ) as LocalizedText;
+
+    setForm((current) => ({
+      ...current,
+      choices:
+        preset === "karat"
+          ? ["14", "18", "21"].map((karat) => ({
+              id: newRowId(),
+              labels: { ar: karat, de: karat },
+              value: karat,
+            }))
+          : [],
+      helpText: read("help"),
+      label: read("label"),
+      placeholder: preset === "karat" ? emptyText() : read("placeholder"),
+      type: preset === "engraving" ? "text" : preset === "karat" ? "select" : preset === "weight" ? "number" : "textarea",
+    }));
+    setErrors({});
+  };
+
+  const submit = () => {
+    setFormMessage(null);
+
+    if (hasChoices && form.choices.filter((choice) => choice.labels.de.trim() || choice.labels.ar.trim()).length === 0) {
+      setErrors({ values: t("errors.choices") });
+      setFormMessage(tc("forms.checkFields"));
+      return;
+    }
+
+    startSaving(async () => {
+      const values = hasChoices
+        ? form.choices
+            .map((choice) => {
+              const de = choice.labels.de.trim();
+              const ar = choice.labels.ar.trim();
+              const label = de || ar;
+              return {
+                label,
+                labels: { ...choice.extra, ar, de },
+                value: choice.value.trim() || label,
+              };
+            })
+            .filter((choice) => choice.label)
+        : [];
+      const payload = {
+        groupId: form.groupId,
+        helpText: form.helpText,
+        isActive: form.isActive,
+        isRequired: form.isRequired,
+        key: form.key,
+        label: form.label,
+        placeholder: hasPlaceholder ? form.placeholder : emptyText(),
+        sortOrder: form.sortOrder,
+        type: form.type,
+        values,
+      };
+      const result = await saveOptionAction(locale, form.id ? { ...payload, id: form.id } : payload);
+
+      if (!result.ok) {
+        setErrors(result.fieldErrors ?? {});
+        setFormMessage(result.message);
+        return;
+      }
+
+      onSaved(result.message);
+    });
+  };
+
+  const updateText = (fieldKey: string, fieldLocale: AppLocale, value: string) => {
+    const key = fieldKey as "label" | "helpText" | "placeholder";
+    setForm((current) => ({ ...current, [key]: { ...current[key], [fieldLocale]: value } }));
+    setErrors((current) => {
+      const errorKey = `${fieldKey}.${fieldLocale}`;
+      if (!current[errorKey]) return current;
+      const next = { ...current };
+      delete next[errorKey];
+      return next;
+    });
+  };
+
+  return (
+    <AdminDrawer
+      open
+      onClose={onClose}
+      title={isNew ? t("fieldTitleNew") : t("fieldTitleEdit")}
+      description={t("fieldDescription")}
+      footer={
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {formMessage ? (
+            <p role="alert" className="text-sm text-rose-300">{formMessage}</p>
+          ) : (
+            <span className="text-xs text-muted">{tc("productEditor.requiredHint")}</span>
+          )}
+          <div className="ms-auto flex gap-2">
+            <AdminButton variant="ghost" onClick={onClose}>{tc("buttons.cancel")}</AdminButton>
+            <AdminButton variant="primary" onClick={submit} disabled={isSaving}>
+              {isSaving ? tc("productEditor.saving") : isNew ? t("addField") : tc("productEditor.save")}
+            </AdminButton>
+          </div>
+        </div>
+      }
+    >
+      {isNew ? (
+        <AdminFormSection title={t("presetsTitle")} hint={t("presetsHint")}>
+          <div className="flex flex-wrap gap-2">
+            {presetKeys.map((preset) => (
+              <button key={preset} type="button" className="admin-chip" onClick={() => applyPreset(preset)}>
+                {t(`presets.${preset}.name`)}
+              </button>
+            ))}
+          </div>
+        </AdminFormSection>
+      ) : null}
+
+      <AdminFormSection title={t("typeTitle")}>
+        <div role="radiogroup" aria-label={t("typeTitle")} className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {fieldTypes.map((type) => {
+            const Icon = fieldTypeIcons[type];
+            const selected = form.type === type;
+            return (
+              <button
+                key={type}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => setForm((current) => ({ ...current, type }))}
+                className={clsx(
+                  "flex flex-col items-start gap-1.5 rounded-[0.625rem] border px-3 py-2.5 text-start text-sm transition",
+                  selected
+                    ? "border-gold/45 bg-gold/10 text-foreground"
+                    : "border-white/10 text-muted hover:border-white/20 hover:text-foreground"
+                )}
+              >
+                <Icon className={clsx("h-4 w-4", selected && "text-gold-soft")} />
+                <span className="font-medium">{t(`types.${type}`)}</span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-2 text-sm text-muted">{t(`typeHints.${form.type}`)}</p>
+      </AdminFormSection>
+
+      <AdminFormSection title={t("questionTitle")} hint={t("questionHint")}>
+        <AdminTranslationFields
+          errors={errors}
+          onChange={updateText}
+          fields={[
+            { key: "label", label: t("labelLabel"), required: true, value: form.label },
+            { key: "helpText", label: t("helpLabel"), value: form.helpText },
+            ...(hasPlaceholder ? [{ key: "placeholder", label: t("placeholderLabel"), value: form.placeholder }] : []),
+          ]}
+        />
+      </AdminFormSection>
+
+      {hasChoices ? (
+        <AdminFormSection title={t("choicesTitle")} hint={t("choicesHint")}>
+          <div className="space-y-2">
+            <div className="hidden grid-cols-[1fr_1fr_2.5rem] gap-2 text-xs font-medium text-muted sm:grid">
+              <span>{localeLabels[locale === "ar" ? "ar" : "de"]}</span>
+              <span>{localeLabels[locale === "ar" ? "de" : "ar"]}</span>
+            </div>
+            {form.choices.map((choice, index) => {
+              const order = locale === "ar" ? (["ar", "de"] as const) : (["de", "ar"] as const);
+              return (
+                <div key={choice.id} className="grid grid-cols-[1fr_1fr_2.5rem] items-center gap-2">
+                  {order.map((language) => (
+                    <input
+                      key={language}
+                      className="admin-input"
+                      dir={language === "ar" ? "rtl" : "ltr"}
+                      lang={language}
+                      aria-label={`${t("choiceLabel", { number: index + 1 })} – ${localeLabels[language]}`}
+                      value={choice.labels[language]}
+                      onChange={(event) =>
+                        setForm((current) => ({
+                          ...current,
+                          choices: current.choices.map((row) =>
+                            row.id === choice.id
+                              ? { ...row, labels: { ...row.labels, [language]: event.target.value } }
+                              : row
+                          ),
+                        }))
+                      }
+                    />
+                  ))}
+                  <button
+                    type="button"
+                    className="admin-icon-button admin-icon-button-quiet"
+                    aria-label={t("removeChoice", { number: index + 1 })}
+                    onClick={() =>
+                      setForm((current) => ({
+                        ...current,
+                        choices: current.choices.filter((row) => row.id !== choice.id),
+                      }))
+                    }
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              );
+            })}
+            <AdminButton
+              size="sm"
+              onClick={() =>
+                setForm((current) => ({
+                  ...current,
+                  choices: [...current.choices, { id: newRowId(), labels: { ar: "", de: "" }, value: "" }],
+                }))
+              }
+            >
+              <Plus />
+              {t("addChoice")}
+            </AdminButton>
+            {errors.values ? (
+              <p role="alert" className="text-sm text-rose-300">{errors.values}</p>
+            ) : null}
+          </div>
+        </AdminFormSection>
+      ) : null}
+
+      <AdminFormSection title={t("settingsTitle")}>
+        <div className="space-y-3">
+          {groups.length > 1 ? (
+            <label className="block space-y-1.5">
+              <span className="admin-label">{t("groupLabel")}</span>
+              <select
+                className="admin-select"
+                value={form.groupId}
+                onChange={(event) => setForm((current) => ({ ...current, groupId: event.target.value }))}
+              >
+                {groups.map((group) => (
+                  <option key={group.id} value={group.id}>{group.displayName}</option>
+                ))}
+              </select>
+            </label>
+          ) : null}
+          <AdminSwitch
+            checked={form.isRequired}
+            onChange={(checked) => setForm((current) => ({ ...current, isRequired: checked }))}
+            label={t("requiredLabel")}
+            description={t("requiredHint")}
+          />
+          <AdminSwitch
+            checked={form.isActive}
+            onChange={(checked) => setForm((current) => ({ ...current, isActive: checked }))}
+            label={t("activeLabel")}
+            description={t("activeHint")}
+          />
+        </div>
+      </AdminFormSection>
+    </AdminDrawer>
+  );
+}
+
+function GroupEditor({
+  initialState,
+  locale,
+  onClose,
+  onSaved,
+}: {
+  initialState: GroupFormState;
+  locale: AppLocale;
+  onClose: () => void;
+  onSaved: (message: string) => void;
+}) {
+  const t = useTranslations("Admin.optionsPage");
+  const tc = useTranslations("Admin");
+  const [form, setForm] = useState(initialState);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formMessage, setFormMessage] = useState<string | null>(null);
+  const [isSaving, startSaving] = useTransition();
+  const isNew = !form.id;
+
+  const submit = () => {
+    setFormMessage(null);
+    startSaving(async () => {
+      const payload = { isActive: form.isActive, key: form.key, name: form.name, sortOrder: form.sortOrder };
+      const result = await saveOptionGroupAction(locale, form.id ? { ...payload, id: form.id } : payload);
+      if (!result.ok) {
+        setErrors(result.fieldErrors ?? {});
+        setFormMessage(result.message);
+        return;
+      }
+      onSaved(result.message);
+    });
+  };
+
+  return (
+    <AdminDrawer
+      open
+      onClose={onClose}
+      title={isNew ? t("groupTitleNew") : t("groupTitleEdit")}
+      description={t("groupDescription")}
+      footer={
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {formMessage ? <p role="alert" className="text-sm text-rose-300">{formMessage}</p> : <span />}
+          <div className="ms-auto flex gap-2">
+            <AdminButton variant="ghost" onClick={onClose}>{tc("buttons.cancel")}</AdminButton>
+            <AdminButton variant="primary" onClick={submit} disabled={isSaving}>
+              {isSaving ? tc("productEditor.saving") : isNew ? t("addGroup") : tc("productEditor.save")}
+            </AdminButton>
+          </div>
+        </div>
+      }
+    >
+      <AdminFormSection title={t("groupNameTitle")} hint={t("groupNameHint")}>
+        <AdminTranslationFields
+          errors={errors}
+          fields={[{ key: "name", label: t("groupNameLabel"), required: true, value: form.name }]}
+          onChange={(_fieldKey, fieldLocale, value) =>
+            setForm((current) => ({ ...current, name: { ...current.name, [fieldLocale]: value } }))
+          }
+        />
+      </AdminFormSection>
+      <AdminFormSection title={t("settingsTitle")}>
+        <AdminSwitch
+          checked={form.isActive}
+          onChange={(checked) => setForm((current) => ({ ...current, isActive: checked }))}
+          label={t("activeLabel")}
+          description={t("groupActiveHint")}
+        />
+      </AdminFormSection>
+    </AdminDrawer>
+  );
+}
+
+export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) {
+  const t = useTranslations("Admin.optionsPage");
+  const tc = useTranslations("Admin");
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [search, setSearch] = useState("");
-  const [groupFilter, setGroupFilter] = useState("all");
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [showGroupForm, setShowGroupForm] = useState(false);
-  const [showOptionForm, setShowOptionForm] = useState(false);
-  const [groupFormState, setGroupFormState] = useState<OptionGroupFormState>(() =>
-    createOptionGroupForm(groups)
-  );
-  const [optionFormState, setOptionFormState] = useState<OptionFormState>(() =>
-    createOptionForm(groups)
-  );
-  const groupEditorRef = useRef<HTMLDivElement | null>(null);
-  const optionEditorRef = useRef<HTMLDivElement | null>(null);
-  const requiredLabel = getRequiredFieldBadge(locale);
-  const activeGroupFilter =
-    groupFilter !== "all" && !groups.some((group) => group.id === groupFilter)
-      ? "all"
-      : groupFilter;
+  const [, startTransition] = useTransition();
+  const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
+  const [fieldEditor, setFieldEditor] = useState<{ key: string; state: FieldFormState } | null>(null);
+  const [groupEditor, setGroupEditor] = useState<{ key: string; state: GroupFormState } | null>(null);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const sortedGroups = [...groups].sort((left, right) => left.sortOrder - right.sortOrder);
 
-  const resolvePreferredGroupId = () => {
-    if (
-      activeGroupFilter !== "all" &&
-      groups.some((group) => group.id === activeGroupFilter)
-    ) {
-      return activeGroupFilter;
-    }
-
-    const rememberedGroupId = getStoredOptionGroupId(groups);
-
-    if (rememberedGroupId) {
-      return rememberedGroupId;
-    }
-
-    return groups[0]?.id ?? "";
-  };
-
-  useEffect(() => {
-    if (showGroupForm && groupEditorRef.current) {
-      scrollCardIntoView(groupEditorRef.current);
-    }
-  }, [showGroupForm]);
-
-  useEffect(() => {
-    if (showOptionForm && optionEditorRef.current) {
-      scrollCardIntoView(optionEditorRef.current);
-    }
-  }, [showOptionForm, optionFormState.id]);
-
-  const filteredGroups = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
-
-    return groups.filter((group) => {
-      const matchesGroup =
-        activeGroupFilter === "all" || group.id === activeGroupFilter;
-
-      if (!matchesGroup) {
-        return false;
-      }
-
-      if (!normalizedSearch) {
-        return true;
-      }
-
-      const haystack = [
-        group.displayName,
-        group.key,
-        ...group.options.flatMap((option) => [
-          option.displayLabel,
-          option.key,
-          option.groupName,
-        ]),
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return haystack.includes(normalizedSearch);
-    });
-  }, [activeGroupFilter, groups, search]);
-
-  const clearFieldError = (field: string) => {
-    setFieldErrors((current) => {
-      if (!(field in current)) {
-        return current;
-      }
-
-      const nextState = { ...current };
-      delete nextState[field];
-      return nextState;
+  const runAction = (task: () => Promise<{ message: string; ok: boolean }>) => {
+    startTransition(async () => {
+      const result = await task();
+      setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+      if (result.ok) router.refresh();
     });
   };
 
-  const refresh = () => {
+  const onSaved = (message: string) => {
+    setFieldEditor(null);
+    setGroupEditor(null);
+    setFeedback({ message, tone: "success" });
     router.refresh();
   };
 
-  const resetGroupForm = () => {
-    setFieldErrors({});
-    setGroupFormState(createOptionGroupForm(groups));
-    setShowGroupForm(false);
-  };
-
-  const resetOptionForm = () => {
-    setFieldErrors({});
-    setOptionFormState(createOptionForm(groups, resolvePreferredGroupId() || undefined));
-    setShowOptionForm(false);
-  };
-
-  const openCreateGroup = () => {
+  const openGroup = (group: AdminOptionGroupRecord | null) => {
     setFeedback(null);
-    setFieldErrors({});
-    setGroupFormState(createOptionGroupForm(groups));
-    setShowGroupForm(true);
-  };
-
-  const openEditGroup = (group: AdminOptionGroupRecord) => {
-    setFeedback(null);
-    setFieldErrors({});
-    setGroupFormState(createEditGroupForm(group));
-    setShowGroupForm(true);
-  };
-
-  const openCreateField = (groupId?: string) => {
-    const nextGroupId = groupId || resolvePreferredGroupId();
-    setFeedback(null);
-    setFieldErrors({});
-    if (nextGroupId) {
-      saveStoredOptionGroupId(nextGroupId);
-    }
-    setOptionFormState(createOptionForm(groups, nextGroupId || undefined));
-    setShowOptionForm(true);
-  };
-
-  const openEditField = (option: AdminOptionRecord) => {
-    setFeedback(null);
-    setFieldErrors({});
-    saveStoredOptionGroupId(option.groupId);
-    setOptionFormState(createEditOptionForm(option));
-    setShowOptionForm(true);
-  };
-
-  const submitGroupForm = () => {
-    startTransition(async () => {
-      const result = await saveOptionGroupAction(locale, {
-        id: groupFormState.id,
-        isActive: groupFormState.isActive,
-        key: groupFormState.key.trim(),
-        name: groupFormState.name,
-        sortOrder: Number(groupFormState.sortOrder),
-      });
-
-      setFieldErrors(result.fieldErrors ?? {});
-      setFeedback(result.message);
-
-      if (!result.ok) {
-        focusFirstInvalidField(result.fieldErrors ?? {});
-        return;
-      }
-
-      resetGroupForm();
-      refresh();
+    setGroupEditor({
+      key: group?.id ?? nextEditorKey(),
+      state: group
+        ? { id: group.id, isActive: group.isActive, key: group.key, name: { ...group.name }, sortOrder: group.sortOrder }
+        : { isActive: true, key: "", name: emptyText(), sortOrder: groups.length + 1 },
     });
   };
 
-  const submitOptionForm = () => {
-    startTransition(async () => {
-      const result = await saveOptionAction(locale, {
-        groupId: optionFormState.groupId,
-        helpText: optionFormState.helpText,
-        id: optionFormState.id,
-        isActive: optionFormState.isActive,
-        isRequired: optionFormState.isRequired,
-        key: optionFormState.key.trim(),
-        label: optionFormState.label,
-        placeholder: optionFormState.placeholder,
-        sortOrder: Number(optionFormState.sortOrder),
-        type: optionFormState.type,
-        values: parseOptionValues(optionFormState.valuesText),
-      });
-
-      setFieldErrors(result.fieldErrors ?? {});
-      setFeedback(result.message);
-
-      if (!result.ok) {
-        focusFirstInvalidField(result.fieldErrors ?? {});
-        return;
-      }
-
-      saveStoredOptionGroupId(optionFormState.groupId);
-      resetOptionForm();
-      refresh();
+  const openField = (group: AdminOptionGroupRecord, option: AdminOptionRecord | null) => {
+    setFeedback(null);
+    setFieldEditor({
+      key: option?.id ?? nextEditorKey(),
+      state: createFieldForm(option, group.id, group.options.length + 1),
     });
-  };
-
-  const handleDeleteGroup = (groupId: string) => {
-    if (!window.confirm(uiCopy.deleteGroupConfirm)) {
-      return;
-    }
-
-    startTransition(async () => {
-      const result = await deleteOptionGroupAction(locale, groupId);
-      setFeedback(result.message);
-
-      if (!result.ok) {
-        return;
-      }
-
-      if (groupFormState.id === groupId) {
-        resetGroupForm();
-      }
-
-      if (optionFormState.groupId === groupId) {
-        resetOptionForm();
-      }
-
-      if (groupFilter === groupId) {
-        setGroupFilter("all");
-      }
-
-      if (getStoredOptionGroupId(groups) === groupId) {
-        saveStoredOptionGroupId("");
-      }
-
-      refresh();
-    });
-  };
-
-  const handleDeleteField = (optionId: string) => {
-    if (!window.confirm(uiCopy.deleteFieldConfirm)) {
-      return;
-    }
-
-    startTransition(async () => {
-      const result = await deleteOptionAction(locale, optionId);
-      setFeedback(result.message);
-
-      if (!result.ok) {
-        return;
-      }
-
-      if (optionFormState.id === optionId) {
-        resetOptionForm();
-      }
-
-      refresh();
-    });
-  };
-
-  const applyPreset = (preset: PresetKey) => {
-    const presetValues = buildPreset(preset, locale);
-    setOptionFormState((current) => ({
-      ...current,
-      helpText: presetValues.helpText,
-      key: presetValues.key,
-      label: presetValues.label,
-      placeholder: presetValues.placeholder,
-      type: presetValues.type,
-      valuesText: presetValues.valuesText,
-    }));
   };
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        eyebrow={uiCopy.title}
-        title={uiCopy.title}
-        description={uiCopy.description}
+        title={t("title")}
+        description={t("description")}
         actions={
-          <>
-            <AdminButton variant="secondary" onClick={openCreateGroup}>
-              {createGroupLabel}
-            </AdminButton>
-            <AdminButton
-              variant="primary"
-              onClick={() => openCreateField()}
-              disabled={groups.length === 0}
-            >
-              {addFieldLabel}
-            </AdminButton>
-          </>
+          <AdminButton variant="primary" onClick={() => openGroup(null)}>
+            <Plus />
+            {t("addGroup")}
+          </AdminButton>
         }
       />
 
       {feedback ? (
-        <div className="rounded-[1rem] border border-gold/18 bg-gold/10 px-4 py-3 text-sm text-foreground">
-          {feedback}
-        </div>
+        <div className="admin-notice" data-tone={feedback.tone} role="status">{feedback.message}</div>
       ) : null}
 
-      <AdminCard title={uiCopy.groupFilter} description={uiCopy.groupHelper}>
-        <AdminToolbar>
-          <AdminInput
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            label={t("common.search")}
-            placeholder={uiCopy.searchPlaceholder}
-            icon={<Search className="h-4 w-4" />}
-          />
-          <AdminSelect
-            value={activeGroupFilter}
-            onChange={(event) => {
-              const nextValue = event.target.value;
-              setGroupFilter(nextValue);
-
-              if (nextValue === "all") {
-                return;
-              }
-
-              saveStoredOptionGroupId(nextValue);
-            }}
-            label={uiCopy.groupFilter}
-          >
-            <option value="all">{t("common.all")}</option>
-            {groups.map((group) => (
-              <option key={group.id} value={group.id}>
-                {group.displayName}
-              </option>
-            ))}
-          </AdminSelect>
-        </AdminToolbar>
-      </AdminCard>
-
-      {showGroupForm ? (
-        <div ref={groupEditorRef}>
-          <AdminCard
-            title={groupFormState.id ? t("buttons.edit") : createGroupLabel}
-            description={uiCopy.groupHelper}
-            action={
-              <div className="flex gap-2">
-                <AdminButton variant="ghost" onClick={resetGroupForm}>
-                  {t("buttons.close")}
-                </AdminButton>
-                <AdminButton variant="primary" onClick={submitGroupForm} disabled={isPending}>
-                  {t("buttons.save")}
-                </AdminButton>
-              </div>
-            }
-          >
-            <div className="grid gap-4 xl:grid-cols-2">
-              <AdminInput
-                id="group.key"
-                name="group.key"
-                label={uiCopy.keyLabel}
-                value={groupFormState.key}
-                required
-                requiredLabel={requiredLabel}
-                errorText={fieldErrors.key}
-                onChange={(event) => {
-                  clearFieldError("key");
-                  setGroupFormState((current) => ({
-                    ...current,
-                    key: event.target.value,
-                  }));
-                }}
-              />
-              <AdminInput
-                id="group.sortOrder"
-                name="group.sortOrder"
-                label={uiCopy.sortOrderLabel}
-                type="number"
-                value={String(groupFormState.sortOrder)}
-                onChange={(event) =>
-                  setGroupFormState((current) => ({
-                    ...current,
-                    sortOrder: Number(event.target.value || 0),
-                  }))
-                }
-              />
-              {editableLocales.map((language) => (
-                <AdminInput
-                  key={`group-name-${language}`}
-                  id={`name.${language}`}
-                  name={`name.${language}`}
-                  label={`Name ${language.toUpperCase()}`}
-                  value={groupFormState.name[language]}
-                  required={language === "de" || language === "ar"}
-                  requiredLabel={language === "de" || language === "ar" ? requiredLabel : undefined}
-                  errorText={fieldErrors[`name.${language}`]}
-                  onChange={(event) => {
-                    clearFieldError(`name.${language}`);
-                    setGroupFormState((current) => ({
-                      ...current,
-                      name: updateLocalizedText(
-                        current.name,
-                        language,
-                        event.target.value
-                      ),
-                    }));
-                  }}
-                />
-              ))}
-              <div className="xl:col-span-2">
-                <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                  <input
-                    type="checkbox"
-                    checked={groupFormState.isActive}
-                    onChange={(event) =>
-                      setGroupFormState((current) => ({
-                        ...current,
-                        isActive: event.target.checked,
-                      }))
-                    }
-                    className="h-4 w-4 accent-[#c49a52]"
-                  />
-                  {t("common.active")}
-                </label>
-              </div>
-            </div>
-          </AdminCard>
-        </div>
-      ) : null}
-
-      {showOptionForm ? (
-        <div ref={optionEditorRef}>
-          <AdminCard
-            title={optionFormState.id ? t("buttons.edit") : addFieldLabel}
-            description={uiCopy.groupHelper}
-            action={
-              <div className="flex gap-2">
-                <AdminButton variant="ghost" onClick={resetOptionForm}>
-                  {t("buttons.close")}
-                </AdminButton>
-                <AdminButton variant="primary" onClick={submitOptionForm} disabled={isPending}>
-                  {t("buttons.save")}
-                </AdminButton>
-              </div>
-            }
-          >
-            <div className="space-y-5">
-              <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
-                <p className="admin-label">{uiCopy.presetsTitle}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <AdminButton size="sm" variant="secondary" onClick={() => applyPreset("karat")}>
-                    {uiCopy.presetKarat}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => applyPreset("weight_grams")}
-                  >
-                    {uiCopy.presetWeight}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => applyPreset("name_text")}
-                  >
-                    {uiCopy.presetName}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => applyPreset("customer_note")}
-                  >
-                    {uiCopy.presetCustomerNote}
-                  </AdminButton>
-                </div>
-              </div>
-
-              <div className="grid gap-4 xl:grid-cols-2">
-                <AdminSelect
-                  id="groupId"
-                  name="groupId"
-                  label={uiCopy.groupFilter}
-                  value={optionFormState.groupId}
-                  errorText={fieldErrors.groupId}
-                  required
-                  requiredLabel={requiredLabel}
-                  onChange={(event) => {
-                    const nextValue = event.target.value;
-                    clearFieldError("groupId");
-                    saveStoredOptionGroupId(nextValue);
-                    setOptionFormState((current) => ({
-                      ...current,
-                      groupId: nextValue,
-                    }));
-                  }}
-                >
-                  {groups.map((group) => (
-                    <option key={group.id} value={group.id}>
-                      {group.displayName}
-                    </option>
-                  ))}
-                </AdminSelect>
-                <AdminSelect
-                  id="type"
-                  name="type"
-                  label={uiCopy.typeLabel}
-                  value={resolveOptionEditorKind(optionFormState)}
-                  onChange={(event) =>
-                    setOptionFormState((current) =>
-                      applyOptionEditorKind(
-                        current,
-                        event.target.value as OptionEditorKind,
-                        locale
-                      )
-                    )
-                  }
-                >
-                  {optionEditorKinds.map((kind) => (
-                    <option key={kind} value={kind}>
-                      {getOptionEditorKindLabel(kind, locale)}
-                    </option>
-                  ))}
-                </AdminSelect>
-                <AdminInput
-                  id="key"
-                  name="key"
-                  label={uiCopy.keyLabel}
-                  value={optionFormState.key}
-                  required
-                  requiredLabel={requiredLabel}
-                  errorText={fieldErrors.key}
-                  onChange={(event) => {
-                    clearFieldError("key");
-                    setOptionFormState((current) => ({
-                      ...current,
-                      key: event.target.value,
-                    }));
-                  }}
-                />
-                <AdminInput
-                  id="sortOrder"
-                  name="sortOrder"
-                  label={uiCopy.sortOrderLabel}
-                  type="number"
-                  value={String(optionFormState.sortOrder)}
-                  onChange={(event) =>
-                    setOptionFormState((current) => ({
-                      ...current,
-                      sortOrder: Number(event.target.value || 0),
-                    }))
-                  }
-                />
-
-                {editableLocales.map((language) => (
-                  <AdminInput
-                    key={`option-label-${language}`}
-                    id={`label.${language}`}
-                    name={`label.${language}`}
-                    label={`Label ${language.toUpperCase()}`}
-                    value={optionFormState.label[language]}
-                    required={language === "de" || language === "ar"}
-                    requiredLabel={language === "de" || language === "ar" ? requiredLabel : undefined}
-                    errorText={fieldErrors[`label.${language}`]}
-                    onChange={(event) => {
-                      clearFieldError(`label.${language}`);
-                      setOptionFormState((current) => ({
-                        ...current,
-                        label: updateLocalizedText(
-                          current.label,
-                          language,
-                          event.target.value
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-
-                {editableLocales.map((language) => (
-                  <AdminInput
-                    key={`option-placeholder-${language}`}
-                    id={`placeholder.${language}`}
-                    name={`placeholder.${language}`}
-                    label={`${uiCopy.placeholderLabel} ${language.toUpperCase()}`}
-                    value={optionFormState.placeholder[language]}
-                    errorText={fieldErrors[`placeholder.${language}`]}
-                    onChange={(event) => {
-                      clearFieldError(`placeholder.${language}`);
-                      setOptionFormState((current) => ({
-                        ...current,
-                        placeholder: updateLocalizedText(
-                          current.placeholder,
-                          language,
-                          event.target.value
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-
-                {editableLocales.map((language) => (
-                  <AdminTextarea
-                    key={`option-help-${language}`}
-                    id={`helpText.${language}`}
-                    name={`helpText.${language}`}
-                    label={`${uiCopy.helpTextLabel} ${language.toUpperCase()}`}
-                    value={optionFormState.helpText[language]}
-                    errorText={fieldErrors[`helpText.${language}`]}
-                    onChange={(event) => {
-                      clearFieldError(`helpText.${language}`);
-                      setOptionFormState((current) => ({
-                        ...current,
-                        helpText: updateLocalizedText(
-                          current.helpText,
-                          language,
-                          event.target.value
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-
-                {optionFormState.type === "select" || optionFormState.type === "multi_select" ? (
-                  <div className="xl:col-span-2">
-                    <AdminTextarea
-                      id="values"
-                      name="values"
-                      label={uiCopy.valuesLabel}
-                      helperText={uiCopy.valuesHelper}
-                      value={optionFormState.valuesText}
-                      onChange={(event) =>
-                        setOptionFormState((current) => ({
-                          ...current,
-                          valuesText: event.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                ) : null}
-
-                <div className="flex flex-wrap gap-5 xl:col-span-2">
-                  <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                    <input
-                      type="checkbox"
-                      checked={optionFormState.isRequired}
-                      onChange={(event) =>
-                        setOptionFormState((current) => ({
-                          ...current,
-                          isRequired: event.target.checked,
-                        }))
-                      }
-                      className="h-4 w-4 accent-[#c49a52]"
-                    />
-                    {t("common.required")}
-                  </label>
-                  <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                    <input
-                      type="checkbox"
-                      checked={optionFormState.isActive}
-                      onChange={(event) =>
-                        setOptionFormState((current) => ({
-                          ...current,
-                          isActive: event.target.checked,
-                        }))
-                      }
-                      className="h-4 w-4 accent-[#c49a52]"
-                    />
-                    {t("common.active")}
-                  </label>
-                </div>
-              </div>
-            </div>
-          </AdminCard>
-        </div>
-      ) : null}
-
-      {filteredGroups.length === 0 ? (
-        <AdminCard title={uiCopy.title}>
-          <p className="text-sm text-muted">{uiCopy.empty}</p>
-        </AdminCard>
+      {sortedGroups.length === 0 ? (
+        <AdminEmptyState
+          title={t("emptyTitle")}
+          description={t("emptyText")}
+          action={
+            <AdminButton variant="primary" onClick={() => openGroup(null)}>
+              <Plus />
+              {t("addGroup")}
+            </AdminButton>
+          }
+        />
       ) : (
-        <div className="grid gap-4">
-          {filteredGroups.map((group) => (
-            <AdminCard
-              key={group.id}
-              title={group.displayName}
-              description={group.key}
-              action={
-                <div className="flex flex-wrap gap-2">
-                  <AdminBadge variant={group.isActive ? "success" : "neutral"}>
-                    {group.isActive ? t("common.active") : uiCopy.inactive}
-                  </AdminBadge>
-                  <AdminBadge variant="gold">
-                    {uiCopy.fieldCount(group.options.length)}
-                  </AdminBadge>
-                </div>
-              }
-            >
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-2">
-                  <AdminButton size="sm" variant="secondary" onClick={() => openEditGroup(group)}>
-                    {t("buttons.edit")}
-                  </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="primary"
-                    onClick={() => openCreateField(group.id)}
+        <div className="space-y-4">
+          {sortedGroups.map((group) => {
+            const isOpen = expanded[group.id] ?? true;
+            const options = [...group.options].sort((left, right) => left.sortOrder - right.sortOrder);
+            const productCount = Math.max(0, ...options.map((option) => option.productCount));
+
+            return (
+              <section key={group.id} className={clsx("admin-panel", !group.isActive && "opacity-75")}>
+                <header className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3">
+                  <button
+                    type="button"
+                    className="flex min-w-0 flex-1 items-center gap-3 text-start"
+                    aria-expanded={isOpen}
+                    onClick={() => setExpanded((current) => ({ ...current, [group.id]: !isOpen }))}
                   >
-                    {addFieldLabel}
+                    <ChevronDown className={clsx("h-4 w-4 shrink-0 text-muted transition", !isOpen && "-rotate-90 rtl:rotate-90")} />
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold text-foreground">{group.displayName}</span>
+                      <span className="block text-sm text-muted">
+                        {t("groupSummary", { fields: options.length, products: productCount })}
+                        {!group.isActive ? ` · ${tc("productsPage.hiddenBadge")}` : ""}
+                      </span>
+                    </span>
+                  </button>
+                  <AdminButton size="sm" onClick={() => openField(group, null)}>
+                    <Plus />
+                    <span className="hidden sm:inline">{t("addField")}</span>
                   </AdminButton>
-                  <AdminButton
-                    size="sm"
-                    variant="danger"
-                    onClick={() => handleDeleteGroup(group.id)}
-                  >
-                    {t("buttons.delete")}
-                  </AdminButton>
-                </div>
+                  <AdminActionMenu
+                    label={tc("productsPage.moreActions", { name: group.displayName })}
+                    items={[
+                      { icon: Pencil, label: t("renameGroup"), onSelect: () => openGroup(group) },
+                      {
+                        danger: true,
+                        icon: Trash2,
+                        label: t("deleteGroup"),
+                        onSelect: () => {
+                          if (window.confirm(t("deleteGroupConfirm", { name: group.displayName }))) {
+                            runAction(() => deleteOptionGroupAction(locale, group.id));
+                          }
+                        },
+                      },
+                    ]}
+                  />
+                </header>
 
-                <div className="rounded-[1rem] border border-white/8 bg-black/10 px-4 py-4">
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <p className="font-medium text-foreground">{uiCopy.fieldsTitle}</p>
-                    <span className="text-xs text-muted">{group.sortOrder}</span>
-                  </div>
-
-                  {group.options.length === 0 ? (
-                    <p className="text-sm text-muted">{t("options.empty")}</p>
-                  ) : (
-                    <div className="grid gap-3">
-                      {group.options.map((option) => (
-                        <div
-                          key={option.id}
-                          className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-4"
-                        >
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div className="space-y-1">
-                              <p className="font-semibold text-foreground">
-                                {option.displayLabel}
-                              </p>
-                              <p className="text-xs text-muted">
-                                {option.key} {" / "}{" "}
-                                {getOptionEditorKindLabel(
-                                  resolveOptionEditorKind({
-                                    key: option.key,
-                                    type: option.type,
-                                  }),
-                                  locale
-                                )}
-                              </p>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              <AdminBadge variant={option.isActive ? "success" : "neutral"}>
-                                {option.isActive ? t("common.active") : uiCopy.inactive}
-                              </AdminBadge>
-                              {option.isRequired ? (
-                                <AdminBadge variant="gold">{t("common.required")}</AdminBadge>
-                              ) : null}
-                            </div>
-                          </div>
-
-                          {(option.placeholder.de ||
-                            option.placeholder.ar ||
-                            option.helpText.de ||
-                            option.helpText.ar ||
-                            option.values.length > 0) ? (
-                            <div className="mt-4 grid gap-3 text-sm text-muted md:grid-cols-2">
-                              {option.placeholder.de || option.placeholder.ar ? (
-                                <div>
-                                  <p className="font-medium text-foreground">
-                                    {uiCopy.placeholderLabel}
-                                  </p>
-                                  <p className="mt-1">
-                                    {option.placeholder.de || option.placeholder.ar}
-                                  </p>
-                                </div>
-                              ) : null}
-                              {option.helpText.de || option.helpText.ar ? (
-                                <div>
-                                  <p className="font-medium text-foreground">
-                                    {uiCopy.helpTextLabel}
-                                  </p>
-                                  <p className="mt-1">{option.helpText.de || option.helpText.ar}</p>
-                                </div>
-                              ) : null}
-                              {option.values.length > 0 ? (
-                                <div className="md:col-span-2">
-                                  <p className="font-medium text-foreground">
-                                    {uiCopy.valuesLabel}
-                                  </p>
-                                  <div className="mt-2 flex flex-wrap gap-2">
-                                    {option.values.map((value) => (
-                                      <AdminBadge
-                                        key={`${option.id}-${value.value}`}
-                                        variant="info"
-                                      >
-                                        {value.label}
-                                      </AdminBadge>
-                                    ))}
-                                  </div>
-                                </div>
-                              ) : null}
-                            </div>
-                          ) : null}
-
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            <AdminButton
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => openEditField(option)}
-                            >
-                              {t("buttons.edit")}
-                            </AdminButton>
-                            <AdminButton
-                              size="sm"
-                              variant={option.isActive ? "ghost" : "danger"}
-                              onClick={() =>
-                                startTransition(async () => {
-                                  const result = await toggleOptionActiveAction(
-                                    locale,
-                                    option.id,
-                                    !option.isActive
-                                  );
-                                  setFeedback(result.message);
-                                  if (result.ok) {
-                                    refresh();
-                                  }
-                                })
-                              }
-                            >
-                              {option.isActive
-                                ? t("buttons.deactivate")
-                                : t("buttons.activate")}
-                            </AdminButton>
-                            <AdminButton
-                              size="sm"
-                              variant="danger"
-                              onClick={() => handleDeleteField(option.id)}
-                            >
-                              {t("buttons.delete")}
-                            </AdminButton>
-                          </div>
-                        </div>
-                      ))}
+                {isOpen ? (
+                  options.length === 0 ? (
+                    <div className="px-4 py-5 text-sm text-muted">
+                      {t("groupEmpty")}{" "}
+                      <button type="button" className="font-medium text-gold-soft hover:underline" onClick={() => openField(group, null)}>
+                        {t("addField")}
+                      </button>
                     </div>
-                  )}
-                </div>
-              </div>
-            </AdminCard>
-          ))}
+                  ) : (
+                    <ul className="divide-y divide-white/[0.05]">
+                      {options.map((option) => {
+                        const type = toFieldType(option.type);
+                        const Icon = fieldTypeIcons[type];
+                        return (
+                          <li key={option.id} className={clsx("flex items-center gap-3 px-4 py-3", !option.isActive && "opacity-60")}>
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/[0.05] text-gold-soft">
+                              <Icon className="h-4 w-4" />
+                            </span>
+                            <button type="button" className="min-w-0 flex-1 text-start" onClick={() => openField(group, option)}>
+                              <span className="block truncate font-medium text-foreground">{option.displayLabel}</span>
+                              <span className="block truncate text-sm text-muted">
+                                {t(`types.${type}`)}
+                                {option.values.length > 0 ? ` · ${option.values.map((value) => value.label).join(", ")}` : ""}
+                              </span>
+                            </button>
+                            <span className="hidden flex-wrap gap-1.5 sm:flex">
+                              {option.isRequired ? <AdminBadge variant="gold">{t("requiredBadge")}</AdminBadge> : null}
+                              {!option.isActive ? <AdminBadge>{tc("productsPage.hiddenBadge")}</AdminBadge> : null}
+                            </span>
+                            <AdminActionMenu
+                              label={tc("productsPage.moreActions", { name: option.displayLabel })}
+                              items={[
+                                { icon: Pencil, label: tc("buttons.edit"), onSelect: () => openField(group, option) },
+                                {
+                                  icon: option.isActive ? EyeOff : Eye,
+                                  label: option.isActive ? t("hideField") : t("showField"),
+                                  onSelect: () => runAction(() => toggleOptionActiveAction(locale, option.id, !option.isActive)),
+                                },
+                                {
+                                  danger: true,
+                                  icon: Trash2,
+                                  label: tc("buttons.delete"),
+                                  onSelect: () => {
+                                    if (window.confirm(t("deleteFieldConfirm", { name: option.displayLabel }))) {
+                                      runAction(() => deleteOptionAction(locale, option.id));
+                                    }
+                                  },
+                                },
+                              ]}
+                            />
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )
+                ) : null}
+              </section>
+            );
+          })}
         </div>
       )}
 
-      {options.length === 0 && groups.length === 0 ? null : undefined}
+      {fieldEditor ? (
+        <FieldEditor
+          key={fieldEditor.key}
+          groups={groups}
+          locale={locale}
+          initialState={fieldEditor.state}
+          onClose={() => setFieldEditor(null)}
+          onSaved={onSaved}
+        />
+      ) : null}
+      {groupEditor ? (
+        <GroupEditor
+          key={groupEditor.key}
+          locale={locale}
+          initialState={groupEditor.state}
+          onClose={() => setGroupEditor(null)}
+          onSaved={onSaved}
+        />
+      ) : null}
     </div>
   );
 }

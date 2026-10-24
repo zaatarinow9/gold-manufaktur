@@ -31,15 +31,15 @@ export function AdminInput({
     .join(" ");
 
   return (
-    <label className={clsx("block space-y-2", wrapperClassName)}>
+    <label className={clsx("block space-y-1.5", wrapperClassName)}>
       {label ? (
         <span className="admin-label">
           {label}
-          {required ? <span className="admin-required">*</span> : null}
-          {required && requiredLabel ? (
-            <span className="ms-2 text-[0.72rem] font-normal text-muted">
-              {requiredLabel}
-            </span>
+          {required ? (
+            <>
+              <span className="admin-required" aria-hidden="true">*</span>
+              {requiredLabel ? <span className="sr-only">{requiredLabel}</span> : null}
+            </>
           ) : null}
         </span>
       ) : null}
@@ -64,7 +64,7 @@ export function AdminInput({
         />
       </div>
       {errorText ? (
-        <span id={errorId} className="text-xs text-rose-300">
+        <span id={errorId} role="alert" className="block text-xs text-rose-300">
           {errorText}
         </span>
       ) : helperText ? (

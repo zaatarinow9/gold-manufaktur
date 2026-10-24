@@ -21,10 +21,10 @@ type TrackingSupportFormProps = {
 function getTrackingSupportCopy(locale: string) {
   if (locale === "de") {
     return {
-      emailInvalid: "Bitte geben Sie eine gueltige E-Mail-Adresse ein.",
+      emailInvalid: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
       messageInvalid: "Bitte beschreiben Sie Ihr Anliegen mit mindestens 10 Zeichen.",
       nameRequired: "Bitte geben Sie Ihren Namen ein.",
-      phoneInvalid: "Bitte geben Sie eine gueltige Telefonnummer ein.",
+      phoneInvalid: "Bitte geben Sie eine gültige Telefonnummer ein.",
     };
   }
 

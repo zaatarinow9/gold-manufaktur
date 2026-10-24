@@ -3,7 +3,21 @@ import { z } from "zod";
 import type { OrderTrackingEvent, TrackingStatus, WorkshopOrder } from "@/types/admin";
 import { trackingStatusValues } from "@/types/admin";
 
-export const trackingNumberPattern = /^GH-\d{8}-\d{4}$/;
+// New tracking numbers end in a random 6-character code so they cannot be
+// guessed by counting up from a date. Legacy numbers with a 4-digit sequence
+// (GH-YYYYMMDD-0001) remain valid.
+export const trackingNumberPattern = /^GH-\d{8}-(?:\d{4}|[A-HJ-NP-Z2-9]{6})$/;
+
+const trackingCodeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+export function createRandomTrackingCode(length = 6) {
+  const bytes = new Uint8Array(length);
+  globalThis.crypto.getRandomValues(bytes);
+  return Array.from(
+    bytes,
+    (byte) => trackingCodeAlphabet[byte % trackingCodeAlphabet.length]
+  ).join("");
+}
 
 export function buildTrackingNumber(datePart: string, sequence: number) {
   return `GH-${datePart}-${String(sequence).padStart(4, "0")}`;

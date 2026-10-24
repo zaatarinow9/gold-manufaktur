@@ -46,39 +46,17 @@ const editableStatuses: Array<Exclude<OrderAssignmentStatus, "assigned" | "retur
   "completed",
 ];
 
-function getCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      assignmentNote: "\u0645\u0644\u0627\u062d\u0638\u0629 \u0627\u0644\u0625\u0633\u0646\u0627\u062f",
-      dueDate: "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0627\u0633\u062a\u062d\u0642\u0627\u0642",
-      employeeNote: "\u0645\u0644\u0627\u062d\u0638\u0629 \u0627\u0644\u0645\u0648\u0638\u0641",
-      noAssignmentNote: "\u0644\u0645 \u064a\u062a\u0645 \u0625\u0636\u0627\u0641\u0629 \u0645\u0644\u0627\u062d\u0638\u0629 \u0628\u0639\u062f.",
-      save: "\u062d\u0641\u0638 \u062a\u062d\u062f\u064a\u062b \u0627\u0644\u0645\u0647\u0645\u0629",
-      status: "\u062d\u0627\u0644\u0629 \u0627\u0644\u0645\u0647\u0645\u0629",
-      title: "\u062a\u062d\u062f\u064a\u062b \u0627\u0644\u0645\u0647\u0645\u0629",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      assignmentNote: "Zuweisungshinweis",
-      dueDate: "Faellig am",
-      employeeNote: "Mitarbeiterhinweis",
-      noAssignmentNote: "Es wurde noch kein Hinweis hinterlegt.",
-      save: "Aufgabe aktualisieren",
-      status: "Aufgabenstatus",
-      title: "Aufgabe aktualisieren",
-    };
-  }
+function useTaskCardCopy() {
+  const t = useTranslations("Admin.taskCard");
 
   return {
-    assignmentNote: "Assignment note",
-    dueDate: "Due date",
-    employeeNote: "Employee note",
-    noAssignmentNote: "No assignment note has been added yet.",
-    save: "Update task",
-    status: "Task status",
-    title: "Update task",
+    assignmentNote: t("assignmentNote"),
+    dueDate: t("dueDate"),
+    employeeNote: t("employeeNote"),
+    noAssignmentNote: t("noAssignmentNote"),
+    save: t("save"),
+    status: t("status"),
+    title: t("title"),
   };
 }
 
@@ -90,7 +68,7 @@ export function EmployeeTaskCard({
   locale,
   orderId,
 }: EmployeeTaskCardProps) {
-  const copy = getCopy(locale);
+  const copy = useTaskCardCopy();
   const t = useTranslations("Admin");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

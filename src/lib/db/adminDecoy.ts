@@ -322,15 +322,15 @@ export function getAdminDecoyUnavailableMessage(locale: AppLocale) {
   }
 
   if (locale === "de") {
-    return "Aktualisierung derzeit nicht verfuegbar.";
+    return "Aktualisierung derzeit nicht verfügbar.";
   }
 
   if (locale === "fr") {
-    return "La mise a jour est indisponible pour le moment.";
+    return "La mise à jour est indisponible pour le moment.";
   }
 
   if (locale === "tr") {
-    return "Guncelleme su anda kullanilamiyor.";
+    return "Güncelleme şu anda kullanılamıyor.";
   }
 
   return "Update unavailable right now.";

@@ -236,7 +236,7 @@ function buildInquiryEmailText(input: CustomerInquiryInput) {
           `Slug: ${input.productSnapshot?.slug || "Nicht angegeben"}`,
           `Bild: ${input.productSnapshot?.imageUrl || "Nicht angegeben"}`,
           "",
-          "Ausgewaehlte Optionen:",
+          "Ausgewählte Optionen:",
           ...(input.optionValues.length > 0
             ? input.optionValues.map(
                 (option) =>
@@ -248,10 +248,10 @@ function buildInquiryEmailText(input: CustomerInquiryInput) {
 
   return [
     input.source === "contact"
-      ? "Es wurde eine neue Kontaktanfrage uebermittelt."
+      ? "Es wurde eine neue Kontaktanfrage übermittelt."
       : input.source === "product"
-        ? "Es wurde eine neue Produktanfrage uebermittelt."
-        : "Es wurde ein neuer Auftragseingang uebermittelt.",
+        ? "Es wurde eine neue Produktanfrage übermittelt."
+        : "Es wurde ein neuer Auftragseingang übermittelt.",
     "",
     `Name: ${input.customerName}`,
     `E-Mail: ${input.customerEmail}`,

@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { AppLocale } from "@/i18n/routing";
+import { parseOptionValues } from "@/lib/catalog/optionValues";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolveSupportsNameCustomization } from "@/lib/catalog/nameCustomization";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -264,24 +265,7 @@ async function loadPublicOptionGroups(
         locale
       ),
       type: option.type,
-      values: Array.isArray(option.values_json)
-        ? option.values_json
-            .filter(
-              (
-                value
-              ): value is { label: string; value: string } =>
-                typeof value === "object" &&
-                value !== null &&
-                "label" in value &&
-                "value" in value &&
-                typeof value.label === "string" &&
-                typeof value.value === "string"
-            )
-            .map((value) => ({
-              label: value.label,
-              value: value.value,
-            }))
-        : [],
+      values: parseOptionValues(option.values_json, locale),
     });
     optionsByGroupId.set(option.group_id, current);
   });

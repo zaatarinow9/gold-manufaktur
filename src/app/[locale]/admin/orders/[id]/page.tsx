@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getAdminPrivacyUiCopy, getOrderWorkflowCopy } from "@/lib/admin/adminCopy.server";
 import { getTranslations } from "next-intl/server";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
@@ -11,9 +12,7 @@ import { AdminPrivacyGuard } from "@/components/admin/AdminPrivacyMode";
 import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { PhoneInline } from "@/components/site/PhoneInline";
 import { Link } from "@/i18n/navigation";
-import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import { getScopedEmployees } from "@/lib/db/employees";
 import { getScopedOrderDetail } from "@/lib/db/orders";
 import { resolveLocale } from "@/lib/site";
@@ -204,8 +203,8 @@ export default async function AdminOrderDetailPage({
   const { id, locale: localeParam } = await params;
   const locale = await resolveLocale(Promise.resolve({ locale: localeParam }));
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
+  const privacyCopy = (await getAdminPrivacyUiCopy(locale));
   const access = await requireAdminAccess(
     locale,
     ["super_admin", "admin", "employee"],
@@ -318,13 +317,7 @@ export default async function AdminOrderDetailPage({
             href={isEmployeeView ? "/admin/my-tasks" : "/admin/orders"}
             className={getAdminButtonClassName({ variant: "ghost" })}
           >
-            {isEmployeeView
-              ? locale === "de"
-                ? "Zurueck zu meinen Aufgaben"
-                : locale === "ar"
-                  ? "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0645\u0647\u0627\u0645\u064a"
-                  : "Back to my tasks"
-              : t("buttons.backToOrders")}
+            {isEmployeeView ? t("buttons.backToTasks") : t("buttons.backToOrders")}
           </Link>
         }
       />

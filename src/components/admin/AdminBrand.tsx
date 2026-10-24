@@ -33,7 +33,7 @@ export function AdminBrand({
       <BrandLogo
         alt={alt}
         priority={priority}
-        className={clsx("h-[2.85rem] w-auto shrink-0", logoClassName)}
+        className={clsx("w-auto shrink-0", logoClassName ?? "h-[2.85rem]")}
       />
       {subtitle ? <span className="admin-brand-subtitle">{subtitle}</span> : null}
     </Link>

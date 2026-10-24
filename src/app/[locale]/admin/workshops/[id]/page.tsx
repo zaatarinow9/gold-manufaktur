@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
@@ -15,7 +16,8 @@ export default async function WorkshopDetailPage({ params }: Props) {
   const locale = await resolveLocale(Promise.resolve({ locale: rawLocale }));
   const access = await requireAdminAccess(locale, ["super_admin"]);
   if (access.state !== "authenticated" || !access.user) {
-    return <AdminAccessDenied title={locale === "ar" ? "ليس لديك صلاحية للوصول" : "Zugriff verweigert"} description={locale === "ar" ? "ليس لديك صلاحية للوصول إلى هذه الورشة." : "Sie haben keinen Zugriff auf diese Werkstatt."} />;
+    const t = await getTranslations({ locale, namespace: "Admin" });
+    return <AdminAccessDenied title={t("common.noAccessTitle")} description={t("common.noAccessText")} />;
   }
   const workshop = (await getScopedWorkshops(access.user)).find((entry) => entry.id === id);
   if (!workshop) notFound();

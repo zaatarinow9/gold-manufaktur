@@ -6,10 +6,7 @@ import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import { AdminActionResult } from "@/lib/admin/actionResult";
-import {
-  getOrderWorkflowCopy,
-  getSafeActionErrorMessage,
-} from "@/lib/admin/orderWorkflow";
+import { getSafeActionErrorMessage } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
   getAdminDecoyUnavailableMessage,
@@ -27,6 +24,7 @@ import {
 function revalidateCategoryViews() {
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/admin`);
     revalidatePath(`/${locale}/admin/categories`);
     revalidatePath(`/${locale}/admin/gallery`);
     revalidatePath(`/${locale}/admin/gallery/new-order`);
@@ -36,118 +34,36 @@ function revalidateCategoryViews() {
   });
 }
 
-function getRequiredFieldLabel(locale: AppLocale) {
-  if (locale === "de") {
-    return "Bitte fuellen Sie dieses Pflichtfeld aus.";
+async function guardCategoryAction(locale: AppLocale): Promise<AdminActionResult | null> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin"]);
+
+  if (access.state !== "authenticated") {
+    return { message: t("common.noAccessText"), ok: false };
   }
 
-  if (locale === "ar") {
-    return "يرجى تعبئة هذا الحقل المطلوب.";
+  if (await isAdminDecoyEnabled()) {
+    return { message: getAdminDecoyUnavailableMessage(locale), ok: false };
   }
 
-  if (locale === "fr") {
-    return "Veuillez renseigner ce champ obligatoire.";
-  }
-
-  if (locale === "tr") {
-    return "Lutfen bu zorunlu alani doldurun.";
-  }
-
-  return "Please complete this required field.";
-}
-
-function getInvalidSlugMessage(locale: AppLocale) {
-  if (locale === "de") {
-    return "Bitte geben Sie einen gueltigen Slug ein oder lassen Sie das Feld leer.";
-  }
-
-  if (locale === "ar") {
-    return "يرجى إدخال slug صالح أو ترك الحقل فارغاً.";
-  }
-
-  if (locale === "fr") {
-    return "Saisissez un slug valide ou laissez ce champ vide.";
-  }
-
-  if (locale === "tr") {
-    return "Lutfen gecerli bir slug girin veya alani bos birakin.";
-  }
-
-  return "Enter a valid slug or leave the field empty.";
-}
-
-function getCategoryFieldErrors(locale: AppLocale, error: ZodError) {
-  const fieldErrors: Record<string, string> = {};
-  const requiredMessage = getRequiredFieldLabel(locale);
-
-  for (const issue of error.issues) {
-    const path = issue.path.join(".");
-
-    if (!path || fieldErrors[path]) {
-      continue;
-    }
-
-    switch (path) {
-      case "name.de":
-      case "name.ar":
-        fieldErrors[path] = requiredMessage;
-        break;
-      case "slug":
-        fieldErrors.slug = getInvalidSlugMessage(locale);
-        break;
-      default:
-        fieldErrors[path] = issue.message || requiredMessage;
-        break;
-    }
-  }
-
-  return fieldErrors;
-}
-
-function getCategoryDeleteMessage(locale: AppLocale) {
-  if (locale === "de") {
-    return "Das Element wurde aus dem System entfernt.";
-  }
-
-  if (locale === "ar") {
-    return "تم حذف العنصر من النظام.";
-  }
-
-  if (locale === "fr") {
-    return "L'element a ete retire du systeme.";
-  }
-
-  if (locale === "tr") {
-    return "Oge sistemden kaldirildi.";
-  }
-
-  return "The item was removed from the system.";
+  return null;
 }
 
 export async function saveCategoryAction(
   locale: AppLocale,
   input: CategoryInput | CategoryUpdateInput
 ): Promise<AdminActionResult> {
+  const blocked = await guardCategoryAction(locale);
+
+  if (blocked) {
+    return blocked;
+  }
+
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
+  const isUpdate = "id" in input && typeof input.id === "string";
 
   try {
-    if ("id" in input && typeof input.id === "string") {
+    if (isUpdate) {
       await updateCategory(input as CategoryUpdateInput);
     } else {
       await createCategory(input as CategoryInput);
@@ -156,30 +72,40 @@ export async function saveCategoryAction(
     revalidateCategoryViews();
 
     return {
-      message: t("common.mockSubmit"),
+      message: t(`categoriesPage.messages.${isUpdate ? "updated" : "created"}`),
       ok: true,
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      const fieldErrors = getCategoryFieldErrors(locale, error);
-      return {
-        fieldErrors,
-        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
-        ok: false,
-      };
+      const fieldErrors: Record<string, string> = {};
+
+      for (const issue of error.issues) {
+        const path = issue.path.join(".");
+        if (!path || fieldErrors[path]) continue;
+        fieldErrors[path] =
+          path === "slug"
+            ? t("forms.invalidSlug")
+            : issue.code === "too_big"
+              ? t("forms.tooLong")
+              : path.startsWith("name.")
+                ? t("forms.required")
+                : t("forms.invalidValue");
+      }
+
+      return { fieldErrors, message: t("forms.checkFields"), ok: false };
     }
 
     if (error instanceof Error && error.message === "INVALID_CATEGORY_SLUG") {
-      const message = getInvalidSlugMessage(locale);
       return {
-        fieldErrors: { slug: message },
-        message,
+        fieldErrors: { slug: t("forms.invalidSlug") },
+        message: t("forms.checkFields"),
         ok: false,
       };
     }
 
+    console.error("[saveCategoryAction] Category save failed", error);
     return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
+      message: getSafeActionErrorMessage(error, t("forms.saveFailed")),
       ok: false,
     };
   }
@@ -190,35 +116,24 @@ export async function toggleCategoryActiveAction(
   categoryId: string,
   isActive: boolean
 ): Promise<AdminActionResult> {
+  const blocked = await guardCategoryAction(locale);
+
+  if (blocked) {
+    return blocked;
+  }
+
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
 
   try {
     await setCategoryActive(categoryId, isActive);
     revalidateCategoryViews();
-
     return {
-      message: t("common.mockSubmit"),
+      message: t(`categoriesPage.messages.${isActive ? "shown" : "hidden"}`),
       ok: true,
     };
   } catch (error) {
     return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
+      message: getSafeActionErrorMessage(error, t("forms.saveFailed")),
       ok: false,
     };
   }
@@ -228,35 +143,21 @@ export async function deleteCategoryAction(
   locale: AppLocale,
   categoryId: string
 ): Promise<AdminActionResult> {
+  const blocked = await guardCategoryAction(locale);
+
+  if (blocked) {
+    return blocked;
+  }
+
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
 
   try {
     await deleteCategory(categoryId);
     revalidateCategoryViews();
-
-    return {
-      message: getCategoryDeleteMessage(locale),
-      ok: true,
-    };
+    return { message: t("categoriesPage.messages.deleted"), ok: true };
   } catch (error) {
     return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
+      message: getSafeActionErrorMessage(error, t("forms.saveFailed")),
       ok: false,
     };
   }

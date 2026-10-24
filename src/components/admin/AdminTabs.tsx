@@ -24,7 +24,7 @@ export function AdminTabs({
   return (
     <div
       className={clsx(
-        "inline-flex flex-wrap gap-2 rounded-[0.95rem] border border-white/8 bg-white/4 p-1.5",
+        "flex flex-wrap gap-2",
         className
       )}
     >
@@ -35,24 +35,13 @@ export function AdminTabs({
           <button
             key={tab.id}
             type="button"
+            aria-pressed={isActive}
             onClick={() => onChange(tab.id)}
-            className={clsx(
-              "inline-flex items-center gap-2 rounded-[0.8rem] px-3.5 py-2 text-sm font-medium transition",
-              isActive
-                ? "bg-gold/16 text-foreground shadow-[inset_0_0_0_1px_rgba(232,201,135,0.14)]"
-                : "text-muted hover:bg-white/6 hover:text-foreground"
-            )}
+            className="admin-chip"
           >
             <span>{tab.label}</span>
             {tab.count !== undefined ? (
-              <span
-                className={clsx(
-                  "rounded-full px-2 py-0.5 text-[0.68rem] font-semibold",
-                  isActive ? "bg-black/20 text-gold-soft" : "bg-white/6 text-muted"
-                )}
-              >
-                {tab.count}
-              </span>
+              <span className="admin-chip-count">{tab.count}</span>
             ) : null}
           </button>
         );

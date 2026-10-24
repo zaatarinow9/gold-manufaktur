@@ -6,10 +6,7 @@ import { ZodError } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import { AdminActionResult } from "@/lib/admin/actionResult";
-import {
-  getOrderWorkflowCopy,
-  getSafeActionErrorMessage,
-} from "@/lib/admin/orderWorkflow";
+import { getSafeActionErrorMessage } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
 import {
   getAdminDecoyUnavailableMessage,
@@ -29,64 +26,36 @@ import {
   type OptionUpdateInput,
 } from "@/lib/db/adminCatalog";
 
+type Translator = Awaited<ReturnType<typeof getTranslations>>;
+
 function revalidateOptionViews() {
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/admin/options`);
     revalidatePath(`/${locale}/admin/products`);
+    revalidatePath(`/${locale}/admin/gallery/new-order`);
     revalidatePath(`/${locale}/shop`);
     revalidatePath(`/${locale}/tracking`);
   });
 }
 
-function getRequiredFieldLabel(locale: AppLocale) {
-  const isArabic = locale === "ar";
+async function guardOptionAction(locale: AppLocale): Promise<AdminActionResult | null> {
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const access = await requireAdminAccess(locale, ["super_admin"]);
 
-  if (locale === "de") {
-    return "Bitte fuellen Sie dieses Pflichtfeld aus.";
+  if (access.state !== "authenticated") {
+    return { message: t("common.noAccessText"), ok: false };
   }
 
-  if (isArabic) {
-    return "يرجى تعبئة هذا الحقل المطلوب.";
+  if (await isAdminDecoyEnabled()) {
+    return { message: getAdminDecoyUnavailableMessage(locale), ok: false };
   }
 
-  if (locale === "fr") {
-    return "Veuillez renseigner ce champ obligatoire.";
-  }
-
-  if (locale === "tr") {
-    return "Lutfen bu zorunlu alani doldurun.";
-  }
-
-  return "Please complete this required field.";
+  return null;
 }
 
-function getKeyMessage(locale: AppLocale) {
-  const isArabic = locale === "ar";
-
-  if (locale === "de") {
-    return "Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.";
-  }
-
-  if (isArabic) {
-    return "استخدم أحرفاً صغيرة وأرقاماً وشرطات فقط.";
-  }
-
-  if (locale === "fr") {
-    return "Utilisez uniquement des lettres minuscules, des chiffres et des tirets.";
-  }
-
-  if (locale === "tr") {
-    return "Yalnizca kucuk harfler, rakamlar ve tire kullanin.";
-  }
-
-  return "Use lowercase letters, numbers, and hyphens only.";
-}
-
-function getOptionFieldErrors(locale: AppLocale, error: ZodError) {
+function getOptionFieldErrors(error: ZodError, t: Translator) {
   const fieldErrors: Record<string, string> = {};
-  const requiredMessage = getRequiredFieldLabel(locale);
-  const keyMessage = getKeyMessage(locale);
 
   for (const issue of error.issues) {
     const path = issue.path.join(".");
@@ -95,319 +64,121 @@ function getOptionFieldErrors(locale: AppLocale, error: ZodError) {
       continue;
     }
 
-    switch (path) {
-      case "key":
-        fieldErrors.key = keyMessage;
-        break;
-      case "label.de":
-      case "label.ar":
-      case "name.de":
-      case "name.ar":
-      case "groupId":
-        fieldErrors[path] = requiredMessage;
-        break;
-      default:
-        fieldErrors[path] = issue.message || requiredMessage;
-        break;
+    if (path.startsWith("values")) {
+      fieldErrors.values = t("optionsPage.errors.choices");
+    } else if (path === "key") {
+      fieldErrors.key = t("forms.invalidSlug");
+    } else if (path.startsWith("label.") || path.startsWith("name.")) {
+      fieldErrors[path] = issue.code === "too_big" ? t("forms.tooLong") : t("forms.required");
+    } else {
+      fieldErrors[path] = t("forms.invalidValue");
     }
   }
 
   return fieldErrors;
 }
 
-function getOptionDeleteMessage(locale: AppLocale, mode: "deleted" | "soft_deleted_in_use") {
-  const isArabic = locale === "ar";
-
-  if (isArabic) {
-    return mode === "deleted"
-      ? "تم حذف الخيار من النظام"
-      : "تمت إزالة الخيار من النماذج النشطة وسيبقى فقط ضمن الطلبات السابقة.";
-  }
-
-  if (locale === "de") {
-    return mode === "deleted"
-      ? "Die Option wurde aus dem System entfernt"
-      : "Die Option wurde aus aktiven Formularen entfernt und bleibt nur in historischen Auftraegen erhalten.";
-  }
-
-  if ((locale as AppLocale) === "ar") {
-    return mode === "deleted"
-      ? "تم حذف العنصر من النظام."
-      : "تمت إزالة الخيار من النماذج النشطة وسيبقى فقط ضمن الطلبات السابقة.";
-  }
-
-  if (locale === "fr") {
-    return mode === "deleted"
-      ? "L'element a ete retire du systeme."
-      : "L'option a ete retiree des formulaires actifs et reste uniquement dans l'historique.";
-  }
-
-  if (locale === "tr") {
-    return mode === "deleted"
-      ? "Oge sistemden kaldirildi."
-      : "Secenek aktif formlardan kaldirildi ve yalnizca gecmis siparislerde tutuluyor.";
-  }
-
-  return mode === "deleted"
-    ? "The option was removed from the system"
-    : "The option was removed from active forms and is only kept for historical orders.";
-}
-
-function getOptionGroupDeleteMessage(
+async function runSave(
   locale: AppLocale,
-  mode: "deleted" | "soft_deleted_in_use"
-) {
-  const isArabic = locale === "ar";
+  successKey: string,
+  task: () => Promise<unknown>
+): Promise<AdminActionResult> {
+  const blocked = await guardOptionAction(locale);
 
-  if (isArabic) {
-    return mode === "deleted"
-      ? "تم حذف مجموعة الخيارات من النظام"
-      : "تمت إزالة مجموعة الخيارات من النماذج النشطة وستبقى فقط ضمن الطلبات السابقة.";
+  if (blocked) {
+    return blocked;
   }
 
-  if (locale === "de") {
-    return mode === "deleted"
-      ? "Die Optionsgruppe wurde aus dem System entfernt"
-      : "Die Optionsgruppe wurde aus aktiven Formularen entfernt und bleibt nur in historischen Auftraegen erhalten.";
-  }
+  const t = await getTranslations({ locale, namespace: "Admin" });
 
-  if ((locale as AppLocale) === "ar") {
-    return mode === "deleted"
-      ? "تم حذف مجموعة الخيارات من النظام."
-      : "تمت إزالة مجموعة الخيارات من النماذج النشطة وستبقى فقط ضمن الطلبات السابقة.";
-  }
+  try {
+    await task();
+    revalidateOptionViews();
+    return { message: t(successKey), ok: true };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return {
+        fieldErrors: getOptionFieldErrors(error, t),
+        message: t("forms.checkFields"),
+        ok: false,
+      };
+    }
 
-  if (locale === "fr") {
-    return mode === "deleted"
-      ? "Le groupe d'options a ete retire du systeme."
-      : "Le groupe d'options a ete retire des formulaires actifs et reste uniquement dans l'historique.";
+    console.error("[options] action failed", error);
+    return {
+      message: getSafeActionErrorMessage(error, t("forms.saveFailed")),
+      ok: false,
+    };
   }
-
-  if (locale === "tr") {
-    return mode === "deleted"
-      ? "Secenek grubu sistemden kaldirildi."
-      : "Secenek grubu aktif formlardan kaldirildi ve yalnizca gecmis siparislerde tutuluyor.";
-  }
-
-  return mode === "deleted"
-    ? "The option group was removed from the system"
-    : "The option group was removed from active forms and is only kept for historical orders.";
 }
 
 export async function saveOptionGroupAction(
   locale: AppLocale,
   input: OptionGroupInput | OptionGroupUpdateInput
-): Promise<AdminActionResult> {
-  const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
-
-  try {
-    if ("id" in input && typeof input.id === "string") {
-      await updateOptionGroup(input as OptionGroupUpdateInput);
-    } else {
-      await createOptionGroup(input as OptionGroupInput);
-    }
-    revalidateOptionViews();
-
-    return {
-      message: t("common.mockSubmit"),
-      ok: true,
-    };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const fieldErrors = getOptionFieldErrors(locale, error);
-      return {
-        fieldErrors,
-        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
-        ok: false,
-      };
-    }
-
-    return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
-      ok: false,
-    };
-  }
+) {
+  const isUpdate = "id" in input && typeof input.id === "string";
+  return runSave(locale, `optionsPage.messages.${isUpdate ? "groupUpdated" : "groupCreated"}`, () =>
+    isUpdate ? updateOptionGroup(input as OptionGroupUpdateInput) : createOptionGroup(input as OptionGroupInput)
+  );
 }
 
-export async function deleteOptionGroupAction(
-  locale: AppLocale,
-  groupId: string
-): Promise<AdminActionResult> {
-  const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
-
-  try {
-    const result = await deleteOptionGroup(groupId);
-    revalidateOptionViews();
-
-    return {
-      message: getOptionGroupDeleteMessage(locale, result.mode),
-      ok: true,
-    };
-  } catch (error) {
-    return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
-      ok: false,
-    };
-  }
-}
-
-export async function saveOptionAction(
-  locale: AppLocale,
-  input: OptionInput | OptionUpdateInput
-): Promise<AdminActionResult> {
-  const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
-
-  try {
-    if ("id" in input && typeof input.id === "string") {
-      await updateOption(input as OptionUpdateInput);
-    } else {
-      await createOption(input as OptionInput);
-    }
-
-    revalidateOptionViews();
-
-    return {
-      message: t("common.mockSubmit"),
-      ok: true,
-    };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const fieldErrors = getOptionFieldErrors(locale, error);
-      return {
-        fieldErrors,
-        message: Object.values(fieldErrors)[0] ?? copy.formErrorFallback,
-        ok: false,
-      };
-    }
-
-    return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
-      ok: false,
-    };
-  }
+export async function saveOptionAction(locale: AppLocale, input: OptionInput | OptionUpdateInput) {
+  const isUpdate = "id" in input && typeof input.id === "string";
+  return runSave(locale, `optionsPage.messages.${isUpdate ? "fieldUpdated" : "fieldCreated"}`, () =>
+    isUpdate ? updateOption(input as OptionUpdateInput) : createOption(input as OptionInput)
+  );
 }
 
 export async function toggleOptionActiveAction(
   locale: AppLocale,
   optionId: string,
   isActive: boolean
+) {
+  return runSave(locale, `optionsPage.messages.${isActive ? "fieldShown" : "fieldHidden"}`, () =>
+    setOptionActive(optionId, isActive)
+  );
+}
+
+async function runDelete(
+  locale: AppLocale,
+  keys: { deleted: string; kept: string },
+  task: () => Promise<{ mode: string }>
 ): Promise<AdminActionResult> {
+  const blocked = await guardOptionAction(locale);
+
+  if (blocked) {
+    return blocked;
+  }
+
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
-
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
 
   try {
-    await setOptionActive(optionId, isActive);
+    const result = await task();
     revalidateOptionViews();
-
     return {
-      message: t("common.mockSubmit"),
+      message: t(result.mode === "deleted" ? keys.deleted : keys.kept),
       ok: true,
     };
   } catch (error) {
     return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
+      message: getSafeActionErrorMessage(error, t("forms.saveFailed")),
       ok: false,
     };
   }
 }
 
-export async function deleteOptionAction(
-  locale: AppLocale,
-  optionId: string
-): Promise<AdminActionResult> {
-  const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+export async function deleteOptionGroupAction(locale: AppLocale, groupId: string) {
+  return runDelete(
+    locale,
+    { deleted: "optionsPage.messages.groupDeleted", kept: "optionsPage.messages.groupArchived" },
+    () => deleteOptionGroup(groupId)
+  );
+}
 
-  if (access.state !== "authenticated") {
-    return {
-      message: t("common.noAccessText"),
-      ok: false,
-    };
-  }
-
-  if (await isAdminDecoyEnabled()) {
-    return {
-      message: getAdminDecoyUnavailableMessage(locale),
-      ok: false,
-    };
-  }
-
-  try {
-    const result = await deleteOption(optionId);
-    revalidateOptionViews();
-
-    return {
-      message: getOptionDeleteMessage(locale, result.mode),
-      ok: true,
-    };
-  } catch (error) {
-    return {
-      message: getSafeActionErrorMessage(error, copy.formErrorFallback),
-      ok: false,
-    };
-  }
+export async function deleteOptionAction(locale: AppLocale, optionId: string) {
+  return runDelete(
+    locale,
+    { deleted: "optionsPage.messages.fieldDeleted", kept: "optionsPage.messages.fieldArchived" },
+    () => deleteOption(optionId)
+  );
 }

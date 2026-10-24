@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { AdminShell } from "@/components/admin/AdminShell";
@@ -12,14 +11,9 @@ type AdminLayoutProps = {
   params: Promise<{ locale: string }>;
 };
 
-async function resolveAdminLocale(params: AdminLayoutProps["params"]) {
-  const { locale } = await params;
-
-  if (locale !== "ar" && locale !== "de") {
-    redirect("/de/admin");
-  }
-
-  return resolveLocale(Promise.resolve({ locale }));
+// The dashboard is available in every site language (de, ar, en, fr, tr).
+function resolveAdminLocale(params: AdminLayoutProps["params"]) {
+  return resolveLocale(params);
 }
 
 export async function generateMetadata({

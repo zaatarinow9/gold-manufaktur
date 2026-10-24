@@ -42,10 +42,10 @@ export function buildOrderEntryLinkEmail(input: OrderEntryLinkEmailInput) {
   const expiresAtLabel = formatExpiry(input.expiresAt);
   const subject = "Sicherer Link zur Auftragserfassung | GoldHelwah GmbH";
   const intro =
-    "anbei erhalten Sie den sicheren Link zur externen Auftragserfassung fuer Ihren Werkstattauftrag.";
+    "anbei erhalten Sie den sicheren Link zur externen Auftragserfassung für Ihren Werkstattauftrag.";
   const expiryLine = expiresAtLabel
-    ? `Der Link ist bis ${expiresAtLabel} gueltig.`
-    : "Der Link bleibt gueltig, bis er in unserem System deaktiviert oder neu erzeugt wird.";
+    ? `Der Link ist bis ${expiresAtLabel} gültig.`
+    : "Der Link bleibt gültig, bis er in unserem System deaktiviert oder neu erzeugt wird.";
   const text = [
     "Guten Tag,",
     "",
@@ -55,9 +55,9 @@ export function buildOrderEntryLinkEmail(input: OrderEntryLinkEmailInput) {
     "Link zur Auftragserfassung:",
     input.link,
     "",
-    "Falls die Schaltflaeche in Ihrer Mail-App nicht angezeigt wird, koennen Sie den Link direkt in den Browser kopieren.",
+    "Falls die Schaltfläche in Ihrer Mail-App nicht angezeigt wird, können Sie den Link direkt in den Browser kopieren.",
     "",
-    "Bei Rueckfragen erreichen Sie uns unter:",
+    "Bei Rückfragen erreichen Sie uns unter:",
     companyInfo.emailDisplay,
     companyInfo.phoneDisplay,
     "",
@@ -108,7 +108,7 @@ export function buildOrderEntryLinkEmail(input: OrderEntryLinkEmailInput) {
               <td style="padding:24px 30px 30px 30px;">
                 <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">
                   <p style="margin:0;color:#c7b99e;font-size:13px;line-height:1.8;">
-                    Bei Rueckfragen erreichen Sie uns unter ${escapeHtml(companyInfo.emailDisplay)} oder ${escapeHtml(companyInfo.phoneDisplay)}.
+                    Bei Rückfragen erreichen Sie uns unter ${escapeHtml(companyInfo.emailDisplay)} oder ${escapeHtml(companyInfo.phoneDisplay)}.
                   </p>
                 </div>
               </td>

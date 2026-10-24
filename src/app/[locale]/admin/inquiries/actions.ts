@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
 import type { AppLocale } from "@/i18n/routing";
@@ -22,27 +23,13 @@ function revalidateInquiryViews() {
   });
 }
 
-function getInquiryActionCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      deleted: "تم حذف الطلب من العرض الإداري.",
-      noAccess: "لا تملك صلاحية الوصول.",
-      saved: "تم تحديث حالة الطلب.",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      deleted: "Die Anfrage wurde aus der Adminansicht entfernt.",
-      noAccess: "Kein Zugriff.",
-      saved: "Der Anfrage-Status wurde aktualisiert.",
-    };
-  }
+async function getInquiryActionCopy(locale: AppLocale) {
+  const t = await getTranslations({ locale, namespace: "Admin.inquiryMessages" });
 
   return {
-    deleted: "The inquiry was removed from the admin view.",
-    noAccess: "No access.",
-    saved: "The inquiry status was updated.",
+    deleted: t("deleted"),
+    noAccess: t("noAccess"),
+    saved: t("saved"),
   };
 }
 
@@ -51,7 +38,7 @@ export async function updateInquiryStatusAction(
   inquiryId: string,
   status: CustomerInquiryStatus
 ): Promise<AdminActionResult> {
-  const copy = getInquiryActionCopy(locale);
+  const copy = (await getInquiryActionCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
@@ -87,7 +74,7 @@ export async function deleteInquiryAction(
   locale: AppLocale,
   inquiryId: string
 ): Promise<AdminActionResult> {
-  const copy = getInquiryActionCopy(locale);
+  const copy = (await getInquiryActionCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {

@@ -1,19 +1,19 @@
 "use client";
 
-import clsx from "clsx";
 import {
   BriefcaseBusiness,
-  Gem,
+  ClipboardList,
   Home,
-  ImageIcon,
   Layers3,
+  LoaderCircle,
+  LogOut,
   MessageSquareMore,
   Package,
+  PlusCircle,
   Settings2,
-  ShoppingBag,
+  SlidersHorizontal,
   Users,
   Wrench,
-  LoaderCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -25,6 +25,8 @@ import type { AppLocale } from "@/i18n/routing";
 import { canViewAdminSection, type AdminSection } from "@/lib/admin/roleAccess";
 import { getBrandLogoAlt } from "@/lib/site";
 import type { AdminUser } from "@/types/admin";
+
+import { AdminLogoutButton } from "./AdminLogoutButton";
 
 export type AdminNavKey =
   | "categories"
@@ -41,52 +43,139 @@ export type AdminNavKey =
 
 export type AdminNavCounts = Partial<Record<AdminNavKey, number>>;
 
+export type AdminNavGroupKey = "main" | "orders" | "catalog" | "team" | "customers" | "system";
+
 export type AdminNavItem = {
+  group: AdminNavGroupKey;
   href: string;
   icon: LucideIcon;
   key: AdminNavKey;
   section: AdminSection;
 };
 
-const adminNavLabelKeys: Record<AdminNavKey, string> = {
-  categories: "nav.categories",
-  employees: "nav.employees",
-  gallery: "nav.gallery",
-  inquiries: "nav.inquiries",
-  myTasks: "nav.myTasks",
-  options: "nav.options",
-  orders: "nav.orders",
-  overview: "nav.overview",
-  products: "nav.products",
-  settings: "nav.settings",
-  workshops: "nav.workshops",
-};
-
 export const adminNavItems: AdminNavItem[] = [
-  { href: "/admin", icon: Home, key: "overview", section: "overview" },
-  { href: "/admin/gallery", icon: ImageIcon, key: "gallery", section: "gallery" },
-  { href: "/admin/orders", icon: ShoppingBag, key: "orders", section: "orders" },
-  {
-    href: "/admin/my-tasks",
-    icon: BriefcaseBusiness,
-    key: "myTasks",
-    section: "my_tasks",
-  },
-  { href: "/admin/employees", icon: Users, key: "employees", section: "employees" },
-  { href: "/admin/workshops", icon: Wrench, key: "workshops", section: "workshops" },
-  { href: "/admin/products", icon: Package, key: "products", section: "products" },
-  { href: "/admin/categories", icon: Layers3, key: "categories", section: "categories" },
-  { href: "/admin/options", icon: Gem, key: "options", section: "options" },
-  { href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", section: "inquiries" },
-  { href: "/admin/settings", icon: Settings2, key: "settings", section: "settings" },
+  { group: "main", href: "/admin", icon: Home, key: "overview", section: "overview" },
+  { group: "orders", href: "/admin/orders", icon: ClipboardList, key: "orders", section: "orders" },
+  { group: "orders", href: "/admin/gallery", icon: PlusCircle, key: "gallery", section: "gallery" },
+  { group: "orders", href: "/admin/my-tasks", icon: BriefcaseBusiness, key: "myTasks", section: "my_tasks" },
+  { group: "catalog", href: "/admin/products", icon: Package, key: "products", section: "products" },
+  { group: "catalog", href: "/admin/categories", icon: Layers3, key: "categories", section: "categories" },
+  { group: "catalog", href: "/admin/options", icon: SlidersHorizontal, key: "options", section: "options" },
+  { group: "team", href: "/admin/employees", icon: Users, key: "employees", section: "employees" },
+  { group: "team", href: "/admin/workshops", icon: Wrench, key: "workshops", section: "workshops" },
+  { group: "customers", href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", section: "inquiries" },
+  { group: "system", href: "/admin/settings", icon: Settings2, key: "settings", section: "settings" },
 ];
+
+const navGroupOrder: AdminNavGroupKey[] = ["main", "orders", "catalog", "team", "customers", "system"];
 
 export function getVisibleAdminNavItems(role: AdminUser["role"]) {
   return adminNavItems.filter((item) => canViewAdminSection(role, item.section));
 }
 
 export function getAdminNavLabelKey(key: AdminNavKey) {
-  return adminNavLabelKeys[key];
+  return `nav.${key}`;
+}
+
+export function isAdminNavItemActive(item: AdminNavItem, pathname: string) {
+  if (item.href === "/admin") {
+    return pathname === "/admin";
+  }
+
+  // "New order" lives under /admin/gallery/new-order.
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+}
+
+export function findActiveAdminNavItem(role: AdminUser["role"], pathname: string) {
+  return getVisibleAdminNavItems(role).find((item) => isAdminNavItemActive(item, pathname)) ?? null;
+}
+
+type AdminNavListProps = {
+  currentUser: AdminUser;
+  navCounts?: AdminNavCounts;
+  onNavigate?: () => void;
+};
+
+export function AdminNavList({ currentUser, navCounts, onNavigate }: AdminNavListProps) {
+  const pathname = usePathname() ?? "/admin";
+  const t = useTranslations("Admin");
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const visibleItems = getVisibleAdminNavItems(currentUser.role);
+
+  return (
+    <nav aria-label={t("nav.ariaLabel")} className="space-y-0.5">
+      {navGroupOrder.map((group) => {
+        const items = visibleItems.filter((item) => item.group === group);
+
+        if (items.length === 0) {
+          return null;
+        }
+
+        return (
+          <div key={group} role="group" aria-labelledby={group === "main" ? undefined : `admin-nav-${group}`}>
+            {group !== "main" ? (
+              <p id={`admin-nav-${group}`} className="admin-nav-group-label">
+                {t(`navGroups.${group}`)}
+              </p>
+            ) : null}
+            <div className="space-y-0.5">
+              {items.map((item) => {
+                const Icon = item.icon;
+                const isActive = isAdminNavItemActive(item, pathname);
+                const isPending = pendingHref === item.href && !isActive;
+                const count = navCounts?.[item.key];
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    aria-busy={isPending || undefined}
+                    onClick={() => {
+                      if (!isActive) setPendingHref(item.href);
+                      onNavigate?.();
+                    }}
+                    className="admin-nav-link"
+                  >
+                    {isPending ? <LoaderCircle className="animate-spin text-gold" /> : <Icon />}
+                    <span className="truncate">{t(getAdminNavLabelKey(item.key))}</span>
+                    {count ? (
+                      <span className="admin-nav-count" aria-label={t("nav.countLabel", { count })}>
+                        {count}
+                      </span>
+                    ) : null}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </nav>
+  );
+}
+
+export function AdminUserCard({ currentUser, onNavigate }: { currentUser: AdminUser; onNavigate?: () => void }) {
+  const t = useTranslations("Admin");
+
+  return (
+    <div className="flex items-center gap-3 rounded-[0.75rem] border border-white/8 bg-white/[0.03] p-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-semibold text-gold-soft">
+        {currentUser.avatarLabel}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold text-foreground">{currentUser.name}</p>
+        <p className="truncate text-xs text-muted">{t(`roles.${currentUser.role}`)}</p>
+      </div>
+      <AdminLogoutButton
+        className="admin-icon-button admin-icon-button-quiet"
+        onClick={onNavigate}
+        ariaLabel={t("buttons.logout")}
+      >
+        <LogOut className="h-4 w-4" />
+      </AdminLogoutButton>
+    </div>
+  );
 }
 
 type AdminSidebarProps = {
@@ -95,78 +184,25 @@ type AdminSidebarProps = {
 };
 
 export function AdminSidebar({ currentUser, navCounts }: AdminSidebarProps) {
-  const pathname = usePathname() ?? "/admin";
   const locale = useLocale() as AppLocale;
   const t = useTranslations("Admin");
-  const visibleItems = getVisibleAdminNavItems(currentUser.role);
-  const brandLogoAlt = getBrandLogoAlt(locale);
-  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   return (
-    <aside className="fixed inset-y-0 start-0 z-20 hidden h-screen w-[17rem] shrink-0 border-e border-white/8 bg-[#070707]/94 lg:flex">
-      <div className="flex h-full w-full min-h-0 flex-col px-4 py-4">
-        <div className="rounded-[1.1rem] border border-gold/16 bg-[linear-gradient(180deg,rgba(20,16,12,0.96),rgba(8,8,8,0.96))] p-4 shadow-[0_18px_44px_rgba(0,0,0,0.22)]">
+    <aside className="admin-sidebar fixed inset-y-0 start-0 z-20 hidden w-[16.5rem] lg:flex">
+      <div className="flex h-full min-h-0 w-full flex-col px-3 py-4">
+        <div className="px-2 pb-3">
           <AdminBrand
-            alt={brandLogoAlt}
+            alt={getBrandLogoAlt(locale)}
             subtitle={t("header.adminArea")}
-            className="w-fit"
-            logoClassName="h-[2.95rem]"
+            logoClassName="h-[2.6rem]"
           />
         </div>
 
-        <nav className="admin-sidebar-scroll mt-4 flex-1 space-y-1 overflow-y-auto pb-4">
-          {visibleItems.map((item) => {
-            const Icon = item.icon;
-            const isActive =
-              item.href === "/admin"
-                ? pathname === "/admin"
-                : pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const isPending = pendingHref === item.href && !isActive;
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-busy={isPending}
-                onClick={() => {
-                  if (!isActive) setPendingHref(item.href);
-                }}
-                className={clsx(
-                  "admin-nav-link flex items-center gap-3 rounded-[0.95rem] border px-3.5 py-2.5 text-sm font-medium transition",
-                  isActive
-                    ? "border-gold/22 bg-gold/12 text-foreground shadow-[inset_0_0_0_1px_rgba(232,201,135,0.12)]"
-                    : "border-transparent text-muted hover:border-white/8 hover:bg-white/5 hover:text-foreground"
-                )}
-              >
-                {isPending ? <LoaderCircle className="h-4 w-4 shrink-0 animate-spin text-gold" /> : <Icon className="h-4 w-4 shrink-0" />}
-                <span className="truncate">{t(getAdminNavLabelKey(item.key))}</span>
-                {navCounts?.[item.key] ? (
-                  <span className="ms-auto inline-flex min-w-6 items-center justify-center rounded-full bg-gold px-2 py-0.5 text-[0.68rem] font-semibold leading-none text-black">
-                    {navCounts[item.key]}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="mt-auto rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4">
-          <div className="rtl-inline-row mt-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/6 text-sm font-semibold text-foreground">
-              {currentUser.avatarLabel}
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-foreground">
-                {currentUser.name}
-              </p>
-              <p className="truncate text-xs text-muted">{currentUser.email}</p>
-            </div>
-          </div>
-          <p className="mt-3 text-xs text-muted">
-            {t(`roles.${currentUser.role}`)} {" | "}
-            {currentUser.isActive ? t("common.active") : t("common.inactive")}
-          </p>
+        <div className="admin-sidebar-scroll min-h-0 flex-1 overflow-y-auto pb-4">
+          <AdminNavList currentUser={currentUser} navCounts={navCounts} />
         </div>
+
+        <AdminUserCard currentUser={currentUser} />
       </div>
     </aside>
   );

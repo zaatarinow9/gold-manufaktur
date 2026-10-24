@@ -1,5 +1,6 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
 import { revalidatePath } from "next/cache";
@@ -451,75 +452,26 @@ type SettingsActionWithLink = AdminActionResult & {
   link?: string;
 };
 
-function getSettingsActionCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      invalidEmail: "يرجى إدخال بريد إلكتروني صالح.",
-      invalidName: "يرجى إدخال اسم واضح.",
-      noAccess: "لا تملك صلاحية الوصول.",
-      orderEntryRotated: "تم تدوير رابط إدخال الطلبات بنجاح.",
-      orderEntrySendDisabled: "فعّل رابط إدخال الطلبات الخارجي قبل إرساله بالبريد الإلكتروني.",
-      orderEntrySendFailed: "تعذر إرسال رابط إدخال الطلبات بالبريد الإلكتروني.",
-      orderEntrySendSavedOnly:
-        "تم تجهيز الرسالة، لكن الإرسال بالبريد الإلكتروني متوقف لأن إعداد SMTP غير مكتمل.",
-      orderEntrySent: "تم إرسال رابط إدخال الطلبات بالبريد الإلكتروني.",
-      privacyPhrase: "عبارة التفعيل غير صحيحة.",
-      saved: "تم حفظ الإعدادات.",
-      userCreated:
-        "تم إنشاء المستخدم وإرسال رابط الدخول إذا كانت خدمة البريد متاحة.",
-      userDeleted: "تمت إزالة المستخدم من النظام.",
-      userInviteSent: "تم إنشاء رابط جديد للمستخدم.",
-      userPasswordResetSent:
-        "تم إنشاء رابط جديد لإعادة تعيين كلمة المرور.",
-      userUpdated: "تم تحديث بيانات المستخدم.",
-      userVisibilityChanged: "تم تحديث حالة المستخدم.",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      invalidEmail: "Bitte geben Sie eine gueltige E-Mail-Adresse ein.",
-      invalidName: "Bitte geben Sie einen gueltigen Anzeigenamen ein.",
-      noAccess: "Kein Zugriff.",
-      orderEntryRotated: "Der Auftragserfassungslink wurde neu erzeugt.",
-      orderEntrySendDisabled:
-        "Aktivieren Sie den externen Auftragserfassungslink, bevor Sie ihn per E-Mail versenden.",
-      orderEntrySendFailed:
-        "Der Auftragserfassungslink konnte per E-Mail nicht versendet werden.",
-      orderEntrySendSavedOnly:
-        "Die E-Mail wurde vorbereitet, aber nicht versendet, weil SMTP noch nicht vollstaendig eingerichtet ist.",
-      orderEntrySent: "Der Auftragserfassungslink wurde per E-Mail versendet.",
-      privacyPhrase: "Die Schutz-Passphrase ist ungueltig.",
-      saved: "Die Einstellungen wurden gespeichert.",
-      userCreated:
-        "Der Benutzer wurde angelegt. Der Zugangslink wurde versendet oder protokolliert.",
-      userDeleted: "Der Benutzer wurde aus dem System entfernt.",
-      userInviteSent: "Ein neuer Zugangslink wurde erstellt.",
-      userPasswordResetSent: "Der Passwort-Link wurde erstellt.",
-      userUpdated: "Die Benutzerdaten wurden aktualisiert.",
-      userVisibilityChanged: "Der Benutzerstatus wurde aktualisiert.",
-    };
-  }
+async function getSettingsActionCopy(locale: AppLocale) {
+  const t = await getTranslations({ locale, namespace: "Admin.settingsMessages" });
 
   return {
-    invalidEmail: "Please enter a valid email address.",
-    invalidName: "Please enter a valid display name.",
-    noAccess: "No access.",
-    orderEntryRotated: "The external order-entry link was rotated.",
-    orderEntrySendDisabled:
-      "Enable the external order-entry link before sending it by email.",
-    orderEntrySendFailed: "The external order-entry link could not be sent by email.",
-    orderEntrySendSavedOnly:
-      "The email was prepared, but delivery was skipped because SMTP is not fully configured.",
-    orderEntrySent: "The external order-entry link was sent by email.",
-    privacyPhrase: "The privacy passphrase is invalid.",
-    saved: "Settings saved.",
-    userCreated: "The user was created. The access link was sent or logged.",
-    userDeleted: "The user was removed from the system.",
-    userInviteSent: "A new access link was generated.",
-    userPasswordResetSent: "A password reset link was generated.",
-    userUpdated: "The user was updated.",
-    userVisibilityChanged: "The user status was updated.",
+    invalidEmail: t("invalidEmail"),
+    invalidName: t("invalidName"),
+    noAccess: t("noAccess"),
+    orderEntryRotated: t("orderEntryRotated"),
+    orderEntrySendDisabled: t("orderEntrySendDisabled"),
+    orderEntrySendFailed: t("orderEntrySendFailed"),
+    orderEntrySendSavedOnly: t("orderEntrySendSavedOnly"),
+    orderEntrySent: t("orderEntrySent"),
+    privacyPhrase: t("privacyPhrase"),
+    saved: t("saved"),
+    userCreated: t("userCreated"),
+    userDeleted: t("userDeleted"),
+    userInviteSent: t("userInviteSent"),
+    userPasswordResetSent: t("userPasswordResetSent"),
+    userUpdated: t("userUpdated"),
+    userVisibilityChanged: t("userVisibilityChanged"),
   };
 }
 
@@ -537,13 +489,13 @@ function revalidateSettingsViews() {
 
 export async function savePublicVisualSettingsAction(locale: AppLocale, input: z.infer<typeof publicVisualSettingsSchema>): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  if (!user) return { message: getSettingsActionCopy(locale).noAccess, ok: false };
+  if (!user) return { message: (await getSettingsActionCopy(locale)).noAccess, ok: false };
   const blocked = await getDecoyBlockedResult(locale);
   if (blocked) return blocked;
   const parsed = publicVisualSettingsSchema.safeParse(input);
-  if (!parsed.success) return { message: getSettingsActionCopy(locale).invalidEmail, ok: false };
-  try { await savePublicVisualSettings(parsed.data); revalidateSettingsViews(); return { message: getSettingsActionCopy(locale).saved, ok: true }; }
-  catch (error) { return { message: error instanceof Error ? error.message : getSettingsActionCopy(locale).saved, ok: false }; }
+  if (!parsed.success) return { message: (await getSettingsActionCopy(locale)).invalidEmail, ok: false };
+  try { await savePublicVisualSettings(parsed.data); revalidateSettingsViews(); return { message: (await getSettingsActionCopy(locale)).saved, ok: true }; }
+  catch (error) { return { message: error instanceof Error ? error.message : (await getSettingsActionCopy(locale)).saved, ok: false }; }
 }
 
 async function getDecoyBlockedResult(
@@ -569,11 +521,11 @@ async function requireSettingsAccess(locale: AppLocale) {
   return access.user;
 }
 
-function getValidationFailure(
+async function getValidationFailure(
   locale: AppLocale,
   message?: string
-): AdminActionResult {
-  const copy = getSettingsActionCopy(locale);
+): Promise<AdminActionResult> {
+  const copy = (await getSettingsActionCopy(locale));
   return {
     message: message ?? copy.invalidEmail,
     ok: false,
@@ -589,7 +541,7 @@ export async function saveNotificationSettingsAction(
   input: z.infer<typeof notificationSettingsSchema>
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user) {
     return {
@@ -607,7 +559,7 @@ export async function saveNotificationSettingsAction(
   const parsed = notificationSettingsSchema.safeParse(input);
 
   if (!parsed.success) {
-    return getValidationFailure(locale);
+    return await getValidationFailure(locale);
   }
 
   try {
@@ -635,7 +587,7 @@ export async function saveOrderEntrySettingsAction(
   input: z.infer<typeof orderEntrySchema>
 ): Promise<SettingsActionWithLink> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user) {
     return {
@@ -685,7 +637,7 @@ export async function rotateOrderEntryAccessAction(
   input: z.infer<typeof orderEntrySchema>
 ): Promise<SettingsActionWithLink> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user) {
     return {
@@ -740,7 +692,7 @@ export async function sendOrderEntryLinkEmailAction(
   input: z.infer<typeof sendOrderEntryLinkEmailSchema>
 ): Promise<SettingsActionWithLink> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user) {
     return {
@@ -758,7 +710,7 @@ export async function sendOrderEntryLinkEmailAction(
   const parsed = sendOrderEntryLinkEmailSchema.safeParse(input);
 
   if (!parsed.success) {
-    return getValidationFailure(locale);
+    return await getValidationFailure(locale);
   }
 
   if (!parsed.data.enabled) {
@@ -840,7 +792,7 @@ export async function createManagedAdminUserAction(
   input: z.infer<typeof managedUserSchema>
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user || user.role !== "super_admin") {
     return {
@@ -889,7 +841,7 @@ export async function updateManagedAdminUserAction(
   input: z.infer<typeof managedUserSchema>
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user || user.role !== "super_admin") {
     return {
@@ -945,7 +897,7 @@ export async function resendManagedAdminInviteAction(
   }
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user || user.role !== "super_admin") {
     return {
@@ -996,7 +948,7 @@ export async function sendManagedAdminPasswordResetAction(
   }
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user || user.role !== "super_admin") {
     return {
@@ -1044,7 +996,7 @@ export async function toggleManagedAdminUserActiveAction(
   nextState: boolean
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user || user.role !== "super_admin") {
     return {
@@ -1079,7 +1031,7 @@ export async function deleteManagedAdminUserAction(
   userId: string
 ): Promise<AdminActionResult> {
   const user = await requireSettingsAccess(locale);
-  const copy = getSettingsActionCopy(locale);
+  const copy = (await getSettingsActionCopy(locale));
 
   if (!user || user.role !== "super_admin") {
     return {

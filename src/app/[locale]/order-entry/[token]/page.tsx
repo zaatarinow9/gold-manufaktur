@@ -28,13 +28,13 @@ export default async function OrderEntryPage({
       locale === "ar"
         ? "طلب الورشة غير متاح حالياً"
         : locale === "de"
-          ? "Werkstattauftrag derzeit nicht verfuegbar"
+          ? "Werkstattauftrag derzeit nicht verfügbar"
           : "Workshop order currently unavailable";
     const unavailableDescription =
       locale === "ar"
         ? "لا توجد منتجات نشطة مرتبطة بهذا الرابط حالياً."
         : locale === "de"
-          ? "Es sind aktuell keine aktiven Produkte fuer diesen Link hinterlegt."
+          ? "Es sind aktuell keine aktiven Produkte für diesen Link hinterlegt."
           : "There are currently no active products assigned to this link.";
 
     return (

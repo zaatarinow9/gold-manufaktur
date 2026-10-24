@@ -6,12 +6,14 @@ import { logoutAction } from "@/app/[locale]/admin/login/actions";
 import type { AppLocale } from "@/i18n/routing";
 
 type AdminLogoutButtonProps = {
+  ariaLabel?: string;
   children: React.ReactNode;
   className: string;
   onClick?: () => void;
 };
 
 export function AdminLogoutButton({
+  ariaLabel,
   children,
   className,
   onClick,
@@ -21,7 +23,13 @@ export function AdminLogoutButton({
 
   return (
     <form action={action}>
-      <button type="submit" className={className} onClick={onClick}>
+      <button
+        type="submit"
+        className={className}
+        onClick={onClick}
+        aria-label={ariaLabel}
+        title={ariaLabel}
+      >
         {children}
       </button>
     </form>

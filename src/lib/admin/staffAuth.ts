@@ -133,11 +133,11 @@ function buildStaffAuthCallbackUrl(path: string) {
 function getInviteEmailSubject(kind: StaffAccessEmailKind) {
   return kind === "invite"
     ? "Ihr Zugang zum Gold Helwah Adminbereich"
-    : "Passwort fuer den Gold Helwah Adminbereich zuruecksetzen";
+    : "Passwort für den Gold Helwah Adminbereich zurücksetzen";
 }
 
 function getInviteEmailButtonLabel(kind: StaffAccessEmailKind) {
-  return kind === "invite" ? "Zugang einrichten" : "Passwort zuruecksetzen";
+  return kind === "invite" ? "Zugang einrichten" : "Passwort zurücksetzen";
 }
 
 function buildStaffAccessEmail(input: {
@@ -150,12 +150,12 @@ function buildStaffAccessEmail(input: {
   const greeting = normalizeStaffText(input.displayName) || "Guten Tag";
   const intro =
     input.kind === "invite"
-      ? "fuer Sie wurde ein Zugang zur Gold Helwah Plattform eingerichtet."
-      : "fuer Ihr Konto im Gold Helwah Adminbereich wurde ein neuer Link zum Setzen Ihres Passworts angefordert.";
+      ? "für Sie wurde ein Zugang zur Gold Helwah Plattform eingerichtet."
+      : "für Ihr Konto im Gold Helwah Adminbereich wurde ein neuer Link zum Setzen Ihres Passworts angefordert.";
   const actionText =
     input.kind === "invite"
-      ? "Bitte richten Sie Ihren Zugang ueber den folgenden Link ein:"
-      : "Bitte setzen Sie Ihr Passwort ueber den folgenden Link neu:";
+      ? "Bitte richten Sie Ihren Zugang über den folgenden Link ein:"
+      : "Bitte setzen Sie Ihr Passwort über den folgenden Link neu:";
   const text = [
     `Guten Tag ${greeting},`,
     "",
@@ -166,7 +166,7 @@ function buildStaffAccessEmail(input: {
     "",
     "Bitte teilen Sie diesen Link nicht mit anderen Personen.",
     "",
-    "Mit freundlichen Gruessen",
+    "Mit freundlichen Grüßen",
     "Gold Helwah",
     "service@goldhelwah.de",
   ].join("\n");
@@ -179,12 +179,12 @@ function buildStaffAccessEmail(input: {
     )}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#c49a52;color:#111111;text-decoration:none;font-weight:700;">${escapeHtml(
       buttonLabel
     )}</a></p>`,
-    `<p>Falls die Schaltflaeche nicht funktioniert, verwenden Sie bitte diesen Link:</p>`,
+    `<p>Falls die Schaltfläche nicht funktioniert, verwenden Sie bitte diesen Link:</p>`,
     `<p><a href="${escapeHtmlAttribute(input.callbackUrl)}">${escapeHtml(
       input.callbackUrl
     )}</a></p>`,
     `<p>Bitte teilen Sie diesen Link nicht mit anderen Personen.</p>`,
-    `<p>Mit freundlichen Gruessen<br />Gold Helwah<br /><a href="mailto:service@goldhelwah.de">service@goldhelwah.de</a></p>`,
+    `<p>Mit freundlichen Grüßen<br />Gold Helwah<br /><a href="mailto:service@goldhelwah.de">service@goldhelwah.de</a></p>`,
   ].join("");
 
   return {

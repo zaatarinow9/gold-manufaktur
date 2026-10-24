@@ -1,1372 +1,2044 @@
 {
-    "Metadata":  {
-                     "site":  {
-                                  "brand":  "GoldHelwah GmbH",
-                                  "title":  "GoldHelwah GmbH",
-                                  "description":  "GoldHelwah GmbH, gercek urun gorselleri, kisisel danismanlik ve net bir sunumla secilmis altin takilar sunar.",
-                                  "keywords":  [
-                                                   "GoldHelwah GmbH",
-                                                   "altın takı",
-                                                   "lüks taki",
-                                                   "takı kataloğu",
-                                                   "showroom",
-                                                   "alyans"
-                                               ]
-                              },
-                     "pages":  {
-                                   "home":  {
-                                                "title":  "GoldHelwah GmbH",
-                                                "description":  "GoldHelwah GmbH\u0027de karakterli altin takilari, gercek gorselleri ve kisisel danismanligi kesfedin."
-                                            },
-                                   "shop":  {
-                                                "title":  "Koleksiyon",
-                                                "description":  "GoldHelwah GmbH koleksiyonunda secilmis parcalari, net kategorileri ve urun detaylarini inceleyin."
-                                            },
-                                   "contact":  {
-                                                   "title":  "İletişim",
-                                                   "description":  "Danismanlik, urun talepleri ve Saarbrücken\u0027deki showroom ziyareti icin GoldHelwah GmbH ile iletisime gecin."
-                                               },
-                                   "impressum":  {
-                                                     "title":  "Yasal Bilgiler",
-                                                     "description":  "GoldHelwah GmbH icin yasal bilgiler ve iletisim detaylari tek sayfada."
-                                                 },
-                                   "privacy":  {
-                                                   "title":  "Gizlilik",
-                                                   "description":  "GoldHelwah GmbH\u0027de site ziyareti, dil secimi ve iletisim talepleriyle ilgili gizlilik bilgileri."
-                                               }
-                               }
-                 },
-    "Nav":  {
-                "tagline":  "Lüks Altin Taki",
-                "language":  "Dili değiştir",
-                "currentLanguage":  "Aktif",
-                "openMenu":  "Menüyü aç",
-                "closeMenu":  "Menüyü kapat",
-                "links":  {
-                              "home":  "Ana sayfa",
-                              "shop":  "Shop",
-                              "contact":  "İletişim",
-                              "impressum":  "Yasal Bilgiler",
-                              "privacy":  "Gizlilik",
-                              "agb":  "Genel Koşullar",
-                              "tracking":  "Sipariş Takibi"
-                          }
-            },
-    "Footer":  {
-                   "description":  "GoldHelwah GmbH, özenle seçilmiş altın takılar, kişisel danışmanlık ve Saarbrücken\u0027de net bir sunum deneyimi sunar.",
-                   "navigationTitle":  "Sayfalar",
-                   "contactTitle":  "İletişim",
-                   "socialTitle":  "Bizi takip edin",
-                   "emailPlaceholder":  "info@goldhelwah.de",
-                   "legalNote":  "Saarbrücken\u0027de bizi ziyaret edin ya da kişisel danışmanlık için bize ulaşın.",
-                   "rights":  "GoldHelwah GmbH. Tüm haklari saklidir.",
-                   "socials":  {
-                                   "instagram":  "Instagram",
-                                   "facebook":  "Facebook",
-                                   "tiktok":  "TikTok",
-                                   "snapchat":  "Snapchat",
-                                   "whatsapp":  "WhatsApp"
-                               }
-               },
-    "Home":  {
-                 "hero":  {
-                              "eyebrow":  "GoldHelwah GmbH",
-                              "title":  "GoldHelwah GmbH",
-                              "subtitle":  "Güzelliği işliyoruz",
-                              "description":  "Detayların inceliğini ve tasarımın zarafetini yansıtır; kişisel danışmanlıkla, duruşunuza ve özel anınızın değerine yakışan altın parçayı seçmenizde size rehberlik ederiz.",
-                              "primaryCta":  "ürünleri kesfet",
-                              "secondaryCta":  "Danismanlik isteyin",
-                              "backgroundAlt":  "GoldHelwah GmbH hero kompozisyonu",
-                              "stats":  [
-                                            {
-                                                "value":  "17",
-                                                "label":  "Kategori"
-                                            },
-                                            {
-                                                "value":  "5",
-                                                "label":  "Dil"
-                                            },
-                                            {
-                                                "value":  "Saarbrücken",
-                                                "label":  "Showroom"
-                                            }
-                                        ]
-                          },
-                 "categories":  {
-                                    "eyebrow":  "Seçili Kategoriler",
-                                    "title":  "Ilk bakista dikkat ceken koleksiyonlar.",
-                                    "description":  "Seriler, setler ve öne çıkan altın parçalar arasından seçim yapın.",
-                                    "emptyTitle":  "Su anda gorunen urun bulunmuyor",
-                                    "emptyText":  "Panelde yeni koleksiyonlar etkinlestirildiginde burada otomatik olarak gorunecekler."
-                                },
-                 "products":  {
-                                  "eyebrow":  "Seçili ürünler",
-                                  "title":  "Gercek gorseller. Net secim. Karakter sahibi altin.",
-                                  "description":  "Farkli kategorilerden özenle seçilmiş parçalar.",
-                                  "sectionCta":  "Showroomu aç",
-                                  "cardCta":  "Detaylari gör",
-                                  "emptyTitle":  "Su anda gorunen urun bulunmuyor",
-                                  "emptyText":  "Urunleri panelden etkinlestirin veya size ozel secim icin bizimle iletisime gecin."
-                              },
-                 "showcase":  {
-                                  "eyebrow":  "Vitrinden seçtiklerimiz",
-                                  "title":  "Açık detaylarla öne çıkan seçili parçalar",
-                                  "description":  "Koleksiyonumuzdaki seçili altın takıları gerçek görseller ve karar vermenizi kolaylaştıran net bilgilerle inceleyin.",
-                                  "sectionCta":  "Koleksiyonu incele",
-                                  "cardCta":  "Detayları gör",
-                                  "leadCta":  "Danışmanlık iste",
-                                  "emptyTitle":  "Şu anda görünür ürün yok",
-                                  "emptyText":  "Yeni ürünler kaydedilip aktif edildiğinde bu bölüm otomatik olarak güncellenecek."
-                              },
-                 "aboutGold":  {
-                                   "eyebrow":  "Altın hakkında",
-                                   "title":  "Kalan altın.",
-                                   "description":  "Altın sadece bir takı değildir. Değer, hatıra ve özel anları taşır. GoldHelwah GmbH\u0027de görünürlüğü güçlü ve kişisel anlamı olan parçalar sunuyoruz.",
-                                   "imageAlt":  "GoldHelwah GmbH\u0027den altın takı detayı",
-                                   "points":  [
-                                                  "Kalıcı değer",
-                                                  "Kişisel anlam",
-                                                  "Görünür işçilik"
-                                              ]
-                               },
-                 "aboutCompany":  {
-                                      "eyebrow":  "Hakkımızda",
-                                      "title":  "GoldHelwah GmbH hakkında",
-                                      "description":  "GoldHelwah GmbH, Saarbrücken\u0027de seçilmiş altın takılar, kişisel danışmanlık ve net ürün sunumu sunar. Hedefimiz müşterilere sakin, güven veren ve kaliteli bir seçim sunmaktır.",
-                                      "teamLabel":  "Yaklaşımımız",
-                                      "story":  "GoldHelwah GmbH ekibi ve yönetimi, kişisel görüşmelere, net seçime ve hem ana hem de stile uyan parçalara odaklanır.",
-                                      "locationLabel":  "Adres"
-                                  },
-                 "trust":  {
-                               "eyebrow":  "Neden GoldHelwah GmbH",
-                               "title":  "Net, kişisel ve ürüne yakin.",
-                               "items":  [
-                                             {
-                                                 "title":  "Kişisel danışmanlık",
-                                                 "description":  "Doğrudan ve bireysel ilerler."
-                                             },
-                                             {
-                                                 "title":  "Gerçek ürün görselleri",
-                                                 "description":  "Seçim gercek modelleri gösterir."
-                                             },
-                                             {
-                                                 "title":  "Kişiye Özel Tasarımlar",
-                                                 "description":  "Aklınıza gelen her fikir, isim işlemelerinden ölçü ayarlamalarına ve tarzınızı yansıtan özel dokunuşlara kadar güzel detaylarla benzersiz bir altın parçaya dönüştürülebilir."
-                                             },
-                                             {
-                                                 "title":  "Saarbruecken\u0027de teslim",
-                                                 "description":  "Yerinde kişisel olarak ulasilabilir."
-                                             }
-                                         ]
-                           },
-                 "cta":  {
-                             "badge":  "GoldHelwah GmbH Hizmeti",
-                             "title":  "Hediye ya da ozel bir parca mi ariyorsunuz?",
-                             "description":  "Secim, ozel istekler ve teslim için size memnuniyetle yardimci oluruz.",
-                             "primaryCta":  "Shop\u0027u görüntüle",
-                             "secondaryCta":  "Ara"
-                         }
-             },
-    "Shop":  {
-                 "hero":  {
-                              "eyebrow":  "GoldHelwah GmbH",
-                              "title":  "Koleksiyon",
-                              "subtitle":  "Gercek urun görselleri, net secim ve kişisel danismanlik.",
-                              "primaryCta":  "Talep gönder",
-                              "secondaryCta":  "Iletisim",
-                              "stats":  {
-                                            "categories":  "Kategoriler",
-                                            "featured":  "Seçkiler",
-                                            "checkout":  "Danisma"
-                                        },
-                              "visualBadge":  "Editoryal Önizleme",
-                              "visualAlt":  "GoldHelwah GmbH takı showroomu",
-                              "cards":  {
-                                            "oneLabel":  "Görsel odak",
-                                            "oneText":  "Gerçek fotograflar ve kisa metinlerle genis ürün kartlari.",
-                                            "twoLabel":  "Katalog yapısı",
-                                            "twoText":  "Kategoriler, urun detaylari ve talepler net ve kolay takip edilir."
-                                        }
-                          },
-                 "grid":  {
-                              "eyebrow":  "Koleksiyon",
-                              "title":  "Kategoriye göre kesfedin.",
-                              "all":  "Tümü",
-                              "resultsSuffix":  "model",
-                              "emptyBadge":  "Talep uzerine",
-                              "emptyTitle":  "Bu secim icin size uygun parcayi birlikte belirleyebiliriz.",
-                              "emptyText":  "Belirli bir seri ya da model ariyorsaniz bize yazin."
-                          },
-                 "card":  {
-                              "cta":  "Detaylar"
-                          },
-                 "modal":  {
-                               "close":  "Kapat",
-                               "fallbackCategory":  "Koleksiyon",
-                               "categoryLabel":  "Kategori",
-                               "galleryLabel":  "Galeri",
-                               "galleryCountSuffix":  "görsel",
-                               "tagsLabel":  "özellikler",
-                               "requestCta":  "Talep gönder",
-                               "backCta":  "Geri"
-                           }
-             },
-    "Contact":  {
-                    "hero":  {
-                                 "eyebrow":  "İletişim",
-                                 "title":  "GoldHelwah GmbH ile dogrudan iletisime geçin.",
-                                 "subtitle":  "ürün talepleri, danismanlik ve showroom yol tarifi için gereken her sey burada hazir.",
-                                 "primaryCta":  "Koleksiyonu görüntüle",
-                                 "secondaryCta":  "Gizliliği oku"
-                             },
-                    "cards":  {
-                                  "consultationTitle":  "Danışmanlık",
-                                  "consultationValue":  "Kisisel ve özenli",
-                                  "consultationText":  "Koleksiyonlar, hediye fikirleri ve özel talepler ayri ayri degerlendirilir.",
-                                  "phoneTitle":  "Telefon",
-                                  "phoneText":  "Hizli sorular veya randevu planlamasi için dogrudan iletisim.",
-                                  "phoneCta":  "Şimdi ara",
-                                  "emailTitle":  "E-posta",
-                                  "emailText":  "Ürün talepleri, randevular veya kişisel danışmanlık için bize yazın.",
-                                  "emailCta":  "E-posta gönder",
-                                  "whatsappTitle":  "WhatsApp",
-                                  "whatsappText":  "Hizli sorular ve showroom görselleri paylasmak için idealdir.",
-                                  "whatsappCta":  "Sohbeti başlat"
-                              },
-                    "form":  {
-                                 "eyebrow":  "Iletisime geçin",
-                                 "title":  "Iletisime gecin",
-                                 "description":  "Urun sorulari, danismanlik veya ozel uretim icin bize yazin.",
-                                 "highlights":  "Iletisim",
-                                 "fields":  {
-                                                "name":  "Ad",
-                                                "email":  "E-posta",
-                                                "phone":  "Telefon",
-                                                "message":  "Mesaj"
-                                            },
-                                 "placeholders":  {
-                                                      "name":  "Adınız",
-                                                      "email":  "E-posta adresiniz",
-                                                      "phone":  "Telefon numaranız",
-                                                      "message":  "Talebiniz hangi konu hakkında?"
-                                                  },
-                                 "submit":  "Mesaj gönder",
-                                 "submitPending":  "Gönderiliyor",
-                                 "success":  "Teşekkür ederiz. Talebiniz kaydedildi.",
-                                 "error":  "Lutfen bilgilerinizi kontrol edip tekrar deneyin.",
-                                 "validation":  {
-                                                    "name":  "Lütfen adinizi girin.",
-                                                    "email":  "Lütfen geçerli bir e-posta adresi girin.",
-                                                    "phone":  "Lütfen geçerli bir telefon numarasi girin.",
-                                                    "message":  "Lütfen kisa bir mesaj yazin."
-                                                }
-                             },
-                    "location":  {
-                                     "eyebrow":  "Konum",
-                                     "title":  "GoldHelwah GmbH\u0027yi Saarbrücken\u0027de ziyaret edin.",
-                                     "description":  "Adres, telefon ve rota tek bakista hazir.",
-                                     "addressLabel":  "Adres",
-                                     "phoneLabel":  "Telefon",
-                                     "routeCta":  "Yol tarifi al",
-                                     "callCta":  "Ara",
-                                     "mapTitle":  "Google Maps üzerinde GoldHelwah GmbH konumu"
-                                 }
-                },
-    "Impressum":  {
-                      "eyebrow":  "Yasal",
-                      "title":  "Yasal bilgiler",
-                      "description":  "Gold Helwah için resmi sağlayıcı bilgileri ve yasal açıklamalar.",
-                      "complianceNoticeTitle":  "§ 5 DDG uyarınca bilgiler",
-                      "complianceNoticeDescription":  "Aşağıdaki bilgiler Gold Helwah web sitesi için geçerlidir.",
-                      "sections":  [
-                                       {
-                                           "title":  "Sağlayıcı",
-                                           "lines":  [
-                                                         "Gold Helwah",
-                                                         "Inh. Khaled Helwah",
-                                                         "Breite Straße 9, 66115 Saarbrücken",
-                                                         "Deutschland"
-                                                     ]
-                                       },
-                                       {
-                                           "title":  "İletişim",
-                                           "lines":  [
-                                                         "Sorularınız için memnuniyetle yardımcı oluruz:",
-                                                         "Telefon: +49 173 537 1225",
-                                                         "E-posta: info@goldhelwah.de"
-                                                     ]
-                                       },
-                                       {
-                                           "title":  "KDV numarası",
-                                           "lines":  [
-                                                         "§ 27 a Alman Katma Değer Vergisi Yasası uyarınca KDV kimlik numarası:",
-                                                         "DE313207537"
-                                                     ]
-                                       },
-                                       {
-                                           "title":  "Temsil eden",
-                                           "lines":  "Khaled Helwah"
-                                       },
-                                       {
-                                           "title":  "Bağlantılar için sorumluluk",
-                                           "lines":  [
-                                                         "Web sitemiz, içerikleri üzerinde hiçbir etkimizin olmadığı üçüncü taraf harici web sitelerine bağlantılar içermektedir. Bu nedenle bu harici içerikler için herhangi bir sorumluluk üstlenemeyiz.",
-                                                         "Bağlantı verilen sayfaların içeriğinden her zaman ilgili sağlayıcı veya işletmeci sorumludur.",
-                                                         "Bağlantı verilen sayfalar, bağlantı verildiği sırada olası yasal ihlaller açısından kontrol edilmiştir. O tarihte hukuka aykırı bir içerik tespit edilmemiştir.",
-                                                         "Somut bir hukuk ihlali belirtisi olmadan bağlantı verilen sayfaların sürekli olarak izlenmesi makul değildir. Böyle bir ihlalin farkına varırsak söz konusu bağlantıları derhal kaldırırız."
-                                                     ]
-                                       },
-                                       {
-                                           "title":  "İçerikler için sorumluluk",
-                                           "lines":  [
-                                                         "Sayfalarımızın içerikleri büyük bir özenle hazırlanmıştır. Bununla birlikte içeriğin doğruluğu, eksiksizliği ve güncelliği konusunda garanti veremeyiz.",
-                                                         "Bir hizmet sağlayıcı olarak § 5 DDG ve genel yasalar uyarınca bu sayfalardaki kendi içeriklerimizden sorumluyuz.",
-                                                         "Ancak § 5 DDG uyarınca iletilen veya saklanan üçüncü taraf bilgilerini izlemek ya da yasa dışı faaliyete işaret eden koşulları araştırmakla yükümlü değiliz.",
-                                                         "Genel yasalar uyarınca bilgilerin kaldırılması veya kullanımının engellenmesine ilişkin yükümlülükler bundan etkilenmez.",
-                                                         "Bu kapsamda sorumluluk ancak somut bir ihlalin öğrenildiği andan itibaren mümkündür. Böyle bir ihlalden haberdar olduğumuzda ilgili içeriği derhal kaldırırız."
-                                                     ]
-                                       }
-                                   ],
-                      "disclaimerTitle":  "Telif hakkı",
-                      "disclaimerText":  "Bu sayfalarda site işletmecileri tarafından oluşturulan içerikler ve eserler Alman telif hakkı yasasına tabidir. Telif hakkı sınırları dışındaki her türlü çoğaltma, işleme, dağıtım ve kullanım ilgili yazarın veya oluşturucunun yazılı onayını gerektirir. Bu sitenin indirilmesi ve kopyalanması yalnızca özel, ticari olmayan kullanım için izinlidir. Bu sayfadaki içerik işletmeci tarafından oluşturulmamışsa üçüncü taraf telif haklarına saygı gösterilir ve ilgili içerikler buna göre işaretlenir. Buna rağmen bir telif hakkı ihlali fark ederseniz lütfen bizi bilgilendirin. Böyle bir ihlalden haberdar olduğumuzda ilgili içeriği derhal kaldırırız."
-                  },
-    "Privacy":  {
-                    "eyebrow":  "Gizlilik",
-                    "title":  "Gizlilik bilgileri",
-                    "description":  "Bu sayfa, web sitesini ziyaret ettiğinizde veya bizimle iletişime geçtiğinizde kişisel verilerinizin nasıl işlendiğini açıklar.",
-                    "intro":  "Kişisel verileri yalnızca web sitesini sunmak, dil tercihinizi saklamak ve taleplerinize yanıt vermek için gerekli olduğu ölçüde işliyoruz.",
-                    "sections":  [
-                                     {
-                                         "title":  "1. Sorumlu taraf",
-                                         "paragraphs":  [
-                                                            "Bu web sitesindeki veri işleme faaliyetlerinden sorumlu taraf Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, telefon +49 173 537 1225, e-posta info@goldhelwah.de adresidir.",
-                                                            "Gizlilik hakkında sorularınız varsa veya haklarınızı kullanmak istiyorsanız bizimle her zaman iletişime geçebilirsiniz."
-                                                        ]
-                                     },
-                                     {
-                                         "title":  "2. Teknik bağlantı verileri",
-                                         "paragraphs":  [
-                                                            "Web sitesini ziyaret ettiğinizde IP adresi, tarih ve saat, tarayıcı bilgileri ve istenen sayfalar gibi teknik olarak gerekli veriler işlenebilir.",
-                                                            "Bu işlem, web sitesini güvenli ve güvenilir şekilde sunmak için gereklidir."
-                                                        ]
-                                     },
-                                     {
-                                         "title":  "3. İletişim ve talepler",
-                                         "paragraphs":  [
-                                                            "Bizimle iletişim formu, e-posta, telefon veya WhatsApp üzerinden iletişime geçerseniz sağladığınız bilgileri yalnızca talebinizi yanıtlamak için işleriz.",
-                                                            "İşlenen veriler, talebinizin konusuna ve bizimle paylaştığınız bilgilere bağlıdır."
-                                                        ]
-                                     },
-                                     {
-                                         "title":  "4. Dil tercihi ve zorunlu çerezler",
-                                         "paragraphs":  [
-                                                            "Web sitesi birden fazla dili destekler ve seçtiğiniz dili teknik nedenlerle saklayabilir.",
-                                                            "Bu bilgi yalnızca sonraki ziyaretlerde siteyi tercih ettiğiniz dilde göstermek için kullanılır."
-                                                        ]
-                                     },
-                                     {
-                                         "title":  "5. Haklarınız",
-                                         "paragraphs":  [
-                                                            "Hakkınızda saklanan kişisel verilerle ilgili bilgi talep etme ve yasal şartlar karşılandığında bunların düzeltilmesini, silinmesini veya işlemenin kısıtlanmasını isteme hakkına sahipsiniz.",
-                                                            "Ayrıca işleme faaliyetlerine itiraz edebilir veya daha önce verdiğiniz bir onayı geleceğe etkili olacak şekilde geri çekebilirsiniz."
-                                                        ]
-                                     }
-                                 ],
-                    "noticeTitle":  "Güncel sürüm",
-                    "noticeText":  "Bu gizlilik bilgilerini düzenli olarak gözden geçirir ve web sitemiz, iletişim kanallarımız veya yasal yükümlülüklerimiz değiştiğinde güncelleriz."
-                },
-    "Admin":  {
-                  "siteImages":  {
-                                     "title":  "Site görselleri",
-                                     "description":  "Herkese açık site bölümleri için görsel değişiklikleri yükleyin. Ürün görselleri etkilenmez.",
-                                     "homepageHero":  "Ana sayfa kahraman görseli",
-                                     "shopHero":  "Mağaza kahraman görseli",
-                                     "promoPopup":  "Promosyon penceresi",
-                                     "upload":  "Görsel yükle",
-                                     "replace":  "Görseli değiştir",
-                                     "reset":  "Varsayılan görseli kullan",
-                                     "currentImage":  "Geçerli görsel",
-                                     "uploadSuccess":  "Görsel başarıyla yüklendi.",
-                                     "uploadError":  "Görsel yüklenemedi.",
-                                     "invalidFile":  "Geçerli bir görsel dosyası seçin.",
-                                     "productsExcluded":  "Ürün görselleri ayrı yönetilir ve burada değiştirilmez.",
-                                     "usesDefault":  "Varsayılan görsel kullanılıyor.",
-                                     "resetSuccess":  "Varsayılan görsel geri yüklendi."
-                                 },
-                  "orderReset":  {
-                                           "title": "Siparişleri sıfırla", "description": "Mevcut siparişlerin arşiv kopyasını kaydedin, ardından yeni ve boş bir sipariş listesiyle başlayın.", "button": "Siparişleri sıfırla", "confirmTitle": "Sipariş sıfırlamayı onayla", "confirmDescription": "Mevcut siparişler dahili arşive kaydedilecek, ardından panelden ve web sitesinden kaldırılacaktır. Web sitesi üzerinden geri yüklenemezler.", "currentOrderCount": "Mevcut siparişler", "confirmCheckbox": "Bu siparişlerin sıfırlamadan sonra web sitesinden kaybolacağını anlıyorum.", "cancel": "İptal", "confirm": "Sıfırlamayı onayla", "processing": "Arşiv kaydediliyor ve siparişler sıfırlanıyor...", "success": "Siparişler başarıyla sıfırlandı.", "genericError": "Siparişler sıfırlanamadı. Hiçbir veri silinmedi.", "noOrders": "Sıfırlanacak mevcut sipariş yok.", "excludedNote": "Ürünler, görseller, çalışanlar veya site ayarları etkilenmez."
-                                       },
-                  "orderMaintenance":  {
-                                           "title":  "Sipariş Bakımı",
-                                           "description":  "Yalnızca siparişler etkilenir; diğer site verileri hariçtir.",
-                                           "archiveTitle":  "Tamamlanan siparişleri arşivle",
-                                           "archiveDescription":  "Tamamlanan siparişleri silmeden etkin görünümlerden kaldırır.",
-                                           "clearTitle":  "Etkin siparişleri temizle",
-                                           "clearDescription":  "Etkin siparişleri yalnızca soft delete ile gizler.",
-                                           "previewArchive":  "Arşivi önizle",
-                                           "previewClear":  "Temizlemeyi önizle",
-                                           "executeArchive":  "Siparişleri arşivle",
-                                           "executeClear":  "Etkin siparişleri temizle",
-                                           "confirmationLabel":  "Onay",
-                                           "confirmationPlaceholder":  "Gerekli ifadeyi girin",
-                                           "archivePhrase":  "ARCHIVE ORDERS",
-                                           "clearPhrase":  "CLEAR ACTIVE ORDERS",
-                                           "affectedOrders":  "Etkilenen siparişler",
-                                           "warningTitle":  "Önemli",
-                                           "archiveWarning":  "Yalnızca tamamlanan siparişler arşivlenir.",
-                                           "clearWarning":  "Temizleme yalnızca soft delete kullanır.",
-                                           "excludedDataNote":  "Ürünler, görseller, kullanıcılar, çalışanlar ve ayarlar silinmez.",
-                                           "permanentDeleteUnavailable":  "Fiziksel kalıcı silme etkin değildir.",
-                                           "auditRequired":  "İşlem, denetim kaydı oluşturulmadan çalışmaz.",
-                                           "auditLogCreated":  "Denetim kaydı oluşturuldu.",
-                                           "previewSuccess":  "Önizleme hazır.",
-                                           "archiveSuccess":  "Siparişler arşivlendi.",
-                                           "clearSuccess":  "Etkin siparişler temizlendi.",
-                                           "genericError":  "Sipariş bakımı tamamlanamadı.",
-                                           "permissionDenied":  "Erişim reddedildi.",
-                                           "decoyUnavailable":  "Tuzak modunda kullanılamaz.",
-                                           "noOrdersMatched":  "Eşleşen sipariş yok."
-                                       },
-                  "loading":  {
-                                  "loading":  "Yükleniyor…",
-                                  "saving":  "Kaydediliyor…",
-                                  "updating":  "Güncelleniyor…",
-                                  "previewing":  "Önizleme hazırlanıyor…",
-                                  "executing":  "İşlem yürütülüyor…",
-                                  "uploading":  "Yükleniyor…",
-                                  "archiving":  "Arşiv önizlemesi hazırlanıyor…",
-                                  "clearing":  "Temizleme önizlemesi hazırlanıyor…",
-                                  "pleaseWait":  "Lütfen bekleyin…",
-                                  "actionInProgress":  "İşlem sürüyor",
-                                  "saveInProgress":  "Değişiklikler kaydediliyor",
-                                  "editInProgress":  "Veriler güncelleniyor"
-                              },
-                  "meta":  {
-                               "title":  "Admin",
-                               "description":  "Katalog, siparis ve atolye icin GoldHelwah GmbH yonetimi."
-                           },
-                  "header":  {
-                                 "adminArea":  "Yonetim alani",
-                                 "demoMode":  "Erişim rolü",
-                                 "activeUser":  "Aktif kullanici",
-                                 "roleFoundation":  "Rol temeli",
-                                 "roleHint":  "Roller ve ic gorunumler acik bicimde ayrilir.",
-                                 "welcome":  "Hos geldin, {name}",
-                                 "toWebsite":  "Siteyi gor"
-                             },
-                  "roles":  {
-                                "super_admin":  "Super Admin",
-                                "admin":  "Admin",
-                                "employee":  "Calisan"
-                            },
-                  "nav":  {
-                              "overview":  "Genel bakis",
-                              "products":  "Urunler",
-                              "categories":  "Kategoriler",
-                              "gallery":  "Atölye Siparişi",
-                              "options":  "Secenekler",
-                              "orders":  "Siparisler",
-                              "workshops":  "Atolyeler",
-                              "employees":  "Calisanlar",
-                              "attendance":  "Mesai",
-                              "reports":  "Raporlar",
-                              "archive":  "Arsiv",
-                              "settings":  "Ayarlar",
-                              "myTasks":  "Gorevlerim",
-                              "inquiries":  "Musteri talepleri"
-                          },
-                  "buttons":  {
-                                  "openMenu":  "Menu",
-                                  "close":  "Kapat",
-                                  "demoLogin":  "Hesap değiştir",
-                                  "addProduct":  "Urun ekle",
-                                  "createOrder":  "Siparis olustur",
-                                  "viewDetails":  "Detaylar",
-                                  "edit":  "Duzenle",
-                                  "delete":  "Sil",
-                                  "newCategory":  "Kategori ekle",
-                                  "bulkEnable":  "Aktif et",
-                                  "bulkDisable":  "Pasif et",
-                                  "assignOptions":  "Secenek ata",
-                                  "saveDraft":  "Taslagi kaydet",
-                                  "submitOrder":  "Siparisi atolyeye gonder",
-                                  "createCustomOption":  "Ozel secenek",
-                                  "addOption":  "Secenek ekle",
-                                  "addWorkshop":  "Atolye ekle",
-                                  "addEmployee":  "Calisan ekle",
-                                  "addAbsence":  "Izin ekle",
-                                  "markReady":  "Hazir olarak isaretle",
-                                  "updateStatus":  "Durumu degistir",
-                                  "assignEmployee":  "Calisan ata",
-                                  "addNote":  "Not ekle",
-                                  "archive":  "Arsivle",
-                                  "restore":  "Geri yukle",
-                                  "backToOrders":  "Siparislere don",
-                                  "duplicate":  "Kopyala",
-                                  "deactivate":  "Pasif et",
-                                  "activate":  "Aktif et",
-                                  "options":  "Secenekler",
-                                  "createOptionGroup":  "Grup olustur",
-                                  "viewOrders":  "Siparisleri gor",
-                                  "preview":  "Onizleme",
-                                  "reset":  "Sifirla",
-                                  "save":  "Kaydet",
-                                  "next":  "Ileri",
-                                  "previous":  "Geri",
-                                  "notifyCustomer":  "Musteriyi bilgilendir",
-                                  "copyTrackingLink":  "Takip baglantisini kopyala",
-                                  "saveStatus":  "Durumu kaydet"
-                              },
-                  "common":  {
-                                 "noAccessTitle":  "Erisim kisitli",
-                                 "noAccessText":  "Bu gorunum mevcut hesap icin kullanilamiyor.",
-                                 "catalogOnly":  "Showroom",
-                                 "curated":  "Secili",
-                                 "active":  "Aktif",
-                                 "inactive":  "Pasif",
-                                 "optional":  "Istege bagli",
-                                 "required":  "Zorunlu",
-                                 "all":  "Tum",
-                                 "search":  "Ara",
-                                 "selectPlaceholder":  "Lutfen secin",
-                                 "unassigned":  "Atanmamis",
-                                 "noCustomer":  "Musteri bilgisi yok",
-                                 "mockSubmit":  "Değişiklikler kaydedildi.",
-                                 "selected":  "Secili",
-                                 "internalOnly":  "Sadece dahili",
-                                 "visibility":  "Gorunurluk",
-                                 "visible":  "Gorunur",
-                                 "hidden":  "Gizli",
-                                 "yes":  "Evet",
-                                 "no":  "Hayir",
-                                 "enabled":  "Acik",
-                                 "disabled":  "Kapali",
-                                 "notProvided":  "Belirtilmedi"
-                             },
-                  "filters":  {
-                                  "category":  "Kategori",
-                                  "status":  "Durum",
-                                  "featured":  "One cikan",
-                                  "priority":  "Oncelik",
-                                  "workshop":  "Atolye",
-                                  "employee":  "Calisan",
-                                  "role":  "Rol"
-                              },
-                  "status":  {
-                                 "draft":  "Taslak",
-                                 "sent_to_workshop":  "Atolyeye gonderildi",
-                                 "accepted":  "Kabul edildi",
-                                 "assigned":  "Atandi",
-                                 "in_production":  "Uretimde",
-                                 "quality_check":  "Kalite kontrol",
-                                 "ready":  "Hazir",
-                                 "delivered":  "Teslim edildi",
-                                 "cancelled":  "Iptal edildi",
-                                 "archived":  "Arsivlendi",
-                                 "present":  "Mevcut",
-                                 "absent":  "Yok",
-                                 "vacation":  "Izinli",
-                                 "sick":  "Hasta",
-                                 "late":  "Gec"
-                             },
-                  "priority":  {
-                                   "normal":  "Normal",
-                                   "urgent":  "Acil",
-                                   "express":  "Express"
-                               },
-                  "overview":  {
-                                   "eyebrow":  "Panel",
-                                   "title":  "Panel",
-                                   "description":  "Katalog, siparis ve atolyelerin genel gorunumu.",
-                                   "stats":  {
-                                                 "totalProducts":  "Toplam urun",
-                                                 "totalProductsHint":  "Showroom katalog verileri",
-                                                 "activeCategories":  "Aktif kategoriler",
-                                                 "activeCategoriesHint":  "Net ve duzenli",
-                                                 "newOrders":  "Yeni atolye siparisleri",
-                                                 "newOrdersHint":  "Taslak ve yeni gonderilenler",
-                                                 "inProduction":  "Uretimde",
-                                                 "inProductionHint":  "Su anda islenenler",
-                                                 "readyOrders":  "Hazir siparisler",
-                                                 "readyOrdersHint":  "Teslim veya magaza alimi icin hazir",
-                                                 "employees":  "Calisanlar",
-                                                 "employeesHint":  "Guncel role gore gorunur"
-                                             },
-                                   "recentOrdersTitle":  "Son siparisler",
-                                   "recentOrdersDescription":  "Son siparisler ve durumlar.",
-                                   "quickActionsTitle":  "Hizli islemler",
-                                   "quickActionsDescription":  "Sik kullanilan islemler hizli erisimde.",
-                                   "actions":  {
-                                                   "addProduct":  "Urun ekle",
-                                                   "createOrder":  "Siparis olustur",
-                                                   "manageOptions":  "Secenekleri yonet",
-                                                   "addEmployee":  "Calisan ekle"
-                                               },
-                                   "workshopLoadTitle":  "Atolye yuk dagilimi",
-                                   "workshopLoadDescription":  "Atolye bazinda guncel yuk."
-                               },
-                  "login":  {
-                                "title":  "Gold Helwah Admin",
-                                "description":  "Siparisler, katalog ve operasyon akisi icin guvenli dahili erisim.",
-                                "cards":  {
-                                              "securityTitle":  "Korumalı dahili erişim",
-                                              "securityText":  "Dahili erişim yetkilerinizi rolünüze göre kullanın.",
-                                              "rolesTitle":  "Net roller",
-                                              "rolesText":  "Yetkiler, atanan role göre yönetilir.",
-                                              "catalogTitle":  "Katalog yönetimi",
-                                              "catalogText":  "Ürünleri ve atölyeleri tek yerden yönetin."
-                                          },
-                                "formTitle":  "Giris",
-                                "formDescription":  "Atanmis admin hesabinizi kullanin.",
-                                "email":  "E-posta",
-                                "password":  "Sifre",
-                                "demoHint":  "Etkin demo rolü: {role}.",
-                                "demoUsersTitle":  "Kullanılabilir demo kullanıcıları",
-                                "invalidCredentials":  "E-posta adresi veya sifre hatali.",
-                                "notices":  {
-                                                "accountInactive":  "Bu hesap su anda pasif. Lutfen bir super admin ile iletisime gecin.",
-                                                "accountNotConfigured":  "Bu hesap henuz admin alani icin yapilandirilmadi.",
-                                                "invalidLink":  "Bu erisim baglantisi gecersiz veya suresi dolmus.",
-                                                "passwordUpdated":  "Sifreniz basariyla guncellendi. Artik devam edebilirsiniz."
-                                            }
-                            },
-                  "products":  {
-                                   "eyebrow":  "Urun yonetimi",
-                                   "title":  "Urunleri yonet",
-                                   "description":  "Gorselleri, kategorileri ve gorunurlugu duzenleyin.",
-                                   "filtersTitle":  "Filtreler ve arama",
-                                   "filtersDescription":  "Urun, kategori ve duruma gore arayin.",
-                                   "searchPlaceholder":  "Urun ara",
-                                   "featuredOnly":  "One cikan",
-                                   "regularOnly":  "One cikmayan",
-                                   "viewCards":  "Kartlar",
-                                   "viewTable":  "Tablo",
-                                   "resultCount":  "{count} urun",
-                                   "optionsCount":  "{count} secenek",
-                                   "empty":  "Bu secim icin urun bulunamadi.",
-                                   "table":  {
-                                                 "product":  "Urun",
-                                                 "sku":  "SKU",
-                                                 "category":  "Kategori",
-                                                 "status":  "Durum",
-                                                 "options":  "Secenekler",
-                                                 "actions":  "Islemler",
-                                                 "sortOrder":  "Siralama"
-                                             }
-                               },
-                  "categories":  {
-                                     "eyebrow":  "Kategoriler",
-                                     "title":  "Kategoriler",
-                                     "description":  "Kategorileri ve gorunurlugu yonetin.",
-                                     "bulkTitle":  "Secim",
-                                     "bulkDescription":  "Birden fazla kategoriyi birlikte guncelleyin.",
-                                     "searchPlaceholder":  "Kategori ara",
-                                     "selectedCount":  "{count} secili",
-                                     "empty":  "Bu arama icin kategori bulunamadi.",
-                                     "table":  {
-                                                   "category":  "Kategori",
-                                                   "slug":  "Slug",
-                                                   "sortOrder":  "Siralama",
-                                                   "status":  "Durum",
-                                                   "options":  "Secenekler",
-                                                   "actions":  "Islemler",
-                                                   "products":  "Urunler"
-                                               }
-                                 },
-                  "gallery":  {
-                                  "eyebrow":  "Dahili galeri",
-                                  "title":  "Admin galeri",
-                                  "description":  "Urun secin ve siparis baslatin.",
-                                  "filtersTitle":  "Galeriyi filtrele",
-                                  "filtersDescription":  "Urun veya kategoriye gore arayin.",
-                                  "searchPlaceholder":  "Urun ara",
-                                  "internalOnly":  "Sadece dahili",
-                                  "createWorkshopOrder":  "Atolye siparisi olustur",
-                                  "emptyTitle":  "Urun bulunamadi",
-                                  "emptyDescription":  "Aramayi veya kategoriyi degistirin."
-                              },
-                  "newOrder":  {
-                                   "eyebrow":  "Yeni atölye siparişi",
-                                   "title":  "Atölye Siparişi",
-                                   "description":  "Once kategoriyi, sonra urunu secin ve atolyeye gondermeden once yalnizca bu urune atanmis secenekleri doldurun.",
-                                   "productSelectionTitle":  "Urun ve referanslar",
-                                   "productSelectionDescription":  "Dahili galeri, urun referansi, gorseller ve temel verileri saglar.",
-                                   "summaryTitle":  "Ozet",
-                                   "summaryDescription":  "En onemli bilgiler form boyunca gorunur kalir.",
-                                   "basicDescription":  "Once siparis, musteri ve atolye temel bilgilerini girin.",
-                                   "optionEngineDescription":  "Bu bolumler, standart secenekleri ve serbest siparis detaylarini net bir akista bir araya getirir.",
-                                   "success":  "Siparis atolyeye gonderildi.",
-                                   "sections":  {
-                                                    "basic":  "Temel",
-                                                    "gold":  "Altin",
-                                                    "measurements":  "Olculer",
-                                                    "name":  "Isim kisilestirme",
-                                                    "stones":  "Taslar",
-                                                    "notes":  "Notlar",
-                                                    "product":  "Urun",
-                                                    "order":  "Siparis",
-                                                    "personalization":  "Kisisellestirme",
-                                                    "workshop":  "Atolye",
-                                                    "review":  "Kontrol",
-                                                    "tracking":  "Musteri bildirimi ve takip"
-                                                },
-                                   "fields":  {
-                                                  "product":  "Galeriden urun",
-                                                  "orderNumber":  "Dahili siparis numarasi",
-                                                  "quantity":  "Adet",
-                                                  "priority":  "Oncelik",
-                                                  "workshop":  "Atolye",
-                                                  "productName":  "Urun adi",
-                                                  "category":  "Kategori",
-                                                  "dueDate":  "Termin tarihi",
-                                                  "customerName":  "Musteri adi",
-                                                  "customerPhone":  "Musteri telefonu",
-                                                  "customerReference":  "Musteri referansi",
-                                                  "targetWeight":  "Hedef agirlik",
-                                                  "weightTolerance":  "Agirlik toleransi",
-                                                  "pendantSize":  "Kolye ucu boyutu",
-                                                  "width":  "Genislik",
-                                                  "height":  "Yukseklik",
-                                                  "customMeasurements":  "Ozel olculer",
-                                                  "hasNameCustomization":  "Isim kisilestirmesini ac",
-                                                  "previewRequired":  "Onizleme gerekli",
-                                                  "nameLanguage":  "Isim dili",
-                                                  "fontStyle":  "Yazi stili",
-                                                  "namePlacement":  "Isim konumu",
-                                                  "engravingPlacement":  "Gravur konumu",
-                                                  "engravingNotes":  "Gravur notlari",
-                                                  "hasStones":  "Tas ekle",
-                                                  "stoneShape":  "Tas sekli",
-                                                  "stoneSize":  "Tas boyutu",
-                                                  "stoneQuantity":  "Tas adedi",
-                                                  "stoneSetting":  "Tas monturu",
-                                                  "customerNotes":  "Musteri notlari",
-                                                  "adminNotes":  "Admin notlari",
-                                                  "qualityRequirements":  "Kalite gereksinimleri",
-                                                  "attachmentNotes":  "Ek notlari",
-                                                  "assignedAdmin":  "Atanan admin",
-                                                  "assignedEmployee":  "Atanan calisan",
-                                                  "goldKarat":  "Altin ayari",
-                                                  "goldColor":  "Altin rengi",
-                                                  "ringSize":  "Yuzuk olcusu",
-                                                  "braceletSize":  "Bileklik olcusu",
-                                                  "chainLength":  "Zincir uzunlugu",
-                                                  "workshopNotes":  "Atolye notlari",
-                                                  "deliveryNotes":  "Teslim notlari",
-                                                  "engravingText":  "Gravur metni",
-                                                  "estimatedWeight":  "Tahmini agirlik",
-                                                  "internalNotes":  "Ic notlar",
-                                                  "language":  "Dil",
-                                                  "nameCustomizationEnabled":  "Isim kisisellestirme aktif",
-                                                  "nameText":  "Isim / Metin",
-                                                  "packagingNotes":  "Paketleme notlari",
-                                                  "placement":  "Konum",
-                                                  "stoneColor":  "Tas rengi",
-                                                  "stoneCount":  "Adet",
-                                                  "stonesEnabled":  "Taslar aktif",
-                                                  "stoneType":  "Tas tipi",
-                                                  "surface":  "Yuzey",
-                                                  "customerEmail":  "Musteri e-postasi",
-                                                  "emailUpdatesEnabled":  "E-posta guncellemelerini ac",
-                                                  "trackingNumber":  "Takip numarasi",
-                                                  "trackingStatus":  "Takip durumu",
-                                                  "totalAmount":  "Toplam tutar",
-                                                  "currency":  "Para birimi"
-                                              },
-                                   "productDescription":  "Urunu ve kategoriyi secin.",
-                                   "orderDescription":  "Musteri ve siparis bilgilerini girin.",
-                                   "goldDescription":  "Uretim icin altin detaylarini hazirlayin.",
-                                   "measurementsDescription":  "Olculeri ve ozel olculeri girin.",
-                                   "personalizationDescription":  "Isim, gravur ve konumu belirleyin.",
-                                   "stonesDescription":  "Taslari ve monturu belirleyin.",
-                                   "workshopDescription":  "Atolye, calisan ve onceligi atayin.",
-                                   "reviewDescription":  "Gondermeden once her seyi kontrol edin.",
-                                   "additionalOptionsTitle":  "Ek alanlar",
-                                   "additionalOptionsDescription":  "Bu urun icin yalnizca ilgili secenekler.",
-                                   "draftSaved":  "Taslak kaydedildi.",
-                                   "reviewChecklistTitle":  "Kontrol listesi",
-                                   "reviewChecklistProduct":  "Urunu ve adedi dogrulayin.",
-                                   "reviewChecklistGold":  "Altin, olcu ve kisisellestirmeyi kontrol edin.",
-                                   "reviewChecklistWorkshop":  "Atolye, sorumlu ve teslim tarihini kontrol edin.",
-                                   "stepCount":  "Adim {step} / {total}",
-                                   "steps":  {
-                                                 "product":  "Urun",
-                                                 "gold":  "Altin",
-                                                 "measurements":  "Olculer",
-                                                 "personalization":  "Kisisellestirme",
-                                                 "stones":  "Taslar",
-                                                 "workshop":  "Atolye",
-                                                 "review":  "Kontrol ve gonder",
-                                                 "customerWorkshop":  "Müşteri ve atölye",
-                                                 "productOptions":  "Ürün ve seçenekler"
-                                             },
-                                   "values":  {
-                                                  "yellowGold":  "Sari altin",
-                                                  "whiteGold":  "Beyaz altin",
-                                                  "roseGold":  "Pembe altin",
-                                                  "polished":  "Parlak",
-                                                  "matte":  "Mat",
-                                                  "brushed":  "Fircalanmis",
-                                                  "classic":  "Klasik",
-                                                  "modern":  "Modern",
-                                                  "script":  "Yazili"
-                                              },
-                                   "trackingDescription":  "Musteri e-postasi, telefonu ve takip detaylarini hazirlayin.",
-                                   "successWithNotifications":  "Siparis olusturuldu. Bildirimler artik gonderilebilir.",
-                                   "personalizationDisabled":  "İsim kişiselleştirme kapalı"
-                               },
-                  "options":  {
-                                  "eyebrow":  "Secenek motoru",
-                                  "title":  "Secenekler",
-                                  "description":  "Altin, olcu, gravur ve atolye siparisi alanlari.",
-                                  "groupsTitle":  "Secenek gruplari",
-                                  "groupsDescription":  "Secenek gruplarini hizlica inceleyin.",
-                                  "searchPlaceholder":  "Secenek veya key ara",
-                                  "productsScope":  "urun",
-                                  "categoriesScope":  "kategori",
-                                  "workshopOverrides":  "atolye ozel ayari",
-                                  "noOverrides":  "Bu secenek icin henuz atolye ozel ayari yok.",
-                                  "empty":  "Mevcut secim icin secenek bulunamadi.",
-                                  "table":  {
-                                                "option":  "Secenek",
-                                                "type":  "Tur",
-                                                "scope":  "Kapsam",
-                                                "status":  "Durum",
-                                                "assignments":  "Atamalar",
-                                                "actions":  "Islemler",
-                                                "group":  "Grup"
-                                            },
-                                  "filtersTitle":  "Secenekleri filtrele",
-                                  "filtersDescription":  "Grup, durum ve zorunluluk ile arayin.",
-                                  "groupCount":  "{count} grup"
-                              },
-                  "orders":  {
-                                 "eyebrow":  "Siparisler",
-                                 "title":  "Siparisler",
-                                 "description":  "Atolye siparislerini takip edin ve guncelleyin.",
-                                 "filtersTitle":  "Siparisleri filtrele",
-                                 "filtersDescription":  "Siparis, urun, musteri veya atolyeye gore arayin.",
-                                 "searchPlaceholder":  "Siparis, urun veya musteri ara",
-                                 "empty":  "Bu secim icin siparis bulunamadi.",
-                                 "detailEyebrow":  "Siparis detayi",
-                                 "detailDescription":  "Siparis, musteri ve uretim tek bir net gorunumde.",
-                                 "summaryTitle":  "Siparis ozeti",
-                                 "summaryDescription":  "Urun, atolye ve termin tek bakista.",
-                                 "timelineTitle":  "Takip zamani",
-                                 "timelineDescription":  "Bu siparisin son adimlari.",
-                                 "goldDetailsTitle":  "Altin detaylari",
-                                 "measurementsTitle":  "Olculer",
-                                 "notesTitle":  "Notlar ve talimatlar",
-                                 "itemQuantity":  "Bu sipariste {count} adet urun var",
-                                 "table":  {
-                                               "order":  "Siparis",
-                                               "customer":  "Musteri",
-                                               "workshop":  "Atolye",
-                                               "status":  "Durum",
-                                               "employee":  "Calisan",
-                                               "dueDate":  "Termin",
-                                               "action":  "Islem",
-                                               "product":  "Urun",
-                                               "trackingNumber":  "Takip no.",
-                                               "email":  "E-posta",
-                                               "trackingStatus":  "Takip durumu"
-                                           },
-                                 "customerTitle":  "Musteri",
-                                 "customerDescription":  "Iletisim bilgileri ve referans.",
-                                 "personalizationTitle":  "Kisisellestirme",
-                                 "stonesTitle":  "Taslar",
-                                 "deliveryTitle":  "Teslimat",
-                                 "sidebarActionsTitle":  "Islemler",
-                                 "trackingTitle":  "Takip",
-                                 "trackingDescription":  "Durum, musteri bilgileri ve son adimlar tek bakista.",
-                                 "trackingNumberLabel":  "Takip numarasi",
-                                 "trackingStatusLabel":  "Takip durumu",
-                                 "customerEmailLabel":  "Musteri e-postasi",
-                                 "emailUpdatesLabel":  "E-posta guncellemeleri",
-                                 "updatePanelTitle":  "Durumu guncelle",
-                                 "updatePanelDescription":  "Takip durumu ve musteri notunu yonetin.",
-                                 "updateNoteLabel":  "Not",
-                                 "updateNotePlaceholder":  "Bu degisiklik icin kisa not",
-                                 "notifyByEmail":  "Musteriye e-posta gonder",
-                                 "noCustomerEmail":  "Kayitli musteri e-postasi yok.",
-                                 "copySuccess":  "Takip baglantisi kopyalandi.",
-                                 "customerNotified":  "Musteri bilgilendirildi.",
-                                 "notifyError":  "Bildirim su anda hazirlanamadi.",
-                                 "notifyDefaultMessage":  "Siparisiniz icin yeni bir guncelleme var.",
-                                 "statusSavedDescription":  "Takip durumu guncellendi.",
-                                 "statusSavedAndNotified":  "Takip durumu kaydedildi ve musteri bilgilendirildi.",
-                                 "statusSaved":  "Takip durumu kaydedildi.",
-                                 "noStatusChanges":  "Lutfen durumu degistirin veya not ekleyin.",
-                                 "publicStageLabel":  "Genel asama",
-                                 "internalStatusLabel":  "Ic takip durumu",
-                                 "publicStageHelp":  "Musterinin gorecegi ve e-posta tetikleyebilecek tek uc asama bunlardir.",
-                                 "publicStageEmailNotice":  "Bu genel asama degistiginde, e-posta guncellemeleri aciksa musteri e-postasi otomatik olarak gonderilir.",
-                                 "publicStageSavedAndNotified":  "Genel asama kaydedildi ve musteri bilgilendirildi.",
-                                 "noPublicStage":  "Henuz yayinlanmadi",
-                                 "notStageSpecific":  "Genel asama yok",
-                                 "emailTemplateLabel":  "Sablon",
-                                 "emailLogDuplicateSkipped":  "Bu e-posta, ayni musteri sablonu bu siparis icin daha once gonderildigi icin atlandi.",
-                                 "emailLogSmtpNotice":  "SMTP henuz tam olarak yapilandirilmadigi icin e-posta gonderimi atlandi.",
-                                 "emailLogErrorFallback":  "E-posta teslim edilemedi. Lutfen SMTP ayarlari ve kayitlarini kontrol edin.",
-                                 "supportTicketStatuses": {
-                                                              "open": "Açık",
-                                                              "in_progress": "İşlemde",
-                                                              "resolved": "Çözüldü",
-                                                              "closed": "Kapalı"
-                                                            }
-                             },
-                  "workshops":  {
-                                    "eyebrow":  "Atolyeler",
-                                    "title":  "Atolyeler",
-                                    "description":  "Atolyeleri, iletisimleri ve is yukunu yonetin.",
-                                    "detail": {"title":"Atölye bilgileri","manager":"Atölye yöneticisi","employees":"Atölye çalışanları","orders":"Mevcut siparişler","deactivate":"Atölyeyi devre dışı bırak","employeeCount":"Çalışan sayısı","pending":"Kaydediliyor…","viewDetails":"Ayrıntıları görüntüle"},
-                                    "workshopOrders": {"assign":"Çalışana ata","empty":"Bu atölye için sipariş yok.","pending":"Atama kaydediliyor…","title":"Atölye siparişleri","unassigned":"Atanmamış"},
-                                    "cards":  {
-                                                  "contact":  "Iletisim",
-                                                  "activeOrders":  "Aktif siparisler",
-                                                  "completed":  "Bu ay tamamlanan",
-                                                  "performance":  "Zamaninda teslim",
-                                                  "email":  "E-posta"
-                                              }
-                                },
-                  "employees":  {
-                                    "eyebrow":  "Calisanlar",
-                                    "title":  "Calisanlar",
-                                    "description":  "Ekibi, rolleri ve guncel gorevleri yonetin.",
-                                    "filtersTitle":  "Calisanlari filtrele",
-                                    "filtersDescription":  "Isim, rol veya atolye ile arayin.",
-                                    "searchPlaceholder":  "Calisan ara",
-                                    "empty":  "Bu secim icin calisan bulunamadi.",
-                                    "table":  {
-                                                  "employee":  "Calisan",
-                                                  "role":  "Rol",
-                                                  "workshop":  "Atolye",
-                                                  "workload":  "Is yuku",
-                                                  "status":  "Durum",
-                                                  "activeTasks":  "Aktif gorevler",
-                                                  "attendance":  "Devam durumu",
-                                                  "actions":  "Islemler",
-                                                  "accountStatus":  "Hesap"
-                                              },
-                                    "account":  {
-                                                    "create":  "Calisan ekle",
-                                                    "edit":  "Calisani duzenle",
-                                                    "formDescription":  "Calisan bilgilerini ve hesap erisimini tek yerde yonetin.",
-                                                    "saved":  "Calisan kaydi kaydedildi.",
-                                                    "inviteSent":  "Erisim e-postasi gonderildi.",
-                                                    "inviteDeliveryFailed":  "Hesap kaydedildi ancak erisim e-postasi teslim edilemedi.",
-                                                    "passwordResetSent":  "Sifre sifirlama e-postasi gonderildi.",
-                                                    "passwordResetDeliveryFailed":  "Sifirlama baglantisi olusturuldu ancak e-posta teslim edilemedi.",
-                                                    "linked":  "Calisan mevcut hesapla baglandi.",
-                                                    "notLinked":  "Bu calisana bagli eslesen bir auth hesabi henuz yok.",
-                                                    "duplicateEmail":  "Bu e-posta adresi baska bir calisana ait.",
-                                                    "emailRequired":  "Hesap erisimi icin bir e-posta adresi gerekli.",
-                                                    "linkInUse":  "Bu auth hesabi zaten baska bir calisana bagli.",
-                                                    "roleConflict":  "Bagli auth hesabi zaten farkli bir dahili role ait.",
-                                                    "roleNotAllowed":  "Bu calisan hesabini yonetme izniniz yok.",
-                                                    "notFound":  "Calisan artik bulunamiyor.",
-                                                    "reactivated":  "Calisan hesabi yeniden etkinlestirildi.",
-                                                    "deactivated":  "Calisan hesabi devre disi birakildi.",
-                                                    "noEmail":  "Kayitli e-posta yok",
-                                                    "lastInvite":  "Son davet",
-                                                    "lastLogin":  "Son giris",
-                                                    "lastPasswordReset":  "Son sifre sifirlama",
-                                                    "status":  {
-                                                                   "active":  "Etkin",
-                                                                   "disabled":  "Pasif",
-                                                                   "invited":  "Davet edildi",
-                                                                   "missing_auth_user":  "Bagli degil"
-                                                               },
-                                                    "actions":  {
-                                                                    "sendInvite":  "Davet gonder",
-                                                                    "resendInvite":  "Daveti yeniden gonder",
-                                                                    "linkAccount":  "Hesabi bagla",
-                                                                    "resetPassword":  "Sifreyi sifirla"
-                                                                }
-                                                },
-                                    "form":  {
-                                                 "fullName":  "Tam ad",
-                                                 "attendance":  "Devam durumu",
-                                                 "phone":  "Telefon",
-                                                 "email":  "E-posta",
-                                                 "emailHint":  "Giris, davet ve sifre sifirlama baglantilari icin kullanilir.",
-                                                 "shift":  "Vardiya",
-                                                 "notes":  "Notlar",
-                                                 "active":  "Calisan aktif"
-                                             }
-                                },
-                  "attendance":  {
-                                     "eyebrow":  "Mesai",
-                                     "title":  "Mesai",
-                                     "description":  "Vardiya, durum ve devamsizliklari takip edin.",
-                                     "filtersTitle":  "Duruma gore filtrele",
-                                     "filtersDescription":  "Durum ve atolye ile filtreleyin.",
-                                     "empty":  "Bu secim icin mesai verisi bulunamadi.",
-                                     "table":  {
-                                                   "employee":  "Calisan",
-                                                   "date":  "Tarih",
-                                                   "shift":  "Vardiya",
-                                                   "status":  "Durum",
-                                                   "note":  "Not",
-                                                   "workshop":  "Atolye"
-                                               }
-                                 },
-                  "reports":  {
-                                  "eyebrow":  "Raporlar",
-                                  "title":  "Raporlar",
-                                  "description":  "Uretim, siparis ve atolye icin KPI gorunumu.",
-                                  "cards":  {
-                                                "productionTime":  "Ortalama uretim suresi",
-                                                "ready":  "Hazir siparisler",
-                                                "delivered":  "Teslim edilen siparisler",
-                                                "activeWorkshops":  "Aktif atolyeler"
-                                            },
-                                  "tabs":  {
-                                               "status":  "Durum",
-                                               "workshops":  "Atolyeler",
-                                               "options":  "Secenekler",
-                                               "workload":  "Is yuku"
-                                           },
-                                  "statusTitle":  "Duruma gore siparisler",
-                                  "statusDescription":  "Mevcut uretim dagilimina hizli bakis.",
-                                  "workshopsTitle":  "Atolyeye gore siparisler",
-                                  "workshopsDescription":  "Hangi atolye su anda ne kadar yuk tasiyor.",
-                                  "optionsTitle":  "Secenek kullanimi",
-                                  "optionsDescription":  "Su anda en cok kullanilan secenek alanlari.",
-                                  "workloadTitle":  "Calisan is yuku",
-                                  "workloadDescription":  "Kisi bazinda aktif siparis ve yaklasik tamamlama orani.",
-                                  "activeOrdersCount":  "{count} aktif siparis"
-                              },
-                  "archive":  {
-                                  "eyebrow":  "Arsiv",
-                                  "title":  "Arsiv",
-                                  "description":  "Arsivlenmis siparis ve urunlere goz atin.",
-                                  "ordersTitle":  "Arsivlenmis siparisler",
-                                  "ordersDescription":  "Tamamlanmis veya arsivlenmis uretim akislar.",
-                                  "productsTitle":  "Arsivlenmis urunler",
-                                  "productsDescription":  "Pasif veya gecici olarak gizlenmis urun kartlari.",
-                                  "deleteDisabled":  "Silme kapali",
-                                  "filtersTitle":  "Arsivi filtrele",
-                                  "filtersDescription":  "Oge, tur veya duruma gore arayin.",
-                                  "searchPlaceholder":  "Arsiv ara",
-                                  "empty":  "Arsivde oge bulunamadi.",
-                                  "typeOrder":  "Siparis",
-                                  "typeProduct":  "Urun",
-                                  "table":  {
-                                                "item":  "Oge",
-                                                "type":  "Tur",
-                                                "status":  "Durum",
-                                                "context":  "Baglam",
-                                                "actions":  "Islemler"
-                                            }
-                              },
-                  "settings":  {
-                                   "eyebrow":  "Ayarlar",
-                                   "title":  "Ayarlar",
-                                   "description":  "Sirket, site ve panel ayarlarini yonetin.",
-                                   "contactTitle":  "Iletisim bilgileri",
-                                   "contactDescription":  "Dahili alan icin sirketin temel bilgileri.",
-                                   "preferencesTitle":  "Panel tercihleri",
-                                   "preferencesDescription":  "Yonetim alani icin dil ve gorunumu ayarlayin.",
-                                   "fields":  {
-                                                  "companyName":  "Sirket adi",
-                                                  "address":  "Adres",
-                                                  "phone":  "Telefon",
-                                                  "defaultLanguage":  "Varsayilan dil",
-                                                  "dashboardTheme":  "Panel temasi",
-                                                  "contactFormStatus":  "Iletisim formu",
-                                                  "demoRole":  "Erişim rolü",
-                                                  "density":  "Yogunluk",
-                                                  "email":  "E-posta",
-                                                  "legalNotice":  "Kunye",
-                                                  "privacyPolicy":  "Gizlilik",
-                                                  "sidebarMode":  "Kenar cubugu modu"
-                                              },
-                                   "values":  {
-                                                  "luxuryDark":  "Luxury Dark",
-                                                  "softGold":  "Soft Gold",
-                                                  "comfortable":  "Rahat",
-                                                  "compact":  "Kompakt",
-                                                  "compactDensity":  "Kompakt",
-                                                  "expanded":  "Genis"
-                                              },
-                                   "companyTitle":  "Sirket bilgileri",
-                                   "companyDescription":  "Yonetim alani icin temel bilgiler.",
-                                   "websiteTitle":  "Web sitesi",
-                                   "websiteDescription":  "Dil, tema ve iletisim formu ayarlari.",
-                                   "dashboardTitle":  "Panel",
-                                   "dashboardDescription":  "Rol gorunumu, kenar cubugu ve arayuz yogunlugunu yonetin.",
-                                   "legalTitle":  "Yasal",
-                                   "legalDescription":  "Kunye ve gizlilik metinleri icin alanlar.",
-                                   "previewMessage":  "Onizleme guncellendi.",
-                                   "resetMessage":  "Ayarlar sifirlandi.",
-                                   "saveMessage":  "Ayarlar kaydedildi."
-                               },
-                  "systemCheck":  {
-                                      "title":  "Sistem kontrolu",
-                                      "description":  "Gerekirse mevcut senkronizasyon ve erisim durumunu inceleyin.",
-                                      "statusTitle":  "Guncel durum",
-                                      "statusDescription":  "Bu kontroller dahili senkronizasyon gorunumunu ve erisimi etkiler.",
-                                      "pinLabel":  "Erisim PINi",
-                                      "pinPlaceholder":  "Erisim PINini girin",
-                                      "unlockDescription":  "Devam etmek icin erisim PINini girin.",
-                                      "continue":  "Devam et",
-                                      "refresh":  "Yenile",
-                                      "sync":  "Senkronizasyon",
-                                      "syncOn":  "Sync ON",
-                                      "syncOff":  "Sync OFF",
-                                      "gate":  "Erisim",
-                                      "gateEnabled":  "Etkin",
-                                      "gateDisabled":  "Kapali",
-                                      "statusEnabled":  "Etkin",
-                                      "statusDisabled":  "Kapali",
-                                      "expiresAt":  "Bitis",
-                                      "lastRotatedAt":  "Son yenileme",
-                                      "lastUsedAt":  "Son kullanim",
-                                      "version":  "Surum",
-                                      "rotate":  "Baglantiyi yenile",
-                                      "disableGate":  "Baglantiyi kapat",
-                                      "setExpiry":  "Bitis belirle",
-                                      "unavailable":  "Bu sayfa su anda kullanilamiyor.",
-                                      "updated":  "Ayarlar guncellendi.",
-                                      "linkDisabled":  "Mevcut baglanti kapatildi.",
-                                      "newLinkCreated":  "Yeni baglanti hazir.",
-                                      "linkReadyTitle":  "Guncelleme tamamlandi",
-                                      "linkReadyDescription":  "Tam erisim baglantisi sadece bu anda gorunur.",
-                                      "deliveryStatusLabel":  "Kayitli adrese gonderim",
-                                      "deliverySent":  "Gonderildi",
-                                      "deliveryFailed":  "Gonderilmedi",
-                                      "copyLink":  "Baglantiyi kopyala",
-                                      "copySuccess":  "Baglanti kopyalandi.",
-                                      "newLinkLabel":  "Tam baglanti",
-                                      "linkShownOnce":  "Bu baglanti tekrar gosterilmeyecek.",
-                                      "mutationUnavailable":  "Guncelleme su anda tamamlanamadi.",
-                                      "pinInvalid":  "Erisim PINi gecersiz.",
-                                      "invalidSession":  "Lutfen erisim PINini yeniden girin."
-                                  },
-                  "trackingStatus":  {
-                                         "created":  "Olusturuldu",
-                                         "sent_to_workshop":  "Atolyeye gonderildi",
-                                         "accepted_by_workshop":  "Atolye kabul etti",
-                                         "in_production":  "Uretimde",
-                                         "quality_check":  "Kalite kontrol",
-                                         "ready_for_pickup":  "Teslime hazir",
-                                         "on_the_way":  "Yolda",
-                                         "delivered_to_store":  "Magazaya ulasti",
-                                         "picked_up":  "Teslim alindi",
-                                         "completed":  "Tamamlandi",
-                                         "cancelled":  "Iptal edildi"
-                                     },
-                  "publicTrackingStage":  {
-                                              "order_in_workshop":  "Sipariş atölyede",
-                                              "in_production":  "Üretimde",
-                                              "quality_check":  "Kalite kontrolünde",
-                                              "ready_for_pickup":  "Teslime hazır",
-                                              "shipping":  "Kargoya verildi",
-                                              "delivered":  "Teslim edildi",
-                                              "completed":  "Tamamlandı",
-                                              "cancelled":  "İptal edildi",
-                                              "on_the_way":  "Yolda",
-                                              "delivered_to_store":  "Mağazada teslim alıma hazır",
-                                              "picked_up":  "Teslim alındı"
-                                          },
-                  "emailLogStatus":  {
-                                         "pending":  "Bekliyor",
-                                         "sent":  "E-posta gonderildi",
-                                         "skipped":  "E-posta atlandi",
-                                         "failed":  "E-posta basarisiz"
-                                     },
-                  "emailTemplateType":  {
-                                            "orderConfirmation":  "Siparis onayi",
-                                            "publicStageUpdate":  "Genel asama guncellemesi"
-                                        },
-                  "assignmentStatus":  {
-                                           "assigned":  "Atandi",
-                                           "accepted":  "Kabul edildi",
-                                           "in_progress":  "Islemde",
-                                           "waiting":  "Bekliyor",
-                                           "completed":  "Tamamlandi",
-                                           "returned":  "Geri verildi"
-                                       },
-                  "accountSetup":  {
-                                       "title":  "Erisiminizi hazirlayin",
-                                       "description":  "Dogru admin alanina girebilmek icin dahili GoldHelwah hesabiniz icin bir sifre olusturun.",
-                                       "resetTitle":  "Yeni sifre belirleyin",
-                                       "resetDescription":  "Dahili GoldHelwah hesabinizi icin yeni bir sifre secin.",
-                                       "securityTitle":  "Korumali dahili erisim",
-                                       "securityText":  "Guclu bir sifre kullanin ve bu erisim baglantisini baska kimseyle paylasmayin.",
-                                       "formTitle":  "Sifre olustur",
-                                       "formDescription":  "Hesap etkinlestirmesini tamamlamak icin sifrenizi bir kez belirleyin.",
-                                       "resetFormTitle":  "Sifreyi sifirla",
-                                       "resetFormDescription":  "Hesabiniza erisimi geri kazanmak icin yeni bir sifre girin.",
-                                       "password":  "Sifre",
-                                       "confirmPassword":  "Sifreyi onayla",
-                                       "submit":  "Sifreyi kaydet",
-                                       "resetSubmit":  "Sifreyi guncelle",
-                                       "errors":  {
-                                                      "passwordLength":  "Lutfen en az 8 karakterli bir sifre secin.",
-                                                      "passwordMismatch":  "Sifre onayi eslesmiyor.",
-                                                      "sessionExpired":  "Oturumunuz artik gecerli degil. Lutfen yeni bir baglanti isteyin.",
-                                                      "updateFailed":  "Sifre su anda guncellenemedi. Lutfen tekrar deneyin."
-                                                  }
-                                   },
-                  "settingsClient":  {
-                                         "title":  "Settings",
-                                         "description":  "Manage notification addresses, the external order-entry link, and admin users from one place.",
-                                         "diagnosticsTitle":  "Settings diagnostics",
-                                         "notificationTitle":  "Notifications",
-                                         "adminEmail":  "Order and inquiry notification email",
-                                         "supportEmail":  "Support / contact",
-                                         "ownerEmail":  "Owner / super admin",
-                                         "smtpTitle":  "Email status",
-                                         "smtpConfigured":  "SMTP configured",
-                                         "smtpMissing":  "SMTP incomplete",
-                                         "orderEntryTitle":  "External order-entry link",
-                                         "orderEntryDescription":  "Enable the external link, review the full URL, and copy or email it directly from here.",
-                                         "save":  "Save",
-                                         "rotateLink":  "Rotate link",
-                                         "orderEntryEnabled":  "Enable external order-entry link",
-                                         "expiresAt":  "Expires at",
-                                         "fullLinkLabel":  "Full link",
-                                         "fullLinkHelp":  "This always shows the complete URL exactly as it will be shared. If the server still reports localhost, the current browser origin is used instead.",
-                                         "linkDisabled":  "The external order-entry link is currently disabled.",
-                                         "copyLink":  "Copy link",
-                                         "copySuccess":  "The full link was copied.",
-                                         "copyUnavailable":  "No full link is available right now.",
-                                         "statusEnabled":  "Enabled",
-                                         "statusDisabled":  "Disabled",
-                                         "rotatedAt":  "Last rotated",
-                                         "linkRecipient":  "Send link to",
-                                         "linkRecipientHelp":  "A professional German email with a button and direct fallback link will be sent.",
-                                         "sendLink":  "Send link by email",
-                                         "userListTitle":  "Users and roles",
-                                         "manageUsersHint":  "User management requires super-admin access because it uses the Supabase Auth admin API server-side.",
-                                         "userSave":  "Save user",
-                                         "userCreate":  "Create user",
-                                         "userDisplayName":  "Display name",
-                                         "role":  "Role",
-                                         "userActive":  "Active",
-                                         "inactive":  "Inactive",
-                                         "activate":  "Activate",
-                                         "deactivate":  "Deactivate",
-                                         "sendPasswordLink":  "Send password link",
-                                         "email":  "Email",
-                                         "environment":  "Environment",
-                                         "siteUrl":  "Site URL",
-                                         "missingEnvironment":  "Missing environment variables",
-                                         "requiredMigration":  "Suggested migration",
-                                         "userDelete":  "Delete",
-                                         "userEdit":  "Edit",
-                                         "inviteAgain":  "Send new link",
-                                         "roleOwner":  "Owner",
-                                         "roleAdmin":  "Admin",
-                                         "roleEmployee":  "Worker"
-                                     }
-              },
-    "Tracking":  {
-                     "title":  "Siparis durumu",
-                     "description":  "GoldHelwah GmbH siparisinizin takibi.",
-                     "currentStatus":  "Guncel durum",
-                     "timelineTitle":  "Gecmis",
-                     "timelineDescription":  "Siparisiniz icin son guncellemeler.",
-                     "contact":  "Iletisim",
-                     "phone":  "Ara",
-                     "backToWebsite":  "Siteye don",
-                     "trackingNumberLabel":  "Takip numarasi",
-                     "currentPublicStageLabel":  "Guncel genel asama",
-                     "progressTitle":  "Genel ilerleme",
-                     "progressDescription":  "Musteri icin sadece uc gorunur asama yayinliyoruz.",
-                     "trackAnotherOrder":  "Baska bir siparisi takip et",
-                     "contactSupport":  "Destek iletisimi",
-                     "notesTitle":  "Musteri guncellemeleri",
-                     "notesDescription":  "Burada sadece musteriye acik notlar ve guncellemeler gorunur.",
-                     "orderReceivedLabel":  "Siparis alindi",
-                     "instructionsTitle":  "Siparis nasil takip edilir",
-                     "instructionsDescription":  "Takip numaranizi dogrudan link yerine site menusu uzerinden kullanin.",
-                     "instructionsStepOne":  "Web sitesinin ana sayfasini acin.",
-                     "instructionsStepTwo":  "Menüden \"Sipariş Takibi\" seçeneğine tıklayın.",
-                     "instructionsStepThree":  "Takip numaranizi girin.",
-                     "receivedMessage":  "Siparisiniz alindi ve durumu yakinda guncellenecek.",
-                     "receivedDescription":  "Siparisiniz kaydedildi ve ilk genel asamayi bekliyor.",
-                     "currentStageDescription":  "Bu, siparisinizin guncel genel asamasidir.",
-                     "completedStageDescription":  "Bu asama zaten tamamlandi.",
-                     "upcomingStageDescription":  "Siparisiniz bu noktaya geldiginde bu asama gorunecek.",
-                     "lookup":  {
-                                    "eyebrow":  "Sipariş Takibi",
-                                    "title":  "Siparisinizi bulun",
-                                    "description":  "GoldHelwah siparisinizin son genel guncellemelerini gormek icin takip numaranizi girin.",
-                                    "helperTitle":  "Numara yaninizda mi?",
-                                    "helperDescription":  "Bu numarayi siparis e-postasinda bulabilir ve site menusu uzerinden kullanabilirsiniz.",
-                                    "formTitle":  "Takip numarasini girin",
-                                    "formDescription":  "Ardindan bu numaranin canli siparis sayfasini acacagiz.",
-                                    "label":  "Takip numarasi",
-                                    "placeholder":  "GH-20260618-0001",
-                                    "submit":  "Sipariş Takibi",
-                                    "emptyError":  "Lutfen takip numaranizi girin."
-                                },
-                     "support":  {
-                                     "title":  "Destek iletisimi",
-                                     "description":  "Bu siparisle ilgili yardima ihtiyaciniz varsa bize mesaj gonderin, ekibimiz size donsun.",
-                                     "success":  "Mesajiniz gonderildi.",
-                                     "error":  "Mesajiniz su anda gonderilemedi."
-                                 },
-                     "stages":  {
-                                    "order_in_workshop":  "Siparis atolyede",
-                                    "shipping":  "Siparis kargoya veriliyor",
-                                    "ready_for_pickup":  "Teslime hazir"
-                                }
-                 },
-    "AGB":  {
-                "eyebrow":  "Yasal",
-                "title":  "Genel Koşullar",
-                "description":  "GoldHelwah showroom ve danışmanlık sitesi için taslak koşullar.",
-                "sections":  [
-                                 {
-                                     "title":  "Kapsam",
-                                     "text":  "Bu koşullar danışmanlıklar, talepler ve ayrı kararlaştırılan hizmetler için geçerlidir."
-                                 },
-                                 {
-                                     "title":  "Ürünler ve uygunluk",
-                                     "text":  "Sunumlar bağlayıcı değildir ve onaya tabidir."
-                                 },
-                                 {
-                                     "title":  "Kişiye özel tasarımlar",
-                                     "text":  "Özel çalışmalar doğru gereksinimler ve müşteri onayı gerektirir."
-                                 },
-                                 {
-                                     "title":  "Fiyat, teslim alma ve teslimat",
-                                     "text":  "Koşullar yalnızca yazılı olarak ayrı kararlaştırıldığında geçerlidir."
-                                 },
-                                 {
-                                     "title":  "Sorumluluk ve telif",
-                                     "text":  "Sorumluluk kanunun izin verdiği ölçüde sınırlıdır; görseller ve içerik korunur."
-                                 },
-                                 {
-                                     "title":  "Gizlilik ve son hükümler",
-                                     "text":  "Gizlilik politikamız geçerlidir. İzin verilen hallerde Alman hukuku uygulanır."
-                                 }
-                             ]
-            },
-    "PublicVisuals":  {
-                          "title":  "Herkese açık görseller",
-                          "description":  "Hero görseli ve promosyon penceresi ayarları.",
-                          "homeHero":  "Ana sayfa hero görseli URL’si",
-                          "shopHero":  "Mağaza hero görseli URL’si",
-                          "enabled":  "Promosyon penceresini etkinleştir",
-                          "showOnce":  "Ziyaretçi başına bir kez göster",
-                          "promoTitle":  "Promosyon başlığı",
-                          "promoDescription":  "Promosyon açıklaması",
-                          "ctaText":  "CTA metni",
-                          "ctaUrl":  "CTA URL’si",
-                          "imageUrl":  "Promosyon görseli URL’si",
-                          "videoUrl":  "Promosyon videosu URL’si",
-                          "start":  "Promosyon başlangıcı",
-                          "end":  "Promosyon bitişi",
-                          "style":  "Promosyon stili",
-                          "save":  "Kaydet",
-                          "reset":  "Hero görsellerini sıfırla",
-                          "luxury":  "Lüks kart",
-                          "image":  "Görsel öne çıkarma",
-                          "announcement":  "Duyuru bandı"
-                      }
+  "Metadata": {
+    "site": {
+      "brand": "GoldHelwah GmbH",
+      "title": "GoldHelwah GmbH",
+      "description": "GoldHelwah GmbH, gerçek ürün görselleri, kişisel danışmanlık ve net bir sunumla seçilmiş altın takılar sunar.",
+      "keywords": [
+        "GoldHelwah GmbH",
+        "altın takı",
+        "lüks taki",
+        "takı kataloğu",
+        "showroom",
+        "alyans"
+      ]
+    },
+    "pages": {
+      "home": {
+        "title": "GoldHelwah GmbH",
+        "description": "GoldHelwah GmbH'de karakterli altın takıları, gerçek görselleri ve kişisel danışmanlığı keşfedin."
+      },
+      "shop": {
+        "title": "Koleksiyon",
+        "description": "GoldHelwah GmbH koleksiyonunda seçilmiş parçaları, net kategorileri ve ürün detaylarını inceleyin."
+      },
+      "contact": {
+        "title": "İletişim",
+        "description": "Danışmanlık, ürün talepleri ve Saarbrücken’deki showroom ziyareti için GoldHelwah GmbH ile iletişime geçin."
+      },
+      "impressum": {
+        "title": "Yasal Bilgiler",
+        "description": "GoldHelwah GmbH için yasal bilgiler ve iletişim detayları tek sayfada."
+      },
+      "privacy": {
+        "title": "Gizlilik",
+        "description": "GoldHelwah GmbH'de site ziyareti, dil seçimi ve iletişim talepleriyle ilgili gizlilik bilgileri."
+      }
+    }
+  },
+  "Nav": {
+    "tagline": "Lüks Altin Taki",
+    "language": "Dili değiştir",
+    "currentLanguage": "Aktif",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat",
+    "links": {
+      "home": "Ana sayfa",
+      "shop": "Shop",
+      "contact": "İletişim",
+      "impressum": "Yasal Bilgiler",
+      "privacy": "Gizlilik",
+      "agb": "Genel Koşullar",
+      "tracking": "Sipariş Takibi"
+    }
+  },
+  "Footer": {
+    "description": "GoldHelwah GmbH, özenle seçilmiş altın takılar, kişisel danışmanlık ve Saarbrücken'de net bir sunum deneyimi sunar.",
+    "navigationTitle": "Sayfalar",
+    "contactTitle": "İletişim",
+    "socialTitle": "Bizi takip edin",
+    "emailPlaceholder": "info@goldhelwah.de",
+    "legalNote": "Saarbrücken'de bizi ziyaret edin ya da kişisel danışmanlık için bize ulaşın.",
+    "rights": "GoldHelwah GmbH. Tüm haklari saklidir.",
+    "socials": {
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
+      "snapchat": "Snapchat",
+      "whatsapp": "WhatsApp"
+    }
+  },
+  "Home": {
+    "hero": {
+      "eyebrow": "GoldHelwah GmbH",
+      "title": "GoldHelwah GmbH",
+      "subtitle": "Güzelliği işliyoruz",
+      "description": "Detayların inceliğini ve tasarımın zarafetini yansıtır; kişisel danışmanlıkla, duruşunuza ve özel anınızın değerine yakışan altın parçayı seçmenizde size rehberlik ederiz.",
+      "primaryCta": "ürünleri kesfet",
+      "secondaryCta": "Danışmanlık isteyin",
+      "backgroundAlt": "GoldHelwah GmbH ana görseli",
+      "stats": [
+        {
+          "value": "17",
+          "label": "Kategori"
+        },
+        {
+          "value": "5",
+          "label": "Dil"
+        },
+        {
+          "value": "Saarbrücken",
+          "label": "Showroom"
+        }
+      ]
+    },
+    "categories": {
+      "eyebrow": "Seçili Kategoriler",
+      "title": "İlk bakışta dikkat çeken koleksiyonlar.",
+      "description": "Seriler, setler ve öne çıkan altın parçalar arasından seçim yapın.",
+      "emptyTitle": "Şu anda görünen ürün bulunmuyor",
+      "emptyText": "Panelde yeni koleksiyonlar etkinleştirildiğinde burada otomatik olarak görünecekler."
+    },
+    "products": {
+      "eyebrow": "Seçili ürünler",
+      "title": "Gerçek görseller. Net seçim. Karakter sahibi altın.",
+      "description": "Farkli kategorilerden özenle seçilmiş parçalar.",
+      "sectionCta": "Showroomu aç",
+      "cardCta": "Detaylari gör",
+      "emptyTitle": "Şu anda görünen ürün bulunmuyor",
+      "emptyText": "Ürünleri panelden etkinleştirin veya size özel seçim için bizimle iletişime geçin."
+    },
+    "showcase": {
+      "eyebrow": "Vitrinden seçtiklerimiz",
+      "title": "Açık detaylarla öne çıkan seçili parçalar",
+      "description": "Koleksiyonumuzdaki seçili altın takıları gerçek görseller ve karar vermenizi kolaylaştıran net bilgilerle inceleyin.",
+      "sectionCta": "Koleksiyonu incele",
+      "cardCta": "Detayları gör",
+      "leadCta": "Danışmanlık iste",
+      "emptyTitle": "Şu anda görünür ürün yok",
+      "emptyText": "Yeni ürünler kaydedilip aktif edildiğinde bu bölüm otomatik olarak güncellenecek."
+    },
+    "aboutGold": {
+      "eyebrow": "Altın hakkında",
+      "title": "Kalan altın.",
+      "description": "Altın sadece bir takı değildir. Değer, hatıra ve özel anları taşır. GoldHelwah GmbH'de görünürlüğü güçlü ve kişisel anlamı olan parçalar sunuyoruz.",
+      "imageAlt": "GoldHelwah GmbH'den altın takı detayı",
+      "points": [
+        "Kalıcı değer",
+        "Kişisel anlam",
+        "Görünür işçilik"
+      ]
+    },
+    "aboutCompany": {
+      "eyebrow": "Hakkımızda",
+      "title": "GoldHelwah GmbH hakkında",
+      "description": "GoldHelwah GmbH, Saarbrücken'de seçilmiş altın takılar, kişisel danışmanlık ve net ürün sunumu sunar. Hedefimiz müşterilere sakin, güven veren ve kaliteli bir seçim sunmaktır.",
+      "teamLabel": "Yaklaşımımız",
+      "story": "GoldHelwah GmbH ekibi ve yönetimi, kişisel görüşmelere, net seçime ve hem ana hem de stile uyan parçalara odaklanır.",
+      "locationLabel": "Adres"
+    },
+    "trust": {
+      "eyebrow": "Neden GoldHelwah GmbH",
+      "title": "Net, kişisel ve ürüne yakın.",
+      "items": [
+        {
+          "title": "Kişisel danışmanlık",
+          "description": "Doğrudan ve bireysel ilerler."
+        },
+        {
+          "title": "Gerçek ürün görselleri",
+          "description": "Seçim gerçek modelleri gösterir."
+        },
+        {
+          "title": "Kişiye Özel Tasarımlar",
+          "description": "Aklınıza gelen her fikir, isim işlemelerinden ölçü ayarlamalarına ve tarzınızı yansıtan özel dokunuşlara kadar güzel detaylarla benzersiz bir altın parçaya dönüştürülebilir."
+        },
+        {
+          "title": "Saarbrücken'de teslim",
+          "description": "Yerinde kişisel olarak ulaşılabilir."
+        }
+      ]
+    },
+    "cta": {
+      "badge": "GoldHelwah GmbH Hizmeti",
+      "title": "Hediye ya da özel bir parça mı arıyorsunuz?",
+      "description": "Seçim, özel istekler ve teslim için size memnuniyetle yardımcı oluruz.",
+      "primaryCta": "Shop'u görüntüle",
+      "secondaryCta": "Ara"
+    }
+  },
+  "Shop": {
+    "hero": {
+      "eyebrow": "GoldHelwah GmbH",
+      "title": "Koleksiyon",
+      "subtitle": "Gerçek ürün görselleri, net seçim ve kişisel danışmanlık.",
+      "primaryCta": "Talep gönder",
+      "secondaryCta": "İletişim",
+      "stats": {
+        "categories": "Kategoriler",
+        "featured": "Seçkiler",
+        "checkout": "Danışma"
+      },
+      "visualBadge": "Editoryal Önizleme",
+      "visualAlt": "GoldHelwah GmbH takı showroomu",
+      "cards": {
+        "oneLabel": "Görsel odak",
+        "oneText": "Gerçek fotograflar ve kisa metinlerle genis ürün kartlari.",
+        "twoLabel": "Katalog yapısı",
+        "twoText": "Kategoriler, ürün detayları ve talepler net ve kolay takip edilir."
+      }
+    },
+    "grid": {
+      "eyebrow": "Koleksiyon",
+      "title": "Kategoriye göre kesfedin.",
+      "all": "Tümü",
+      "resultsSuffix": "model",
+      "emptyBadge": "Talep üzerine",
+      "emptyTitle": "Bu seçim için size uygun parçayı birlikte belirleyebiliriz.",
+      "emptyText": "Belirli bir seri ya da model arıyorsanız bize yazın."
+    },
+    "card": {
+      "cta": "Detaylar"
+    },
+    "modal": {
+      "close": "Kapat",
+      "fallbackCategory": "Koleksiyon",
+      "categoryLabel": "Kategori",
+      "galleryLabel": "Galeri",
+      "galleryCountSuffix": "görsel",
+      "tagsLabel": "özellikler",
+      "requestCta": "Talep gönder",
+      "backCta": "Geri"
+    }
+  },
+  "Contact": {
+    "hero": {
+      "eyebrow": "İletişim",
+      "title": "GoldHelwah GmbH ile doğrudan iletişime geçin.",
+      "subtitle": "ürün talepleri, danismanlik ve showroom yol tarifi için gereken her sey burada hazir.",
+      "primaryCta": "Koleksiyonu görüntüle",
+      "secondaryCta": "Gizliliği oku"
+    },
+    "cards": {
+      "consultationTitle": "Danışmanlık",
+      "consultationValue": "Kişisel ve özenli",
+      "consultationText": "Koleksiyonlar, hediye fikirleri ve özel talepler ayri ayri degerlendirilir.",
+      "phoneTitle": "Telefon",
+      "phoneText": "Hızlı sorular veya randevu planlaması için doğrudan iletişim.",
+      "phoneCta": "Şimdi ara",
+      "emailTitle": "E-posta",
+      "emailText": "Ürün talepleri, randevular veya kişisel danışmanlık için bize yazın.",
+      "emailCta": "E-posta gönder",
+      "whatsappTitle": "WhatsApp",
+      "whatsappText": "Hizli sorular ve showroom görselleri paylasmak için idealdir.",
+      "whatsappCta": "Sohbeti başlat"
+    },
+    "form": {
+      "eyebrow": "İletişime geçin",
+      "title": "İletişime geçin",
+      "description": "Ürün soruları, danışmanlık veya özel üretim için bize yazın.",
+      "highlights": "İletişim",
+      "fields": {
+        "name": "Ad",
+        "email": "E-posta",
+        "phone": "Telefon",
+        "message": "Mesaj"
+      },
+      "placeholders": {
+        "name": "Adınız",
+        "email": "E-posta adresiniz",
+        "phone": "Telefon numaranız",
+        "message": "Talebiniz hangi konu hakkında?"
+      },
+      "submit": "Mesaj gönder",
+      "submitPending": "Gönderiliyor",
+      "success": "Teşekkür ederiz. Talebiniz kaydedildi.",
+      "error": "Lütfen bilgilerinizi kontrol edip tekrar deneyin.",
+      "validation": {
+        "name": "Lütfen adinizi girin.",
+        "email": "Lütfen geçerli bir e-posta adresi girin.",
+        "phone": "Lütfen geçerli bir telefon numarasi girin.",
+        "message": "Lütfen kisa bir mesaj yazin."
+      }
+    },
+    "location": {
+      "eyebrow": "Konum",
+      "title": "GoldHelwah GmbH'yi Saarbrücken'de ziyaret edin.",
+      "description": "Adres, telefon ve rota tek bakışta hazır.",
+      "addressLabel": "Adres",
+      "phoneLabel": "Telefon",
+      "routeCta": "Yol tarifi al",
+      "callCta": "Ara",
+      "mapTitle": "Google Maps üzerinde GoldHelwah GmbH konumu"
+    }
+  },
+  "Impressum": {
+    "eyebrow": "Yasal",
+    "title": "Yasal bilgiler",
+    "description": "Gold Helwah için resmi sağlayıcı bilgileri ve yasal açıklamalar.",
+    "complianceNoticeTitle": "§ 5 DDG uyarınca bilgiler",
+    "complianceNoticeDescription": "Aşağıdaki bilgiler Gold Helwah web sitesi için geçerlidir.",
+    "sections": [
+      {
+        "title": "Sağlayıcı",
+        "lines": [
+          "Gold Helwah",
+          "Inh. Khaled Helwah",
+          "Breite Straße 9, 66115 Saarbrücken",
+          "Deutschland"
+        ]
+      },
+      {
+        "title": "İletişim",
+        "lines": [
+          "Sorularınız için memnuniyetle yardımcı oluruz:",
+          "Telefon: +49 173 537 1225",
+          "E-posta: info@goldhelwah.de"
+        ]
+      },
+      {
+        "title": "KDV numarası",
+        "lines": [
+          "§ 27 a Alman Katma Değer Vergisi Yasası uyarınca KDV kimlik numarası:",
+          "DE313207537"
+        ]
+      },
+      {
+        "title": "Temsilci",
+        "lines": "Khaled Helwah"
+      },
+      {
+        "title": "Bağlantılar için sorumluluk",
+        "lines": [
+          "Web sitemiz, içerikleri üzerinde hiçbir etkimizin olmadığı üçüncü taraf harici web sitelerine bağlantılar içermektedir. Bu nedenle bu harici içerikler için herhangi bir sorumluluk üstlenemeyiz.",
+          "Bağlantı verilen sayfaların içeriğinden her zaman ilgili sağlayıcı veya işletmeci sorumludur.",
+          "Bağlantı verilen sayfalar, bağlantı verildiği sırada olası yasal ihlaller açısından kontrol edilmiştir. O tarihte hukuka aykırı bir içerik tespit edilmemiştir.",
+          "Somut bir hukuk ihlali belirtisi olmadan bağlantı verilen sayfaların sürekli olarak izlenmesi makul değildir. Böyle bir ihlalin farkına varırsak söz konusu bağlantıları derhal kaldırırız."
+        ]
+      },
+      {
+        "title": "İçerikler için sorumluluk",
+        "lines": [
+          "Sayfalarımızın içerikleri büyük bir özenle hazırlanmıştır. Bununla birlikte içeriğin doğruluğu, eksiksizliği ve güncelliği konusunda garanti veremeyiz.",
+          "Bir hizmet sağlayıcı olarak § 5 DDG ve genel yasalar uyarınca bu sayfalardaki kendi içeriklerimizden sorumluyuz.",
+          "Ancak § 5 DDG uyarınca iletilen veya saklanan üçüncü taraf bilgilerini izlemek ya da yasa dışı faaliyete işaret eden koşulları araştırmakla yükümlü değiliz.",
+          "Genel yasalar uyarınca bilgilerin kaldırılması veya kullanımının engellenmesine ilişkin yükümlülükler bundan etkilenmez.",
+          "Bu kapsamda sorumluluk ancak somut bir ihlalin öğrenildiği andan itibaren mümkündür. Böyle bir ihlalden haberdar olduğumuzda ilgili içeriği derhal kaldırırız."
+        ]
+      }
+    ],
+    "disclaimerTitle": "Telif hakkı",
+    "disclaimerText": "Bu sayfalarda site işletmecileri tarafından oluşturulan içerikler ve eserler Alman telif hakkı yasasına tabidir. Telif hakkı sınırları dışındaki her türlü çoğaltma, işleme, dağıtım ve kullanım ilgili yazarın veya oluşturucunun yazılı onayını gerektirir. Bu sitenin indirilmesi ve kopyalanması yalnızca özel, ticari olmayan kullanım için izinlidir. Bu sayfadaki içerik işletmeci tarafından oluşturulmamışsa üçüncü taraf telif haklarına saygı gösterilir ve ilgili içerikler buna göre işaretlenir. Buna rağmen bir telif hakkı ihlali fark ederseniz lütfen bizi bilgilendirin. Böyle bir ihlalden haberdar olduğumuzda ilgili içeriği derhal kaldırırız."
+  },
+  "Privacy": {
+    "eyebrow": "Gizlilik",
+    "title": "Gizlilik bilgileri",
+    "description": "Bu sayfa, web sitesini ziyaret ettiğinizde veya bizimle iletişime geçtiğinizde kişisel verilerinizin nasıl işlendiğini açıklar.",
+    "intro": "Kişisel verileri yalnızca web sitesini sunmak, dil tercihinizi saklamak ve taleplerinize yanıt vermek için gerekli olduğu ölçüde işliyoruz.",
+    "sections": [
+      {
+        "title": "1. Sorumlu taraf",
+        "paragraphs": [
+          "Bu web sitesindeki veri işleme faaliyetlerinden sorumlu taraf Gold Helwah, Inh. Khaled Helwah, Breite Straße 9, 66115 Saarbrücken, Deutschland, telefon +49 173 537 1225, e-posta info@goldhelwah.de adresidir.",
+          "Gizlilik hakkında sorularınız varsa veya haklarınızı kullanmak istiyorsanız bizimle her zaman iletişime geçebilirsiniz."
+        ]
+      },
+      {
+        "title": "2. Teknik bağlantı verileri",
+        "paragraphs": [
+          "Web sitesini ziyaret ettiğinizde IP adresi, tarih ve saat, tarayıcı bilgileri ve istenen sayfalar gibi teknik olarak gerekli veriler işlenebilir.",
+          "Bu işlem, web sitesini güvenli ve güvenilir şekilde sunmak için gereklidir."
+        ]
+      },
+      {
+        "title": "3. İletişim ve talepler",
+        "paragraphs": [
+          "Bizimle iletişim formu, e-posta, telefon veya WhatsApp üzerinden iletişime geçerseniz sağladığınız bilgileri yalnızca talebinizi yanıtlamak için işleriz.",
+          "İşlenen veriler, talebinizin konusuna ve bizimle paylaştığınız bilgilere bağlıdır."
+        ]
+      },
+      {
+        "title": "4. Dil tercihi ve zorunlu çerezler",
+        "paragraphs": [
+          "Web sitesi birden fazla dili destekler ve seçtiğiniz dili teknik nedenlerle saklayabilir.",
+          "Bu bilgi yalnızca sonraki ziyaretlerde siteyi tercih ettiğiniz dilde göstermek için kullanılır."
+        ]
+      },
+      {
+        "title": "5. Haklarınız",
+        "paragraphs": [
+          "Hakkınızda saklanan kişisel verilerle ilgili bilgi talep etme ve yasal şartlar karşılandığında bunların düzeltilmesini, silinmesini veya işlemenin kısıtlanmasını isteme hakkına sahipsiniz.",
+          "Ayrıca işleme faaliyetlerine itiraz edebilir veya daha önce verdiğiniz bir onayı geleceğe etkili olacak şekilde geri çekebilirsiniz."
+        ]
+      }
+    ],
+    "noticeTitle": "Güncel sürüm",
+    "noticeText": "Bu gizlilik bilgilerini düzenli olarak gözden geçirir ve web sitemiz, iletişim kanallarımız veya yasal yükümlülüklerimiz değiştiğinde güncelleriz."
+  },
+  "Admin": {
+    "siteImages": {
+      "title": "Site görselleri",
+      "description": "Herkese açık site bölümleri için görsel değişiklikleri yükleyin. Ürün görselleri etkilenmez.",
+      "homepageHero": "Ana sayfa kahraman görseli",
+      "shopHero": "Mağaza kahraman görseli",
+      "promoPopup": "Promosyon penceresi",
+      "upload": "Görsel yükle",
+      "replace": "Görseli değiştir",
+      "reset": "Varsayılan görseli kullan",
+      "currentImage": "Geçerli görsel",
+      "uploadSuccess": "Görsel başarıyla yüklendi.",
+      "uploadError": "Görsel yüklenemedi.",
+      "invalidFile": "Geçerli bir görsel dosyası seçin.",
+      "productsExcluded": "Ürün görselleri ayrı yönetilir ve burada değiştirilmez.",
+      "usesDefault": "Varsayılan görsel kullanılıyor.",
+      "resetSuccess": "Varsayılan görsel geri yüklendi."
+    },
+    "orderReset": {
+      "title": "Siparişleri sıfırla",
+      "description": "Mevcut siparişlerin arşiv kopyasını kaydedin, ardından yeni ve boş bir sipariş listesiyle başlayın.",
+      "button": "Siparişleri sıfırla",
+      "confirmTitle": "Sipariş sıfırlamayı onayla",
+      "confirmDescription": "Mevcut siparişler dahili arşive kaydedilecek, ardından panelden ve web sitesinden kaldırılacaktır. Web sitesi üzerinden geri yüklenemezler.",
+      "currentOrderCount": "Mevcut siparişler",
+      "confirmCheckbox": "Bu siparişlerin sıfırlamadan sonra web sitesinden kaybolacağını anlıyorum.",
+      "cancel": "İptal",
+      "confirm": "Sıfırlamayı onayla",
+      "processing": "Arşiv kaydediliyor ve siparişler sıfırlanıyor...",
+      "success": "Siparişler başarıyla sıfırlandı.",
+      "genericError": "Siparişler sıfırlanamadı. Hiçbir veri silinmedi.",
+      "noOrders": "Sıfırlanacak mevcut sipariş yok.",
+      "excludedNote": "Ürünler, görseller, çalışanlar veya site ayarları etkilenmez."
+    },
+    "orderMaintenance": {
+      "title": "Sipariş Bakımı",
+      "description": "Yalnızca siparişler etkilenir; diğer site verileri hariçtir.",
+      "archiveTitle": "Tamamlanan siparişleri arşivle",
+      "archiveDescription": "Tamamlanan siparişleri silmeden etkin görünümlerden kaldırır.",
+      "clearTitle": "Etkin siparişleri temizle",
+      "clearDescription": "Etkin siparişleri yalnızca soft delete ile gizler.",
+      "previewArchive": "Arşivi önizle",
+      "previewClear": "Temizlemeyi önizle",
+      "executeArchive": "Siparişleri arşivle",
+      "executeClear": "Etkin siparişleri temizle",
+      "confirmationLabel": "Onay",
+      "confirmationPlaceholder": "Gerekli ifadeyi girin",
+      "archivePhrase": "ARCHIVE ORDERS",
+      "clearPhrase": "CLEAR ACTIVE ORDERS",
+      "affectedOrders": "Etkilenen siparişler",
+      "warningTitle": "Önemli",
+      "archiveWarning": "Yalnızca tamamlanan siparişler arşivlenir.",
+      "clearWarning": "Temizleme yalnızca soft delete kullanır.",
+      "excludedDataNote": "Ürünler, görseller, kullanıcılar, çalışanlar ve ayarlar silinmez.",
+      "permanentDeleteUnavailable": "Fiziksel kalıcı silme etkin değildir.",
+      "auditRequired": "İşlem, denetim kaydı oluşturulmadan çalışmaz.",
+      "auditLogCreated": "Denetim kaydı oluşturuldu.",
+      "previewSuccess": "Önizleme hazır.",
+      "archiveSuccess": "Siparişler arşivlendi.",
+      "clearSuccess": "Etkin siparişler temizlendi.",
+      "genericError": "Sipariş bakımı tamamlanamadı.",
+      "permissionDenied": "Erişim reddedildi.",
+      "decoyUnavailable": "Tuzak modunda kullanılamaz.",
+      "noOrdersMatched": "Eşleşen sipariş yok."
+    },
+    "loading": {
+      "loading": "Yükleniyor…",
+      "saving": "Kaydediliyor…",
+      "updating": "Güncelleniyor…",
+      "previewing": "Önizleme hazırlanıyor…",
+      "executing": "İşlem yürütülüyor…",
+      "uploading": "Yükleniyor…",
+      "archiving": "Arşiv önizlemesi hazırlanıyor…",
+      "clearing": "Temizleme önizlemesi hazırlanıyor…",
+      "pleaseWait": "Lütfen bekleyin…",
+      "actionInProgress": "İşlem sürüyor",
+      "saveInProgress": "Değişiklikler kaydediliyor",
+      "editInProgress": "Veriler güncelleniyor"
+    },
+    "meta": {
+      "title": "Yönetim",
+      "description": "Katalog, sipariş ve atölye için GoldHelwah GmbH yönetimi."
+    },
+    "header": {
+      "adminArea": "Yönetim paneli",
+      "demoMode": "Erişim rolü",
+      "activeUser": "Aktif kullanıcı",
+      "roleFoundation": "Rol yapısı",
+      "roleHint": "Roller ve iç görünümler açık biçimde ayrılır.",
+      "welcome": "Hoş geldin, {name}",
+      "toWebsite": "Siteyi görüntüle",
+      "language": "Panel dili"
+    },
+    "roles": {
+      "super_admin": "Süper yönetici",
+      "admin": "Yönetici",
+      "employee": "Çalışan"
+    },
+    "nav": {
+      "overview": "Genel bakış",
+      "products": "Ürünler",
+      "categories": "Kategoriler",
+      "gallery": "Yeni sipariş",
+      "options": "Ürün seçenekleri",
+      "orders": "Siparişler",
+      "workshops": "Atölyeler",
+      "employees": "Çalışanlar",
+      "attendance": "Mesai",
+      "reports": "Raporlar",
+      "archive": "Arşiv",
+      "settings": "Ayarlar",
+      "myTasks": "Görevlerim",
+      "inquiries": "Müşteri talepleri",
+      "ariaLabel": "Ana menü",
+      "countLabel": "{count} bekliyor"
+    },
+    "buttons": {
+      "openMenu": "Menu",
+      "close": "Kapat",
+      "demoLogin": "Çıkış yap",
+      "addProduct": "Ürün ekle",
+      "createOrder": "Sipariş oluştur",
+      "viewDetails": "Detaylar",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "newCategory": "Kategori ekle",
+      "bulkEnable": "Etkinleştir",
+      "bulkDisable": "Devre dışı bırak",
+      "assignOptions": "Seçenek ata",
+      "saveDraft": "Taslağı kaydet",
+      "submitOrder": "Siparişi atölyeye gönder",
+      "createCustomOption": "Özel seçenek",
+      "addOption": "Seçenek ekle",
+      "addWorkshop": "Atölye ekle",
+      "addEmployee": "Çalışan ekle",
+      "addAbsence": "İzin ekle",
+      "markReady": "Hazır olarak işaretle",
+      "updateStatus": "Durumu değiştir",
+      "assignEmployee": "Çalışan ata",
+      "addNote": "Not ekle",
+      "archive": "Arşivle",
+      "restore": "Geri yükle",
+      "backToOrders": "Siparişlere dön",
+      "duplicate": "Kopyala",
+      "deactivate": "Devre dışı bırak",
+      "activate": "Etkinleştir",
+      "options": "Seçenekler",
+      "createOptionGroup": "Grup oluştur",
+      "viewOrders": "Siparişleri gör",
+      "preview": "Önizleme",
+      "reset": "Sıfırla",
+      "save": "Kaydet",
+      "next": "İleri",
+      "previous": "Geri",
+      "notifyCustomer": "Müşteriyi bilgilendir",
+      "copyTrackingLink": "Takip bağlantısını kopyala",
+      "saveStatus": "Durumu kaydet",
+      "logout": "Çıkış yap",
+      "cancel": "İptal",
+      "backToTasks": "Görevlerime dön"
+    },
+    "common": {
+      "noAccessTitle": "Erişim kısıtlı",
+      "noAccessText": "Bu görünüm mevcut hesap için kullanılamıyor.",
+      "catalogOnly": "Showroom",
+      "curated": "Seçili",
+      "active": "Aktif",
+      "inactive": "Pasif",
+      "optional": "İsteğe bağlı",
+      "required": "Zorunlu",
+      "all": "Tüm",
+      "search": "Ara",
+      "selectPlaceholder": "Lütfen seçin",
+      "unassigned": "Atanmamış",
+      "noCustomer": "Müşteri bilgisi yok",
+      "mockSubmit": "Değişiklikler kaydedildi.",
+      "selected": "Seçili",
+      "internalOnly": "Yalnızca dahili",
+      "visibility": "Görünürlük",
+      "visible": "Görünür",
+      "hidden": "Gizli",
+      "yes": "Evet",
+      "no": "Hayır",
+      "enabled": "Açık",
+      "disabled": "Kapalı",
+      "notProvided": "Belirtilmedi"
+    },
+    "filters": {
+      "category": "Kategori",
+      "status": "Durum",
+      "featured": "Öne çıkan",
+      "priority": "Öncelik",
+      "workshop": "Atölye",
+      "employee": "Çalışan",
+      "role": "Rol"
+    },
+    "status": {
+      "draft": "Taslak",
+      "sent_to_workshop": "Atölyeye gönderildi",
+      "accepted": "Kabul edildi",
+      "assigned": "Atandı",
+      "in_production": "Üretimde",
+      "quality_check": "Kalite kontrol",
+      "ready": "Hazır",
+      "delivered": "Teslim edildi",
+      "cancelled": "İptal edildi",
+      "archived": "Arşivlendi",
+      "present": "Mevcut",
+      "absent": "Yok",
+      "vacation": "İzinli",
+      "sick": "Hasta",
+      "late": "Gec"
+    },
+    "priority": {
+      "normal": "Normal",
+      "urgent": "Acil",
+      "express": "Ekspres"
+    },
+    "overview": {
+      "eyebrow": "Panel",
+      "title": "Panel",
+      "description": "Katalog, sipariş ve atölyelerin genel görünümü.",
+      "stats": {
+        "totalProducts": "Mağazadaki ürünler",
+        "totalProductsHint": "Müşterilere görünür",
+        "activeCategories": "Aktif kategoriler",
+        "activeCategoriesHint": "Net ve düzenli",
+        "newOrders": "Yeni siparişler",
+        "newOrdersHint": "Taslaklar ve atölyeye yeni gönderilenler",
+        "inProduction": "Üretimde",
+        "inProductionHint": "Şu anda yapılıyor",
+        "readyOrders": "Teslime hazır",
+        "readyOrdersHint": "Teslim veya alım için hazır",
+        "employees": "Çalışanlar",
+        "employeesHint": "Mevcut role göre görünür",
+        "activeOrders": "Aktif siparişler"
+      },
+      "recentOrdersTitle": "Son siparişler",
+      "recentOrdersDescription": "Son siparişler ve durumlar.",
+      "quickActionsTitle": "Hızlı erişim",
+      "quickActionsDescription": "Sık kullanılan işlemler hızlı erişimde.",
+      "actions": {
+        "addProduct": "Ürün ekle",
+        "createOrder": "Yeni sipariş oluştur",
+        "manageOptions": "Seçenekleri yönet",
+        "addEmployee": "Çalışan ekle"
+      },
+      "workshopLoadTitle": "Atölye iş yükü",
+      "workshopLoadDescription": "Atölye bazında güncel yük.",
+      "greeting": "Merhaba {name}",
+      "statsLabel": "Temel rakamlar",
+      "allOrders": "Tüm siparişler",
+      "noOrders": "Henüz aktif sipariş yok.",
+      "dueOn": "teslim {date}",
+      "notificationsTitle": "Bildirimler",
+      "noNotifications": "Henüz bildirim yok.",
+      "unread": "Okunmadı",
+      "workshopOrders": "{count, plural, =0 {sipariş yok} other {# sipariş}}",
+      "onTimeRate": "%{rate} zamanında"
+    },
+    "login": {
+      "title": "Gold Helwah Yönetim",
+      "description": "Siparişler, katalog ve operasyon akışı için güvenli dahili erişim.",
+      "cards": {
+        "securityTitle": "Korumalı dahili erişim",
+        "securityText": "Dahili erişim yetkilerinizi rolünüze göre kullanın.",
+        "rolesTitle": "Net roller",
+        "rolesText": "Yetkiler, atanan role göre yönetilir.",
+        "catalogTitle": "Katalog yönetimi",
+        "catalogText": "Ürünleri ve atölyeleri tek yerden yönetin."
+      },
+      "formTitle": "Giriş",
+      "formDescription": "Size atanmış yönetici hesabını kullanın.",
+      "email": "E-posta",
+      "password": "Şifre",
+      "demoHint": "Etkin demo rolü: {role}.",
+      "demoUsersTitle": "Kullanılabilir demo kullanıcıları",
+      "invalidCredentials": "E-posta adresi veya şifre hatalı.",
+      "notices": {
+        "accountInactive": "Bu hesap şu anda pasif. Lütfen bir süper yönetici ile iletişime geçin.",
+        "accountNotConfigured": "Bu hesap henüz yönetim paneli için yapılandırılmadı.",
+        "invalidLink": "Bu erişim bağlantısı geçersiz veya süresi dolmuş.",
+        "passwordUpdated": "Şifreniz başarıyla güncellendi. Artık devam edebilirsiniz."
+      },
+      "validation": {
+        "emailInvalid": "Lütfen geçerli bir e-posta adresi girin.",
+        "emailRequired": "Lütfen e-posta adresinizi girin.",
+        "passwordRequired": "Lütfen şifrenizi girin."
+      }
+    },
+    "products": {
+      "eyebrow": "Ürün yönetimi",
+      "title": "Ürünleri yönet",
+      "description": "Görselleri, kategorileri ve görünürlüğü düzenleyin.",
+      "filtersTitle": "Filtreler ve arama",
+      "filtersDescription": "Ürün, kategori ve duruma göre arayın.",
+      "searchPlaceholder": "Ürün ara",
+      "featuredOnly": "Öne çıkan",
+      "regularOnly": "Öne çıkmayan",
+      "viewCards": "Kartlar",
+      "viewTable": "Tablo",
+      "resultCount": "{count} ürün",
+      "optionsCount": "{count} seçenek",
+      "empty": "Bu seçim için ürün bulunamadı.",
+      "table": {
+        "product": "Ürün",
+        "sku": "SKU",
+        "category": "Kategori",
+        "status": "Durum",
+        "options": "Seçenekler",
+        "actions": "İşlemler",
+        "sortOrder": "Sıralama"
+      },
+      "messages": {
+        "created": "Ürün eklendi.",
+        "updated": "Değişiklikler kaydedildi.",
+        "activated": "Ürün artık mağazada görünüyor.",
+        "deactivated": "Ürün mağazada gizlendi.",
+        "deleted": "Ürün silindi.",
+        "duplicated": "Kopya oluşturuldu.",
+        "featuredOn": "Artık ana sayfada gösteriliyor.",
+        "featuredOff": "Ana sayfadan kaldırıldı.",
+        "softDeleted": "Ürün hâlâ siparişlerde kullanıldığı için yalnızca gizlendi."
+      }
+    },
+    "categories": {
+      "eyebrow": "Kategoriler",
+      "title": "Kategoriler",
+      "description": "Kategorileri ve görünürlüğü yönetin.",
+      "bulkTitle": "Seçim",
+      "bulkDescription": "Birden fazla kategoriyi birlikte güncelleyin.",
+      "searchPlaceholder": "Kategori ara",
+      "selectedCount": "{count} seçili",
+      "empty": "Bu arama için kategori bulunamadı.",
+      "table": {
+        "category": "Kategori",
+        "slug": "Slug",
+        "sortOrder": "Sıralama",
+        "status": "Durum",
+        "options": "Seçenekler",
+        "actions": "İşlemler",
+        "products": "Ürünler"
+      }
+    },
+    "gallery": {
+      "eyebrow": "Dahili galeri",
+      "title": "Yönetici galerisi",
+      "description": "Ürün seçin ve sipariş başlatın.",
+      "filtersTitle": "Galeriyi filtrele",
+      "filtersDescription": "Ürün veya kategoriye göre arayın.",
+      "searchPlaceholder": "Ürün ara",
+      "internalOnly": "Yalnızca dahili",
+      "createWorkshopOrder": "Atölye siparişi oluştur",
+      "emptyTitle": "Ürün bulunamadı",
+      "emptyDescription": "Aramayı veya kategoriyi değiştirin."
+    },
+    "newOrder": {
+      "eyebrow": "Yeni atölye siparişi",
+      "title": "Atölye Siparişi",
+      "description": "Önce kategoriyi, sonra ürünü seçin ve atölyeye göndermeden önce yalnızca bu ürüne atanmış seçenekleri doldurun.",
+      "productSelectionTitle": "Ürün ve referanslar",
+      "productSelectionDescription": "Dahili galeri, ürün referansı, görseller ve temel verileri sağlar.",
+      "summaryTitle": "Özet",
+      "summaryDescription": "En önemli bilgiler form boyunca görünür kalır.",
+      "basicDescription": "Önce sipariş, müşteri ve atölye temel bilgilerini girin.",
+      "optionEngineDescription": "Bu bölümler, standart seçenekleri ve serbest sipariş detaylarını net bir akışta bir araya getirir.",
+      "success": "Sipariş atölyeye gönderildi.",
+      "sections": {
+        "basic": "Temel",
+        "gold": "Altın",
+        "measurements": "Ölçüler",
+        "name": "İsim kişiselleştirme",
+        "stones": "Taşlar",
+        "notes": "Notlar",
+        "product": "Ürün",
+        "order": "Sipariş",
+        "personalization": "Kişiselleştirme",
+        "workshop": "Atölye",
+        "review": "Kontrol",
+        "tracking": "Müşteri bildirimi ve takip"
+      },
+      "fields": {
+        "product": "Galeriden ürün",
+        "orderNumber": "Dahili sipariş numarası",
+        "quantity": "Adet",
+        "priority": "Öncelik",
+        "workshop": "Atölye",
+        "productName": "Ürün adı",
+        "category": "Kategori",
+        "dueDate": "Termin tarihi",
+        "customerName": "Müşteri adı",
+        "customerPhone": "Müşteri telefonu",
+        "customerReference": "Müşteri referansı",
+        "targetWeight": "Hedef ağırlık",
+        "weightTolerance": "Ağırlık toleransı",
+        "pendantSize": "Kolye ucu boyutu",
+        "width": "Genişlik",
+        "height": "Yükseklik",
+        "customMeasurements": "Özel ölçüler",
+        "hasNameCustomization": "İsim kişiselleştirmesini aç",
+        "previewRequired": "Önizleme gerekli",
+        "nameLanguage": "İsim dili",
+        "fontStyle": "Yazı stili",
+        "namePlacement": "İsim konumu",
+        "engravingPlacement": "Gravür konumu",
+        "engravingNotes": "Gravür notları",
+        "hasStones": "Taş ekle",
+        "stoneShape": "Taş şekli",
+        "stoneSize": "Taş boyutu",
+        "stoneQuantity": "Taş adedi",
+        "stoneSetting": "Taş montürü",
+        "customerNotes": "Müşteri notları",
+        "adminNotes": "Yönetici notları",
+        "qualityRequirements": "Kalite gereksinimleri",
+        "attachmentNotes": "Ek notlar",
+        "assignedAdmin": "Atanan yönetici",
+        "assignedEmployee": "Atanan çalışan",
+        "goldKarat": "Altın ayarı",
+        "goldColor": "Altın rengi",
+        "ringSize": "Yüzük ölçüsü",
+        "braceletSize": "Bileklik ölçüsü",
+        "chainLength": "Zincir uzunluğu",
+        "workshopNotes": "Atölye notları",
+        "deliveryNotes": "Teslim notları",
+        "engravingText": "Gravür metni",
+        "estimatedWeight": "Tahmini ağırlık",
+        "internalNotes": "İç notlar",
+        "language": "Dil",
+        "nameCustomizationEnabled": "İsim kişiselleştirme aktif",
+        "nameText": "İsim / Metin",
+        "packagingNotes": "Paketleme notları",
+        "placement": "Konum",
+        "stoneColor": "Taş rengi",
+        "stoneCount": "Adet",
+        "stonesEnabled": "Taşlar aktif",
+        "stoneType": "Taş tipi",
+        "surface": "Yüzey",
+        "customerEmail": "Müşteri e-postası",
+        "emailUpdatesEnabled": "E-posta güncellemelerini aç",
+        "trackingNumber": "Takip numarası",
+        "trackingStatus": "Takip durumu",
+        "totalAmount": "Toplam tutar",
+        "currency": "Para birimi"
+      },
+      "productDescription": "Ürünü ve kategoriyi seçin.",
+      "orderDescription": "Müşteri ve sipariş bilgilerini girin.",
+      "goldDescription": "Üretim için altın detaylarını hazırlayın.",
+      "measurementsDescription": "Ölçüleri ve özel ölçüleri girin.",
+      "personalizationDescription": "İsim, gravür ve konumu belirleyin.",
+      "stonesDescription": "Taşları ve montürü belirleyin.",
+      "workshopDescription": "Atölye, çalışan ve önceliği atayın.",
+      "reviewDescription": "Göndermeden önce her şeyi kontrol edin.",
+      "additionalOptionsTitle": "Ek alanlar",
+      "additionalOptionsDescription": "Bu ürün için yalnızca ilgili seçenekler.",
+      "draftSaved": "Taslak kaydedildi.",
+      "reviewChecklistTitle": "Kontrol listesi",
+      "reviewChecklistProduct": "Ürünü ve adedi doğrulayın.",
+      "reviewChecklistGold": "Altın, ölçü ve kişiselleştirmeyi kontrol edin.",
+      "reviewChecklistWorkshop": "Atölye, sorumlu ve teslim tarihini kontrol edin.",
+      "stepCount": "Adım {step} / {total}",
+      "steps": {
+        "product": "Ürün",
+        "gold": "Altın",
+        "measurements": "Ölçüler",
+        "personalization": "Kişiselleştirme",
+        "stones": "Taşlar",
+        "workshop": "Atölye",
+        "review": "Kontrol ve gönder",
+        "customerWorkshop": "Müşteri ve atölye",
+        "productOptions": "Ürün ve seçenekler"
+      },
+      "values": {
+        "yellowGold": "Sarı altın",
+        "whiteGold": "Beyaz altın",
+        "roseGold": "Pembe altın",
+        "polished": "Parlak",
+        "matte": "Mat",
+        "brushed": "Fırçalanmış",
+        "classic": "Klasik",
+        "modern": "Modern",
+        "script": "Yazılı"
+      },
+      "trackingDescription": "Müşteri e-postası, telefonu ve takip detaylarını hazırlayın.",
+      "successWithNotifications": "Sipariş oluşturuldu. Bildirimler artık gönderilebilir.",
+      "personalizationDisabled": "İsim kişiselleştirme kapalı"
+    },
+    "options": {
+      "eyebrow": "Seçenek motoru",
+      "title": "Seçenekler",
+      "description": "Altın, ölçü, gravür ve atölye siparişi alanları.",
+      "groupsTitle": "Seçenek grupları",
+      "groupsDescription": "Seçenek gruplarını hızlıca inceleyin.",
+      "searchPlaceholder": "Seçenek veya anahtar ara",
+      "productsScope": "ürün",
+      "categoriesScope": "kategori",
+      "workshopOverrides": "atölyeye özel ayar",
+      "noOverrides": "Bu seçenek için henüz atölyeye özel ayar yok.",
+      "empty": "Mevcut seçim için seçenek bulunamadı.",
+      "table": {
+        "option": "Seçenek",
+        "type": "Tur",
+        "scope": "Kapsam",
+        "status": "Durum",
+        "assignments": "Atamalar",
+        "actions": "İşlemler",
+        "group": "Grup"
+      },
+      "filtersTitle": "Seçenekleri filtrele",
+      "filtersDescription": "Grup, durum ve zorunluluğa göre arayın.",
+      "groupCount": "{count} grup"
+    },
+    "orders": {
+      "eyebrow": "Siparişler",
+      "title": "Siparişler",
+      "description": "Atölye siparişlerini takip edin ve güncelleyin.",
+      "filtersTitle": "Siparişleri filtrele",
+      "filtersDescription": "Sipariş, ürün, müşteri veya atölyeye göre arayın.",
+      "searchPlaceholder": "Sipariş, ürün veya müşteri ara",
+      "empty": "Bu seçim için sipariş bulunamadı.",
+      "detailEyebrow": "Sipariş detayı",
+      "detailDescription": "Sipariş, müşteri ve üretim tek bir net görünümde.",
+      "summaryTitle": "Sipariş özeti",
+      "summaryDescription": "Ürün, atölye ve termin tek bakışta.",
+      "timelineTitle": "Takip zamani",
+      "timelineDescription": "Bu siparişin son adımları.",
+      "goldDetailsTitle": "Altın detayları",
+      "measurementsTitle": "Ölçüler",
+      "notesTitle": "Notlar ve talimatlar",
+      "itemQuantity": "Bu siparişte {count} adet ürün var",
+      "table": {
+        "order": "Sipariş",
+        "customer": "Müşteri",
+        "workshop": "Atölye",
+        "status": "Durum",
+        "employee": "Çalışan",
+        "dueDate": "Termin",
+        "action": "İşlem",
+        "product": "Ürün",
+        "trackingNumber": "Takip no.",
+        "email": "E-posta",
+        "trackingStatus": "Takip durumu"
+      },
+      "customerTitle": "Müşteri",
+      "customerDescription": "İletişim bilgileri ve referans.",
+      "personalizationTitle": "Kişiselleştirme",
+      "stonesTitle": "Taşlar",
+      "deliveryTitle": "Teslimat",
+      "sidebarActionsTitle": "İşlemler",
+      "trackingTitle": "Takip",
+      "trackingDescription": "Durum, müşteri bilgileri ve son adımlar tek bakışta.",
+      "trackingNumberLabel": "Takip numarası",
+      "trackingStatusLabel": "Takip durumu",
+      "customerEmailLabel": "Müşteri e-postası",
+      "emailUpdatesLabel": "E-posta güncellemeleri",
+      "updatePanelTitle": "Durumu güncelle",
+      "updatePanelDescription": "Takip durumunu ve müşteri notunu yönetin.",
+      "updateNoteLabel": "Not",
+      "updateNotePlaceholder": "Bu değişiklik için kısa not",
+      "notifyByEmail": "Müşteriye e-posta gönder",
+      "noCustomerEmail": "Kayıtlı müşteri e-postası yok.",
+      "copySuccess": "Takip bağlantısı kopyalandı.",
+      "customerNotified": "Müşteri bilgilendirildi.",
+      "notifyError": "Bildirim şu anda hazırlanamadı.",
+      "notifyDefaultMessage": "Siparişiniz için yeni bir güncelleme var.",
+      "statusSavedDescription": "Takip durumu güncellendi.",
+      "statusSavedAndNotified": "Takip durumu kaydedildi ve müşteri bilgilendirildi.",
+      "statusSaved": "Takip durumu kaydedildi.",
+      "noStatusChanges": "Lütfen durumu değiştirin veya not ekleyin.",
+      "publicStageLabel": "Genel aşama",
+      "internalStatusLabel": "İç takip durumu",
+      "publicStageHelp": "Müşterinin göreceği ve e-posta tetikleyebilecek yalnızca üç aşama bunlardır.",
+      "publicStageEmailNotice": "Bu genel aşama değiştiğinde, e-posta güncellemeleri açıksa müşteriye otomatik e-posta gönderilir.",
+      "publicStageSavedAndNotified": "Genel aşama kaydedildi ve müşteri bilgilendirildi.",
+      "noPublicStage": "Henüz yayınlanmadı",
+      "notStageSpecific": "Genel aşama yok",
+      "emailTemplateLabel": "Şablon",
+      "emailLogDuplicateSkipped": "Bu e-posta, aynı müşteri şablonu bu sipariş için daha önce gönderildiği için atlandı.",
+      "emailLogSmtpNotice": "SMTP henüz tam olarak yapılandırılmadığı için e-posta gönderimi atlandı.",
+      "emailLogErrorFallback": "E-posta teslim edilemedi. Lütfen SMTP ayarlarını ve kayıtları kontrol edin.",
+      "supportTicketStatuses": {
+        "open": "Açık",
+        "in_progress": "İşlemde",
+        "resolved": "Çözüldü",
+        "closed": "Kapalı"
+      },
+      "resultCount": "{count, plural, =0 {Sipariş yok} other {# sipariş}}"
+    },
+    "workshops": {
+      "eyebrow": "Atölyeler",
+      "title": "Atölyeler",
+      "description": "Atölyeleri, iletişim bilgilerini ve iş yükünü yönetin.",
+      "detail": {
+        "title": "Atölye bilgileri",
+        "manager": "Atölye yöneticisi",
+        "employees": "Atölye çalışanları",
+        "orders": "Mevcut siparişler",
+        "deactivate": "Atölyeyi devre dışı bırak",
+        "employeeCount": "Çalışan sayısı",
+        "pending": "Kaydediliyor…",
+        "viewDetails": "Ayrıntıları görüntüle",
+        "activate": "Atölyeyi etkinleştir",
+        "employeesHint": "Bu atölyede çalışanlar. Yalnızca aktif hesabı olanlar yönetici olabilir.",
+        "noEmployees": "Bu atölyeye henüz çalışan atanmadı.",
+        "managerBadge": "Yönetici",
+        "appointManager": "Yönetici yap",
+        "sendInvite": "Davet gönder",
+        "resendInvite": "Daveti yeniden gönder",
+        "dangerTitle": "Atölyeyi sil",
+        "dangerHint": "Yalnızca hiçbir çalışan veya sipariş bağlı değilse mümkündür.",
+        "deleteWorkshop": "Atölyeyi kalıcı olarak sil",
+        "deleteConfirm": "“{name}” atölyesi kalıcı olarak silinsin mi?",
+        "account": {
+          "active": "Hesap aktif",
+          "invited": "Davet edildi",
+          "disabled": "Hesap devre dışı",
+          "missing_auth_user": "Henüz hesap yok"
+        }
+      },
+      "workshopOrders": {
+        "assign": "Çalışana ata",
+        "empty": "Bu atölye için sipariş yok.",
+        "pending": "Atama kaydediliyor…",
+        "title": "Atölye siparişleri",
+        "unassigned": "Atanmamış"
+      },
+      "cards": {
+        "contact": "İletişim",
+        "activeOrders": "Aktif siparişler",
+        "completed": "Bu ay tamamlanan",
+        "performance": "Zamanında teslim",
+        "email": "E-posta"
+      },
+      "descriptionLabel": "Açıklama (isteğe bağlı)"
+    },
+    "employees": {
+      "eyebrow": "Çalışanlar",
+      "title": "Çalışanlar",
+      "description": "Ekibi, rolleri ve güncel görevleri yönetin.",
+      "filtersTitle": "Çalışanları filtrele",
+      "filtersDescription": "İsim, rol veya atölyeye göre arayın.",
+      "searchPlaceholder": "Çalışan ara",
+      "empty": "Bu seçim için çalışan bulunamadı.",
+      "table": {
+        "employee": "Çalışan",
+        "role": "Rol",
+        "workshop": "Atölye",
+        "workload": "İş yükü",
+        "status": "Durum",
+        "activeTasks": "Aktif görevler",
+        "attendance": "Devam durumu",
+        "actions": "İşlemler",
+        "accountStatus": "Hesap"
+      },
+      "account": {
+        "create": "Çalışan ekle",
+        "edit": "Çalışanı düzenle",
+        "formDescription": "Çalışan bilgilerini ve hesap erişimini tek yerden yönetin.",
+        "saved": "Çalışan kaydı kaydedildi.",
+        "inviteSent": "Erişim e-postası gönderildi.",
+        "inviteDeliveryFailed": "Hesap kaydedildi ancak erişim e-postası teslim edilemedi.",
+        "passwordResetSent": "Şifre sıfırlama e-postası gönderildi.",
+        "passwordResetDeliveryFailed": "Sıfırlama bağlantısı oluşturuldu ancak e-posta teslim edilemedi.",
+        "linked": "Çalışan mevcut hesaba bağlandı.",
+        "notLinked": "Bu çalışana bağlanabilecek bir hesap henüz yok.",
+        "duplicateEmail": "Bu e-posta adresi başka bir çalışana ait.",
+        "emailRequired": "Hesap erişimi için bir e-posta adresi gerekli.",
+        "linkInUse": "Bu hesap zaten başka bir çalışana bağlı.",
+        "roleConflict": "Bağlı hesap zaten farklı bir dahili role ait.",
+        "roleNotAllowed": "Bu çalışan hesabını yönetme yetkiniz yok.",
+        "notFound": "Çalışan artık bulunamıyor.",
+        "reactivated": "Çalışan hesabı yeniden etkinleştirildi.",
+        "deactivated": "Çalışan hesabı devre dışı bırakıldı.",
+        "noEmail": "Kayıtlı e-posta yok",
+        "lastInvite": "Son davet",
+        "lastLogin": "Son giriş",
+        "lastPasswordReset": "Son şifre sıfırlama",
+        "status": {
+          "active": "Etkin",
+          "disabled": "Pasif",
+          "invited": "Davet edildi",
+          "missing_auth_user": "Bağlı değil"
+        },
+        "actions": {
+          "sendInvite": "Davet gönder",
+          "resendInvite": "Daveti yeniden gönder",
+          "linkAccount": "Hesabı bağla",
+          "resetPassword": "Şifreyi sıfırla"
+        }
+      },
+      "form": {
+        "fullName": "Tam ad",
+        "attendance": "Devam durumu",
+        "phone": "Telefon",
+        "email": "E-posta",
+        "emailHint": "Giriş, davet ve şifre sıfırlama bağlantıları için kullanılır.",
+        "shift": "Vardiya",
+        "notes": "Notlar",
+        "active": "Çalışan aktif"
+      }
+    },
+    "attendance": {
+      "eyebrow": "Mesai",
+      "title": "Mesai",
+      "description": "Vardiya, durum ve devamsızlıkları takip edin.",
+      "filtersTitle": "Duruma göre filtrele",
+      "filtersDescription": "Durum ve atölyeye göre filtreleyin.",
+      "empty": "Bu seçim için mesai verisi bulunamadı.",
+      "table": {
+        "employee": "Çalışan",
+        "date": "Tarih",
+        "shift": "Vardiya",
+        "status": "Durum",
+        "note": "Not",
+        "workshop": "Atölye"
+      }
+    },
+    "reports": {
+      "eyebrow": "Raporlar",
+      "title": "Raporlar",
+      "description": "Üretim, sipariş ve atölyeler için temel göstergeler.",
+      "cards": {
+        "productionTime": "Ortalama üretim süresi",
+        "ready": "Hazır siparişler",
+        "delivered": "Teslim edilen siparişler",
+        "activeWorkshops": "Aktif atölyeler"
+      },
+      "tabs": {
+        "status": "Durum",
+        "workshops": "Atölyeler",
+        "options": "Seçenekler",
+        "workload": "İş yükü"
+      },
+      "statusTitle": "Duruma göre siparişler",
+      "statusDescription": "Mevcut üretim dağılımına hızlı bakış.",
+      "workshopsTitle": "Atölyeye göre siparişler",
+      "workshopsDescription": "Hangi atölyenin şu anda ne kadar yükü var.",
+      "optionsTitle": "Seçenek kullanımı",
+      "optionsDescription": "Şu anda en çok kullanılan seçenek alanları.",
+      "workloadTitle": "Çalışan iş yükü",
+      "workloadDescription": "Kişi bazında aktif sipariş ve yaklaşık tamamlama oranı.",
+      "activeOrdersCount": "{count} aktif sipariş"
+    },
+    "archive": {
+      "eyebrow": "Arşiv",
+      "title": "Arşiv",
+      "description": "Arşivlenmiş siparişlere ve ürünlere göz atın.",
+      "ordersTitle": "Arşivlenmiş siparişler",
+      "ordersDescription": "Tamamlanmış veya arşivlenmiş üretim akışları.",
+      "productsTitle": "Arşivlenmiş ürünler",
+      "productsDescription": "Pasif veya geçici olarak gizlenmiş ürün kartları.",
+      "deleteDisabled": "Silme kapalı",
+      "filtersTitle": "Arşivi filtrele",
+      "filtersDescription": "Öğe, tür veya duruma göre arayın.",
+      "searchPlaceholder": "Arşivde ara",
+      "empty": "Arşivde öğe bulunamadı.",
+      "typeOrder": "Sipariş",
+      "typeProduct": "Ürün",
+      "table": {
+        "item": "Oge",
+        "type": "Tur",
+        "status": "Durum",
+        "context": "Bağlam",
+        "actions": "İşlemler"
+      }
+    },
+    "settings": {
+      "eyebrow": "Ayarlar",
+      "title": "Ayarlar",
+      "description": "Şirket, site ve panel ayarlarını yönetin.",
+      "contactTitle": "İletişim bilgileri",
+      "contactDescription": "Dahili alan için şirketin temel bilgileri.",
+      "preferencesTitle": "Panel tercihleri",
+      "preferencesDescription": "Yönetim paneli için dil ve görünümü ayarlayın.",
+      "fields": {
+        "companyName": "Şirket adı",
+        "address": "Adres",
+        "phone": "Telefon",
+        "defaultLanguage": "Varsayılan dil",
+        "dashboardTheme": "Panel temasi",
+        "contactFormStatus": "İletişim formu",
+        "demoRole": "Erişim rolü",
+        "density": "Yoğunluk",
+        "email": "E-posta",
+        "legalNotice": "Künye",
+        "privacyPolicy": "Gizlilik",
+        "sidebarMode": "Kenar çubuğu modu"
+      },
+      "values": {
+        "luxuryDark": "Lüks koyu",
+        "softGold": "Soft Gold",
+        "comfortable": "Rahat",
+        "compact": "Kompakt",
+        "compactDensity": "Kompakt",
+        "expanded": "Geniş"
+      },
+      "companyTitle": "Şirket bilgileri",
+      "companyDescription": "Yönetim paneli için temel bilgiler.",
+      "websiteTitle": "Web sitesi",
+      "websiteDescription": "Dil, tema ve iletişim formu ayarları.",
+      "dashboardTitle": "Panel",
+      "dashboardDescription": "Rol görünümü, kenar çubuğu ve arayüz yoğunluğunu yönetin.",
+      "legalTitle": "Yasal",
+      "legalDescription": "Künye ve gizlilik metinleri için alanlar.",
+      "previewMessage": "Önizleme güncellendi.",
+      "resetMessage": "Ayarlar sıfırlandı.",
+      "saveMessage": "Ayarlar kaydedildi."
+    },
+    "systemCheck": {
+      "title": "Sistem kontrolü",
+      "description": "Gerekirse mevcut senkronizasyon ve erişim durumunu inceleyin.",
+      "statusTitle": "Güncel durum",
+      "statusDescription": "Bu kontroller dahili senkronizasyon görünümünü ve erişimi etkiler.",
+      "pinLabel": "Erişim PIN'i",
+      "pinPlaceholder": "Erişim PIN'ini girin",
+      "unlockDescription": "Devam etmek için erişim PIN'ini girin.",
+      "continue": "Devam et",
+      "refresh": "Yenile",
+      "sync": "Senkronizasyon",
+      "syncOn": "Sync ON",
+      "syncOff": "Sync OFF",
+      "gate": "Erisim",
+      "gateEnabled": "Etkin",
+      "gateDisabled": "Kapalı",
+      "statusEnabled": "Etkin",
+      "statusDisabled": "Kapalı",
+      "expiresAt": "Bitiş",
+      "lastRotatedAt": "Son yenileme",
+      "lastUsedAt": "Son kullanim",
+      "version": "Sürüm",
+      "rotate": "Bağlantıyı yenile",
+      "disableGate": "Bağlantıyı kapat",
+      "setExpiry": "Bitiş belirle",
+      "unavailable": "Bu sayfa şu anda kullanılamıyor.",
+      "updated": "Ayarlar güncellendi.",
+      "linkDisabled": "Mevcut bağlantı kapatıldı.",
+      "newLinkCreated": "Yeni bağlantı hazır.",
+      "linkReadyTitle": "Güncelleme tamamlandı",
+      "linkReadyDescription": "Tam erişim bağlantısı yalnızca şu anda görünür.",
+      "deliveryStatusLabel": "Kayıtlı adrese gönderim",
+      "deliverySent": "Gönderildi",
+      "deliveryFailed": "Gönderilmedi",
+      "copyLink": "Bağlantıyı kopyala",
+      "copySuccess": "Bağlantı kopyalandı.",
+      "newLinkLabel": "Tam bağlantı",
+      "linkShownOnce": "Bu bağlantı tekrar gösterilmeyecek.",
+      "mutationUnavailable": "Güncelleme şu anda tamamlanamadı.",
+      "pinInvalid": "Erişim PIN'i geçersiz.",
+      "invalidSession": "Lütfen erişim PIN'ini yeniden girin."
+    },
+    "trackingStatus": {
+      "created": "Oluşturuldu",
+      "sent_to_workshop": "Atölyeye gönderildi",
+      "accepted_by_workshop": "Atölye kabul etti",
+      "in_production": "Üretimde",
+      "quality_check": "Kalite kontrol",
+      "ready_for_pickup": "Teslime hazır",
+      "on_the_way": "Yolda",
+      "delivered_to_store": "Mağazaya ulaştı",
+      "picked_up": "Teslim alındı",
+      "completed": "Tamamlandı",
+      "cancelled": "İptal edildi"
+    },
+    "publicTrackingStage": {
+      "order_in_workshop": "Sipariş atölyede",
+      "in_production": "Üretimde",
+      "quality_check": "Kalite kontrolünde",
+      "ready_for_pickup": "Teslime hazır",
+      "shipping": "Kargoya verildi",
+      "delivered": "Teslim edildi",
+      "completed": "Tamamlandı",
+      "cancelled": "İptal edildi",
+      "on_the_way": "Yolda",
+      "delivered_to_store": "Mağazada teslim alıma hazır",
+      "picked_up": "Teslim alındı"
+    },
+    "emailLogStatus": {
+      "pending": "Bekliyor",
+      "sent": "E-posta gönderildi",
+      "skipped": "E-posta atlandi",
+      "failed": "E-posta başarısız"
+    },
+    "emailTemplateType": {
+      "orderConfirmation": "Sipariş onayı",
+      "publicStageUpdate": "Genel aşama güncellemesi"
+    },
+    "assignmentStatus": {
+      "assigned": "Atandı",
+      "accepted": "Kabul edildi",
+      "in_progress": "İşlemde",
+      "waiting": "Bekliyor",
+      "completed": "Tamamlandı",
+      "returned": "Geri verildi"
+    },
+    "accountSetup": {
+      "title": "Erişiminizi hazırlayın",
+      "description": "Yönetim paneline girebilmek için dahili GoldHelwah hesabınıza bir şifre oluşturun.",
+      "resetTitle": "Yeni şifre belirleyin",
+      "resetDescription": "Dahili GoldHelwah hesabınız için yeni bir şifre seçin.",
+      "securityTitle": "Korumalı dahili erişim",
+      "securityText": "Güçlü bir şifre kullanın ve bu erişim bağlantısını kimseyle paylaşmayın.",
+      "formTitle": "Şifre oluştur",
+      "formDescription": "Hesap etkinleştirmesini tamamlamak için şifrenizi bir kez belirleyin.",
+      "resetFormTitle": "Şifreyi sıfırla",
+      "resetFormDescription": "Hesabınıza yeniden erişmek için yeni bir şifre girin.",
+      "password": "Şifre",
+      "confirmPassword": "Şifreyi onayla",
+      "submit": "Şifreyi kaydet",
+      "resetSubmit": "Şifreyi güncelle",
+      "errors": {
+        "passwordLength": "Lütfen en az 8 karakterli bir şifre seçin.",
+        "passwordMismatch": "Şifre onayı eşleşmiyor.",
+        "sessionExpired": "Oturumunuz artık geçerli değil. Lütfen yeni bir bağlantı isteyin.",
+        "updateFailed": "Şifre şu anda güncellenemedi. Lütfen tekrar deneyin."
+      }
+    },
+    "settingsClient": {
+      "title": "Ayarlar",
+      "description": "Bildirim adreslerini, harici sipariş giriş bağlantısını ve kullanıcıları tek yerden yönetin.",
+      "diagnosticsTitle": "Ayar tanılaması",
+      "notificationTitle": "Bildirimler",
+      "adminEmail": "Sipariş ve talep bildirim e-postası",
+      "supportEmail": "Destek / iletişim",
+      "ownerEmail": "Sahip / süper yönetici",
+      "smtpTitle": "E-posta durumu",
+      "smtpConfigured": "SMTP yapılandırıldı",
+      "smtpMissing": "SMTP eksik",
+      "orderEntryTitle": "Harici sipariş giriş bağlantısı",
+      "orderEntryDescription": "Harici bağlantıyı etkinleştirin, tam adresi kontrol edin ve buradan kopyalayın ya da e-postayla gönderin.",
+      "save": "Kaydet",
+      "rotateLink": "Yeni bağlantı oluştur",
+      "orderEntryEnabled": "Harici sipariş giriş bağlantısını etkinleştir",
+      "expiresAt": "Bitiş tarihi",
+      "fullLinkLabel": "Tam bağlantı",
+      "fullLinkHelp": "Tam adres her zaman paylaşılacağı şekilde gösterilir. Sunucu hâlâ localhost bildiriyorsa tarayıcının adresi kullanılır.",
+      "linkDisabled": "Harici sipariş giriş bağlantısı şu anda kapalı.",
+      "copyLink": "Bağlantıyı kopyala",
+      "copySuccess": "Tam bağlantı kopyalandı.",
+      "copyUnavailable": "Şu anda tam bağlantı yok.",
+      "statusEnabled": "Açık",
+      "statusDisabled": "Kapalı",
+      "rotatedAt": "Son yenileme",
+      "linkRecipient": "Bağlantıyı gönder",
+      "linkRecipientHelp": "Düğmeli ve yedek bağlantılı, Almanca profesyonel bir e-posta gönderilir.",
+      "sendLink": "Bağlantıyı e-postayla gönder",
+      "userListTitle": "Kullanıcılar ve roller",
+      "manageUsersHint": "Kullanıcı yönetimi yalnızca süper yöneticilere açıktır.",
+      "userSave": "Kullanıcıyı kaydet",
+      "userCreate": "Kullanıcı oluştur",
+      "userDisplayName": "Görünen ad",
+      "role": "Rol",
+      "userActive": "Aktif",
+      "inactive": "Pasif",
+      "activate": "Etkinleştir",
+      "deactivate": "Devre dışı bırak",
+      "sendPasswordLink": "Şifre bağlantısı gönder",
+      "email": "E-posta",
+      "environment": "Ortam",
+      "siteUrl": "Site adresi",
+      "missingEnvironment": "Eksik ortam değişkenleri",
+      "requiredMigration": "Önerilen geçiş",
+      "userDelete": "Sil",
+      "userEdit": "Düzenle",
+      "inviteAgain": "Yeni bağlantı gönder",
+      "roleOwner": "Sahip",
+      "roleAdmin": "Yönetici",
+      "roleEmployee": "Çalışan"
+    },
+    "navGroups": {
+      "orders": "Günlük işler",
+      "catalog": "Katalog",
+      "team": "Ekip",
+      "customers": "Müşteriler",
+      "system": "Sistem"
+    },
+    "forms": {
+      "required": "Lütfen bu alanı doldurun.",
+      "tooLong": "Bu metin çok uzun.",
+      "invalidValue": "Lütfen bu değeri kontrol edin.",
+      "invalidSlug": "Yalnızca küçük harf, rakam ve tire kullanın – ya da boş bırakın.",
+      "duplicateSku": "Bu ürün kodu zaten kullanılıyor.",
+      "checkFields": "Lütfen işaretli alanları kontrol edin.",
+      "saveFailed": "Kaydedilemedi. Lütfen tekrar deneyin."
+    },
+    "translations": {
+      "required": "Zorunlu",
+      "optional": "isteğe bağlı",
+      "otherLanguages": "Diğer diller",
+      "otherLanguagesStatus": "{total} dilden {count} tanesi çevrildi – isteğe bağlı",
+      "fallbackHint": "Boş alanlarda sitede otomatik olarak Almanca metin gösterilir."
+    },
+    "imageUploader": {
+      "addPhotos": "Fotoğraf ekle",
+      "addPhoto": "Fotoğraf ekle",
+      "uploading": "Yükleniyor…",
+      "hint": "Buraya sürükleyin veya tıklayın · JPG, PNG, WebP",
+      "mainPhoto": "Ana fotoğraf",
+      "makeMain": "Ana fotoğraf yap",
+      "moveEarlier": "Öne al",
+      "moveLater": "Geriye al",
+      "remove": "Fotoğrafı kaldır",
+      "replace": "Değiştir",
+      "errors": {
+        "invalid_type": "Lütfen yalnızca görsel dosyaları seçin (JPG, PNG, WebP veya AVIF).",
+        "too_large": "Görsel çok büyük. Lütfen daha küçük bir dosya seçin.",
+        "upload_failed": "Görsel yüklenemedi. Lütfen tekrar deneyin."
+      }
+    },
+    "productsPage": {
+      "title": "Ürünler",
+      "description": "Müşterilerin mağazada gördüğü her şey. Düzenlemek için bir ürüne tıklayın.",
+      "add": "Ürün ekle",
+      "searchPlaceholder": "Ad veya ürün kodu ara",
+      "categoryFilter": "Kategoriye göre filtrele",
+      "allCategories": "Tüm kategoriler",
+      "withoutCategory": "Kategorisiz",
+      "filters": {
+        "all": "Tümü",
+        "visible": "Mağazada",
+        "hidden": "Gizli",
+        "featured": "Ana sayfa"
+      },
+      "emptyTitle": "Henüz ürün yok",
+      "emptyText": "İlk ürününüzü fotoğraf ve adla ekleyin.",
+      "emptyFilteredTitle": "Sonuç yok",
+      "emptyFilteredText": "Arama ve filtrelere uyan ürün yok.",
+      "clearFilters": "Filtreleri temizle",
+      "noPhoto": "Fotoğraf yok",
+      "hiddenBadge": "Gizli",
+      "featuredBadge": "Ana sayfa",
+      "editProduct": "{name} düzenle",
+      "moreActions": "{name} için diğer işlemler",
+      "hide": "Mağazada gizle",
+      "show": "Mağazada göster",
+      "feature": "Ana sayfada göster",
+      "unfeature": "Ana sayfadan kaldır",
+      "deleteConfirm": "“{name}” kalıcı olarak silinsin mi? Ürün hâlâ siparişlerde kullanılıyorsa yalnızca gizlenir."
+    },
+    "productEditor": {
+      "titleNew": "Yeni ürün",
+      "titleEdit": "Ürünü düzenle",
+      "descriptionNew": "Fotoğraf, ad ve kategori yeterli – gerisi isteğe bağlı.",
+      "requiredHint": "* işaretli alanlar zorunludur.",
+      "create": "Ürünü ekle",
+      "save": "Değişiklikleri kaydet",
+      "saving": "Kaydediliyor…",
+      "photosTitle": "Fotoğraflar",
+      "photosHint": "İlk fotoğraf mağazadaki ana fotoğraftır.",
+      "textTitle": "Ad ve açıklama",
+      "textHint": "Almanca ve Arapça zorunlu, diğer diller isteğe bağlıdır.",
+      "nameLabel": "Ürün adı",
+      "descriptionLabel": "Açıklama",
+      "categoryTitle": "Kategori ve müşteri bilgileri",
+      "categoryLabel": "Kategori",
+      "noCategory": "Kategorisiz",
+      "optionGroupLabel": "Müşteri bilgileri",
+      "optionGroupHelper": "Müşterinin talep sırasında gireceği bilgiler, örn. isim veya ayar.",
+      "noOptionGroup": "Ek bilgi gerekmiyor",
+      "optionGroupPreview": "Müşteriden istenecek: {fields}",
+      "optionGroupEmpty": "Bu grupta henüz alan yok.",
+      "visibilityTitle": "Görünürlük",
+      "visibleLabel": "Mağazada göster",
+      "visibleHint": "Gizli ürünler kayıtlı kalır ama müşteriler göremez.",
+      "featuredLabel": "Ana sayfada öne çıkar",
+      "featuredHint": "“Seçili ürünler” bölümünde görünür (ilk dördü).",
+      "advancedTitle": "Diğer ayarlar",
+      "advancedHint": "Ürün kodu, web adresi, sıra ve etiketler – otomatik doldurulur.",
+      "skuLabel": "Ürün kodu",
+      "skuHelper": "Otomatik atanması için boş bırakın.",
+      "skuPlaceholder": "örn. GH-0012",
+      "slugLabel": "Web adresi",
+      "slugHelper": "Boş bırakın – addan oluşturulur.",
+      "sortOrderLabel": "Sıra",
+      "sortOrderHelper": "Küçük sayılar önce görünür.",
+      "tagsLabel": "Etiketler",
+      "tagsHelper": "Ürün sayfasında küçük etiketler olarak görünür. Virgülle ayırın."
+    },
+    "categoriesPage": {
+      "title": "Kategoriler",
+      "description": "Kategoriler mağazayı düzenler, örn. yüzükler veya zincirler. Her ürün bir kategoriye aittir.",
+      "add": "Kategori ekle",
+      "searchPlaceholder": "Kategori ara",
+      "emptyTitle": "Henüz kategori yok",
+      "emptyText": "Ürünleri mağazada düzenlemek için kategoriler oluşturun.",
+      "emptyFilteredTitle": "Kategori bulunamadı",
+      "productCount": "{count, plural, =0 {Ürün yok} other {# ürün}}",
+      "nameCustomizationBadge": "İsimli yapım mümkün",
+      "deleteConfirm": "“{name}” kategorisi silinsin mi?",
+      "deleteConfirmWithProducts": "“{name}” kategorisi silinsin mi? {count} ürün kategorisini kaybedecek ve “Kategorisiz” altında görünecek.",
+      "titleNew": "Yeni kategori",
+      "titleEdit": "Kategoriyi düzenle",
+      "descriptionNew": "Bir görsel ve bir ad yeterli.",
+      "create": "Kategoriyi ekle",
+      "imageTitle": "Görsel",
+      "imageHint": "Ana sayfada ve mağazada kategori görseli olarak gösterilir.",
+      "textTitle": "Ad ve açıklama",
+      "nameLabel": "Kategori adı",
+      "descriptionLabel": "Kısa açıklama",
+      "settingsTitle": "Ayarlar",
+      "visibleLabel": "Mağazada göster",
+      "visibleHint": "Gizli kategoriler mağaza filtresinde görünmez.",
+      "nameCustomizationLabel": "İsme özel yapım",
+      "nameCustomizationHint": "Bu kategorideki ürünlerde, müşterinin ismiyle yapılabileceğine dair bir not görünür.",
+      "advancedHint": "Web adresi ve sıra – otomatik doldurulur.",
+      "messages": {
+        "created": "Kategori eklendi.",
+        "updated": "Değişiklikler kaydedildi.",
+        "shown": "Kategori artık mağazada görünüyor.",
+        "hidden": "Kategori mağazada gizlendi.",
+        "deleted": "Kategori silindi."
+      }
+    },
+    "optionsPage": {
+      "title": "Ürün seçenekleri",
+      "description": "Müşterilerin talep veya sipariş sırasında yanıtladığı sorular – örn. yapılacak isim veya ayar. Soruları setlerde toplayın ve ürün eklerken bir set seçin.",
+      "addGroup": "Yeni set",
+      "addField": "Soru ekle",
+      "renameGroup": "Seti yeniden adlandır",
+      "deleteGroup": "Seti sil",
+      "hideField": "Soruyu gizle",
+      "showField": "Soruyu göster",
+      "emptyTitle": "Henüz set yok",
+      "emptyText": "Bir set oluşturun, örn. “İsim takıları”, ve içine sorular ekleyin.",
+      "groupEmpty": "Bu sette henüz soru yok.",
+      "groupSummary": "{fields, plural, =0 {Soru yok} other {# soru}} · {products, plural, =0 {henüz hiçbir üründe kullanılmıyor} other {# üründe kullanılıyor}}",
+      "requiredBadge": "Zorunlu",
+      "deleteGroupConfirm": "“{name}” seti tüm sorularıyla silinsin mi? Kayıtlı siparişler etkilenmez.",
+      "deleteFieldConfirm": "“{name}” sorusu silinsin mi? Kayıtlı siparişler etkilenmez.",
+      "groupTitleNew": "Yeni set",
+      "groupTitleEdit": "Seti düzenle",
+      "groupDescription": "Bir set, belirli ürünlere ait soruları bir araya getirir.",
+      "groupNameTitle": "Set adı",
+      "groupNameHint": "Yalnızca siz görürsünüz, örn. “İsim takıları” veya “Yüzükler”.",
+      "groupNameLabel": "Ad",
+      "groupActiveHint": "Kapatıldığında bu setin soruları hiçbir yerde gösterilmez.",
+      "fieldTitleNew": "Yeni soru",
+      "fieldTitleEdit": "Soruyu düzenle",
+      "fieldDescription": "Soru, talep ve sipariş formlarında bu şekilde görünür.",
+      "presetsTitle": "Hızlı başlangıç",
+      "presetsHint": "Bir şablon tüm dilleri doldurur – sonra her şeyi değiştirebilirsiniz.",
+      "typeTitle": "Cevap türü",
+      "questionTitle": "Soru",
+      "questionHint": "Almanca ve Arapça zorunlu, diğer diller isteğe bağlıdır.",
+      "labelLabel": "Soru",
+      "helpLabel": "Alanın altındaki ipucu",
+      "placeholderLabel": "Alan içindeki örnek",
+      "choicesTitle": "Seçenekler",
+      "choicesHint": "Her seçenek için bir satır. İkinci dil sütunu isteğe bağlıdır – boş bırakılırsa ilk metin gösterilir.",
+      "choiceLabel": "Seçenek {number}",
+      "removeChoice": "{number}. seçeneği kaldır",
+      "addChoice": "Seçenek ekle",
+      "settingsTitle": "Ayarlar",
+      "groupLabel": "Ait olduğu set",
+      "requiredLabel": "Cevap zorunlu",
+      "requiredHint": "Bu soru yanıtlanmadan form gönderilemez.",
+      "activeLabel": "Göster",
+      "activeHint": "Gizli sorular kayıtlı kalır ama formda görünmez.",
+      "types": {
+        "text": "Kısa cevap",
+        "textarea": "Uzun metin",
+        "number": "Sayı",
+        "select": "Tek seçim",
+        "multi_select": "Çoklu seçim",
+        "boolean": "Evet / hayır",
+        "date": "Tarih"
+      },
+      "typeHints": {
+        "text": "Bir kelime veya tek satır, örn. bir isim.",
+        "textarea": "Birkaç satır, örn. özel istekler.",
+        "number": "Yalnızca sayı, örn. ağırlık veya yüzük ölçüsü.",
+        "select": "Müşteri listeden tam olarak bir seçenek seçer.",
+        "multi_select": "Müşteri birden fazla seçeneği işaretleyebilir.",
+        "boolean": "Evet veya hayır için bir onay kutusu.",
+        "date": "Takvimden bir tarih, örn. istenen tarih."
+      },
+      "presets": {
+        "engraving": {
+          "name": "İsim",
+          "label": {
+            "de": "Gewünschter Name",
+            "ar": "الاسم المطلوب",
+            "en": "Name to be made",
+            "fr": "Prénom souhaité",
+            "tr": "İstenen isim"
+          },
+          "help": {
+            "de": "Genau so, wie er angefertigt werden soll.",
+            "ar": "اكتب الاسم كما تريده بالضبط.",
+            "en": "Exactly as it should be made.",
+            "fr": "Exactement comme il doit être réalisé.",
+            "tr": "Tam olarak yapılmasını istediğiniz şekilde yazın."
+          },
+          "placeholder": {
+            "de": "z. B. Lina",
+            "ar": "مثال: لينا",
+            "en": "e.g. Lina",
+            "fr": "ex. Lina",
+            "tr": "örn. Lina"
+          }
+        },
+        "karat": {
+          "name": "Ayar",
+          "label": {
+            "de": "Goldlegierung (Karat)",
+            "ar": "العيار",
+            "en": "Gold karat",
+            "fr": "Carat de l’or",
+            "tr": "Altın ayarı"
+          },
+          "help": {
+            "de": "Wählen Sie die gewünschte Legierung.",
+            "ar": "اختر العيار المطلوب.",
+            "en": "Choose the karat you want.",
+            "fr": "Choisissez le carat souhaité.",
+            "tr": "İstediğiniz ayarı seçin."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        },
+        "weight": {
+          "name": "Ağırlık",
+          "label": {
+            "de": "Gewünschtes Gewicht (g)",
+            "ar": "الوزن المطلوب (غرام)",
+            "en": "Desired weight (g)",
+            "fr": "Poids souhaité (g)",
+            "tr": "İstenen ağırlık (g)"
+          },
+          "help": {
+            "de": "Ungefähres Gewicht in Gramm.",
+            "ar": "الوزن التقريبي بالغرام.",
+            "en": "Approximate weight in grams.",
+            "fr": "Poids approximatif en grammes.",
+            "tr": "Gram cinsinden yaklaşık ağırlık."
+          },
+          "placeholder": {
+            "de": "z. B. 12,5",
+            "ar": "مثال: 12.5",
+            "en": "e.g. 12.5",
+            "fr": "ex. 12,5",
+            "tr": "örn. 12,5"
+          }
+        },
+        "note": {
+          "name": "Notlar",
+          "label": {
+            "de": "Anmerkungen",
+            "ar": "ملاحظات",
+            "en": "Notes",
+            "fr": "Remarques",
+            "tr": "Notlar"
+          },
+          "help": {
+            "de": "Weitere Wünsche, z. B. Schriftart oder Länge.",
+            "ar": "أي طلبات إضافية، مثل نوع الخط أو الطول.",
+            "en": "Any other wishes, e.g. font or length.",
+            "fr": "Autres souhaits, par ex. police ou longueur.",
+            "tr": "Diğer istekler, örn. yazı tipi veya uzunluk."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        }
+      },
+      "errors": {
+        "choices": "Lütfen en az bir seçenek ekleyin."
+      },
+      "messages": {
+        "groupCreated": "Set eklendi.",
+        "groupUpdated": "Set kaydedildi.",
+        "groupDeleted": "Set silindi.",
+        "groupArchived": "Set siparişlerde kullanıldığı için yalnızca gizlendi.",
+        "fieldCreated": "Soru eklendi.",
+        "fieldUpdated": "Soru kaydedildi.",
+        "fieldShown": "Soru yeniden gösteriliyor.",
+        "fieldHidden": "Soru gizlendi.",
+        "fieldDeleted": "Soru silindi.",
+        "fieldArchived": "Soru siparişlerde kullanıldığı için yalnızca gizlendi."
+      }
+    },
+    "galleryPage": {
+      "description": "Önce “Ürünler” bölümünde görünür bir ürün ekleyin.",
+      "title": "Mağazada henüz ürün yok",
+      "pickTitle": "Yeni sipariş",
+      "pickDescription": "1. adım: yapılacak ürünü seçin. Ardından müşteri ve ayrıntıları girin.",
+      "searchPlaceholder": "Ürün ara",
+      "allCategories": "Tümü",
+      "noMatchTitle": "Ürün bulunamadı",
+      "startOrder": "{name} için sipariş oluştur"
+    },
+    "inquiriesPage": {
+      "archive": "Arşivle",
+      "delete": "Sil",
+      "description": "Web sitesinden gelen iletişim mesajları ve ürün talepleri. Yeni talepler işaretlidir.",
+      "email": "E-posta",
+      "filtersDescription": "Ad, e-posta, telefon, ürün veya mesaja göre arayın.",
+      "product": "Ürün",
+      "read": "Okundu",
+      "replied": "Yanıtlandı",
+      "source": "Kaynak",
+      "status": "Durum",
+      "title": "Müşteri talepleri",
+      "searchPlaceholder": "Ad, e-posta, telefon veya metin ara",
+      "filters": {
+        "open": "Açık",
+        "all": "Tümü"
+      },
+      "statuses": {
+        "new": "Yeni",
+        "read": "Okundu",
+        "in_progress": "İşlemde",
+        "replied": "Yanıtlandı",
+        "archived": "Arşivlendi"
+      },
+      "sources": {
+        "contact": "İletişim",
+        "product": "Ürün talebi",
+        "order_entry": "Harici sipariş"
+      },
+      "emptyTitle": "Henüz talep yok",
+      "emptyText": "Biri iletişim formunu kullandığında mesajı burada görünür.",
+      "emptyFilteredTitle": "Bu görünümde talep yok",
+      "unknownCustomer": "Bilinmiyor",
+      "writtenIn": "{language} yazılmış",
+      "markRead": "Okundu olarak işaretle",
+      "markReplied": "Yanıtlandı olarak işaretle",
+      "deleteConfirm": "Bu talep kalıcı olarak silinsin mi?"
+    },
+    "inquiryMessages": {
+      "deleted": "Talep yönetim panelinden kaldırıldı.",
+      "noAccess": "Erişim yok.",
+      "saved": "Talep durumu güncellendi."
+    },
+    "myTasksPage": {
+      "description": "Burada yalnızca size atanmış siparişleri görürsünüz. Çalışmak için bir görevi açın.",
+      "empty": "Şu anda size atanmış görev yok.",
+      "openTask": "Görevi aç",
+      "searchPlaceholder": "Sipariş veya ürün ara",
+      "title": "Görevlerim"
+    },
+    "newOrderPage": {
+      "allCategories": "Tüm kategoriler",
+      "categoryEmpty": "Bu kategoride ürün yok.",
+      "customerSectionDescription": "Müşteri bilgilerini girin ve e-posta bildirimlerini yalnızca gerektiğinde açın.",
+      "customerSectionTitle": "Müşteri bilgileri",
+      "customerNote": "Müşteriye not",
+      "emailUpdatesHint": "Bildirimler yalnızca geçerli bir e-posta adresi girildiğinde gönderilir.",
+      "internalNote": "İç not",
+      "noOptionGroup": "Bu ürün için ek bilgi gerekmiyor.",
+      "optionDetailsDescription": "Burada yalnızca seçilen ürüne ait sorular görünür.",
+      "optionDetailsTitle": "Ürün seçenekleri",
+      "optionRequired": "Lütfen bu zorunlu alanı doldurun.",
+      "previewCategory": "Kategori",
+      "previewGroup": "Ürün seçenekleri",
+      "previewSku": "Ürün kodu",
+      "previewValues": "Seçilen değerler",
+      "productSectionDescription": "Önce bir kategori, sonra ürün seçin.",
+      "summaryActionDescription": "Önizlemeyi kontrol edin ve her şey doğruysa atölye siparişini oluşturun.",
+      "summaryActionTitle": "Atölye siparişi oluştur",
+      "summaryDescription": "Ürün veya değerler değiştikçe önizleme anında güncellenir.",
+      "trackingSectionTitle": "E-posta bildirimleri",
+      "yes": "Evet",
+      "no": "Hayır",
+      "productRequired": "Lütfen önce bir ürün seçin.",
+      "emailInvalid": "Lütfen geçerli bir e-posta adresi girin.",
+      "customerNameRequired": "Lütfen müşterinin adını girin.",
+      "quantityInvalid": "Lütfen geçerli bir miktar girin."
+    },
+    "orderCard": {
+      "archiveConfirm": "Bu sipariş arşivlensin mi?",
+      "assignmentLabel": "Görevi ata",
+      "assignmentNoteLabel": "Atama notu",
+      "assignmentSection": "Görev ataması",
+      "currentEmployee": "Sorumlu çalışan",
+      "currentEmployeeNote": "Çalışan notu",
+      "currentStatus": "Görev durumu",
+      "deleteConfirm": "Bu sipariş aktif listelerden kaldırılsın mı?",
+      "description": "Atamayı, durumu ve notları tek yerden yönetin.",
+      "noEmployeeNote": "Henüz çalışan notu yok.",
+      "reassignLabel": "Yeniden ata",
+      "selectEmployee": "Çalışan seçin",
+      "title": "Siparişi yönet",
+      "trackingSection": "Sipariş takibi",
+      "withdrawLabel": "Atamayı geri al"
+    },
+    "ordersPage": {
+      "assignedWorker": "Atanan çalışan",
+      "archived": "Arşiv",
+      "assigned": "Atandı",
+      "cancelled": "İptal edildi",
+      "completed": "Tamamlandı",
+      "inProgress": "Devam ediyor",
+      "pending": "Yeni / bekliyor",
+      "noWorker": "Atanmadı",
+      "privacyHidden": "Sipariş ayrıntıları geçici olarak gizlendi",
+      "reveal": "Ayrıntıları göster",
+      "hideAgain": "Ayrıntıları tekrar gizle",
+      "shipped": "Gönderildi"
+    },
+    "privacy": {
+      "activeBadge": "Erişim kısıtlı",
+      "activeDescription": "Bazı ayrıntılar şu anda kullanılamıyor.",
+      "activate": "Kullanılamıyor",
+      "deactivate": "Kullanılamıyor",
+      "hidden": "Gizli",
+      "shortcut": ""
+    },
+    "settingsMessages": {
+      "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
+      "invalidName": "Lütfen geçerli bir görünen ad girin.",
+      "noAccess": "Erişim yok.",
+      "orderEntryRotated": "Yeni bir sipariş giriş bağlantısı oluşturuldu.",
+      "orderEntrySendDisabled": "E-postayla göndermeden önce harici sipariş giriş bağlantısını etkinleştirin.",
+      "orderEntrySendFailed": "Sipariş giriş bağlantısı e-postayla gönderilemedi.",
+      "orderEntrySendSavedOnly": "E-posta hazırlandı ancak SMTP henüz tam yapılandırılmadığı için gönderilmedi.",
+      "orderEntrySent": "Sipariş giriş bağlantısı e-postayla gönderildi.",
+      "privacyPhrase": "Koruma ifadesi geçersiz.",
+      "saved": "Ayarlar kaydedildi.",
+      "userCreated": "Kullanıcı oluşturuldu. Erişim bağlantısı gönderildi veya kaydedildi.",
+      "userDeleted": "Kullanıcı sistemden kaldırıldı.",
+      "userInviteSent": "Yeni bir erişim bağlantısı oluşturuldu.",
+      "userPasswordResetSent": "Şifre sıfırlama bağlantısı oluşturuldu.",
+      "userUpdated": "Kullanıcı güncellendi.",
+      "userVisibilityChanged": "Kullanıcı durumu güncellendi."
+    },
+    "taskCard": {
+      "assignmentNote": "Atama notu",
+      "dueDate": "Teslim tarihi",
+      "employeeNote": "Çalışan notu",
+      "noAssignmentNote": "Henüz atama notu eklenmedi.",
+      "save": "Görevi güncelle",
+      "status": "Görev durumu",
+      "title": "Görevi güncelle"
+    },
+    "workflow": {
+      "assignmentDescription": "Atölyeyi, çalışanı, durumu ve notları güncelleyin.",
+      "assignmentSaved": "Sipariş güncellemesi kaydedildi.",
+      "assignmentTitle": "Siparişi yönet",
+      "attachmentsLabel": "Ekler",
+      "createdEmailFallback": "Sipariş oluşturuldu. E-posta gönderimi henüz tam yapılandırılmadığı için müşteri e-postası yalnızca kaydedildi.",
+      "createdEmailFailed": "Sipariş oluşturuldu ancak müşteri e-postası şu anda gönderilemedi.",
+      "customerEmailInvalid": "Lütfen geçerli bir e-posta adresi girin.",
+      "customerLanguage": "Müşteri dili",
+      "customerNoteLabel": "Müşterinin göreceği not",
+      "customerNotePlaceholder": "Müşterinin takip sayfasında görebileceği kısa mesaj.",
+      "emailLogTitle": "E-posta kaydı",
+      "employeeLabel": "Çalışan ata",
+      "employeeRequiresWorkshop": "Çalışan atamadan önce lütfen bir atölye seçin.",
+      "formErrorFallback": "Değişiklik kaydedilemedi. Lütfen tekrar deneyin.",
+      "internalNoteLabel": "İç not",
+      "internalNotePlaceholder": "Mağaza, atölye veya üretim için iç not.",
+      "invalidSelection": "Seçilen değer geçersiz. Lütfen geçerli bir giriş seçin.",
+      "itemsTitle": "Kalemler",
+      "noChanges": "Henüz kaydedilecek değişiklik yok.",
+      "noEmailLogs": "Bu sipariş için henüz e-posta kaydı yok.",
+      "noSupportTickets": "Bu sipariş için henüz destek talebi yok.",
+      "noWorkshopAssigned": "Henüz atanmadı",
+      "optionVisibilityEmpty": "Henüz ürün seçeneği oluşturulmadı.",
+      "optionVisibilityHelp": "Bu ürün için hangi seçeneklerin görüneceğini ve hangilerinin zorunlu olduğunu seçin.",
+      "optionsLabel": "{count, plural, =0 {Seçenek yok} other {# seçenek}}",
+      "orderCreatedFallback": "Sipariş oluşturuldu, atama daha sonra yapılabilir.",
+      "orderCreatedSuccess": "Sipariş başarıyla oluşturuldu.",
+      "productRequired": "Lütfen bir ürün seçin.",
+      "quantityInvalid": "Lütfen geçerli bir miktar girin.",
+      "requiredLabel": "Zorunlu",
+      "saveUpdate": "Güncellemeyi kaydet",
+      "selectLanguage": "Dil seçin",
+      "selectProduct": "Ürün seçin",
+      "selectStatus": "Durum seçin",
+      "selectWorkshop": "Atölye seçin",
+      "statusEmailFallback": "Durum kaydedildi. SMTP henüz tam yapılandırılmadığı için müşteri e-postası yalnızca kaydedildi.",
+      "statusEmailFailed": "Durum kaydedildi ancak müşteri e-postası şu anda gönderilemedi.",
+      "supportTicketsTitle": "Destek talepleri",
+      "technicalCreateFallback": "Sipariş oluşturulamadı. Lütfen bilgileri kontrol edip tekrar deneyin.",
+      "technicalUpdateFallback": "Güncelleme kaydedilemedi. Lütfen bilgileri kontrol edip tekrar deneyin.",
+      "workshopAssignmentHint": "Önce siparişi oluşturun, atölyeyi veya çalışanı daha sonra atayın.",
+      "workshopLabel": "Atölye ata",
+      "workshopRequired": "Atamayı kaydetmeden önce lütfen bir atölye seçin."
+    },
+    "orderMessages": {
+      "customerNameRequired": "Lütfen müşterinin adını girin.",
+      "nameCustomizationLanguageRequired": "Lütfen isim için dil seçin.",
+      "nameCustomizationTextRequired": "Lütfen istenen ismi girin.",
+      "productKaratRequired": "Lütfen ayarı seçin.",
+      "productWeightRequired": "Lütfen gram cinsinden geçerli bir ağırlık girin.",
+      "workerEmailInvalid": "Lütfen çalışan için geçerli bir e-posta adresi girin.",
+      "archived": "Sipariş arşivlendi.",
+      "deleted": "Sipariş silindi.",
+      "withdrawn": "Atama geri alındı. Sipariş tekrar yönetimde.",
+      "assignmentFallback": "Görev atandı. E-posta gönderimi henüz ayarlanmadığı için çalışana gidecek e-posta yalnızca kaydedildi.",
+      "assignmentFailed": "Görev atandı ancak çalışana e-posta gönderilemedi.",
+      "assignmentSaved": "Görev atandı.",
+      "taskSaved": "Görev güncellendi."
+    },
+    "notifications": {
+      "ticketCreated": "{ref} için destek talebi",
+      "newContactInquiry": "Yeni iletişim talebi",
+      "contactInquiryMessage": "{name} genel bir talep gönderdi.",
+      "newProductInquiry": "Yeni ürün talebi",
+      "productInquiryMessage": "{name}, {product} hakkında soruyor.",
+      "orderCreated": "{ref} siparişi oluşturuldu",
+      "orderCreatedAssigned": "{product} oluşturuldu ve bir atölyeye atandı.",
+      "orderCreatedWaiting": "{product} oluşturuldu ve atölye bekliyor.",
+      "orderUpdated": "{ref} siparişi güncellendi",
+      "orderUpdatedMessage": "Atama ve durum güncellendi.",
+      "orderUpdatedRef": "{ref} güncellendi.",
+      "assignmentWithdrawn": "Atama geri alındı",
+      "assignmentWithdrawnMessage": "{ref} tekrar yönetimde.",
+      "orderAssigned": "Sipariş atandı",
+      "orderAssignedMessage": "{ref}, {name} kişisine atandı.",
+      "assignmentUpdated": "Atama güncellendi",
+      "taskStatusUpdated": "Görev durumu güncellendi",
+      "newWorkshopOrder": "Yeni atölye siparişi",
+      "newWorkshopOrderMessage": "Atölyenize yeni bir sipariş atandı.",
+      "newTask": "Yeni görev",
+      "newTaskMessage": "Size bir atölye siparişi atandı."
+    },
+    "workshopMessages": {
+      "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN": "Mevcut atölye yöneticisi ancak yeni bir yönetici atandıktan veya rol kaldırıldıktan sonra taşınabilir.",
+      "INVITE_SENT": "Davet gönderildi.",
+      "MANAGER_ACCOUNT_REQUIRED": "Önce bir davet gönderin. Hesap etkinleştirildikten sonra kişiyi atölye yöneticisi yapabilirsiniz.",
+      "PERMISSION_DENIED": "Bunun için yetkiniz yok.",
+      "WORKSHOP_DELETED": "Atölye silindi.",
+      "WORKSHOP_NOT_EMPTY": "Atölye ancak hiçbir çalışan veya sipariş bağlı değilse silinebilir.",
+      "FAILED": "İşlem tamamlanamadı."
+    },
+    "workshopsPage": {
+      "description": "Siparişlerinizi üreten atölyeler; iletişim kişisi ve güncel iş yüküyle.",
+      "emptyTitle": "Henüz atölye yok",
+      "emptyText": "Sipariş atayabilmek için bir atölye ekleyin.",
+      "titleNew": "Yeni atölye",
+      "titleEdit": "Atölyeyi düzenle",
+      "create": "Atölyeyi ekle",
+      "basicsTitle": "Genel",
+      "nameLabel": "Ad",
+      "locationLabel": "Şehir",
+      "locationPlaceholder": "örn. Saarbrücken",
+      "contactTitle": "İletişim",
+      "contactHint": "Atölyedeki iletişim kişiniz kim?",
+      "contactNameLabel": "İletişim kişisi",
+      "phoneLabel": "Telefon",
+      "emailLabel": "E-posta",
+      "addressLabel": "Adres",
+      "moreTitle": "Diğer bilgiler",
+      "codeLabel": "Kısa kod",
+      "codeHelper": "İsteğe bağlı, örn. SB-01. Otomatik atanması için boş bırakın.",
+      "notesLabel": "İç notlar",
+      "notesHelper": "Yalnızca yönetim görebilir.",
+      "activeLabel": "Aktif",
+      "activeHint": "Aktif olmayan atölyelere yeni sipariş atanamaz."
+    }
+  },
+  "Tracking": {
+    "title": "Sipariş durumu",
+    "description": "GoldHelwah GmbH siparişinizin takibi.",
+    "currentStatus": "Güncel durum",
+    "timelineTitle": "Geçmiş",
+    "timelineDescription": "Siparişiniz için son güncellemeler.",
+    "contact": "İletişim",
+    "phone": "Ara",
+    "backToWebsite": "Siteye dön",
+    "trackingNumberLabel": "Takip numarası",
+    "currentPublicStageLabel": "Güncel genel aşama",
+    "progressTitle": "Genel ilerleme",
+    "progressDescription": "Müşteriler için yalnızca üç görünür aşama yayınlıyoruz.",
+    "trackAnotherOrder": "Başka bir siparişi takip et",
+    "contactSupport": "Destek iletişimi",
+    "notesTitle": "Müşteri güncellemeleri",
+    "notesDescription": "Burada yalnızca müşteriye açık notlar ve güncellemeler görünür.",
+    "orderReceivedLabel": "Sipariş alındı",
+    "instructionsTitle": "Sipariş nasıl takip edilir",
+    "instructionsDescription": "Takip numaranızı doğrudan bağlantı yerine site menüsü üzerinden kullanın.",
+    "instructionsStepOne": "Web sitesinin ana sayfasını açın.",
+    "instructionsStepTwo": "Menüden \"Sipariş Takibi\" seçeneğine tıklayın.",
+    "instructionsStepThree": "Takip numaranızı girin.",
+    "receivedMessage": "Siparişiniz alındı ve durumu yakında güncellenecek.",
+    "receivedDescription": "Siparişiniz kaydedildi ve ilk genel aşamayı bekliyor.",
+    "currentStageDescription": "Bu, siparişinizin güncel genel aşamasıdır.",
+    "completedStageDescription": "Bu aşama zaten tamamlandı.",
+    "upcomingStageDescription": "Siparişiniz bu noktaya geldiğinde bu aşama görünecek.",
+    "lookup": {
+      "eyebrow": "Sipariş Takibi",
+      "title": "Siparişinizi bulun",
+      "description": "GoldHelwah siparişinizin son genel güncellemelerini görmek için takip numaranızı girin.",
+      "helperTitle": "Numara yanınızda mı?",
+      "helperDescription": "Bu numarayı sipariş e-postasında bulabilir ve site menüsü üzerinden kullanabilirsiniz.",
+      "formTitle": "Takip numarasını girin",
+      "formDescription": "Ardından bu numaranın canlı sipariş sayfasını açacağız.",
+      "label": "Takip numarası",
+      "placeholder": "GH-20260618-0001",
+      "submit": "Sipariş Takibi",
+      "emptyError": "Lütfen takip numaranızı girin."
+    },
+    "support": {
+      "title": "Destek iletişimi",
+      "description": "Bu siparişle ilgili yardıma ihtiyacınız varsa bize mesaj gönderin, ekibimiz size dönsün.",
+      "success": "Mesajınız gönderildi.",
+      "error": "Mesajınız şu anda gönderilemedi."
+    },
+    "stages": {
+      "order_in_workshop": "Sipariş atölyede",
+      "shipping": "Sipariş kargoya veriliyor",
+      "ready_for_pickup": "Teslime hazır"
+    }
+  },
+  "AGB": {
+    "eyebrow": "Yasal",
+    "title": "Genel Koşullar",
+    "description": "GoldHelwah showroom ve danışmanlık sitesi için taslak koşullar.",
+    "sections": [
+      {
+        "title": "Kapsam",
+        "text": "Bu koşullar danışmanlıklar, talepler ve ayrı kararlaştırılan hizmetler için geçerlidir."
+      },
+      {
+        "title": "Ürünler ve uygunluk",
+        "text": "Sunumlar bağlayıcı değildir ve onaya tabidir."
+      },
+      {
+        "title": "Kişiye özel tasarımlar",
+        "text": "Özel çalışmalar doğru gereksinimler ve müşteri onayı gerektirir."
+      },
+      {
+        "title": "Fiyat, teslim alma ve teslimat",
+        "text": "Koşullar yalnızca yazılı olarak ayrı kararlaştırıldığında geçerlidir."
+      },
+      {
+        "title": "Sorumluluk ve telif hakkı",
+        "text": "Sorumluluk kanunun izin verdiği ölçüde sınırlıdır; görseller ve içerik korunur."
+      },
+      {
+        "title": "Gizlilik ve son hükümler",
+        "text": "Gizlilik politikamız geçerlidir. İzin verilen hallerde Alman hukuku uygulanır."
+      }
+    ]
+  },
+  "PublicVisuals": {
+    "title": "Herkese açık görseller",
+    "description": "Hero görseli ve promosyon penceresi ayarları.",
+    "homeHero": "Ana sayfa hero görseli URL’si",
+    "shopHero": "Mağaza hero görseli URL’si",
+    "enabled": "Promosyon penceresini etkinleştir",
+    "showOnce": "Ziyaretçi başına bir kez göster",
+    "promoTitle": "Promosyon başlığı",
+    "promoDescription": "Promosyon açıklaması",
+    "ctaText": "Eylem çağrısı metni",
+    "ctaUrl": "Eylem çağrısı bağlantısı",
+    "imageUrl": "Promosyon görseli URL’si",
+    "videoUrl": "Tanıtım videosu bağlantısı",
+    "start": "Promosyon başlangıcı",
+    "end": "Promosyon bitişi",
+    "style": "Tanıtım stili",
+    "save": "Kaydet",
+    "reset": "Hero görsellerini sıfırla",
+    "luxury": "Lüks kart",
+    "image": "Görsel öne çıkarma",
+    "announcement": "Duyuru bandı"
+  }
 }

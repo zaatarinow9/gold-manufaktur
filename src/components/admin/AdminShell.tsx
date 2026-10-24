@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { usePathname } from "@/i18n/navigation";
 import type { AdminUser } from "@/types/admin";
+
 import { AdminHeader } from "./AdminHeader";
 import { AdminMobileNav } from "./AdminMobileNav";
 import { AdminPrivacyProvider } from "./AdminPrivacyMode";
@@ -21,10 +22,12 @@ export function AdminShell({
   navCounts,
 }: AdminShellProps) {
   const pathname = usePathname() ?? "/admin";
-  const isLoginRoute = pathname === "/admin/login";
+  const isStandaloneRoute =
+    pathname === "/admin/login" || pathname.startsWith("/admin/auth/");
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const closeMobileNav = useCallback(() => setIsMobileNavOpen(false), []);
 
-  if (isLoginRoute) {
+  if (isStandaloneRoute || currentUser.id === "guest") {
     return (
       <AdminPrivacyProvider>
         <div className="admin-shell">
@@ -41,20 +44,18 @@ export function AdminShell({
           currentUser={currentUser}
           isOpen={isMobileNavOpen}
           navCounts={navCounts}
-          onClose={() => setIsMobileNavOpen(false)}
+          onClose={closeMobileNav}
         />
-        <div className="flex h-screen overflow-hidden">
-          <AdminSidebar currentUser={currentUser} navCounts={navCounts} />
-          <div className="flex min-w-0 flex-1 flex-col lg:ps-[17rem]">
-            <AdminHeader
-              currentUser={currentUser}
-              navCounts={navCounts}
-              onOpenNav={() => setIsMobileNavOpen(true)}
-            />
-            <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
-              <div className="admin-content">{children}</div>
-            </main>
-          </div>
+        <AdminSidebar currentUser={currentUser} navCounts={navCounts} />
+        <div className="flex min-h-screen min-w-0 flex-col lg:ps-[16.5rem]">
+          <AdminHeader
+            currentUser={currentUser}
+            navCounts={navCounts}
+            onOpenNav={() => setIsMobileNavOpen(true)}
+          />
+          <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+            <div className="admin-content">{children}</div>
+          </main>
         </div>
       </div>
     </AdminPrivacyProvider>

@@ -1,60 +1,80 @@
 "use client";
 
 import clsx from "clsx";
-import { Languages } from "lucide-react";
-import { useLocale } from "next-intl";
+import { Check, ChevronDown, Languages } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 
 import { Link, usePathname } from "@/i18n/navigation";
+import { routing, type AppLocale } from "@/i18n/routing";
+import { localeLabels } from "@/lib/site";
 
-const adminLocales = [
-  { code: "de", label: "Deutsch" },
-  { code: "ar", label: "العربية" },
-] as const;
+import { useDismiss } from "./useDismiss";
 
 type AdminLanguageSwitcherProps = {
   className?: string;
+  /** Opens the list upwards (used at the bottom of the mobile drawer). */
+  placement?: "down" | "up";
 };
 
 export function AdminLanguageSwitcher({
   className,
+  placement = "down",
 }: AdminLanguageSwitcherProps) {
-  const locale = useLocale();
-  const isRtl = locale === "ar";
+  const t = useTranslations("Admin");
+  const locale = useLocale() as AppLocale;
   const pathname = usePathname() ?? "/admin";
   const searchParams = useSearchParams();
   const query = Object.fromEntries(searchParams.entries());
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const close = useCallback(() => setIsOpen(false), []);
+
+  useDismiss(containerRef, isOpen, close);
 
   return (
-    <div
-      className={clsx(
-        "admin-language-switcher inline-flex flex-wrap items-center gap-1 rounded-[0.95rem] border border-white/8 bg-white/4 p-1",
-        isRtl && "flex-row-reverse",
-        className
-      )}
-    >
-      <span className="inline-flex h-9 w-9 items-center justify-center rounded-[0.8rem] text-gold-soft">
-        <Languages className="h-4 w-4" />
-      </span>
-      {adminLocales.map((entry) => {
-        const isActive = entry.code === locale;
+    <div ref={containerRef} className={clsx("relative", className)}>
+      <button
+        type="button"
+        className="admin-button admin-button-ghost admin-button-sm w-full justify-between"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        aria-label={t("header.language")}
+        onClick={() => setIsOpen((current) => !current)}
+      >
+        <span className="inline-flex items-center gap-2">
+          <Languages />
+          {localeLabels[locale]}
+        </span>
+        <ChevronDown className={clsx("transition", isOpen && "rotate-180")} />
+      </button>
 
-        return (
-          <Link
-            key={entry.code}
-            href={{ pathname, query }}
-            locale={entry.code}
-            className={clsx(
-              "inline-flex min-h-9 items-center rounded-[0.8rem] px-3 text-sm font-medium transition",
-              isActive
-                ? "bg-gold text-[#140d07] shadow-[0_14px_28px_rgba(196,154,82,0.18)]"
-                : "text-muted hover:bg-white/8 hover:text-foreground"
-            )}
-          >
-            {entry.label}
-          </Link>
-        );
-      })}
+      {isOpen ? (
+        <div
+          role="menu"
+          className={clsx(
+            "admin-menu end-0",
+            placement === "up" ? "bottom-full mb-2" : "top-full mt-2"
+          )}
+        >
+          {routing.locales.map((code) => (
+            <Link
+              key={code}
+              role="menuitemradio"
+              aria-checked={code === locale}
+              href={{ pathname, query }}
+              locale={code}
+              lang={code}
+              onClick={close}
+              className="admin-menu-item"
+            >
+              <span className="flex-1">{localeLabels[code]}</span>
+              {code === locale ? <Check className="!text-gold-soft" /> : null}
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

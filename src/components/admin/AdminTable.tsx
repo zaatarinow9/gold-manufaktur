@@ -39,7 +39,7 @@ export function AdminTable<Row>({
         {rows.map((row) => (
           <div
             key={getRowKey(row)}
-            className="rounded-[1rem] border border-white/8 bg-white/4 p-4 shadow-[0_12px_28px_rgba(0,0,0,0.14)]"
+            className="admin-panel-raised p-4"
           >
             {cardTitle ? (
               <div className="border-b border-white/8 pb-3 text-sm font-semibold text-foreground">
@@ -48,10 +48,7 @@ export function AdminTable<Row>({
             ) : null}
             <div className={clsx("grid gap-3", cardTitle ? "pt-3" : "")}>
               {columns.map((column) => (
-                <div
-                  key={column.id}
-                  className="grid gap-1 rounded-[0.9rem] bg-black/22 px-3 py-3"
-                >
+                <div key={column.id} className="grid gap-1">
                   <span className="text-xs font-semibold text-muted">
                     {column.header}
                   </span>
@@ -71,7 +68,7 @@ export function AdminTable<Row>({
                 <th
                   key={column.id}
                   className={clsx(
-                    "border-b border-white/8 px-4 py-3.5 text-xs font-semibold text-muted",
+                    "border-b border-white/[0.08] px-3 py-3 text-xs font-medium text-muted first:ps-0 last:pe-0",
                     column.align === "end" ? "text-end" : "text-start",
                     column.className
                   )}
@@ -83,12 +80,12 @@ export function AdminTable<Row>({
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr key={getRowKey(row)} className="align-top">
+              <tr key={getRowKey(row)} className="transition hover:bg-white/[0.02]">
                 {columns.map((column) => (
                   <td
                     key={column.id}
                     className={clsx(
-                      "border-b border-white/6 px-4 py-3.5 text-muted",
+                      "border-b border-white/[0.05] px-3 py-3 align-middle text-muted first:ps-0 last:pe-0",
                       column.align === "end" ? "text-end" : "text-start",
                       column.className
                     )}
