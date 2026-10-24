@@ -1,15 +1,17 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronRight, MapPin, Pencil, Phone, Plus, Power } from "lucide-react";
+import { ChevronRight, MapPin, Pencil, Phone, Plus, Power, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 
 import {
+  permanentlyDeleteWorkshopAction,
   saveWorkshopAction,
   toggleWorkshopActiveAction,
 } from "@/app/[locale]/admin/workshops/actions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminButton } from "@/components/admin/AdminButton";
@@ -79,11 +81,13 @@ function WorkshopEditor({
   initialState,
   locale,
   onClose,
+  onDelete,
   onSaved,
 }: {
   initialState: WorkshopFormState;
   locale: AppLocale;
   onClose: () => void;
+  onDelete?: () => Promise<boolean>;
   onSaved: (message: string) => void;
 }) {
   const t = useTranslations("Admin.workshopsPage");
@@ -120,7 +124,22 @@ function WorkshopEditor({
       title={isNew ? t("titleNew") : t("titleEdit")}
       footer={
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {message ? <p role="alert" className="text-sm text-rose-300">{message}</p> : <span />}
+          {message ? (
+            <p role="alert" className="text-sm text-rose-300">{message}</p>
+          ) : onDelete ? (
+            <AdminButton
+              variant="ghost"
+              className="text-rose-300 hover:text-rose-200"
+              onClick={async () => {
+                if (await onDelete()) onClose();
+              }}
+            >
+              <Trash2 />
+              {tc("buttons.delete")}
+            </AdminButton>
+          ) : (
+            <span />
+          )}
           <div className="ms-auto flex gap-2">
             <AdminButton variant="ghost" onClick={onClose}>{tc("buttons.cancel")}</AdminButton>
             <AdminButton variant="primary" onClick={submit} disabled={isSaving}>
@@ -197,9 +216,23 @@ export function AdminWorkshopsClient({ canCreate, locale, workshops }: AdminWork
   const t = useTranslations("Admin.workshopsPage");
   const tc = useTranslations("Admin");
   const router = useRouter();
+  const confirm = useAdminConfirm();
   const [, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
   const [editing, setEditing] = useState<{ key: string; workshop: WorkshopRecord | null } | null>(null);
+
+  const deleteWorkshop = async (workshop: WorkshopRecord) => {
+    const confirmed = await confirm({
+      confirmLabel: tc("buttons.delete"),
+      description: t("deleteConfirmText", { count: workshop.employeeCount }),
+      title: t("deleteConfirm", { name: workshop.name }),
+    });
+    if (!confirmed) return false;
+    const result = await permanentlyDeleteWorkshopAction(locale, workshop.id);
+    setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+    if (result.ok) router.refresh();
+    return result.ok;
+  };
 
   const open = (workshop: WorkshopRecord | null) => {
     setFeedback(null);
@@ -258,6 +291,9 @@ export function AdminWorkshopsClient({ canCreate, locale, workshops }: AdminWork
                           if (result.ok) router.refresh();
                         }),
                     },
+                    ...(canCreate
+                      ? [{ danger: true, icon: Trash2, label: tc("buttons.delete"), onSelect: () => void deleteWorkshop(workshop) }]
+                      : []),
                   ]}
                 />
               </div>
@@ -307,6 +343,7 @@ export function AdminWorkshopsClient({ canCreate, locale, workshops }: AdminWork
           locale={locale}
           initialState={createForm(editing.workshop)}
           onClose={() => setEditing(null)}
+          onDelete={canCreate && editing.workshop ? () => deleteWorkshop(editing.workshop!) : undefined}
           onSaved={(message) => {
             setEditing(null);
             setFeedback({ message, tone: "success" });

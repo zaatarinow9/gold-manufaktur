@@ -2,6 +2,8 @@
 
 import { useAdminPrivacyUiCopy, useOrderWorkflowCopy } from "@/lib/admin/adminCopy";
 import { useState, useTransition } from "react";
+
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -135,6 +137,7 @@ export function OrderTrackingCard({
   trackingNumber,
 }: OrderTrackingCardProps) {
   const t = useTranslations("Admin");
+  const confirm = useAdminConfirm();
   const copy = useOrderWorkflowCopy();
   const uiCopy = useOrderCardUiCopy();
   const privacyCopy = useAdminPrivacyUiCopy();
@@ -336,8 +339,8 @@ export function OrderTrackingCard({
     });
   };
 
-  const handleArchiveOrder = () => {
-    if (!window.confirm(uiCopy.archiveConfirm)) {
+  const handleArchiveOrder = async () => {
+    if (!(await confirm({ title: uiCopy.archiveConfirm }))) {
       return;
     }
 
@@ -354,8 +357,8 @@ export function OrderTrackingCard({
     });
   };
 
-  const handleDeleteOrder = () => {
-    if (!window.confirm(uiCopy.deleteConfirm)) {
+  const handleDeleteOrder = async () => {
+    if (!(await confirm({ title: uiCopy.deleteConfirm }))) {
       return;
     }
 

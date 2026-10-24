@@ -138,6 +138,7 @@ const workshopMessageCodes = new Set([
   "PERMISSION_DENIED",
   "WORKSHOP_DELETED",
   "WORKSHOP_NOT_EMPTY",
+  "WORKSHOP_HAS_ORDERS",
 ]);
 
 async function workshopActionMessage(locale: AppLocale, code: string) {

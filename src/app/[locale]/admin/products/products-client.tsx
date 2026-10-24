@@ -14,7 +14,7 @@ import {
   Trash2,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState, useTransition } from "react";
 
@@ -24,6 +24,7 @@ import {
   toggleProductActiveAction,
   toggleProductFeaturedAction,
 } from "@/app/[locale]/admin/products/actions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -56,13 +57,18 @@ export function AdminProductsClient({
 }: AdminProductsClientProps) {
   const t = useTranslations("Admin.productsPage");
   const tc = useTranslations("Admin");
+  const confirm = useAdminConfirm();
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
-  const [editing, setEditing] = useState<{ key: string; product: AdminProductRecord | null } | null>(null);
+  const searchParams = useSearchParams();
+  // "?new=1" (from the overview's quick action) opens the form right away.
+  const [editing, setEditing] = useState<{ categoryId?: string; key: string; product: AdminProductRecord | null } | null>(
+    () => (searchParams.get("new") === "1" ? { key: "new", product: null } : null)
+  );
 
   const counts = useMemo(
     () => ({
@@ -281,8 +287,8 @@ export function AdminProductsClient({
                       danger: true,
                       icon: Trash2,
                       label: tc("buttons.delete"),
-                      onSelect: () => {
-                        if (window.confirm(t("deleteConfirm", { name: product.displayName }))) {
+                      onSelect: async () => {
+                        if (await confirm({ title: t("deleteConfirm", { name: product.displayName }) })) {
                           runAction(() => deleteProductAction(locale, product.id));
                         }
                       },
@@ -302,14 +308,30 @@ export function AdminProductsClient({
           categories={categories}
           groups={groups}
           initialState={createProductForm(editing.product, {
-            categoryId: categoryFilter !== "all" && categoryFilter !== "none" ? categoryFilter : "",
+            categoryId:
+              editing.categoryId ?? (categoryFilter !== "all" && categoryFilter !== "none" ? categoryFilter : ""),
             nextSortOrder: products.length + 1,
           })}
           onClose={() => setEditing(null)}
-          onSaved={(message) => {
-            setEditing(null);
+          onDelete={
+            editing.product
+              ? async () => {
+                  const product = editing.product!;
+                  const confirmed = await confirm({ title: t("deleteConfirm", { name: product.displayName }) });
+                  if (!confirmed) return false;
+                  const result = await deleteProductAction(locale, product.id);
+                  setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+                  if (result.ok) router.refresh();
+                  return result.ok;
+                }
+              : undefined
+          }
+          onSaved={(message, options) => {
             setFeedback({ message, tone: "success" });
             router.refresh();
+            setEditing(
+              options?.addAnother ? { categoryId: options.categoryId, key: nextEditorKey(), product: null } : null
+            );
           }}
         />
       ) : null}

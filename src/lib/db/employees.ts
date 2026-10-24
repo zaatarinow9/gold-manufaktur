@@ -6,6 +6,7 @@ import { getDecoyEmployees } from "@/lib/admin/decoyData";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { AdminViewer } from "@/lib/db/adminScope";
 import { canAccessEmployee, logAdminReadError } from "@/lib/db/adminScope";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { TableInsert, TableUpdate } from "@/lib/supabase/types";
 
@@ -191,4 +192,34 @@ export async function setEmployeeActive(employeeId: string, isActive: boolean) {
   }
 
   return data;
+}
+
+/**
+ * Removes an employee. Employees who still have orders are kept (orders must
+ * never lose who made them); deactivate those instead. A linked login is
+ * switched off so nobody can sign in with a deleted employee's account.
+ */
+export async function deleteEmployeeRecord(employeeId: string) {
+  const supabase = createSupabaseAdminClient();
+
+  const [{ data: employee, error: employeeError }, { count: orderCount, error: orderError }] = await Promise.all([
+    supabase.from("employees").select("id, full_name").eq("id", employeeId).maybeSingle(),
+    supabase.from("orders").select("id", { count: "exact", head: true }).eq("employee_id", employeeId),
+  ]);
+
+  if (employeeError || !employee) throw new Error("EMPLOYEE_NOT_FOUND");
+  if (orderError) throw new Error("EMPLOYEE_DELETE_FAILED");
+  if ((orderCount ?? 0) > 0) throw new Error("EMPLOYEE_HAS_ORDERS");
+
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .update({ is_active: false })
+    .eq("employee_id", employeeId)
+    .eq("role", "employee");
+  if (profileError) throw new Error("EMPLOYEE_DELETE_FAILED");
+
+  const { error } = await supabase.from("employees").delete().eq("id", employeeId);
+  if (error) throw new Error(error.code === "23503" ? "EMPLOYEE_HAS_ORDERS" : "EMPLOYEE_DELETE_FAILED");
+
+  return { id: employee.id, name: employee.full_name };
 }

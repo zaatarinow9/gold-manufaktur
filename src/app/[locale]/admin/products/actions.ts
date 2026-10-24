@@ -13,6 +13,7 @@ import {
   isAdminDecoyEnabled,
 } from "@/lib/db/adminDecoy";
 import {
+  createCategory,
   createProduct,
   deleteProduct,
   duplicateProduct,
@@ -208,4 +209,42 @@ export async function deleteProductAction(locale: AppLocale, productId: string) 
         : "deleted",
     () => deleteProduct(productId)
   );
+}
+
+/**
+ * Creates a category straight from the product form, with just a name in the
+ * editor's language. Image and description can be added later.
+ */
+export async function quickCreateCategoryAction(
+  locale: AppLocale,
+  name: string
+): Promise<{ category?: { id: string; name: string }; message: string; ok: boolean }> {
+  const blocked = await guardProductAction(locale);
+  if (blocked) return blocked;
+
+  const t = await getTranslations({ locale, namespace: "Admin" });
+  const trimmed = name.trim();
+  if (!trimmed) return { message: t("forms.required"), ok: false };
+
+  try {
+    const names = { ar: "", de: "", en: "", fr: "", tr: "" };
+    names[locale] = trimmed;
+    const row = await createCategory({
+      accent: "",
+      description: { ar: "", de: "", en: "", fr: "", tr: "" },
+      imageUrl: "",
+      isActive: true,
+      name: names,
+      slug: "",
+      sortOrder: 0,
+      supportsNameCustomization: false,
+    });
+    for (const routeLocale of routing.locales) {
+      revalidatePath(`/${routeLocale}/admin/categories`);
+      revalidatePath(`/${routeLocale}/admin/products`);
+    }
+    return { category: { id: row.id, name: trimmed }, message: t("categoriesPage.messages.created"), ok: true };
+  } catch {
+    return { message: t("productEditor.quickCategoryFailed"), ok: false };
+  }
 }

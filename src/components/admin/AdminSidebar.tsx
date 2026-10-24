@@ -57,13 +57,13 @@ export const adminNavItems: AdminNavItem[] = [
   { group: "main", href: "/admin", icon: Home, key: "overview", section: "overview" },
   { group: "orders", href: "/admin/orders", icon: ClipboardList, key: "orders", section: "orders" },
   { group: "orders", href: "/admin/gallery", icon: PlusCircle, key: "gallery", section: "gallery" },
+  { group: "orders", href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", section: "inquiries" },
   { group: "orders", href: "/admin/my-tasks", icon: BriefcaseBusiness, key: "myTasks", section: "my_tasks" },
   { group: "catalog", href: "/admin/products", icon: Package, key: "products", section: "products" },
   { group: "catalog", href: "/admin/categories", icon: Layers3, key: "categories", section: "categories" },
   { group: "catalog", href: "/admin/options", icon: SlidersHorizontal, key: "options", section: "options" },
   { group: "team", href: "/admin/employees", icon: Users, key: "employees", section: "employees" },
   { group: "team", href: "/admin/workshops", icon: Wrench, key: "workshops", section: "workshops" },
-  { group: "customers", href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", section: "inquiries" },
   { group: "system", href: "/admin/settings", icon: Settings2, key: "settings", section: "settings" },
 ];
 

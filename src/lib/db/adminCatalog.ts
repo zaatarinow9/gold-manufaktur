@@ -122,13 +122,21 @@ function createOptionalTextSchema(maxLength = 4000) {
     .transform((value) => value ?? "");
 }
 
-const localizedRequiredSchema = z.object({
-  de: z.string().trim().min(1).max(255),
-  ar: z.string().trim().min(1).max(255),
-  en: createOptionalTextSchema(255),
-  fr: createOptionalTextSchema(255),
-  tr: createOptionalTextSchema(255),
-});
+// A name is required in at least one language. The website falls back to
+// another filled-in language, so nobody is forced to type every translation.
+const localizedRequiredSchema = z
+  .object({
+    de: createOptionalTextSchema(255),
+    ar: createOptionalTextSchema(255),
+    en: createOptionalTextSchema(255),
+    fr: createOptionalTextSchema(255),
+    tr: createOptionalTextSchema(255),
+  })
+  .superRefine((value, context) => {
+    if (!Object.values(value).some((text) => text.trim().length > 0)) {
+      context.addIssue({ code: "custom", message: "required", path: ["de"] });
+    }
+  });
 
 const localizedOptionalSchema = z.object({
   de: createOptionalTextSchema(),
@@ -477,8 +485,8 @@ function resolveLocalizedText(
   fields: LocalizedText,
   locale: AppLocale
 ) {
-  const requested = fields[locale].trim();
-  return requested.length > 0 ? requested : fields.de;
+  const candidates = [fields[locale], fields.de, fields.ar, fields.en, fields.fr, fields.tr];
+  return candidates.find((value) => value?.trim())?.trim() ?? "";
 }
 
 function getProductPrimaryImage(
@@ -1683,7 +1691,8 @@ export async function duplicateProduct(productId: string) {
     categoryId: product.category_id,
     description: getLocalizedFields(product, "description"),
     gallery: images.map((image) => image.image_url),
-    isActive: product.is_active,
+    // A copy starts hidden so an unedited duplicate never shows up in the shop.
+    isActive: false,
     isFeatured: false,
     name: getLocalizedFields(product, "name"),
     optionGroupId: capabilities.productsOptionGroupId

@@ -271,40 +271,36 @@ export async function setWorkshopActive(workshopId: string, isActive: boolean) {
 }
 
 /** Deletes only a workshop which has no operational or membership references. */
+/**
+ * Deletes a workshop. Its employees stay in the system and are simply
+ * detached (they can be moved to another workshop later). A workshop that
+ * still has orders cannot be deleted, so no order ever loses its workshop.
+ */
 export async function permanentlyDeleteEmptyWorkshop(
   workshopId: string
 ) {
   const supabase = createSupabaseAdminClient();
-  const [{ data: workshop, error: workshopError }, { count: employeeCount, error: employeeError }, { count: orderCount, error: orderError }, { count: notificationCount, error: notificationError }] = await Promise.all([
-    supabase.from("workshops").select("id, name, manager_employee_id").eq("id", workshopId).maybeSingle(),
-    supabase.from("employees").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
+  const [{ data: workshop, error: workshopError }, { count: orderCount, error: orderError }] = await Promise.all([
+    supabase.from("workshops").select("id, name").eq("id", workshopId).maybeSingle(),
     supabase.from("orders").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
-    supabase.from("admin_notifications").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
   ]);
 
   if (workshopError || !workshop) throw new Error("WORKSHOP_NOT_FOUND");
-  if (employeeError || orderError || notificationError) throw new Error("WORKSHOP_DELETE_FAILED");
-  if (workshop.manager_employee_id || (employeeCount ?? 0) > 0 || (orderCount ?? 0) > 0 || (notificationCount ?? 0) > 0) {
-    throw new Error("WORKSHOP_NOT_EMPTY");
-  }
+  if (orderError) throw new Error("WORKSHOP_DELETE_FAILED");
+  if ((orderCount ?? 0) > 0) throw new Error("WORKSHOP_HAS_ORDERS");
 
-  // Re-check notifications immediately before deletion so their cascade FK is
-  // never used as an implicit cleanup path.
-  const { count: finalNotificationCount, error: finalNotificationError } = await supabase
-    .from("admin_notifications")
-    .select("id", { count: "exact", head: true })
-    .eq("workshop_id", workshopId);
-  if (finalNotificationError) throw new Error("WORKSHOP_DELETE_FAILED");
-  if ((finalNotificationCount ?? 0) > 0) throw new Error("WORKSHOP_NOT_EMPTY");
+  const { error: managerError } = await supabase.from("workshops").update({ manager_employee_id: null }).eq("id", workshopId);
+  if (managerError) throw new Error("WORKSHOP_DELETE_FAILED");
 
-  // The ID-scoped delete repeats the pointer guard. Employee/order FKs prevent
-  // deletion if a concurrent operational assignment appears after the checks.
-  const { data, error } = await supabase
-    .from("workshops")
-    .delete()
-    .eq("id", workshopId)
-    .is("manager_employee_id", null)
-    .select("id, name");
-  if (error || !data?.length) throw new Error("WORKSHOP_NOT_EMPTY");
+  const { error: detachError } = await supabase.from("employees").update({ workshop_id: null }).eq("workshop_id", workshopId);
+  if (detachError) throw new Error("WORKSHOP_DELETE_FAILED");
+
+  const { error: notificationError } = await supabase.from("admin_notifications").delete().eq("workshop_id", workshopId);
+  if (notificationError) throw new Error("WORKSHOP_DELETE_FAILED");
+
+  // Orders reference workshops without cascade, so a concurrent assignment
+  // still makes this delete fail instead of orphaning the order.
+  const { data, error } = await supabase.from("workshops").delete().eq("id", workshopId).select("id, name");
+  if (error || !data?.length) throw new Error(error?.code === "23503" ? "WORKSHOP_HAS_ORDERS" : "WORKSHOP_DELETE_FAILED");
   return data[0];
 }

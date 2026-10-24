@@ -10,6 +10,7 @@ import {
   deleteInquiryAction,
   updateInquiryStatusAction,
 } from "@/app/[locale]/admin/inquiries/actions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -41,6 +42,7 @@ function isAppLocale(value: string): value is AppLocale {
 export function AdminInquiriesClient({ inquiries, locale }: AdminInquiriesClientProps) {
   const t = useTranslations("Admin.inquiriesPage");
   const tc = useTranslations("Admin");
+  const confirm = useAdminConfirm();
   const format = useFormatter();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -203,8 +205,8 @@ export function AdminInquiriesClient({ inquiries, locale }: AdminInquiriesClient
                           danger: true,
                           icon: Trash2,
                           label: t("delete"),
-                          onSelect: () => {
-                            if (window.confirm(t("deleteConfirm"))) {
+                          onSelect: async () => {
+                            if (await confirm({ title: t("deleteConfirm") })) {
                               run(() => deleteInquiryAction(locale, inquiry.id));
                             }
                           },

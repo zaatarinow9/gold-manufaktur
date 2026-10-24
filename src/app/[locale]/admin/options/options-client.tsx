@@ -29,6 +29,7 @@ import {
   saveOptionGroupAction,
   toggleOptionActiveAction,
 } from "@/app/[locale]/admin/options/actions";
+import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminButton } from "@/components/admin/AdminButton";
@@ -146,12 +147,14 @@ function FieldEditor({
   initialState,
   locale,
   onClose,
+  onDelete,
   onSaved,
 }: {
   groups: AdminOptionGroupRecord[];
   initialState: FieldFormState;
   locale: AppLocale;
   onClose: () => void;
+  onDelete?: () => Promise<boolean>;
   onSaved: (message: string) => void;
 }) {
   const t = useTranslations("Admin.optionsPage");
@@ -261,6 +264,17 @@ function FieldEditor({
         <div className="flex flex-wrap items-center justify-between gap-3">
           {formMessage ? (
             <p role="alert" className="text-sm text-rose-300">{formMessage}</p>
+          ) : onDelete ? (
+            <AdminButton
+              variant="ghost"
+              className="text-rose-300 hover:text-rose-200"
+              onClick={async () => {
+                if (await onDelete()) onClose();
+              }}
+            >
+              <Trash2 />
+              {tc("buttons.delete")}
+            </AdminButton>
           ) : (
             <span className="text-xs text-muted">{tc("productEditor.requiredHint")}</span>
           )}
@@ -429,11 +443,13 @@ function GroupEditor({
   initialState,
   locale,
   onClose,
+  onDelete,
   onSaved,
 }: {
   initialState: GroupFormState;
   locale: AppLocale;
   onClose: () => void;
+  onDelete?: () => Promise<boolean>;
   onSaved: (message: string) => void;
 }) {
   const t = useTranslations("Admin.optionsPage");
@@ -466,7 +482,22 @@ function GroupEditor({
       description={t("groupDescription")}
       footer={
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {formMessage ? <p role="alert" className="text-sm text-rose-300">{formMessage}</p> : <span />}
+          {formMessage ? (
+            <p role="alert" className="text-sm text-rose-300">{formMessage}</p>
+          ) : onDelete ? (
+            <AdminButton
+              variant="ghost"
+              className="text-rose-300 hover:text-rose-200"
+              onClick={async () => {
+                if (await onDelete()) onClose();
+              }}
+            >
+              <Trash2 />
+              {tc("buttons.delete")}
+            </AdminButton>
+          ) : (
+            <span className="text-xs text-muted">{tc("productEditor.requiredHint")}</span>
+          )}
           <div className="ms-auto flex gap-2">
             <AdminButton variant="ghost" onClick={onClose}>{tc("buttons.cancel")}</AdminButton>
             <AdminButton variant="primary" onClick={submit} disabled={isSaving}>
@@ -500,6 +531,7 @@ function GroupEditor({
 export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) {
   const t = useTranslations("Admin.optionsPage");
   const tc = useTranslations("Admin");
+  const confirm = useAdminConfirm();
   const router = useRouter();
   const [, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
@@ -514,6 +546,14 @@ export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) 
       setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
       if (result.ok) router.refresh();
     });
+  };
+
+  const deleteWithConfirm = async (title: string, task: () => Promise<{ message: string; ok: boolean }>) => {
+    if (!(await confirm({ title }))) return false;
+    const result = await task();
+    setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+    if (result.ok) router.refresh();
+    return result.ok;
   };
 
   const onSaved = (message: string) => {
@@ -606,8 +646,8 @@ export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) 
                         danger: true,
                         icon: Trash2,
                         label: t("deleteGroup"),
-                        onSelect: () => {
-                          if (window.confirm(t("deleteGroupConfirm", { name: group.displayName }))) {
+                        onSelect: async () => {
+                          if (await confirm({ title: t("deleteGroupConfirm", { name: group.displayName }) })) {
                             runAction(() => deleteOptionGroupAction(locale, group.id));
                           }
                         },
@@ -658,8 +698,8 @@ export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) 
                                   danger: true,
                                   icon: Trash2,
                                   label: tc("buttons.delete"),
-                                  onSelect: () => {
-                                    if (window.confirm(t("deleteFieldConfirm", { name: option.displayLabel }))) {
+                                  onSelect: async () => {
+                                    if (await confirm({ title: t("deleteFieldConfirm", { name: option.displayLabel }) })) {
                                       runAction(() => deleteOptionAction(locale, option.id));
                                     }
                                   },
@@ -685,6 +725,15 @@ export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) 
           locale={locale}
           initialState={fieldEditor.state}
           onClose={() => setFieldEditor(null)}
+          onDelete={
+            fieldEditor.state.id
+              ? () =>
+                  deleteWithConfirm(
+                    t("deleteFieldConfirm", { name: fieldEditor.state.label[locale] || fieldEditor.state.label.de }),
+                    () => deleteOptionAction(locale, fieldEditor.state.id!)
+                  )
+              : undefined
+          }
           onSaved={onSaved}
         />
       ) : null}
@@ -694,6 +743,15 @@ export function AdminOptionsClient({ groups, locale }: AdminOptionsClientProps) 
           locale={locale}
           initialState={groupEditor.state}
           onClose={() => setGroupEditor(null)}
+          onDelete={
+            groupEditor.state.id
+              ? () =>
+                  deleteWithConfirm(
+                    t("deleteGroupConfirm", { name: groupEditor.state.name[locale] || groupEditor.state.name.de }),
+                    () => deleteOptionGroupAction(locale, groupEditor.state.id!)
+                  )
+              : undefined
+          }
           onSaved={onSaved}
         />
       ) : null}

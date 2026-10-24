@@ -834,16 +834,95 @@ html[dir="rtl"] .tracking-timeline-copy {
   animation: navigation-progress 1.35s ease-in-out infinite;
 }
 
-.loading-skeleton {
-  background: linear-gradient(100deg, rgba(255,255,255,.045) 20%, rgba(232,201,135,.11) 45%, rgba(255,255,255,.045) 70%);
-  background-size: 200% 100%;
-  animation: loading-shimmer 1.7s ease-in-out infinite;
-}
-
 @keyframes navigation-progress { from { transform: translateX(-110%); } to { transform: translateX(300%); } }
-@keyframes loading-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .navigation-progress, .loading-skeleton { animation: none; transition: none; }
+  .navigation-progress { animation: none; transition: none; }
   .navigation-progress-bar { width: 100%; animation: none; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Loading: the logo diamond with a passing light and a tracing ring.  */
+/* ------------------------------------------------------------------ */
+
+.brand-loader {
+  display: grid;
+  min-height: min(60vh, 34rem);
+  place-items: center;
+  opacity: 0;
+  animation: brand-loader-in 400ms ease 220ms forwards;
+}
+
+.brand-loader[data-size="md"] {
+  min-height: 40vh;
+}
+
+.brand-loader-stage {
+  position: relative;
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+.brand-loader[data-size="md"] .brand-loader-stage {
+  width: 5rem;
+  height: 5rem;
+}
+
+.brand-loader-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.brand-loader-ring circle {
+  fill: none;
+  stroke-width: 1.2;
+}
+
+.brand-loader-ring-track {
+  stroke: rgba(232, 205, 143, 0.12);
+}
+
+.brand-loader-ring-arc {
+  stroke: #e8cd8f;
+  stroke-linecap: round;
+  stroke-dasharray: 28 72;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: brand-loader-orbit 1.6s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+}
+
+.brand-loader-mark {
+  position: absolute;
+  inset: 20%;
+  width: 60%;
+  height: 60%;
+  filter: drop-shadow(0 0 14px rgba(201, 163, 90, 0.25));
+}
+
+@keyframes brand-loader-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes brand-loader-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-loader {
+    animation: none;
+    opacity: 1;
+  }
+  .brand-loader-ring-arc {
+    animation: none;
+  }
 }

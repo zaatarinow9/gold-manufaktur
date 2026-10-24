@@ -427,9 +427,9 @@
     "siteImages": {
       "title": "Site images",
       "description": "Upload image overrides for public site sections. Product images are not affected.",
-      "homepageHero": "Homepage hero",
-      "shopHero": "Shop hero",
-      "promoPopup": "Promo popup",
+      "homepageHero": "Home page",
+      "shopHero": "Shop",
+      "promoPopup": "Pop-up image",
       "upload": "Upload image",
       "replace": "Replace image",
       "reset": "Use default image",
@@ -438,7 +438,7 @@
       "uploadError": "Image upload failed.",
       "invalidFile": "Select a valid image file.",
       "productsExcluded": "Product images are managed separately and are not changed here.",
-      "usesDefault": "Using the default image.",
+      "usesDefault": "No custom image",
       "resetSuccess": "Default image restored."
     },
     "orderReset": {
@@ -526,7 +526,7 @@
       "products": "Products",
       "categories": "Categories",
       "gallery": "New order",
-      "options": "Product options",
+      "options": "Order questions",
       "orders": "Orders",
       "workshops": "Workshops",
       "employees": "Employees",
@@ -582,7 +582,8 @@
       "saveStatus": "Save status",
       "logout": "Sign out",
       "cancel": "Cancel",
-      "backToTasks": "Back to my tasks"
+      "backToTasks": "Back to my tasks",
+      "confirm": "Confirm"
     },
     "common": {
       "noAccessTitle": "Access restricted",
@@ -658,7 +659,9 @@
         "readyOrdersHint": "Ready for handover or pickup",
         "employees": "Employees",
         "employeesHint": "Visible for the current role",
-        "activeOrders": "Active orders"
+        "activeOrders": "Active orders",
+        "inquiries": "Open inquiries",
+        "inquiriesHint": "Customers waiting for a reply"
       },
       "recentOrdersTitle": "Latest orders",
       "recentOrdersDescription": "Latest orders and status.",
@@ -681,7 +684,28 @@
       "noNotifications": "No notifications yet.",
       "unread": "Unread",
       "workshopOrders": "{count, plural, =0 {no orders} one {# order} other {# orders}}",
-      "onTimeRate": "{rate}% on time"
+      "onTimeRate": "{rate}% on time",
+      "catalog": {
+        "title": "Catalog",
+        "description": "What is visible in the shop – and what is still missing.",
+        "visible": "Products in the shop",
+        "hidden": "Hidden products",
+        "noPhoto": "Products without a photo",
+        "emptyCategories": "Categories without products"
+      },
+      "markAllRead": "Mark all read",
+      "markRead": "Mark as read",
+      "clearAll": "Clear all",
+      "clearAllConfirm": "Delete all notifications?",
+      "clearAllText": "Orders, inquiries and other data stay as they are. Only the notices in this list are removed.",
+      "notificationStale": "Item no longer exists",
+      "notificationActions": "Actions for “{title}”",
+      "notificationsMessages": {
+        "markedRead": "Marked as read.",
+        "deleted": "Notification deleted.",
+        "cleared": "All notifications were deleted.",
+        "failed": "That did not work. Please try again."
+      }
     },
     "login": {
       "title": "Gold Helwah Admin",
@@ -764,7 +788,7 @@
         "activated": "The product is now visible in the shop.",
         "deactivated": "The product is now hidden from the shop.",
         "deleted": "Product deleted.",
-        "duplicated": "Copy created.",
+        "duplicated": "Copy created. It is hidden for now – edit it, then make it visible in the shop.",
         "featuredOn": "Now shown on the homepage.",
         "featuredOff": "Removed from the homepage.",
         "softDeleted": "The product is still used in orders, so it was hidden instead."
@@ -1053,7 +1077,7 @@
         "sendInvite": "Send invitation",
         "resendInvite": "Resend invitation",
         "dangerTitle": "Delete workshop",
-        "dangerHint": "Only possible once no employees or orders are assigned.",
+        "dangerHint": "Employees are kept. Not possible while orders are assigned to the workshop.",
         "deleteWorkshop": "Delete workshop permanently",
         "deleteConfirm": "Delete the workshop “{name}” permanently?",
         "account": {
@@ -1143,7 +1167,12 @@
         "shift": "Shift",
         "notes": "Notes",
         "active": "Employee is active"
-      }
+      },
+      "deleteConfirm": "Delete {name}?",
+      "deleteConfirmText": "The employee is removed and any linked login is switched off. Employees with orders can only be deactivated.",
+      "deleted": "The employee was deleted.",
+      "deleteHasOrders": "This employee has orders and cannot be deleted. Deactivate them instead.",
+      "deleteFailed": "The employee could not be deleted."
     },
     "attendance": {
       "eyebrow": "Attendance",
@@ -1340,7 +1369,7 @@
     },
     "settingsClient": {
       "title": "Settings",
-      "description": "Manage notification addresses, the external order-entry link, and admin users from one place.",
+      "description": "Website, emails, logins and data – organised by area.",
       "diagnosticsTitle": "Settings diagnostics",
       "notificationTitle": "Notifications",
       "adminEmail": "Order and inquiry notification email",
@@ -1388,11 +1417,14 @@
       "inviteAgain": "Send new link",
       "roleOwner": "Owner",
       "roleAdmin": "Admin",
-      "roleEmployee": "Worker"
+      "roleEmployee": "Worker",
+      "userDeleteConfirm": "Delete the login for {name}?",
+      "userDeleteText": "This person will no longer be able to sign in.",
+      "userActions": "Actions for {name}"
     },
     "navGroups": {
       "orders": "Daily work",
-      "catalog": "Catalog",
+      "catalog": "Shop",
       "team": "Team",
       "customers": "Customers",
       "system": "System"
@@ -1411,7 +1443,7 @@
       "optional": "optional",
       "otherLanguages": "Other languages",
       "otherLanguagesStatus": "{count} of {total} translated – optional",
-      "fallbackHint": "Empty fields automatically show the German text on the website."
+      "fallbackHint": "Empty languages automatically show the text you entered above on the website."
     },
     "imageUploader": {
       "addPhotos": "Add photos",
@@ -1471,22 +1503,22 @@
       "photosTitle": "Photos",
       "photosHint": "The first photo is the main photo in the shop.",
       "textTitle": "Name and description",
-      "textHint": "German and Arabic are required, the other languages are optional.",
+      "textHint": "Your own language is enough. Other languages are optional.",
       "nameLabel": "Product name",
       "descriptionLabel": "Description",
-      "categoryTitle": "Category and customer details",
+      "categoryTitle": "Category",
       "categoryLabel": "Category",
       "noCategory": "No category",
       "optionGroupLabel": "Customer details",
       "optionGroupHelper": "What customers fill in when they ask about it, e.g. a name or the karat.",
-      "noOptionGroup": "No details needed",
+      "noOptionGroup": "No questions",
       "optionGroupPreview": "Customers will be asked for: {fields}",
       "optionGroupEmpty": "This group has no fields yet.",
       "visibilityTitle": "Visibility",
       "visibleLabel": "Show in shop",
       "visibleHint": "Hidden products stay saved but customers can't see them.",
       "featuredLabel": "Feature on homepage",
-      "featuredHint": "Appears in the “Selected Products” section (the first four).",
+      "featuredHint": "Appears on the home page under “From the showroom”.",
       "advancedTitle": "More settings",
       "advancedHint": "Article number, web address, order and tags – filled in automatically.",
       "skuLabel": "Article number",
@@ -1497,7 +1529,17 @@
       "sortOrderLabel": "Order",
       "sortOrderHelper": "Lower numbers appear first.",
       "tagsLabel": "Tags",
-      "tagsHelper": "Shown as small labels on the product page. Separate with commas."
+      "tagsHelper": "Shown as small labels on the product page. Separate with commas.",
+      "categoryHint": "Choose where the product appears in the shop. If a category is missing, create it right here.",
+      "newCategory": "New category",
+      "newCategoryPlaceholder": "Category name",
+      "newCategoryCreate": "Create",
+      "quickCategoryFailed": "The category could not be created.",
+      "customerTitle": "What should the customer provide?",
+      "customerHint": "Questions asked when someone requests this product – e.g. a name to engrave or the karat.",
+      "noOptionGroupHint": "The customer only sends their name, contact and a message.",
+      "manageQuestions": "Edit questions",
+      "saveAndNext": "Save & add next"
     },
     "categoriesPage": {
       "title": "Categories",
@@ -1535,8 +1577,8 @@
       }
     },
     "optionsPage": {
-      "title": "Product options",
-      "description": "Questions customers answer when they enquire or order – for example the name to be made or the karat. Group questions into sets and pick a set when you add a product.",
+      "title": "Order questions",
+      "description": "What customers provide when requesting a product – e.g. the name to engrave or the karat. Group questions into sets and pick a set in the product.",
       "addGroup": "New set",
       "addField": "Add question",
       "renameGroup": "Rename set",
@@ -1564,7 +1606,7 @@
       "presetsHint": "A template fills in every language – you can change everything afterwards.",
       "typeTitle": "Type of answer",
       "questionTitle": "Question",
-      "questionHint": "German and Arabic are required, other languages are optional.",
+      "questionHint": "Your own language is enough. Other languages are optional.",
       "labelLabel": "Question",
       "helpLabel": "Hint below the field",
       "placeholderLabel": "Example inside the field",
@@ -1955,7 +1997,8 @@
       "PERMISSION_DENIED": "You don't have permission to do this.",
       "WORKSHOP_DELETED": "The workshop was deleted.",
       "WORKSHOP_NOT_EMPTY": "The workshop can only be deleted once no employees or orders are assigned to it.",
-      "FAILED": "The action could not be completed."
+      "FAILED": "The action could not be completed.",
+      "WORKSHOP_HAS_ORDERS": "This workshop still has orders. Move them to another workshop first, or deactivate the workshop instead."
     },
     "workshopsPage": {
       "description": "The workshops that make your orders, with their contact person and current workload.",
@@ -1980,7 +2023,50 @@
       "notesLabel": "Internal notes",
       "notesHelper": "Only visible to the admin team.",
       "activeLabel": "Active",
-      "activeHint": "Inactive workshops can't receive new orders."
+      "activeHint": "Inactive workshops can't receive new orders.",
+      "deleteConfirm": "Delete workshop “{name}”?",
+      "deleteConfirmText": "{count, plural, =0 {The workshop will be removed permanently.} one {The workshop will be removed permanently. # employee stays in the system and can be moved to another workshop.} other {The workshop will be removed permanently. # employees stay in the system and can be moved to another workshop.}}"
+    },
+    "settingsSections": {
+      "website": "Website",
+      "emails": "Emails",
+      "orderLink": "Order link",
+      "access": "Logins",
+      "data": "Data & reset",
+      "imagesTitle": "Website images",
+      "imagesText": "The large image on the home page and next to the shop title. Without your own image, a product photo is used.",
+      "homeHeroHint": "Currently: a product photo, chosen automatically.",
+      "shopHeroHint": "Currently: no image, title only.",
+      "promoTitle": "Promotion pop-up",
+      "promoText": "A small window that shows visitors an offer when they open the home page – for holidays, for example.",
+      "promoEnabledHint": "When switched off, visitors see nothing; your entries stay saved.",
+      "promoContent": "Content",
+      "promoLook": "Look",
+      "promoWhen": "When",
+      "promoImageHint": "Optional. Shown inside the pop-up.",
+      "emailsText": "Where the shop sends emails about new orders, inquiries and support messages.",
+      "adminEmailHint": "Receives new orders and product inquiries.",
+      "supportEmailHint": "Receives customers’ questions about an order.",
+      "ownerEmailHint": "Receives important system messages.",
+      "orderLinkText": "A private link that partners – a branch or workshop, for example – can use to enter orders without logging in.",
+      "expiresHint": "Leave empty if the link should not expire.",
+      "rotateHint": "Creates a new link. The old link stops working – useful if it reached the wrong person.",
+      "accessText": "Who can sign in to the dashboard and what they can see.",
+      "you": "you",
+      "userEditorText": "The person receives an email to set their password.",
+      "userEmailHint": "Used to sign in.",
+      "roleHint": {
+        "super_admin": "Sees and changes everything, including settings and logins.",
+        "admin": "Manages orders, employees and inquiries – no settings.",
+        "employee": "Sees only their own tasks."
+      }
+    },
+    "settingsData": {
+      "notificationsTitle": "Clear notifications",
+      "notificationsText": "Removes all notices from the overview. Orders and inquiries are kept.",
+      "clearNotificationsButton": "Clear notifications",
+      "clearNotificationsConfirm": "Delete all notifications?",
+      "clearNotificationsText": "Orders, inquiries and other data stay as they are."
     }
   },
   "Tracking": {
@@ -2073,22 +2159,22 @@
     "description": "Hero image overrides and promotional popup settings.",
     "homeHero": "Homepage hero image URL",
     "shopHero": "Shop hero image URL",
-    "enabled": "Enable promo popup",
-    "showOnce": "Show once per visitor",
-    "promoTitle": "Promo title",
-    "promoDescription": "Promo description",
-    "ctaText": "CTA text",
-    "ctaUrl": "CTA URL",
+    "enabled": "Show the promotion pop-up",
+    "showOnce": "Show only once per visitor",
+    "promoTitle": "Headline",
+    "promoDescription": "Short text",
+    "ctaText": "Button text",
+    "ctaUrl": "Button link",
     "imageUrl": "Promo image URL",
-    "videoUrl": "Promo video URL",
-    "start": "Promo start",
-    "end": "Promo end",
-    "style": "Promo style",
+    "videoUrl": "Video link (optional)",
+    "start": "Show from",
+    "end": "Show until",
+    "style": "Layout",
     "save": "Save",
     "reset": "Reset hero images",
-    "luxury": "Luxury card",
-    "image": "Image feature",
-    "announcement": "Announcement banner"
+    "luxury": "Card with text",
+    "image": "Large image",
+    "announcement": "Slim banner"
   },
   "OrderEntry": {
     "customer": "Customer details",
@@ -2117,5 +2203,8 @@
     "no": "No",
     "unavailableTitle": "Workshop order currently unavailable",
     "unavailableDescription": "There are currently no active products assigned to this link."
+  },
+  "Common": {
+    "loading": "Loading…"
   }
 }
