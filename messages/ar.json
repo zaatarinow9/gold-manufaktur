@@ -465,7 +465,8 @@
       "roleFoundation": "نظام الصلاحيات",
       "roleHint": "يتم تخصيص الواجهة والأدوات المعروضة تلقائياً بناءً على الدور الوظيفي للمستخدم.",
       "welcome": "مرحباً بك، {name}",
-      "toWebsite": "الانتقال للموقع"
+      "toWebsite": "عرض الموقع",
+      "language": "لغة لوحة التحكم"
     },
     "roles": {
       "super_admin": "الإدارة العليا",
@@ -476,22 +477,24 @@
       "overview": "نظرة عامة",
       "products": "المنتجات",
       "categories": "التصنيفات",
-      "gallery": "طلب من الورشة",
-      "options": "إدارة الخيارات",
-      "orders": "الطلبات النشطة",
-      "workshops": "إدارة الورش",
-      "employees": "فريق العمل",
+      "gallery": "طلب جديد",
+      "options": "خيارات المنتجات",
+      "orders": "الطلبات",
+      "workshops": "الورش",
+      "employees": "الموظفون",
       "attendance": "سجل الدوام",
       "reports": "التقارير والإحصائيات",
       "archive": "الأرشيف المركزي",
-      "settings": "إعدادات النظام",
+      "settings": "الإعدادات",
       "myTasks": "مهامي",
-      "inquiries": "طلبات العملاء"
+      "inquiries": "استفسارات العملاء",
+      "ariaLabel": "القائمة الرئيسية",
+      "countLabel": "{count} بانتظار المتابعة"
     },
     "buttons": {
       "openMenu": "القائمة",
       "close": "إلغاء",
-      "demoLogin": "تبديل الحساب",
+      "demoLogin": "تسجيل الخروج",
       "addProduct": "إدراج منتج",
       "createOrder": "تسجيل طلب",
       "viewDetails": "عرض التفاصيل",
@@ -528,7 +531,9 @@
       "previous": "الرجوع",
       "notifyCustomer": "إرسال إشعار للعميل",
       "copyTrackingLink": "نسخ رابط التتبع",
-      "saveStatus": "اعتماد الحالة"
+      "saveStatus": "اعتماد الحالة",
+      "logout": "تسجيل الخروج",
+      "cancel": "إلغاء"
     },
     "common": {
       "noAccessTitle": "صلاحيات محدودة",
@@ -668,6 +673,17 @@
         "options": "الخصائص المرتبطة",
         "actions": "أدوات",
         "sortOrder": "أولوية العرض"
+      },
+      "messages": {
+        "created": "تمت إضافة المنتج.",
+        "updated": "تم حفظ التغييرات.",
+        "activated": "أصبح المنتج ظاهرًا في المتجر.",
+        "deactivated": "تم إخفاء المنتج من المتجر.",
+        "deleted": "تم حذف المنتج.",
+        "duplicated": "تم إنشاء نسخة.",
+        "featuredOn": "يظهر الآن في الصفحة الرئيسية.",
+        "featuredOff": "أُزيل من الصفحة الرئيسية.",
+        "softDeleted": "المنتج مستخدم في طلبات، لذلك تم إخفاؤه فقط."
       }
     },
     "categories": {
@@ -1292,6 +1308,327 @@
       "roleOwner": "المدير الأعلى",
       "roleAdmin": "مدير",
       "roleEmployee": "موظف"
+    },
+    "navGroups": {
+      "orders": "العمل اليومي",
+      "catalog": "الكتالوج",
+      "team": "الفريق",
+      "customers": "العملاء",
+      "system": "النظام"
+    },
+    "forms": {
+      "required": "يرجى تعبئة هذا الحقل.",
+      "tooLong": "هذا النص طويل جدًا.",
+      "invalidValue": "يرجى التحقق من هذه القيمة.",
+      "invalidSlug": "أحرف لاتينية صغيرة وأرقام وشرطات فقط، أو اتركه فارغًا.",
+      "duplicateSku": "رقم المنتج هذا مستخدم مسبقًا.",
+      "checkFields": "يرجى مراجعة الحقول المحددة.",
+      "saveFailed": "تعذّر الحفظ. يرجى المحاولة مرة أخرى."
+    },
+    "translations": {
+      "required": "حقل إلزامي",
+      "optional": "اختياري",
+      "otherLanguages": "لغات أخرى",
+      "otherLanguagesStatus": "تمت ترجمة {count} من {total} – اختياري",
+      "fallbackHint": "الحقول الفارغة تعرض النص الألماني تلقائيًا على الموقع."
+    },
+    "imageUploader": {
+      "addPhotos": "إضافة صور",
+      "addPhoto": "إضافة صورة",
+      "uploading": "جارٍ الرفع…",
+      "hint": "اسحب الصور إلى هنا أو اضغط للاختيار · JPG أو PNG أو WebP",
+      "mainPhoto": "الصورة الرئيسية",
+      "makeMain": "اجعلها الصورة الرئيسية",
+      "moveEarlier": "تقديم",
+      "moveLater": "تأخير",
+      "remove": "حذف الصورة",
+      "replace": "استبدال",
+      "errors": {
+        "invalid_type": "يرجى اختيار ملفات صور فقط (JPG أو PNG أو WebP أو AVIF).",
+        "too_large": "الصورة كبيرة جدًا. يرجى اختيار ملف أصغر.",
+        "upload_failed": "تعذّر رفع الصورة. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "productsPage": {
+      "title": "المنتجات",
+      "description": "كل ما يراه العملاء في المتجر. اضغط على أي منتج لتعديله.",
+      "add": "إضافة منتج",
+      "searchPlaceholder": "ابحث بالاسم أو رقم المنتج",
+      "categoryFilter": "تصفية حسب التصنيف",
+      "allCategories": "كل التصنيفات",
+      "withoutCategory": "بدون تصنيف",
+      "filters": {
+        "all": "الكل",
+        "visible": "ظاهر في المتجر",
+        "hidden": "مخفي",
+        "featured": "في الصفحة الرئيسية"
+      },
+      "emptyTitle": "لا توجد منتجات بعد",
+      "emptyText": "أضف أول منتج بصورة واسم.",
+      "emptyFilteredTitle": "لا توجد نتائج",
+      "emptyFilteredText": "لا يوجد منتج يطابق البحث والتصفية.",
+      "clearFilters": "إعادة ضبط التصفية",
+      "noPhoto": "لا توجد صورة",
+      "hiddenBadge": "مخفي",
+      "featuredBadge": "الصفحة الرئيسية",
+      "editProduct": "تعديل {name}",
+      "moreActions": "إجراءات أخرى لـ {name}",
+      "hide": "إخفاء من المتجر",
+      "show": "إظهار في المتجر",
+      "feature": "عرض في الصفحة الرئيسية",
+      "unfeature": "إزالة من الصفحة الرئيسية",
+      "deleteConfirm": "هل تريد حذف «{name}» نهائيًا؟ إذا كان المنتج مستخدمًا في طلبات فسيتم إخفاؤه فقط."
+    },
+    "productEditor": {
+      "titleNew": "منتج جديد",
+      "titleEdit": "تعديل المنتج",
+      "descriptionNew": "تكفي الصورة والاسم والتصنيف، وكل ما عدا ذلك اختياري.",
+      "requiredHint": "الحقول المعلّمة بـ * إلزامية.",
+      "create": "إضافة المنتج",
+      "save": "حفظ التغييرات",
+      "saving": "جارٍ الحفظ…",
+      "photosTitle": "الصور",
+      "photosHint": "الصورة الأولى هي الصورة الرئيسية في المتجر.",
+      "textTitle": "الاسم والوصف",
+      "textHint": "الألمانية والعربية إلزاميتان، وباقي اللغات اختيارية.",
+      "nameLabel": "اسم المنتج",
+      "descriptionLabel": "الوصف",
+      "categoryTitle": "التصنيف وبيانات العميل",
+      "categoryLabel": "التصنيف",
+      "noCategory": "بدون تصنيف",
+      "optionGroupLabel": "بيانات يطلبها المنتج من العميل",
+      "optionGroupHelper": "ما يكتبه العميل عند الطلب، مثل الاسم أو العيار.",
+      "noOptionGroup": "لا يحتاج بيانات إضافية",
+      "optionGroupPreview": "سيُطلب من العميل: {fields}",
+      "optionGroupEmpty": "هذه المجموعة لا تحتوي على حقول بعد.",
+      "visibilityTitle": "الظهور",
+      "visibleLabel": "إظهار في المتجر",
+      "visibleHint": "المنتجات المخفية تبقى محفوظة لكن لا يراها العملاء.",
+      "featuredLabel": "إبرازه في الصفحة الرئيسية",
+      "featuredHint": "يظهر في قسم «مختاراتنا» (أول أربعة منتجات).",
+      "advancedTitle": "إعدادات إضافية",
+      "advancedHint": "رقم المنتج والرابط والترتيب والوسوم – تُملأ تلقائيًا.",
+      "skuLabel": "رقم المنتج",
+      "skuHelper": "اتركه فارغًا ليُنشأ تلقائيًا.",
+      "skuPlaceholder": "مثال: GH-0012",
+      "slugLabel": "عنوان المنتج في الرابط",
+      "slugHelper": "اتركه فارغًا ليُنشأ من الاسم.",
+      "sortOrderLabel": "الترتيب",
+      "sortOrderHelper": "الأرقام الأصغر تظهر أولًا.",
+      "tagsLabel": "الوسوم",
+      "tagsHelper": "تظهر كملصقات صغيرة في صفحة المنتج. افصل بينها بفواصل."
+    },
+    "categoriesPage": {
+      "title": "التصنيفات",
+      "description": "التصنيفات تنظّم المتجر، مثل الخواتم أو السلاسل. كل منتج ينتمي إلى تصنيف.",
+      "add": "إضافة تصنيف",
+      "searchPlaceholder": "ابحث عن تصنيف",
+      "emptyTitle": "لا توجد تصنيفات بعد",
+      "emptyText": "أنشئ تصنيفات لترتيب المنتجات في المتجر.",
+      "emptyFilteredTitle": "لم يتم العثور على تصنيف",
+      "productCount": "{count, plural, =0 {لا توجد منتجات} one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}}",
+      "nameCustomizationBadge": "يمكن تفصيله بالاسم",
+      "deleteConfirm": "حذف التصنيف «{name}»؟",
+      "deleteConfirmWithProducts": "حذف التصنيف «{name}»؟ سيصبح {count, plural, one {منتج واحد} two {منتجان} few {# منتجات} many {# منتجًا} other {# منتج}} بدون تصنيف.",
+      "titleNew": "تصنيف جديد",
+      "titleEdit": "تعديل التصنيف",
+      "descriptionNew": "تكفي صورة واسم.",
+      "create": "إضافة التصنيف",
+      "imageTitle": "الصورة",
+      "imageHint": "تظهر كصورة للتصنيف في الصفحة الرئيسية والمتجر.",
+      "textTitle": "الاسم والوصف",
+      "nameLabel": "اسم التصنيف",
+      "descriptionLabel": "وصف قصير",
+      "settingsTitle": "الإعدادات",
+      "visibleLabel": "إظهار في المتجر",
+      "visibleHint": "التصنيفات المخفية لا تظهر في فلتر المتجر.",
+      "nameCustomizationLabel": "تفصيل بالاسم حسب الطلب",
+      "nameCustomizationHint": "تعرض منتجات هذا التصنيف ملاحظة بأنه يمكن تفصيلها باسم العميل.",
+      "advancedHint": "الرابط والترتيب – يُملآن تلقائيًا.",
+      "messages": {
+        "created": "تمت إضافة التصنيف.",
+        "updated": "تم حفظ التغييرات.",
+        "shown": "أصبح التصنيف ظاهرًا في المتجر.",
+        "hidden": "تم إخفاء التصنيف من المتجر.",
+        "deleted": "تم حذف التصنيف."
+      }
+    },
+    "optionsPage": {
+      "title": "خيارات المنتجات",
+      "description": "أسئلة يجيب عنها العميل عند الاستفسار أو الطلب، مثل الاسم المطلوب أو العيار. اجمع الأسئلة في مجموعات ثم اختر المجموعة المناسبة عند إضافة المنتج.",
+      "addGroup": "مجموعة جديدة",
+      "addField": "إضافة سؤال",
+      "renameGroup": "إعادة تسمية المجموعة",
+      "deleteGroup": "حذف المجموعة",
+      "hideField": "إخفاء السؤال",
+      "showField": "إظهار السؤال",
+      "emptyTitle": "لا توجد مجموعات بعد",
+      "emptyText": "أنشئ مجموعة، مثل «تفصيل أسماء»، ثم أضف إليها الأسئلة.",
+      "groupEmpty": "لا توجد أسئلة في هذه المجموعة بعد.",
+      "groupSummary": "{fields, plural, =0 {لا توجد أسئلة} one {سؤال واحد} two {سؤالان} few {# أسئلة} many {# سؤالًا} other {# سؤال}} · {products, plural, =0 {غير مرتبطة بأي منتج} one {مرتبطة بمنتج واحد} two {مرتبطة بمنتجين} few {مرتبطة بـ # منتجات} many {مرتبطة بـ # منتجًا} other {مرتبطة بـ # منتج}}",
+      "requiredBadge": "إلزامي",
+      "deleteGroupConfirm": "حذف المجموعة «{name}» مع كل أسئلتها؟ الطلبات المحفوظة سابقًا لن تتأثر.",
+      "deleteFieldConfirm": "حذف السؤال «{name}»؟ الطلبات المحفوظة سابقًا لن تتأثر.",
+      "groupTitleNew": "مجموعة جديدة",
+      "groupTitleEdit": "تعديل المجموعة",
+      "groupDescription": "المجموعة تجمع الأسئلة الخاصة بمنتجات معيّنة.",
+      "groupNameTitle": "اسم المجموعة",
+      "groupNameHint": "يظهر لك فقط، مثل «تفصيل أسماء» أو «خواتم».",
+      "groupNameLabel": "الاسم",
+      "groupActiveHint": "عند الإيقاف لن تظهر أسئلة هذه المجموعة في أي مكان.",
+      "fieldTitleNew": "سؤال جديد",
+      "fieldTitleEdit": "تعديل السؤال",
+      "fieldDescription": "هكذا سيظهر السؤال في نموذج الاستفسار والطلب.",
+      "presetsTitle": "بداية سريعة",
+      "presetsHint": "القالب يملأ جميع اللغات، ويمكنك تعديل كل شيء بعد ذلك.",
+      "typeTitle": "نوع الإجابة",
+      "questionTitle": "السؤال",
+      "questionHint": "الألمانية والعربية إلزاميتان، وباقي اللغات اختيارية.",
+      "labelLabel": "السؤال",
+      "helpLabel": "ملاحظة تحت الحقل",
+      "placeholderLabel": "مثال داخل الحقل",
+      "choicesTitle": "الاختيارات",
+      "choicesHint": "سطر لكل اختيار. عمود اللغة الثانية اختياري، وإذا بقي فارغًا يُعرض النص المكتوب.",
+      "choiceLabel": "الاختيار {number}",
+      "removeChoice": "حذف الاختيار {number}",
+      "addChoice": "إضافة اختيار",
+      "settingsTitle": "الإعدادات",
+      "groupLabel": "ضمن المجموعة",
+      "requiredLabel": "الإجابة إلزامية",
+      "requiredHint": "لا يمكن إرسال النموذج قبل الإجابة عن هذا السؤال.",
+      "activeLabel": "إظهار",
+      "activeHint": "الأسئلة المخفية تبقى محفوظة لكنها لا تظهر في النموذج.",
+      "types": {
+        "text": "إجابة قصيرة",
+        "textarea": "نص طويل",
+        "number": "رقم",
+        "select": "اختيار واحد",
+        "multi_select": "اختيار متعدد",
+        "boolean": "نعم / لا",
+        "date": "تاريخ"
+      },
+      "typeHints": {
+        "text": "كلمة أو سطر واحد، مثل الاسم.",
+        "textarea": "عدة أسطر، مثل الطلبات الخاصة.",
+        "number": "أرقام فقط، مثل الوزن أو مقاس الخاتم.",
+        "select": "يختار العميل خيارًا واحدًا من قائمة.",
+        "multi_select": "يمكن للعميل اختيار أكثر من خيار.",
+        "boolean": "علامة صح لنعم أو لا.",
+        "date": "تاريخ من التقويم، مثل الموعد المطلوب."
+      },
+      "presets": {
+        "engraving": {
+          "name": "الاسم المطلوب",
+          "label": {
+            "de": "Gewünschter Name",
+            "ar": "الاسم المطلوب",
+            "en": "Name to be made",
+            "fr": "Prénom souhaité",
+            "tr": "İstenen isim"
+          },
+          "help": {
+            "de": "Genau so, wie er angefertigt werden soll.",
+            "ar": "اكتب الاسم كما تريده بالضبط.",
+            "en": "Exactly as it should be made.",
+            "fr": "Exactement comme il doit être réalisé.",
+            "tr": "Tam olarak yapılmasını istediğiniz şekilde yazın."
+          },
+          "placeholder": {
+            "de": "z. B. Lina",
+            "ar": "مثال: لينا",
+            "en": "e.g. Lina",
+            "fr": "ex. Lina",
+            "tr": "örn. Lina"
+          }
+        },
+        "karat": {
+          "name": "العيار",
+          "label": {
+            "de": "Goldlegierung (Karat)",
+            "ar": "العيار",
+            "en": "Gold karat",
+            "fr": "Carat de l’or",
+            "tr": "Altın ayarı"
+          },
+          "help": {
+            "de": "Wählen Sie die gewünschte Legierung.",
+            "ar": "اختر العيار المطلوب.",
+            "en": "Choose the karat you want.",
+            "fr": "Choisissez le carat souhaité.",
+            "tr": "İstediğiniz ayarı seçin."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        },
+        "weight": {
+          "name": "الوزن",
+          "label": {
+            "de": "Gewünschtes Gewicht (g)",
+            "ar": "الوزن المطلوب (غرام)",
+            "en": "Desired weight (g)",
+            "fr": "Poids souhaité (g)",
+            "tr": "İstenen ağırlık (g)"
+          },
+          "help": {
+            "de": "Ungefähres Gewicht in Gramm.",
+            "ar": "الوزن التقريبي بالغرام.",
+            "en": "Approximate weight in grams.",
+            "fr": "Poids approximatif en grammes.",
+            "tr": "Gram cinsinden yaklaşık ağırlık."
+          },
+          "placeholder": {
+            "de": "z. B. 12,5",
+            "ar": "مثال: 12.5",
+            "en": "e.g. 12.5",
+            "fr": "ex. 12,5",
+            "tr": "örn. 12,5"
+          }
+        },
+        "note": {
+          "name": "ملاحظات",
+          "label": {
+            "de": "Anmerkungen",
+            "ar": "ملاحظات",
+            "en": "Notes",
+            "fr": "Remarques",
+            "tr": "Notlar"
+          },
+          "help": {
+            "de": "Weitere Wünsche, z. B. Schriftart oder Länge.",
+            "ar": "أي طلبات إضافية، مثل نوع الخط أو الطول.",
+            "en": "Any other wishes, e.g. font or length.",
+            "fr": "Autres souhaits, par ex. police ou longueur.",
+            "tr": "Diğer istekler, örn. yazı tipi veya uzunluk."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        }
+      },
+      "errors": {
+        "choices": "يرجى إضافة اختيار واحد على الأقل."
+      },
+      "messages": {
+        "groupCreated": "تمت إضافة المجموعة.",
+        "groupUpdated": "تم حفظ المجموعة.",
+        "groupDeleted": "تم حذف المجموعة.",
+        "groupArchived": "المجموعة مستخدمة في طلبات، لذلك تم إخفاؤها فقط.",
+        "fieldCreated": "تمت إضافة السؤال.",
+        "fieldUpdated": "تم حفظ السؤال.",
+        "fieldShown": "أصبح السؤال ظاهرًا من جديد.",
+        "fieldHidden": "تم إخفاء السؤال.",
+        "fieldDeleted": "تم حذف السؤال.",
+        "fieldArchived": "السؤال مستخدم في طلبات، لذلك تم إخفاؤه فقط."
+      }
     }
   },
   "Tracking": {

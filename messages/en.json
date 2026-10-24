@@ -459,13 +459,14 @@
       "description": "GoldHelwah GmbH admin for catalog, orders, and workshops."
     },
     "header": {
-      "adminArea": "Admin area",
+      "adminArea": "Dashboard",
       "demoMode": "Access role",
       "activeUser": "Active user",
       "roleFoundation": "Role foundation",
       "roleHint": "Roles and views are clearly assigned across the internal workspace.",
       "welcome": "Welcome, {name}",
-      "toWebsite": "View site"
+      "toWebsite": "View website",
+      "language": "Dashboard language"
     },
     "roles": {
       "super_admin": "Super Admin",
@@ -476,8 +477,8 @@
       "overview": "Overview",
       "products": "Products",
       "categories": "Categories",
-      "gallery": "Workshop Order",
-      "options": "Options",
+      "gallery": "New order",
+      "options": "Product options",
       "orders": "Orders",
       "workshops": "Workshops",
       "employees": "Employees",
@@ -485,13 +486,15 @@
       "reports": "Reports",
       "archive": "Archive",
       "settings": "Settings",
-      "myTasks": "My Tasks",
-      "inquiries": "Customer inquiries"
+      "myTasks": "My tasks",
+      "inquiries": "Customer inquiries",
+      "ariaLabel": "Main navigation",
+      "countLabel": "{count} open"
     },
     "buttons": {
       "openMenu": "Menu",
       "close": "Close",
-      "demoLogin": "Switch account",
+      "demoLogin": "Sign out",
       "addProduct": "Add product",
       "createOrder": "Create order",
       "viewDetails": "Details",
@@ -528,7 +531,9 @@
       "previous": "Previous",
       "notifyCustomer": "Notify customer",
       "copyTrackingLink": "Copy tracking link",
-      "saveStatus": "Save status"
+      "saveStatus": "Save status",
+      "logout": "Sign out",
+      "cancel": "Cancel"
     },
     "common": {
       "noAccessTitle": "Access restricted",
@@ -687,6 +692,17 @@
         "options": "Options",
         "actions": "Actions",
         "sortOrder": "Sort order"
+      },
+      "messages": {
+        "created": "Product added.",
+        "updated": "Changes saved.",
+        "activated": "The product is now visible in the shop.",
+        "deactivated": "The product is now hidden from the shop.",
+        "deleted": "Product deleted.",
+        "duplicated": "Copy created.",
+        "featuredOn": "Now shown on the homepage.",
+        "featuredOff": "Removed from the homepage.",
+        "softDeleted": "The product is still used in orders, so it was hidden instead."
       }
     },
     "categories": {
@@ -1289,6 +1305,327 @@
       "roleOwner": "Owner",
       "roleAdmin": "Admin",
       "roleEmployee": "Worker"
+    },
+    "navGroups": {
+      "orders": "Daily work",
+      "catalog": "Catalog",
+      "team": "Team",
+      "customers": "Customers",
+      "system": "System"
+    },
+    "forms": {
+      "required": "Please fill in this field.",
+      "tooLong": "This text is too long.",
+      "invalidValue": "Please check this value.",
+      "invalidSlug": "Use lowercase letters, numbers and hyphens only – or leave it empty.",
+      "duplicateSku": "This article number is already in use.",
+      "checkFields": "Please check the highlighted fields.",
+      "saveFailed": "Saving failed. Please try again."
+    },
+    "translations": {
+      "required": "Required",
+      "optional": "optional",
+      "otherLanguages": "Other languages",
+      "otherLanguagesStatus": "{count} of {total} translated – optional",
+      "fallbackHint": "Empty fields automatically show the German text on the website."
+    },
+    "imageUploader": {
+      "addPhotos": "Add photos",
+      "addPhoto": "Add photo",
+      "uploading": "Uploading…",
+      "hint": "Drag here or click · JPG, PNG, WebP",
+      "mainPhoto": "Main photo",
+      "makeMain": "Use as main photo",
+      "moveEarlier": "Move earlier",
+      "moveLater": "Move later",
+      "remove": "Remove photo",
+      "replace": "Replace",
+      "errors": {
+        "invalid_type": "Please choose image files only (JPG, PNG, WebP or AVIF).",
+        "too_large": "The image is too large. Please choose a smaller file.",
+        "upload_failed": "The image could not be uploaded. Please try again."
+      }
+    },
+    "productsPage": {
+      "title": "Products",
+      "description": "Everything customers see in the shop. Click a product to edit it.",
+      "add": "Add product",
+      "searchPlaceholder": "Search name or article number",
+      "categoryFilter": "Filter by category",
+      "allCategories": "All categories",
+      "withoutCategory": "No category",
+      "filters": {
+        "all": "All",
+        "visible": "In shop",
+        "hidden": "Hidden",
+        "featured": "Homepage"
+      },
+      "emptyTitle": "No products yet",
+      "emptyText": "Add your first product with a photo and a name.",
+      "emptyFilteredTitle": "No matches",
+      "emptyFilteredText": "No product matches the search and filters.",
+      "clearFilters": "Clear filters",
+      "noPhoto": "No photo",
+      "hiddenBadge": "Hidden",
+      "featuredBadge": "Homepage",
+      "editProduct": "Edit {name}",
+      "moreActions": "More actions for {name}",
+      "hide": "Hide from shop",
+      "show": "Show in shop",
+      "feature": "Show on homepage",
+      "unfeature": "Remove from homepage",
+      "deleteConfirm": "Delete “{name}” permanently? If the product is still used in orders, it is only hidden."
+    },
+    "productEditor": {
+      "titleNew": "New product",
+      "titleEdit": "Edit product",
+      "descriptionNew": "A photo, a name and a category are enough – everything else is optional.",
+      "requiredHint": "Fields marked * are required.",
+      "create": "Add product",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "photosTitle": "Photos",
+      "photosHint": "The first photo is the main photo in the shop.",
+      "textTitle": "Name and description",
+      "textHint": "German and Arabic are required, the other languages are optional.",
+      "nameLabel": "Product name",
+      "descriptionLabel": "Description",
+      "categoryTitle": "Category and customer details",
+      "categoryLabel": "Category",
+      "noCategory": "No category",
+      "optionGroupLabel": "Customer details",
+      "optionGroupHelper": "What customers fill in when they ask about it, e.g. a name or the karat.",
+      "noOptionGroup": "No details needed",
+      "optionGroupPreview": "Customers will be asked for: {fields}",
+      "optionGroupEmpty": "This group has no fields yet.",
+      "visibilityTitle": "Visibility",
+      "visibleLabel": "Show in shop",
+      "visibleHint": "Hidden products stay saved but customers can't see them.",
+      "featuredLabel": "Feature on homepage",
+      "featuredHint": "Appears in the “Selected Products” section (the first four).",
+      "advancedTitle": "More settings",
+      "advancedHint": "Article number, web address, order and tags – filled in automatically.",
+      "skuLabel": "Article number",
+      "skuHelper": "Leave empty to assign one automatically.",
+      "skuPlaceholder": "e.g. GH-0012",
+      "slugLabel": "Web address",
+      "slugHelper": "Leave empty – it's created from the name.",
+      "sortOrderLabel": "Order",
+      "sortOrderHelper": "Lower numbers appear first.",
+      "tagsLabel": "Tags",
+      "tagsHelper": "Shown as small labels on the product page. Separate with commas."
+    },
+    "categoriesPage": {
+      "title": "Categories",
+      "description": "Categories organise the shop, e.g. rings or chains. Every product belongs to one.",
+      "add": "Add category",
+      "searchPlaceholder": "Search categories",
+      "emptyTitle": "No categories yet",
+      "emptyText": "Create categories to organise products in the shop.",
+      "emptyFilteredTitle": "No category found",
+      "productCount": "{count, plural, =0 {No products} one {# product} other {# products}}",
+      "nameCustomizationBadge": "Custom names available",
+      "deleteConfirm": "Delete the category “{name}”?",
+      "deleteConfirmWithProducts": "Delete the category “{name}”? {count, plural, one {# product} other {# products}} will lose their category and appear under “No category”.",
+      "titleNew": "New category",
+      "titleEdit": "Edit category",
+      "descriptionNew": "An image and a name are enough.",
+      "create": "Add category",
+      "imageTitle": "Image",
+      "imageHint": "Shown as the category picture on the homepage and in the shop.",
+      "textTitle": "Name and description",
+      "nameLabel": "Category name",
+      "descriptionLabel": "Short description",
+      "settingsTitle": "Settings",
+      "visibleLabel": "Show in shop",
+      "visibleHint": "Hidden categories don't appear in the shop filter.",
+      "nameCustomizationLabel": "Made with a custom name",
+      "nameCustomizationHint": "Products in this category show a note that they can be made with the customer's name.",
+      "advancedHint": "Web address and order – filled in automatically.",
+      "messages": {
+        "created": "Category added.",
+        "updated": "Changes saved.",
+        "shown": "The category is now visible in the shop.",
+        "hidden": "The category is now hidden from the shop.",
+        "deleted": "Category deleted."
+      }
+    },
+    "optionsPage": {
+      "title": "Product options",
+      "description": "Questions customers answer when they enquire or order – for example the name to be made or the karat. Group questions into sets and pick a set when you add a product.",
+      "addGroup": "New set",
+      "addField": "Add question",
+      "renameGroup": "Rename set",
+      "deleteGroup": "Delete set",
+      "hideField": "Hide question",
+      "showField": "Show question",
+      "emptyTitle": "No sets yet",
+      "emptyText": "Create a set, e.g. “Name jewelry”, and add questions to it.",
+      "groupEmpty": "This set has no questions yet.",
+      "groupSummary": "{fields, plural, =0 {No questions} one {# question} other {# questions}} · {products, plural, =0 {not used by any product yet} one {used by # product} other {used by # products}}",
+      "requiredBadge": "Required",
+      "deleteGroupConfirm": "Delete the set “{name}” and all its questions? Orders already saved are not affected.",
+      "deleteFieldConfirm": "Delete the question “{name}”? Orders already saved are not affected.",
+      "groupTitleNew": "New set",
+      "groupTitleEdit": "Edit set",
+      "groupDescription": "A set bundles the questions that belong to certain products.",
+      "groupNameTitle": "Set name",
+      "groupNameHint": "Only you see it, e.g. “Name jewelry” or “Rings”.",
+      "groupNameLabel": "Name",
+      "groupActiveHint": "When switched off, this set's questions are not shown anywhere.",
+      "fieldTitleNew": "New question",
+      "fieldTitleEdit": "Edit question",
+      "fieldDescription": "This is how the question appears in the inquiry and order forms.",
+      "presetsTitle": "Quick start",
+      "presetsHint": "A template fills in every language – you can change everything afterwards.",
+      "typeTitle": "Type of answer",
+      "questionTitle": "Question",
+      "questionHint": "German and Arabic are required, other languages are optional.",
+      "labelLabel": "Question",
+      "helpLabel": "Hint below the field",
+      "placeholderLabel": "Example inside the field",
+      "choicesTitle": "Choices",
+      "choicesHint": "One row per choice. The second language column is optional – if empty, the first text is shown.",
+      "choiceLabel": "Choice {number}",
+      "removeChoice": "Remove choice {number}",
+      "addChoice": "Add choice",
+      "settingsTitle": "Settings",
+      "groupLabel": "Belongs to set",
+      "requiredLabel": "Answer is required",
+      "requiredHint": "Customers can't send the form until this question is answered.",
+      "activeLabel": "Show",
+      "activeHint": "Hidden questions stay saved but don't appear in the form.",
+      "types": {
+        "text": "Short answer",
+        "textarea": "Long answer",
+        "number": "Number",
+        "select": "Choose one",
+        "multi_select": "Choose several",
+        "boolean": "Yes / no",
+        "date": "Date"
+      },
+      "typeHints": {
+        "text": "A word or a single line, e.g. a name.",
+        "textarea": "Several lines, e.g. special wishes.",
+        "number": "Numbers only, e.g. weight or ring size.",
+        "select": "Customers pick exactly one option from a list.",
+        "multi_select": "Customers can tick several options.",
+        "boolean": "A checkbox for yes or no.",
+        "date": "A calendar date, e.g. a preferred date."
+      },
+      "presets": {
+        "engraving": {
+          "name": "Custom name",
+          "label": {
+            "de": "Gewünschter Name",
+            "ar": "الاسم المطلوب",
+            "en": "Name to be made",
+            "fr": "Prénom souhaité",
+            "tr": "İstenen isim"
+          },
+          "help": {
+            "de": "Genau so, wie er angefertigt werden soll.",
+            "ar": "اكتب الاسم كما تريده بالضبط.",
+            "en": "Exactly as it should be made.",
+            "fr": "Exactement comme il doit être réalisé.",
+            "tr": "Tam olarak yapılmasını istediğiniz şekilde yazın."
+          },
+          "placeholder": {
+            "de": "z. B. Lina",
+            "ar": "مثال: لينا",
+            "en": "e.g. Lina",
+            "fr": "ex. Lina",
+            "tr": "örn. Lina"
+          }
+        },
+        "karat": {
+          "name": "Karat",
+          "label": {
+            "de": "Goldlegierung (Karat)",
+            "ar": "العيار",
+            "en": "Gold karat",
+            "fr": "Carat de l’or",
+            "tr": "Altın ayarı"
+          },
+          "help": {
+            "de": "Wählen Sie die gewünschte Legierung.",
+            "ar": "اختر العيار المطلوب.",
+            "en": "Choose the karat you want.",
+            "fr": "Choisissez le carat souhaité.",
+            "tr": "İstediğiniz ayarı seçin."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        },
+        "weight": {
+          "name": "Weight",
+          "label": {
+            "de": "Gewünschtes Gewicht (g)",
+            "ar": "الوزن المطلوب (غرام)",
+            "en": "Desired weight (g)",
+            "fr": "Poids souhaité (g)",
+            "tr": "İstenen ağırlık (g)"
+          },
+          "help": {
+            "de": "Ungefähres Gewicht in Gramm.",
+            "ar": "الوزن التقريبي بالغرام.",
+            "en": "Approximate weight in grams.",
+            "fr": "Poids approximatif en grammes.",
+            "tr": "Gram cinsinden yaklaşık ağırlık."
+          },
+          "placeholder": {
+            "de": "z. B. 12,5",
+            "ar": "مثال: 12.5",
+            "en": "e.g. 12.5",
+            "fr": "ex. 12,5",
+            "tr": "örn. 12,5"
+          }
+        },
+        "note": {
+          "name": "Notes",
+          "label": {
+            "de": "Anmerkungen",
+            "ar": "ملاحظات",
+            "en": "Notes",
+            "fr": "Remarques",
+            "tr": "Notlar"
+          },
+          "help": {
+            "de": "Weitere Wünsche, z. B. Schriftart oder Länge.",
+            "ar": "أي طلبات إضافية، مثل نوع الخط أو الطول.",
+            "en": "Any other wishes, e.g. font or length.",
+            "fr": "Autres souhaits, par ex. police ou longueur.",
+            "tr": "Diğer istekler, örn. yazı tipi veya uzunluk."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        }
+      },
+      "errors": {
+        "choices": "Please add at least one choice."
+      },
+      "messages": {
+        "groupCreated": "Set added.",
+        "groupUpdated": "Set saved.",
+        "groupDeleted": "Set deleted.",
+        "groupArchived": "The set is used in orders, so it was hidden instead.",
+        "fieldCreated": "Question added.",
+        "fieldUpdated": "Question saved.",
+        "fieldShown": "The question is shown again.",
+        "fieldHidden": "The question is now hidden.",
+        "fieldDeleted": "Question deleted.",
+        "fieldArchived": "The question is used in orders, so it was hidden instead."
+      }
     }
   },
   "Tracking": {

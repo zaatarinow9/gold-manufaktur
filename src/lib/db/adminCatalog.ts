@@ -3,6 +3,7 @@ import "server-only";
 import { z } from "zod";
 
 import type { AppLocale } from "@/i18n/routing";
+import { parseOptionValues, type OptionValueRecord } from "@/lib/catalog/optionValues";
 import type { OptionType } from "@/types/admin";
 
 import {
@@ -109,7 +110,7 @@ export type AdminOptionRecord = {
   productCount: number;
   sortOrder: number;
   type: OptionType;
-  values: Array<{ label: string; value: string }>;
+  values: OptionValueRecord[];
 };
 
 function createOptionalTextSchema(maxLength = 4000) {
@@ -160,6 +161,15 @@ const imagePathSchema = z.string().trim().min(1).max(500);
 
 const optionValueSchema = z.object({
   label: z.string().trim().min(1).max(255),
+  labels: z
+    .object({
+      ar: z.string().trim().max(255).optional(),
+      de: z.string().trim().max(255).optional(),
+      en: z.string().trim().max(255).optional(),
+      fr: z.string().trim().max(255).optional(),
+      tr: z.string().trim().max(255).optional(),
+    })
+    .optional(),
   value: z.string().trim().min(1).max(255),
 });
 
@@ -194,7 +204,8 @@ export const productInputSchema = z.object({
       })
   )
   .default([]),
-  sku: z.string().trim().min(1).max(120),
+  // Empty means "assign automatically" (new products) or "keep" (updates).
+  sku: z.string().trim().max(120).optional().default(""),
   slug: optionalSlugSchema,
   sortOrder: z.number().int().min(0).default(0),
   supportsNameCustomization: z.boolean().nullable().default(null),
@@ -205,9 +216,18 @@ export const productUpdateSchema = productInputSchema.extend({
   id: z.string().uuid(),
 });
 
+// Technical identifiers are generated from the name when left empty.
+const optionalKeySchema = z
+  .string()
+  .trim()
+  .max(255)
+  .optional()
+  .default("")
+  .refine((value) => value === "" || slugSchema.safeParse(value).success);
+
 export const optionGroupInputSchema = z.object({
   isActive: z.boolean().default(true),
-  key: slugSchema,
+  key: optionalKeySchema,
   name: localizedRequiredSchema,
   sortOrder: z.number().int().min(0).default(0),
 });
@@ -221,7 +241,7 @@ export const optionInputSchema = z.object({
   helpText: localizedOptionalSchema,
   isActive: z.boolean().default(true),
   isRequired: z.boolean().default(false),
-  key: slugSchema,
+  key: optionalKeySchema,
   label: localizedRequiredSchema,
   placeholder: localizedOptionalSchema,
   sortOrder: z.number().int().min(0).default(0),
@@ -351,6 +371,34 @@ function buildFallbackSlugFromLocalizedText(
 
     if (normalized.length > 0) {
       return normalized;
+    }
+  }
+
+  return `${fallbackPrefix}-${crypto.randomUUID().slice(0, 8)}`;
+}
+
+async function resolveUniqueKey(
+  table: "option_groups" | "options",
+  baseName: LocalizedText,
+  fallbackPrefix: string
+) {
+  const supabase = createSupabaseAdminClient();
+  const base = buildFallbackSlugFromLocalizedText(baseName, fallbackPrefix).slice(0, 60);
+
+  for (let counter = 1; counter < 200; counter += 1) {
+    const candidate = counter === 1 ? base : `${base}-${counter}`;
+    const { data, error } = await supabase
+      .from(table)
+      .select("id")
+      .eq("key", candidate)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Unable to validate key uniqueness: ${error.message}`);
+    }
+
+    if (!data) {
+      return candidate;
     }
   }
 
@@ -589,10 +637,20 @@ function toOptionInsert(input: OptionInput | OptionUpdateInput) {
   const helpText = normalizeLocalizedText(input.helpText);
   const placeholder = normalizeLocalizedText(input.placeholder);
   const values = input.values
-    .map((value) => ({
-      label: value.label.trim(),
-      value: value.value.trim(),
-    }))
+    .map((value) => {
+      const labels = Object.fromEntries(
+        Object.entries(value.labels ?? {}).filter(
+          (entry): entry is [string, string] =>
+            typeof entry[1] === "string" && entry[1].trim().length > 0
+        )
+      );
+
+      return {
+        label: value.label.trim(),
+        value: value.value.trim(),
+        ...(Object.keys(labels).length > 0 ? { labels } : {}),
+      };
+    })
     .filter((value) => value.label.length > 0 && value.value.length > 0);
 
   return {
@@ -886,24 +944,7 @@ export async function getAdminProducts(
         id: option.id,
         key: option.key,
         type: option.type,
-        values: Array.isArray(option.values_json)
-          ? option.values_json
-              .filter(
-                (
-                  value
-                ): value is { label: string; value: string } =>
-                  typeof value === "object" &&
-                  value !== null &&
-                  "label" in value &&
-                  "value" in value &&
-                  typeof value.label === "string" &&
-                  typeof value.value === "string"
-              )
-              .map((value) => ({
-                label: value.label,
-                value: value.value,
-              }))
-          : [],
+        values: parseOptionValues(option.values_json, locale),
       },
     ])
   );
@@ -940,24 +981,7 @@ export async function getAdminProducts(
       isRequired: option.is_required,
       key: option.key,
       type: option.type,
-      values: Array.isArray(option.values_json)
-        ? option.values_json
-            .filter(
-              (
-                value
-              ): value is { label: string; value: string } =>
-                typeof value === "object" &&
-                value !== null &&
-                "label" in value &&
-                "value" in value &&
-                typeof value.label === "string" &&
-                typeof value.value === "string"
-            )
-            .map((value) => ({
-              label: value.label,
-              value: value.value,
-            }))
-        : [],
+      values: parseOptionValues(option.values_json, locale),
     });
     optionSettingsByGroup.set(option.group_id, current);
   });
@@ -1098,24 +1122,7 @@ export async function getAdminOptions(
       productCount: productIds.length,
       sortOrder: option.sort_order,
       type: option.type,
-      values: Array.isArray(option.values_json)
-        ? option.values_json
-            .filter(
-              (
-                value
-              ): value is { label: string; value: string } =>
-                typeof value === "object" &&
-                value !== null &&
-                "label" in value &&
-                "value" in value &&
-                typeof value.label === "string" &&
-                typeof value.value === "string"
-            )
-            .map((value) => ({
-              label: value.label,
-              value: value.value,
-            }))
-        : [],
+      values: parseOptionValues(option.values_json),
     };
   });
 }
@@ -1407,6 +1414,7 @@ export async function createProduct(input: ProductInput) {
   const capabilities = await getCatalogSchemaCapabilities();
   const payload = {
     ...toProductInsert(parsed),
+    sku: parsed.sku || (await generateNextSku()),
     slug: await resolveUniqueSlug({
       baseName: parsed.name,
       fallbackPrefix: "product",
@@ -1430,6 +1438,7 @@ export async function createProduct(input: ProductInput) {
     .single();
 
   if (error) {
+    throwIfDuplicateSku(error);
     throw new Error(`Unable to create product: ${error.message}`);
   }
 
@@ -1467,6 +1476,11 @@ export async function updateProduct(input: ProductUpdateInput) {
     delete (payload as Record<string, unknown>).supports_name_customization;
   }
 
+  if (!parsed.sku) {
+    // Keep the existing article code when the field was left empty.
+    delete (payload as Record<string, unknown>).sku;
+  }
+
   const { data, error } = await supabase
     .from("products")
     .update(payload)
@@ -1475,6 +1489,7 @@ export async function updateProduct(input: ProductUpdateInput) {
     .single();
 
   if (error) {
+    throwIfDuplicateSku(error);
     throw new Error(`Unable to update product: ${error.message}`);
   }
 
@@ -1587,6 +1602,12 @@ export async function deleteProduct(productId: string) {
   return { mode: "deleted" as const };
 }
 
+function throwIfDuplicateSku(error: { code?: string; message: string }) {
+  if (error.code === "23505" && error.message.includes("sku")) {
+    throw new Error("DUPLICATE_PRODUCT_SKU");
+  }
+}
+
 async function generateNextSku() {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.from("products").select("sku");
@@ -1685,9 +1706,11 @@ export async function duplicateProduct(productId: string) {
 export async function createOptionGroup(input: OptionGroupInput) {
   const supabase = await createSupabaseServerClient();
   const parsed = optionGroupInputSchema.parse(input);
+  const key =
+    parsed.key || (await resolveUniqueKey("option_groups", parsed.name, "group"));
   const { data, error } = await supabase
     .from("option_groups")
-    .insert(toOptionGroupInsert(parsed))
+    .insert({ ...toOptionGroupInsert(parsed), key })
     .select("*")
     .single();
 
@@ -1701,9 +1724,11 @@ export async function createOptionGroup(input: OptionGroupInput) {
 export async function updateOptionGroup(input: OptionGroupUpdateInput) {
   const supabase = await createSupabaseServerClient();
   const parsed = optionGroupUpdateSchema.parse(input);
+  const payload: Record<string, unknown> = { ...toOptionGroupInsert(parsed) };
+  if (!parsed.key) delete payload.key;
   const { data, error } = await supabase
     .from("option_groups")
-    .update(toOptionGroupInsert(parsed))
+    .update(payload as TableUpdate<"option_groups">)
     .eq("id", parsed.id)
     .select("*")
     .single();
@@ -1718,9 +1743,10 @@ export async function updateOptionGroup(input: OptionGroupUpdateInput) {
 export async function createOption(input: OptionInput) {
   const supabase = await createSupabaseServerClient();
   const parsed = optionInputSchema.parse(input);
+  const key = parsed.key || (await resolveUniqueKey("options", parsed.label, "field"));
   const { data, error } = await supabase
     .from("options")
-    .insert(toOptionInsert(parsed) as TableInsert<"options">)
+    .insert({ ...toOptionInsert(parsed), key } as TableInsert<"options">)
     .select("*")
     .single();
 
@@ -1746,7 +1772,13 @@ export async function updateOption(input: OptionUpdateInput) {
       };
     };
   })
-    .update(toOptionInsert(parsed))
+    .update(
+      (() => {
+        const payload: Record<string, unknown> = { ...toOptionInsert(parsed) };
+        if (!parsed.key) delete payload.key;
+        return payload;
+      })()
+    )
     .eq("id", parsed.id)
     .select("*")
     .single();

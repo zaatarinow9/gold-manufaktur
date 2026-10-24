@@ -447,13 +447,14 @@
       "description": "Gold Helwah Admin für Katalog, Aufträge und Werkstätten."
     },
     "header": {
-      "adminArea": "Adminbereich",
+      "adminArea": "Verwaltung",
       "demoMode": "Demo-Modus",
       "activeUser": "Aktiver Nutzer",
       "roleFoundation": "Rollenbasis",
       "roleHint": "Demo-Rolle kann in der Mock-Konfiguration gewechselt werden.",
       "welcome": "Willkommen, {name}",
-      "toWebsite": "Zur Website"
+      "toWebsite": "Website ansehen",
+      "language": "Sprache der Verwaltung"
     },
     "roles": {
       "super_admin": "Hauptadministrator",
@@ -464,9 +465,9 @@
       "overview": "Übersicht",
       "products": "Produkte",
       "categories": "Kategorien",
-      "gallery": "Admin-Galerie",
-      "options": "Optionen",
-      "orders": "Bestellungen",
+      "gallery": "Neuer Auftrag",
+      "options": "Produktoptionen",
+      "orders": "Aufträge",
       "workshops": "Werkstätten",
       "employees": "Mitarbeiter",
       "attendance": "Arbeitszeiten",
@@ -474,12 +475,14 @@
       "archive": "Archiv",
       "settings": "Einstellungen",
       "myTasks": "Meine Aufgaben",
-      "inquiries": "Kundenanfragen"
+      "inquiries": "Kundenanfragen",
+      "ariaLabel": "Hauptnavigation",
+      "countLabel": "{count} offen"
     },
     "buttons": {
       "openMenu": "Menü",
       "close": "Schließen",
-      "demoLogin": "Login wechseln",
+      "demoLogin": "Abmelden",
       "addProduct": "Produkt hinzufügen",
       "createOrder": "Auftrag erstellen",
       "viewDetails": "Details",
@@ -516,7 +519,9 @@
       "previous": "Zurück",
       "notifyCustomer": "Kunden benachrichtigen",
       "copyTrackingLink": "Tracking-Link kopieren",
-      "saveStatus": "Status speichern"
+      "saveStatus": "Status speichern",
+      "logout": "Abmelden",
+      "cancel": "Abbrechen"
     },
     "common": {
       "noAccessTitle": "Zugriff eingeschränkt",
@@ -675,6 +680,17 @@
         "options": "Optionen",
         "actions": "Aktionen",
         "sortOrder": "Sortierung"
+      },
+      "messages": {
+        "created": "Produkt angelegt.",
+        "updated": "Änderungen gespeichert.",
+        "activated": "Das Produkt ist jetzt im Shop sichtbar.",
+        "deactivated": "Das Produkt wurde im Shop ausgeblendet.",
+        "deleted": "Produkt gelöscht.",
+        "duplicated": "Kopie angelegt.",
+        "featuredOn": "Wird jetzt auf der Startseite gezeigt.",
+        "featuredOff": "Von der Startseite entfernt.",
+        "softDeleted": "Das Produkt wird noch in Aufträgen verwendet und wurde deshalb nur ausgeblendet."
       }
     },
     "categories": {
@@ -1277,6 +1293,327 @@
       "roleOwner": "Hauptadministrator",
       "roleAdmin": "Administrator",
       "roleEmployee": "Mitarbeiter"
+    },
+    "navGroups": {
+      "orders": "Tagesgeschäft",
+      "catalog": "Katalog",
+      "team": "Team",
+      "customers": "Kunden",
+      "system": "System"
+    },
+    "forms": {
+      "required": "Bitte ausfüllen.",
+      "tooLong": "Dieser Text ist zu lang.",
+      "invalidValue": "Bitte prüfen Sie diesen Wert.",
+      "invalidSlug": "Nur Kleinbuchstaben, Zahlen und Bindestriche – oder leer lassen.",
+      "duplicateSku": "Diese Artikelnummer ist bereits vergeben.",
+      "checkFields": "Bitte prüfen Sie die markierten Felder.",
+      "saveFailed": "Speichern ist fehlgeschlagen. Bitte versuchen Sie es erneut."
+    },
+    "translations": {
+      "required": "Pflichtfeld",
+      "optional": "optional",
+      "otherLanguages": "Weitere Sprachen",
+      "otherLanguagesStatus": "{count} von {total} übersetzt – optional",
+      "fallbackHint": "Leere Felder zeigen auf der Website automatisch den deutschen Text."
+    },
+    "imageUploader": {
+      "addPhotos": "Fotos hinzufügen",
+      "addPhoto": "Foto hinzufügen",
+      "uploading": "Wird hochgeladen …",
+      "hint": "Hierher ziehen oder klicken · JPG, PNG, WebP",
+      "mainPhoto": "Hauptfoto",
+      "makeMain": "Als Hauptfoto verwenden",
+      "moveEarlier": "Nach vorne",
+      "moveLater": "Nach hinten",
+      "remove": "Foto entfernen",
+      "replace": "Ersetzen",
+      "errors": {
+        "invalid_type": "Bitte nur Bilddateien (JPG, PNG, WebP oder AVIF) wählen.",
+        "too_large": "Das Bild ist zu groß. Bitte eine kleinere Datei wählen.",
+        "upload_failed": "Das Bild konnte nicht hochgeladen werden. Bitte erneut versuchen."
+      }
+    },
+    "productsPage": {
+      "title": "Produkte",
+      "description": "Alles, was Kundinnen und Kunden im Shop sehen. Klicken Sie auf ein Produkt, um es zu bearbeiten.",
+      "add": "Produkt hinzufügen",
+      "searchPlaceholder": "Name oder Artikelnummer suchen",
+      "categoryFilter": "Nach Kategorie filtern",
+      "allCategories": "Alle Kategorien",
+      "withoutCategory": "Ohne Kategorie",
+      "filters": {
+        "all": "Alle",
+        "visible": "Im Shop",
+        "hidden": "Ausgeblendet",
+        "featured": "Startseite"
+      },
+      "emptyTitle": "Noch keine Produkte",
+      "emptyText": "Legen Sie Ihr erstes Produkt mit Foto und Namen an.",
+      "emptyFilteredTitle": "Keine Treffer",
+      "emptyFilteredText": "Kein Produkt passt zu Suche und Filter.",
+      "clearFilters": "Filter zurücksetzen",
+      "noPhoto": "Kein Foto",
+      "hiddenBadge": "Ausgeblendet",
+      "featuredBadge": "Startseite",
+      "editProduct": "{name} bearbeiten",
+      "moreActions": "Weitere Aktionen für {name}",
+      "hide": "Im Shop ausblenden",
+      "show": "Im Shop anzeigen",
+      "feature": "Auf Startseite zeigen",
+      "unfeature": "Von Startseite entfernen",
+      "deleteConfirm": "„{name}“ endgültig löschen? Wird das Produkt noch in Aufträgen verwendet, wird es nur ausgeblendet."
+    },
+    "productEditor": {
+      "titleNew": "Neues Produkt",
+      "titleEdit": "Produkt bearbeiten",
+      "descriptionNew": "Foto, Name und Kategorie genügen – alles andere ist optional.",
+      "requiredHint": "Mit * markierte Felder sind Pflicht.",
+      "create": "Produkt anlegen",
+      "save": "Änderungen speichern",
+      "saving": "Wird gespeichert …",
+      "photosTitle": "Fotos",
+      "photosHint": "Das erste Foto ist das Hauptfoto im Shop.",
+      "textTitle": "Name und Beschreibung",
+      "textHint": "Deutsch und Arabisch sind Pflicht, die übrigen Sprachen optional.",
+      "nameLabel": "Produktname",
+      "descriptionLabel": "Beschreibung",
+      "categoryTitle": "Kategorie und Kundenangaben",
+      "categoryLabel": "Kategorie",
+      "noCategory": "Ohne Kategorie",
+      "optionGroupLabel": "Kundenangaben",
+      "optionGroupHelper": "Was Kunden bei einer Anfrage angeben, z. B. Name oder Karat.",
+      "noOptionGroup": "Keine Angaben nötig",
+      "optionGroupPreview": "Kunden werden gefragt nach: {fields}",
+      "optionGroupEmpty": "Diese Gruppe enthält noch keine Felder.",
+      "visibilityTitle": "Sichtbarkeit",
+      "visibleLabel": "Im Shop anzeigen",
+      "visibleHint": "Ausgeblendete Produkte bleiben gespeichert, sind aber für Kunden unsichtbar.",
+      "featuredLabel": "Auf der Startseite hervorheben",
+      "featuredHint": "Erscheint im Bereich „Ausgewählte Produkte“ (die ersten vier).",
+      "advancedTitle": "Weitere Einstellungen",
+      "advancedHint": "Artikelnummer, Adresse, Reihenfolge und Schlagwörter – wird automatisch ausgefüllt.",
+      "skuLabel": "Artikelnummer",
+      "skuHelper": "Leer lassen für automatische Vergabe.",
+      "skuPlaceholder": "z. B. GH-0012",
+      "slugLabel": "Adresse in der URL",
+      "slugHelper": "Leer lassen – wird aus dem Namen erzeugt.",
+      "sortOrderLabel": "Reihenfolge",
+      "sortOrderHelper": "Kleinere Zahlen erscheinen zuerst.",
+      "tagsLabel": "Schlagwörter",
+      "tagsHelper": "Erscheinen als kleine Etiketten in der Produktansicht. Mit Kommas trennen."
+    },
+    "categoriesPage": {
+      "title": "Kategorien",
+      "description": "Kategorien gliedern den Shop, z. B. Ringe oder Ketten. Jedes Produkt gehört zu einer Kategorie.",
+      "add": "Kategorie hinzufügen",
+      "searchPlaceholder": "Kategorie suchen",
+      "emptyTitle": "Noch keine Kategorien",
+      "emptyText": "Legen Sie Kategorien an, um Produkte im Shop zu ordnen.",
+      "emptyFilteredTitle": "Keine Kategorie gefunden",
+      "productCount": "{count, plural, =0 {Keine Produkte} one {# Produkt} other {# Produkte}}",
+      "nameCustomizationBadge": "Namensanfertigung möglich",
+      "deleteConfirm": "Kategorie „{name}“ löschen?",
+      "deleteConfirmWithProducts": "Kategorie „{name}“ löschen? {count, plural, one {# Produkt verliert} other {# Produkte verlieren}} dadurch seine Kategorie und erscheint unter „Ohne Kategorie“.",
+      "titleNew": "Neue Kategorie",
+      "titleEdit": "Kategorie bearbeiten",
+      "descriptionNew": "Ein Bild und ein Name genügen.",
+      "create": "Kategorie anlegen",
+      "imageTitle": "Bild",
+      "imageHint": "Wird auf der Startseite und im Shop als Kategoriebild gezeigt.",
+      "textTitle": "Name und Beschreibung",
+      "nameLabel": "Name der Kategorie",
+      "descriptionLabel": "Kurzbeschreibung",
+      "settingsTitle": "Einstellungen",
+      "visibleLabel": "Im Shop anzeigen",
+      "visibleHint": "Ausgeblendete Kategorien erscheinen nicht im Shop-Filter.",
+      "nameCustomizationLabel": "Anfertigung mit Wunschnamen",
+      "nameCustomizationHint": "Produkte dieser Kategorie zeigen den Hinweis, dass sie mit einem Namen angefertigt werden können.",
+      "advancedHint": "Adresse und Reihenfolge – wird automatisch ausgefüllt.",
+      "messages": {
+        "created": "Kategorie angelegt.",
+        "updated": "Änderungen gespeichert.",
+        "shown": "Die Kategorie ist jetzt im Shop sichtbar.",
+        "hidden": "Die Kategorie wurde im Shop ausgeblendet.",
+        "deleted": "Kategorie gelöscht."
+      }
+    },
+    "optionsPage": {
+      "title": "Produktoptionen",
+      "description": "Fragen, die Kunden bei einer Anfrage oder Bestellung beantworten – z. B. der gewünschte Name oder das Karat. Fassen Sie Fragen in Sets zusammen und weisen Sie ein Set beim Produkt zu.",
+      "addGroup": "Neues Set",
+      "addField": "Frage hinzufügen",
+      "renameGroup": "Set umbenennen",
+      "deleteGroup": "Set löschen",
+      "hideField": "Frage ausblenden",
+      "showField": "Frage anzeigen",
+      "emptyTitle": "Noch keine Sets",
+      "emptyText": "Legen Sie ein Set an, z. B. „Namensschmuck“, und fügen Sie Fragen hinzu.",
+      "groupEmpty": "Dieses Set hat noch keine Fragen.",
+      "groupSummary": "{fields, plural, =0 {Keine Fragen} one {# Frage} other {# Fragen}} · {products, plural, =0 {noch keinem Produkt zugewiesen} one {bei # Produkt} other {bei # Produkten}}",
+      "requiredBadge": "Pflicht",
+      "deleteGroupConfirm": "Set „{name}“ mit allen Fragen löschen? Bereits gespeicherte Aufträge bleiben unverändert.",
+      "deleteFieldConfirm": "Frage „{name}“ löschen? Bereits gespeicherte Aufträge bleiben unverändert.",
+      "groupTitleNew": "Neues Set",
+      "groupTitleEdit": "Set bearbeiten",
+      "groupDescription": "Ein Set bündelt Fragen, die zu bestimmten Produkten gehören.",
+      "groupNameTitle": "Name des Sets",
+      "groupNameHint": "Nur für Sie sichtbar, z. B. „Namensschmuck“ oder „Ringe“.",
+      "groupNameLabel": "Name",
+      "groupActiveHint": "Ausgeschaltet werden die Fragen dieses Sets nirgends angezeigt.",
+      "fieldTitleNew": "Neue Frage",
+      "fieldTitleEdit": "Frage bearbeiten",
+      "fieldDescription": "So erscheint die Frage im Anfrage- und Bestellformular.",
+      "presetsTitle": "Schnellstart",
+      "presetsHint": "Eine Vorlage füllt alle Sprachen aus – danach können Sie alles anpassen.",
+      "typeTitle": "Art der Antwort",
+      "questionTitle": "Frage",
+      "questionHint": "Deutsch und Arabisch sind Pflicht, weitere Sprachen optional.",
+      "labelLabel": "Frage",
+      "helpLabel": "Hinweis unter dem Feld",
+      "placeholderLabel": "Beispiel im Feld",
+      "choicesTitle": "Auswahlmöglichkeiten",
+      "choicesHint": "Eine Zeile pro Möglichkeit. Die arabische Spalte ist optional – leer bleibt der deutsche Text.",
+      "choiceLabel": "Möglichkeit {number}",
+      "removeChoice": "Möglichkeit {number} entfernen",
+      "addChoice": "Möglichkeit hinzufügen",
+      "settingsTitle": "Einstellungen",
+      "groupLabel": "Gehört zum Set",
+      "requiredLabel": "Antwort ist Pflicht",
+      "requiredHint": "Kunden können das Formular erst senden, wenn diese Frage beantwortet ist.",
+      "activeLabel": "Anzeigen",
+      "activeHint": "Ausgeblendete Fragen bleiben gespeichert, erscheinen aber nicht im Formular.",
+      "types": {
+        "text": "Kurze Antwort",
+        "textarea": "Längerer Text",
+        "number": "Zahl",
+        "select": "Eine Auswahl",
+        "multi_select": "Mehrfachauswahl",
+        "boolean": "Ja / Nein",
+        "date": "Datum"
+      },
+      "typeHints": {
+        "text": "Ein Wort oder eine Zeile, z. B. ein Name.",
+        "textarea": "Mehrere Zeilen, z. B. besondere Wünsche.",
+        "number": "Nur Zahlen, z. B. Gewicht oder Ringgröße.",
+        "select": "Kunden wählen genau eine Möglichkeit aus einer Liste.",
+        "multi_select": "Kunden können mehrere Möglichkeiten ankreuzen.",
+        "boolean": "Ein Häkchen für Ja oder Nein.",
+        "date": "Ein Kalenderdatum, z. B. Wunschtermin."
+      },
+      "presets": {
+        "engraving": {
+          "name": "Wunschname",
+          "label": {
+            "de": "Gewünschter Name",
+            "ar": "الاسم المطلوب",
+            "en": "Name to be made",
+            "fr": "Prénom souhaité",
+            "tr": "İstenen isim"
+          },
+          "help": {
+            "de": "Genau so, wie er angefertigt werden soll.",
+            "ar": "اكتب الاسم كما تريده بالضبط.",
+            "en": "Exactly as it should be made.",
+            "fr": "Exactement comme il doit être réalisé.",
+            "tr": "Tam olarak yapılmasını istediğiniz şekilde yazın."
+          },
+          "placeholder": {
+            "de": "z. B. Lina",
+            "ar": "مثال: لينا",
+            "en": "e.g. Lina",
+            "fr": "ex. Lina",
+            "tr": "örn. Lina"
+          }
+        },
+        "karat": {
+          "name": "Karat",
+          "label": {
+            "de": "Goldlegierung (Karat)",
+            "ar": "العيار",
+            "en": "Gold karat",
+            "fr": "Carat de l’or",
+            "tr": "Altın ayarı"
+          },
+          "help": {
+            "de": "Wählen Sie die gewünschte Legierung.",
+            "ar": "اختر العيار المطلوب.",
+            "en": "Choose the karat you want.",
+            "fr": "Choisissez le carat souhaité.",
+            "tr": "İstediğiniz ayarı seçin."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        },
+        "weight": {
+          "name": "Gewicht",
+          "label": {
+            "de": "Gewünschtes Gewicht (g)",
+            "ar": "الوزن المطلوب (غرام)",
+            "en": "Desired weight (g)",
+            "fr": "Poids souhaité (g)",
+            "tr": "İstenen ağırlık (g)"
+          },
+          "help": {
+            "de": "Ungefähres Gewicht in Gramm.",
+            "ar": "الوزن التقريبي بالغرام.",
+            "en": "Approximate weight in grams.",
+            "fr": "Poids approximatif en grammes.",
+            "tr": "Gram cinsinden yaklaşık ağırlık."
+          },
+          "placeholder": {
+            "de": "z. B. 12,5",
+            "ar": "مثال: 12.5",
+            "en": "e.g. 12.5",
+            "fr": "ex. 12,5",
+            "tr": "örn. 12,5"
+          }
+        },
+        "note": {
+          "name": "Anmerkungen",
+          "label": {
+            "de": "Anmerkungen",
+            "ar": "ملاحظات",
+            "en": "Notes",
+            "fr": "Remarques",
+            "tr": "Notlar"
+          },
+          "help": {
+            "de": "Weitere Wünsche, z. B. Schriftart oder Länge.",
+            "ar": "أي طلبات إضافية، مثل نوع الخط أو الطول.",
+            "en": "Any other wishes, e.g. font or length.",
+            "fr": "Autres souhaits, par ex. police ou longueur.",
+            "tr": "Diğer istekler, örn. yazı tipi veya uzunluk."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        }
+      },
+      "errors": {
+        "choices": "Bitte mindestens eine Auswahlmöglichkeit eintragen."
+      },
+      "messages": {
+        "groupCreated": "Set angelegt.",
+        "groupUpdated": "Set gespeichert.",
+        "groupDeleted": "Set gelöscht.",
+        "groupArchived": "Das Set wird in Aufträgen verwendet und wurde deshalb nur ausgeblendet.",
+        "fieldCreated": "Frage hinzugefügt.",
+        "fieldUpdated": "Frage gespeichert.",
+        "fieldShown": "Die Frage wird wieder angezeigt.",
+        "fieldHidden": "Die Frage wurde ausgeblendet.",
+        "fieldDeleted": "Frage gelöscht.",
+        "fieldArchived": "Die Frage wird in Aufträgen verwendet und wurde deshalb nur ausgeblendet."
+      }
     }
   },
   "Tracking": {

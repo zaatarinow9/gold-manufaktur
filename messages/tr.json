@@ -459,13 +459,14 @@
       "description": "Katalog, siparis ve atolye icin GoldHelwah GmbH yonetimi."
     },
     "header": {
-      "adminArea": "Yonetim alani",
+      "adminArea": "Yönetim paneli",
       "demoMode": "Erişim rolü",
       "activeUser": "Aktif kullanici",
       "roleFoundation": "Rol temeli",
       "roleHint": "Roller ve ic gorunumler acik bicimde ayrilir.",
       "welcome": "Hos geldin, {name}",
-      "toWebsite": "Siteyi gor"
+      "toWebsite": "Siteyi görüntüle",
+      "language": "Panel dili"
     },
     "roles": {
       "super_admin": "Super Admin",
@@ -473,25 +474,27 @@
       "employee": "Calisan"
     },
     "nav": {
-      "overview": "Genel bakis",
-      "products": "Urunler",
+      "overview": "Genel bakış",
+      "products": "Ürünler",
       "categories": "Kategoriler",
-      "gallery": "Atölye Siparişi",
-      "options": "Secenekler",
-      "orders": "Siparisler",
-      "workshops": "Atolyeler",
-      "employees": "Calisanlar",
+      "gallery": "Yeni sipariş",
+      "options": "Ürün seçenekleri",
+      "orders": "Siparişler",
+      "workshops": "Atölyeler",
+      "employees": "Çalışanlar",
       "attendance": "Mesai",
       "reports": "Raporlar",
       "archive": "Arsiv",
       "settings": "Ayarlar",
-      "myTasks": "Gorevlerim",
-      "inquiries": "Musteri talepleri"
+      "myTasks": "Görevlerim",
+      "inquiries": "Müşteri talepleri",
+      "ariaLabel": "Ana menü",
+      "countLabel": "{count} bekliyor"
     },
     "buttons": {
       "openMenu": "Menu",
       "close": "Kapat",
-      "demoLogin": "Hesap değiştir",
+      "demoLogin": "Çıkış yap",
       "addProduct": "Urun ekle",
       "createOrder": "Siparis olustur",
       "viewDetails": "Detaylar",
@@ -528,7 +531,9 @@
       "previous": "Geri",
       "notifyCustomer": "Musteriyi bilgilendir",
       "copyTrackingLink": "Takip baglantisini kopyala",
-      "saveStatus": "Durumu kaydet"
+      "saveStatus": "Durumu kaydet",
+      "logout": "Çıkış yap",
+      "cancel": "İptal"
     },
     "common": {
       "noAccessTitle": "Erisim kisitli",
@@ -665,6 +670,17 @@
         "options": "Secenekler",
         "actions": "Islemler",
         "sortOrder": "Siralama"
+      },
+      "messages": {
+        "created": "Ürün eklendi.",
+        "updated": "Değişiklikler kaydedildi.",
+        "activated": "Ürün artık mağazada görünüyor.",
+        "deactivated": "Ürün mağazada gizlendi.",
+        "deleted": "Ürün silindi.",
+        "duplicated": "Kopya oluşturuldu.",
+        "featuredOn": "Artık ana sayfada gösteriliyor.",
+        "featuredOff": "Ana sayfadan kaldırıldı.",
+        "softDeleted": "Ürün hâlâ siparişlerde kullanıldığı için yalnızca gizlendi."
       }
     },
     "categories": {
@@ -1289,6 +1305,327 @@
       "roleOwner": "Owner",
       "roleAdmin": "Admin",
       "roleEmployee": "Worker"
+    },
+    "navGroups": {
+      "orders": "Günlük işler",
+      "catalog": "Katalog",
+      "team": "Ekip",
+      "customers": "Müşteriler",
+      "system": "Sistem"
+    },
+    "forms": {
+      "required": "Lütfen bu alanı doldurun.",
+      "tooLong": "Bu metin çok uzun.",
+      "invalidValue": "Lütfen bu değeri kontrol edin.",
+      "invalidSlug": "Yalnızca küçük harf, rakam ve tire kullanın – ya da boş bırakın.",
+      "duplicateSku": "Bu ürün kodu zaten kullanılıyor.",
+      "checkFields": "Lütfen işaretli alanları kontrol edin.",
+      "saveFailed": "Kaydedilemedi. Lütfen tekrar deneyin."
+    },
+    "translations": {
+      "required": "Zorunlu",
+      "optional": "isteğe bağlı",
+      "otherLanguages": "Diğer diller",
+      "otherLanguagesStatus": "{total} dilden {count} tanesi çevrildi – isteğe bağlı",
+      "fallbackHint": "Boş alanlarda sitede otomatik olarak Almanca metin gösterilir."
+    },
+    "imageUploader": {
+      "addPhotos": "Fotoğraf ekle",
+      "addPhoto": "Fotoğraf ekle",
+      "uploading": "Yükleniyor…",
+      "hint": "Buraya sürükleyin veya tıklayın · JPG, PNG, WebP",
+      "mainPhoto": "Ana fotoğraf",
+      "makeMain": "Ana fotoğraf yap",
+      "moveEarlier": "Öne al",
+      "moveLater": "Geriye al",
+      "remove": "Fotoğrafı kaldır",
+      "replace": "Değiştir",
+      "errors": {
+        "invalid_type": "Lütfen yalnızca görsel dosyaları seçin (JPG, PNG, WebP veya AVIF).",
+        "too_large": "Görsel çok büyük. Lütfen daha küçük bir dosya seçin.",
+        "upload_failed": "Görsel yüklenemedi. Lütfen tekrar deneyin."
+      }
+    },
+    "productsPage": {
+      "title": "Ürünler",
+      "description": "Müşterilerin mağazada gördüğü her şey. Düzenlemek için bir ürüne tıklayın.",
+      "add": "Ürün ekle",
+      "searchPlaceholder": "Ad veya ürün kodu ara",
+      "categoryFilter": "Kategoriye göre filtrele",
+      "allCategories": "Tüm kategoriler",
+      "withoutCategory": "Kategorisiz",
+      "filters": {
+        "all": "Tümü",
+        "visible": "Mağazada",
+        "hidden": "Gizli",
+        "featured": "Ana sayfa"
+      },
+      "emptyTitle": "Henüz ürün yok",
+      "emptyText": "İlk ürününüzü fotoğraf ve adla ekleyin.",
+      "emptyFilteredTitle": "Sonuç yok",
+      "emptyFilteredText": "Arama ve filtrelere uyan ürün yok.",
+      "clearFilters": "Filtreleri temizle",
+      "noPhoto": "Fotoğraf yok",
+      "hiddenBadge": "Gizli",
+      "featuredBadge": "Ana sayfa",
+      "editProduct": "{name} düzenle",
+      "moreActions": "{name} için diğer işlemler",
+      "hide": "Mağazada gizle",
+      "show": "Mağazada göster",
+      "feature": "Ana sayfada göster",
+      "unfeature": "Ana sayfadan kaldır",
+      "deleteConfirm": "“{name}” kalıcı olarak silinsin mi? Ürün hâlâ siparişlerde kullanılıyorsa yalnızca gizlenir."
+    },
+    "productEditor": {
+      "titleNew": "Yeni ürün",
+      "titleEdit": "Ürünü düzenle",
+      "descriptionNew": "Fotoğraf, ad ve kategori yeterli – gerisi isteğe bağlı.",
+      "requiredHint": "* işaretli alanlar zorunludur.",
+      "create": "Ürünü ekle",
+      "save": "Değişiklikleri kaydet",
+      "saving": "Kaydediliyor…",
+      "photosTitle": "Fotoğraflar",
+      "photosHint": "İlk fotoğraf mağazadaki ana fotoğraftır.",
+      "textTitle": "Ad ve açıklama",
+      "textHint": "Almanca ve Arapça zorunlu, diğer diller isteğe bağlıdır.",
+      "nameLabel": "Ürün adı",
+      "descriptionLabel": "Açıklama",
+      "categoryTitle": "Kategori ve müşteri bilgileri",
+      "categoryLabel": "Kategori",
+      "noCategory": "Kategorisiz",
+      "optionGroupLabel": "Müşteri bilgileri",
+      "optionGroupHelper": "Müşterinin talep sırasında gireceği bilgiler, örn. isim veya ayar.",
+      "noOptionGroup": "Ek bilgi gerekmiyor",
+      "optionGroupPreview": "Müşteriden istenecek: {fields}",
+      "optionGroupEmpty": "Bu grupta henüz alan yok.",
+      "visibilityTitle": "Görünürlük",
+      "visibleLabel": "Mağazada göster",
+      "visibleHint": "Gizli ürünler kayıtlı kalır ama müşteriler göremez.",
+      "featuredLabel": "Ana sayfada öne çıkar",
+      "featuredHint": "“Seçili ürünler” bölümünde görünür (ilk dördü).",
+      "advancedTitle": "Diğer ayarlar",
+      "advancedHint": "Ürün kodu, web adresi, sıra ve etiketler – otomatik doldurulur.",
+      "skuLabel": "Ürün kodu",
+      "skuHelper": "Otomatik atanması için boş bırakın.",
+      "skuPlaceholder": "örn. GH-0012",
+      "slugLabel": "Web adresi",
+      "slugHelper": "Boş bırakın – addan oluşturulur.",
+      "sortOrderLabel": "Sıra",
+      "sortOrderHelper": "Küçük sayılar önce görünür.",
+      "tagsLabel": "Etiketler",
+      "tagsHelper": "Ürün sayfasında küçük etiketler olarak görünür. Virgülle ayırın."
+    },
+    "categoriesPage": {
+      "title": "Kategoriler",
+      "description": "Kategoriler mağazayı düzenler, örn. yüzükler veya zincirler. Her ürün bir kategoriye aittir.",
+      "add": "Kategori ekle",
+      "searchPlaceholder": "Kategori ara",
+      "emptyTitle": "Henüz kategori yok",
+      "emptyText": "Ürünleri mağazada düzenlemek için kategoriler oluşturun.",
+      "emptyFilteredTitle": "Kategori bulunamadı",
+      "productCount": "{count, plural, =0 {Ürün yok} other {# ürün}}",
+      "nameCustomizationBadge": "İsimli yapım mümkün",
+      "deleteConfirm": "“{name}” kategorisi silinsin mi?",
+      "deleteConfirmWithProducts": "“{name}” kategorisi silinsin mi? {count} ürün kategorisini kaybedecek ve “Kategorisiz” altında görünecek.",
+      "titleNew": "Yeni kategori",
+      "titleEdit": "Kategoriyi düzenle",
+      "descriptionNew": "Bir görsel ve bir ad yeterli.",
+      "create": "Kategoriyi ekle",
+      "imageTitle": "Görsel",
+      "imageHint": "Ana sayfada ve mağazada kategori görseli olarak gösterilir.",
+      "textTitle": "Ad ve açıklama",
+      "nameLabel": "Kategori adı",
+      "descriptionLabel": "Kısa açıklama",
+      "settingsTitle": "Ayarlar",
+      "visibleLabel": "Mağazada göster",
+      "visibleHint": "Gizli kategoriler mağaza filtresinde görünmez.",
+      "nameCustomizationLabel": "İsme özel yapım",
+      "nameCustomizationHint": "Bu kategorideki ürünlerde, müşterinin ismiyle yapılabileceğine dair bir not görünür.",
+      "advancedHint": "Web adresi ve sıra – otomatik doldurulur.",
+      "messages": {
+        "created": "Kategori eklendi.",
+        "updated": "Değişiklikler kaydedildi.",
+        "shown": "Kategori artık mağazada görünüyor.",
+        "hidden": "Kategori mağazada gizlendi.",
+        "deleted": "Kategori silindi."
+      }
+    },
+    "optionsPage": {
+      "title": "Ürün seçenekleri",
+      "description": "Müşterilerin talep veya sipariş sırasında yanıtladığı sorular – örn. yapılacak isim veya ayar. Soruları setlerde toplayın ve ürün eklerken bir set seçin.",
+      "addGroup": "Yeni set",
+      "addField": "Soru ekle",
+      "renameGroup": "Seti yeniden adlandır",
+      "deleteGroup": "Seti sil",
+      "hideField": "Soruyu gizle",
+      "showField": "Soruyu göster",
+      "emptyTitle": "Henüz set yok",
+      "emptyText": "Bir set oluşturun, örn. “İsim takıları”, ve içine sorular ekleyin.",
+      "groupEmpty": "Bu sette henüz soru yok.",
+      "groupSummary": "{fields, plural, =0 {Soru yok} other {# soru}} · {products, plural, =0 {henüz hiçbir üründe kullanılmıyor} other {# üründe kullanılıyor}}",
+      "requiredBadge": "Zorunlu",
+      "deleteGroupConfirm": "“{name}” seti tüm sorularıyla silinsin mi? Kayıtlı siparişler etkilenmez.",
+      "deleteFieldConfirm": "“{name}” sorusu silinsin mi? Kayıtlı siparişler etkilenmez.",
+      "groupTitleNew": "Yeni set",
+      "groupTitleEdit": "Seti düzenle",
+      "groupDescription": "Bir set, belirli ürünlere ait soruları bir araya getirir.",
+      "groupNameTitle": "Set adı",
+      "groupNameHint": "Yalnızca siz görürsünüz, örn. “İsim takıları” veya “Yüzükler”.",
+      "groupNameLabel": "Ad",
+      "groupActiveHint": "Kapatıldığında bu setin soruları hiçbir yerde gösterilmez.",
+      "fieldTitleNew": "Yeni soru",
+      "fieldTitleEdit": "Soruyu düzenle",
+      "fieldDescription": "Soru, talep ve sipariş formlarında bu şekilde görünür.",
+      "presetsTitle": "Hızlı başlangıç",
+      "presetsHint": "Bir şablon tüm dilleri doldurur – sonra her şeyi değiştirebilirsiniz.",
+      "typeTitle": "Cevap türü",
+      "questionTitle": "Soru",
+      "questionHint": "Almanca ve Arapça zorunlu, diğer diller isteğe bağlıdır.",
+      "labelLabel": "Soru",
+      "helpLabel": "Alanın altındaki ipucu",
+      "placeholderLabel": "Alan içindeki örnek",
+      "choicesTitle": "Seçenekler",
+      "choicesHint": "Her seçenek için bir satır. İkinci dil sütunu isteğe bağlıdır – boş bırakılırsa ilk metin gösterilir.",
+      "choiceLabel": "Seçenek {number}",
+      "removeChoice": "{number}. seçeneği kaldır",
+      "addChoice": "Seçenek ekle",
+      "settingsTitle": "Ayarlar",
+      "groupLabel": "Ait olduğu set",
+      "requiredLabel": "Cevap zorunlu",
+      "requiredHint": "Bu soru yanıtlanmadan form gönderilemez.",
+      "activeLabel": "Göster",
+      "activeHint": "Gizli sorular kayıtlı kalır ama formda görünmez.",
+      "types": {
+        "text": "Kısa cevap",
+        "textarea": "Uzun metin",
+        "number": "Sayı",
+        "select": "Tek seçim",
+        "multi_select": "Çoklu seçim",
+        "boolean": "Evet / hayır",
+        "date": "Tarih"
+      },
+      "typeHints": {
+        "text": "Bir kelime veya tek satır, örn. bir isim.",
+        "textarea": "Birkaç satır, örn. özel istekler.",
+        "number": "Yalnızca sayı, örn. ağırlık veya yüzük ölçüsü.",
+        "select": "Müşteri listeden tam olarak bir seçenek seçer.",
+        "multi_select": "Müşteri birden fazla seçeneği işaretleyebilir.",
+        "boolean": "Evet veya hayır için bir onay kutusu.",
+        "date": "Takvimden bir tarih, örn. istenen tarih."
+      },
+      "presets": {
+        "engraving": {
+          "name": "İsim",
+          "label": {
+            "de": "Gewünschter Name",
+            "ar": "الاسم المطلوب",
+            "en": "Name to be made",
+            "fr": "Prénom souhaité",
+            "tr": "İstenen isim"
+          },
+          "help": {
+            "de": "Genau so, wie er angefertigt werden soll.",
+            "ar": "اكتب الاسم كما تريده بالضبط.",
+            "en": "Exactly as it should be made.",
+            "fr": "Exactement comme il doit être réalisé.",
+            "tr": "Tam olarak yapılmasını istediğiniz şekilde yazın."
+          },
+          "placeholder": {
+            "de": "z. B. Lina",
+            "ar": "مثال: لينا",
+            "en": "e.g. Lina",
+            "fr": "ex. Lina",
+            "tr": "örn. Lina"
+          }
+        },
+        "karat": {
+          "name": "Ayar",
+          "label": {
+            "de": "Goldlegierung (Karat)",
+            "ar": "العيار",
+            "en": "Gold karat",
+            "fr": "Carat de l’or",
+            "tr": "Altın ayarı"
+          },
+          "help": {
+            "de": "Wählen Sie die gewünschte Legierung.",
+            "ar": "اختر العيار المطلوب.",
+            "en": "Choose the karat you want.",
+            "fr": "Choisissez le carat souhaité.",
+            "tr": "İstediğiniz ayarı seçin."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        },
+        "weight": {
+          "name": "Ağırlık",
+          "label": {
+            "de": "Gewünschtes Gewicht (g)",
+            "ar": "الوزن المطلوب (غرام)",
+            "en": "Desired weight (g)",
+            "fr": "Poids souhaité (g)",
+            "tr": "İstenen ağırlık (g)"
+          },
+          "help": {
+            "de": "Ungefähres Gewicht in Gramm.",
+            "ar": "الوزن التقريبي بالغرام.",
+            "en": "Approximate weight in grams.",
+            "fr": "Poids approximatif en grammes.",
+            "tr": "Gram cinsinden yaklaşık ağırlık."
+          },
+          "placeholder": {
+            "de": "z. B. 12,5",
+            "ar": "مثال: 12.5",
+            "en": "e.g. 12.5",
+            "fr": "ex. 12,5",
+            "tr": "örn. 12,5"
+          }
+        },
+        "note": {
+          "name": "Notlar",
+          "label": {
+            "de": "Anmerkungen",
+            "ar": "ملاحظات",
+            "en": "Notes",
+            "fr": "Remarques",
+            "tr": "Notlar"
+          },
+          "help": {
+            "de": "Weitere Wünsche, z. B. Schriftart oder Länge.",
+            "ar": "أي طلبات إضافية، مثل نوع الخط أو الطول.",
+            "en": "Any other wishes, e.g. font or length.",
+            "fr": "Autres souhaits, par ex. police ou longueur.",
+            "tr": "Diğer istekler, örn. yazı tipi veya uzunluk."
+          },
+          "placeholder": {
+            "de": "",
+            "ar": "",
+            "en": "",
+            "fr": "",
+            "tr": ""
+          }
+        }
+      },
+      "errors": {
+        "choices": "Lütfen en az bir seçenek ekleyin."
+      },
+      "messages": {
+        "groupCreated": "Set eklendi.",
+        "groupUpdated": "Set kaydedildi.",
+        "groupDeleted": "Set silindi.",
+        "groupArchived": "Set siparişlerde kullanıldığı için yalnızca gizlendi.",
+        "fieldCreated": "Soru eklendi.",
+        "fieldUpdated": "Soru kaydedildi.",
+        "fieldShown": "Soru yeniden gösteriliyor.",
+        "fieldHidden": "Soru gizlendi.",
+        "fieldDeleted": "Soru silindi.",
+        "fieldArchived": "Soru siparişlerde kullanıldığı için yalnızca gizlendi."
+      }
     }
   },
   "Tracking": {
