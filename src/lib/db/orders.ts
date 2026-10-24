@@ -1,6 +1,7 @@
 import "server-only";
 
 import { z } from "zod";
+import { createRandomTrackingCode } from "@/lib/admin/tracking";
 
 import {
   getDecoyOrderDetail,
@@ -1337,22 +1338,25 @@ export async function getScopedOrderDetail(
 async function generateTrackingNumber() {
   const supabase = createSupabaseAdminClient();
   const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const { data, error } = await supabase
-    .from("orders")
-    .select("tracking_number")
-    .like("tracking_number", `GH-${datePart}-%`);
 
-  if (error) {
-    throw new Error(`Unable to generate tracking number: ${error.message}`);
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    const candidate = `GH-${datePart}-${createRandomTrackingCode()}`;
+    const { data, error } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("tracking_number", candidate)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Unable to generate tracking number: ${error.message}`);
+    }
+
+    if (!data) {
+      return candidate;
+    }
   }
 
-  const sequence =
-    data.reduce((maxValue, order) => {
-      const match = order.tracking_number.match(/-(\d{4})$/);
-      return Math.max(maxValue, match ? Number(match[1]) : 0);
-    }, 0) + 1;
-
-  return `GH-${datePart}-${String(sequence).padStart(4, "0")}`;
+  throw new Error("Unable to generate a unique tracking number.");
 }
 
 async function generateInternalOrderNumber() {
