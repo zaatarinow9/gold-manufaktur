@@ -1,111 +1,149 @@
 "use client";
 
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import clsx from "clsx";
+import { Menu, Phone, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Link, usePathname } from "@/i18n/navigation";
 import { type AppLocale } from "@/i18n/routing";
-import { getBrandLogoAlt, siteNavigation, siteName } from "@/lib/site";
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import {
+  companyInfo,
+  getBrandLogoAlt,
+  siteNavigation,
+  siteName,
+} from "@/lib/site";
+
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileMenu } from "./MobileMenu";
+
+function isActiveSitePath(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function SiteNavbar() {
   const t = useTranslations("Nav");
   const locale = useLocale() as AppLocale;
   const pathname = usePathname() || "/";
-  const [isOpen, setIsOpen] = useState(false);
+  const [openPath, setOpenPath] = useState<string | null>(null);
+  const isOpen = openPath === pathname;
   const mobilePanelId = "site-mobile-menu";
-  const languageSwitcherKey = `${locale}:${pathname}`;
   const brandLogoAlt = getBrandLogoAlt(locale);
 
-  const closeMenu = () => setIsOpen(false);
+  const closeMenu = () => setOpenPath(null);
 
-  const isActivePath = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
+  useEffect(() => {
+    if (!isOpen) {
+      return;
     }
 
-    return pathname === href || pathname.startsWith(`${href}/`);
-  };
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenPath(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/8 bg-[#050505]/72 backdrop-blur-2xl">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(232,201,135,0.4),transparent)]" />
-      <div className="container-shell">
-        <div className="content-shell">
-          <div className="site-navbar-desktop rtl-mirror-grid hidden items-center gap-6 py-4 lg:grid lg:grid-cols-[1fr_auto_1fr]">
-            <div className="justify-self-start">
-              <LanguageSwitcher
-                key={`desktop-${languageSwitcherKey}`}
-                onNavigate={closeMenu}
-              />
-            </div>
-
-            <nav className="flex items-center justify-center gap-1 rounded-full border border-white/10 bg-white/4 px-2 py-2">
-              {siteNavigation.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={closeMenu}
-                  className={`site-nav-link rounded-full px-4 py-2 text-sm transition ${
-                    isActivePath(link.href)
-                      ? "bg-gold/16 text-foreground shadow-[inset_0_0_0_1px_rgba(232,201,135,0.18)]"
-                      : "text-muted hover:bg-white/6 hover:text-foreground"
-                  }`}
-                >
-                  {t(`links.${link.key}`)}
-                </Link>
-              ))}
-            </nav>
-
-            <Link href="/" onClick={closeMenu} className="brand-logo-link justify-self-end">
+    <>
+      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[rgba(15,11,7,0.86)] backdrop-blur-xl">
+        <div className="container-shell">
+          <div className="content-shell flex h-[4.5rem] items-center gap-6">
+            <Link
+              href="/"
+              onClick={closeMenu}
+              className="brand-logo-link shrink-0"
+            >
               <span className="sr-only">{siteName}</span>
               <BrandLogo
                 alt={brandLogoAlt}
                 priority
-                className="h-[3rem] w-auto shrink-0 sm:h-[3.35rem]"
+                className="h-11 w-auto sm:h-12"
               />
             </Link>
-          </div>
 
-          <div className="site-navbar-mobile-bar flex items-center justify-between gap-3 py-4 lg:hidden">
-            <div className="rtl-inline-row flex items-center gap-2">
+            <nav className="hidden items-center gap-1 lg:flex">
+              {siteNavigation.map((link) => {
+                const active = isActiveSitePath(pathname, link.href);
+
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={active ? "page" : undefined}
+                    className={clsx(
+                      "site-nav-link relative px-3.5 py-2 text-[0.9375rem] transition-colors",
+                      active
+                        ? "text-foreground"
+                        : "text-muted hover:text-foreground",
+                    )}
+                  >
+                    {t(`links.${link.key}`)}
+                    {active ? (
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-x-3.5 -bottom-[1.05rem] h-px bg-gold-soft"
+                      />
+                    ) : null}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="ms-auto flex items-center gap-2">
               <LanguageSwitcher
-                key={`mobile-${languageSwitcherKey}`}
+                key={`${locale}:${pathname}`}
                 onNavigate={closeMenu}
+                align="end"
               />
+              <a
+                href={companyInfo.phoneHref}
+                className="gold-button hidden !min-h-10 !px-4 !text-sm lg:inline-flex"
+              >
+                <Phone className="h-4 w-4" />
+                {t("call")}
+              </a>
               <button
                 type="button"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/6 text-gold-soft transition hover:border-gold/35 hover:text-foreground"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-strong)] text-gold-soft transition hover:border-gold-soft lg:hidden"
                 aria-controls={mobilePanelId}
                 aria-expanded={isOpen}
                 aria-label={isOpen ? t("closeMenu") : t("openMenu")}
-                onClick={() => setIsOpen((open) => !open)}
+                onClick={() => setOpenPath(isOpen ? null : pathname)}
               >
-                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {isOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </button>
             </div>
-
-            <Link href="/" onClick={closeMenu} className="brand-logo-link shrink-0">
-              <span className="sr-only">{siteName}</span>
-              <BrandLogo
-                alt={brandLogoAlt}
-                priority
-                className="h-[2.6rem] w-auto shrink-0 sm:h-[2.9rem]"
-              />
-            </Link>
           </div>
-
-          <MobileMenu
-            isOpen={isOpen}
-            panelId={mobilePanelId}
-            pathname={pathname}
-            onClose={closeMenu}
-          />
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Outside the header: its backdrop blur would otherwise trap this fixed panel. */}
+      <MobileMenu
+        isOpen={isOpen}
+        panelId={mobilePanelId}
+        pathname={pathname}
+        onClose={closeMenu}
+      />
+    </>
   );
 }

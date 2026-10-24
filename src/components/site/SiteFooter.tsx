@@ -1,130 +1,118 @@
-import { Mail, MapPin, Phone } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
+import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { PhoneInline } from "@/components/site/PhoneInline";
 import { SocialIcon } from "@/components/site/SocialIcon";
 import { Link } from "@/i18n/navigation";
-import { companyInfo, getBrandLogoAlt, siteNavigation, siteName } from "@/lib/site";
 import type { AppLocale } from "@/i18n/routing";
+import { companyInfo, getBrandLogoAlt, legalNavigation, siteNavigation, siteName } from "@/lib/site";
 
 export function SiteFooter() {
   const t = useTranslations("Footer");
   const nav = useTranslations("Nav.links");
   const locale = useLocale() as AppLocale;
   const year = new Date().getFullYear();
-  const brandLogoAlt = getBrandLogoAlt(locale);
   const socialLinks = [
-    {
-      href: companyInfo.instagramHref,
-      platform: "instagram",
-      label: t("socials.instagram"),
-    },
-    {
-      href: companyInfo.facebookHref,
-      platform: "facebook",
-      label: t("socials.facebook"),
-    },
-    {
-      href: companyInfo.tiktokHref,
-      platform: "tiktok",
-      label: t("socials.tiktok"),
-    },
-    {
-      href: companyInfo.snapchatHref,
-      platform: "snapchat",
-      label: t("socials.snapchat"),
-    },
+    { href: companyInfo.instagramHref, platform: "instagram", label: t("socials.instagram") },
+    { href: companyInfo.facebookHref, platform: "facebook", label: t("socials.facebook") },
+    { href: companyInfo.tiktokHref, platform: "tiktok", label: t("socials.tiktok") },
+    { href: companyInfo.snapchatHref, platform: "snapchat", label: t("socials.snapchat") },
   ] as const;
 
   return (
-    <footer className="mt-24 border-t border-white/8 bg-[linear-gradient(180deg,rgba(6,6,6,0.92),rgba(5,5,5,0.98))]">
+    <footer className="border-t border-[var(--border)] bg-[#0b0805]">
       <div className="container-shell">
-        <div className="content-shell py-12 sm:py-14">
-          <div className="site-footer-grid rtl-mirror-grid grid gap-10 xl:grid-cols-[1.2fr_0.8fr_0.9fr_0.9fr]">
-            <div className="space-y-4">
+        <div className="content-shell py-14 sm:py-16">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.4fr_0.7fr_0.7fr_0.9fr] lg:gap-12">
+            <div className="col-span-2 max-w-sm lg:col-span-1">
               <Link href="/" className="brand-logo-link">
                 <span className="sr-only">{siteName}</span>
-                <BrandLogo
-                  alt={brandLogoAlt}
-                  className="h-[3.75rem] w-auto shrink-0 sm:h-[4.3rem]"
-                />
+                <BrandLogo alt={getBrandLogoAlt(locale)} className="h-16 w-auto" />
               </Link>
-              <p className="max-w-xs text-sm leading-6 text-muted">
-                {t("description")}
-              </p>
-            </div>
+              <p className="mt-5 text-[0.9375rem] leading-7 text-muted">{t("description")}</p>
 
-            <div>
-              <p className="muted-label">{t("navigationTitle")}</p>
-              <div className="mt-5 flex flex-col gap-3 text-sm text-muted">
-                {siteNavigation.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="transition hover:text-foreground"
-                  >
-                    {nav(link.key)}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="muted-label">{t("contactTitle")}</p>
-              <div className="mt-5 space-y-4 text-sm text-muted">
-                <div className="rtl-inline-row flex items-start gap-3">
-                  <MapPin className="mt-1 h-4 w-4 text-gold-soft" />
-                  <p dir="ltr" className="leading-6">{companyInfo.address}</p>
-                </div>
-                <div className="rtl-inline-row flex items-start gap-3">
-                  <Phone className="mt-1 h-4 w-4 text-gold-soft" />
-                  <a
-                    href={companyInfo.phoneHref}
-                    dir="ltr"
-                    className="leading-6 transition hover:text-foreground"
-                  >
+              <ul className="mt-6 space-y-3 text-[0.9375rem] text-muted">
+                <li className="flex items-start gap-3">
+                  <MapPin className="mt-1 h-4 w-4 shrink-0 text-gold-soft" />
+                  <span dir="ltr">{companyInfo.address}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Phone className="mt-1 h-4 w-4 shrink-0 text-gold-soft" />
+                  <a href={companyInfo.phoneHref} className="transition-colors hover:text-foreground">
                     <PhoneInline>{companyInfo.phoneDisplay}</PhoneInline>
                   </a>
-                </div>
-                <div className="rtl-inline-row flex items-start gap-3">
-                  <Mail className="mt-1 h-4 w-4 text-gold-soft" />
-                  <a
-                    href={companyInfo.emailHref}
-                    dir="ltr"
-                    className="leading-6 transition hover:text-foreground"
-                  >
+                </li>
+                <li className="flex items-start gap-3">
+                  <Mail className="mt-1 h-4 w-4 shrink-0 text-gold-soft" />
+                  <a href={companyInfo.emailHref} dir="ltr" className="transition-colors hover:text-foreground">
                     {companyInfo.emailDisplay}
                   </a>
-                </div>
-              </div>
+                </li>
+              </ul>
             </div>
 
             <div>
-              <p className="muted-label">{t("socialTitle")}</p>
-              <div className="mt-5 space-y-3 text-sm text-muted">
-                {socialLinks.map((item) => {
-                  return (
+              <p className="text-sm font-semibold text-foreground">{t("navigationTitle")}</p>
+              <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-muted">
+                {siteNavigation.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="transition-colors hover:text-foreground">
+                      {nav(link.key)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-foreground">{t("legalTitle")}</p>
+              <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-muted">
+                {legalNavigation.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="transition-colors hover:text-foreground">
+                      {nav(link.key)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-foreground">{t("socialTitle")}</p>
+              <ul className="mt-4 space-y-2.5 text-[0.9375rem] text-muted">
+                {socialLinks.map((item) => (
+                  <li key={item.platform}>
                     <a
-                      key={item.label}
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={item.label}
-                      className="footer-social-link rtl-inline-row flex items-center gap-3 rounded-full border border-white/10 bg-white/4 px-4 py-3 text-muted transition hover:border-gold/25 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-soft"
+                      className="inline-flex items-center gap-3 transition-colors hover:text-foreground"
                     >
                       <SocialIcon platform={item.platform} className="h-4 w-4 shrink-0 text-gold-soft" />
-                      <span>{item.label}</span>
+                      {item.label}
                     </a>
-                  );
-                })}
-              </div>
+                  </li>
+                ))}
+                <li>
+                  <a
+                    href={companyInfo.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 transition-colors hover:text-foreground"
+                  >
+                    <MessageCircle className="h-4 w-4 shrink-0 text-gold-soft" />
+                    {t("socials.whatsapp")}
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <div className="site-footer-bottom mt-10 flex flex-col gap-3 border-t border-white/8 pt-5 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-            <p>{`(c) ${year} ${companyInfo.name}`}</p>
+          <div className="mt-12 flex flex-col gap-2 border-t border-[var(--border)] pt-6 text-sm text-text-soft sm:flex-row sm:items-center sm:justify-between">
+            <p>
+              © {year} {companyInfo.name}
+            </p>
             <p>{t("legalNote")}</p>
           </div>
         </div>

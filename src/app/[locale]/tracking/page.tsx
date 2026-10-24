@@ -1,75 +1,51 @@
+import { MessageCircle, Phone } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import { PageHeader } from "@/components/site/PageHeader";
 import { TrackingLookupForm } from "@/components/site/TrackingLookupForm";
 import { Link } from "@/i18n/navigation";
-import { companyInfo, getBrandLogoAlt, resolveLocale, siteName } from "@/lib/site";
+import { companyInfo, resolveLocale } from "@/lib/site";
 
 type TrackingLookupPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function TrackingLookupPage({
-  params,
-}: TrackingLookupPageProps) {
+export default async function TrackingLookupPage({ params }: TrackingLookupPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Tracking" });
-  const brandLogoAlt = getBrandLogoAlt(locale);
 
   return (
-    <section className="section-shell">
+    <>
+      <PageHeader title={t("lookup.title")} description={t("lookup.description")} />
       <div className="container-shell">
-        <div className="content-shell">
-          <div className="mx-auto max-w-4xl space-y-6">
-            <div className="luxury-panel overflow-hidden px-6 py-8 sm:px-8 sm:py-10">
-              <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-                <div className="space-y-4">
-                  <Link href="/" className="brand-logo-link">
-                    <span className="sr-only">{siteName}</span>
-                    <BrandLogo
-                      alt={brandLogoAlt}
-                      className="h-[3rem] w-auto shrink-0 sm:h-[3.35rem]"
-                    />
-                  </Link>
-                  <div className="space-y-3">
-                    <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                      {t("lookup.title")}
-                    </h1>
-                    <p className="max-w-2xl text-sm leading-7 text-muted sm:text-base">
-                      {t("lookup.description")}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="rounded-[1.5rem] border border-gold/18 bg-gold/10 px-5 py-5">
-                  <p className="text-xs uppercase tracking-[0.22em] text-gold-soft">
-                    {t("lookup.helperTitle")}
-                  </p>
-                  <p className="mt-3 text-sm leading-7 text-foreground">
-                    {t("lookup.helperDescription")}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <a href={companyInfo.phoneHref} className="ghost-button">
-                      {t("phone")}
-                    </a>
-                    <Link href="/contact" className="gold-button">
-                      {t("contactSupport")}
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="luxury-panel px-6 py-8 sm:px-8">
-              <div className="mb-5">
-                <h2 className="text-xl font-semibold text-foreground">{t("lookup.formTitle")}</h2>
-                <p className="mt-1 text-sm text-muted">{t("lookup.formDescription")}</p>
-              </div>
+        <div className="content-shell grid gap-10 pb-20 pt-10 sm:pt-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-16">
+          <div className="luxury-panel p-5 sm:p-8">
+            <h2 className="font-semibold text-foreground">{t("lookup.formTitle")}</h2>
+            <p className="mt-1 text-[0.9375rem] text-muted">{t("lookup.formDescription")}</p>
+            <div className="mt-6">
               <TrackingLookupForm />
             </div>
           </div>
+
+          <aside>
+            <h2 className="font-semibold text-foreground">{t("lookup.helperTitle")}</h2>
+            <p className="mt-2 leading-7 text-muted">{t("lookup.helperDescription")}</p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a href={companyInfo.phoneHref} className="ghost-button">
+                <Phone className="h-4 w-4" />
+                {t("phone")}
+              </a>
+              <a href={companyInfo.whatsappHref} target="_blank" rel="noreferrer" className="ghost-button">
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </a>
+            </div>
+            <Link href="/contact" className="text-link mt-5">
+              {t("contactSupport")}
+            </Link>
+          </aside>
         </div>
       </div>
-    </section>
+    </>
   );
 }

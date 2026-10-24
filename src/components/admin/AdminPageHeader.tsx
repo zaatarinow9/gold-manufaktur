@@ -27,7 +27,10 @@ export function AdminPageHeader({
       )}
     >
       <div className="min-w-0 max-w-3xl space-y-1.5">
-        {eyebrow ? <p className="admin-page-kicker">{eyebrow}</p> : null}
+        {/* A small label only when it adds context, never a repeat of the title. */}
+        {eyebrow && eyebrow.trim().toLowerCase() !== String(title).trim().toLowerCase() ? (
+          <p className="admin-page-kicker">{eyebrow}</p>
+        ) : null}
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="admin-heading text-foreground">
             {typeof title === "string" ? trimDisplayHeading(title) : title}

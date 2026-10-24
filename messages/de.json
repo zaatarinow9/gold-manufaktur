@@ -50,23 +50,26 @@
       "impressum": "Impressum",
       "privacy": "Datenschutz",
       "agb": "AGB"
-    }
+    },
+    "call": "Anrufen",
+    "legalTitle": "Rechtliches"
   },
   "Footer": {
     "description": "Luxuriöser Goldschmuck mit persönlicher Beratung in Saarbrücken.",
     "navigationTitle": "Seiten",
     "contactTitle": "Kontakt",
-    "socialTitle": "Social Media",
+    "socialTitle": "Folgen Sie uns",
     "emailPlaceholder": "info@goldhelwah.de",
     "legalNote": "Showroom und Katalog ohne Onlinekauf.",
     "rights": "Gold Helwah. Alle Rechte vorbehalten.",
     "socials": {
-      "instagram": "Instagram folgt",
-      "facebook": "Facebook folgt",
-      "tiktok": "TikTok folgt",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
       "snapchat": "Snapchat",
-      "whatsapp": "WhatsApp öffnen"
-    }
+      "whatsapp": "WhatsApp"
+    },
+    "legalTitle": "Rechtliches"
   },
   "Home": {
     "hero": {
@@ -90,20 +93,22 @@
           "value": "Saarbrücken",
           "label": "Showroom"
         }
-      ]
+      ],
+      "locationLine": "Showroom in der Breiten Straße, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Ausgewählte Kategorien",
-      "title": "Ausgewählte Linien und Kollektionen.",
-      "description": "Sechs Kategorien führen direkt in den Showroom.",
+      "title": "Nach Kategorie entdecken",
+      "description": "Von feinen Ketten bis zum Anlagegold – wählen Sie, was Sie suchen.",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
-      "emptyText": "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch."
+      "emptyText": "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch.",
+      "allCta": "Alle Kategorien"
     },
     "products": {
       "eyebrow": "Ausgewählte Produkte",
-      "title": "Bilderstark und bewusst reduziert.",
-      "description": "Vier ausgewählte Modelle zeigen den Charakter der Kollektion.",
-      "sectionCta": "Zum Showroom",
+      "title": "Ausgewählte Stücke",
+      "description": "Echte Aufnahmen aus unserem Showroom. Öffnen Sie ein Stück für Details und Ihre Anfrage.",
+      "sectionCta": "Gesamte Kollektion",
       "cardCta": "Details ansehen",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
       "emptyText": "Aktivieren Sie Produkte im Dashboard oder kontaktieren Sie uns für eine persönliche Auswahl."
@@ -127,7 +132,8 @@
         "Bleibender Wert",
         "Persönliche Bedeutung",
         "Sichtbare Handwerksqualität"
-      ]
+      ],
+      "storyLabel": "Über GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "Über uns",
@@ -143,19 +149,19 @@
       "items": [
         {
           "title": "Persönliche Beratung",
-          "description": "Direkt und individuell abgestimmt."
+          "description": "Wir nehmen uns Zeit für Ihren Anlass und Ihren Stil."
         },
         {
           "title": "Echte Produktbilder",
-          "description": "Die Auswahl zeigt reale Modelle."
+          "description": "Jedes Foto zeigt ein reales Stück aus unserem Showroom."
         },
         {
           "title": "Designs nach Wunsch",
-          "description": "Jede Idee, die Ihnen in den Sinn kommt, können wir in ein besonderes Goldstück mit schönen Details verwandeln – von Namensgravuren und Größenanpassungen bis hin zu persönlichen Akzenten, die Ihren Stil widerspiegeln."
+          "description": "Gravuren, Größen und eigene Ideen setzen wir in Gold um."
         },
         {
           "title": "Abholung in Saarbrücken",
-          "description": "Persönlich vor Ort erreichbar."
+          "description": "Sie holen Ihr Stück persönlich bei uns ab."
         }
       ]
     },
@@ -165,13 +171,41 @@
       "description": "Wir beraten Sie gerne zu Auswahl, Sonderwünschen und Abholung.",
       "primaryCta": "Shop ansehen",
       "secondaryCta": "Anrufen"
+    },
+    "hallmarks": {
+      "title": "Gold in drei Feingehalten",
+      "description": "Wir fertigen und beraten in 21, 18 und 14 Karat – vom leichten Alltagsstück bis zum Brautset.",
+      "items": [
+        {
+          "stamp": "875",
+          "label": "21 Karat"
+        },
+        {
+          "stamp": "750",
+          "label": "18 Karat"
+        },
+        {
+          "stamp": "585",
+          "label": "14 Karat"
+        }
+      ]
+    },
+    "customName": {
+      "title": "Ihr Name in Gold",
+      "description": "Namensketten, Gravuren und Einzelstücke nach Ihrer Idee. Schrift, Karat und Länge stimmen wir persönlich mit Ihnen ab.",
+      "primaryCta": "Namensschmuck ansehen",
+      "secondaryCta": "Idee besprechen"
+    },
+    "visit": {
+      "title": "Besuchen Sie uns oder schreiben Sie uns",
+      "description": "Für Anfragen, Beratung und Abholung – wir antworten persönlich."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "Gold Helwah",
       "title": "Kollektion",
-      "subtitle": "Echte Produktbilder, klare Auswahl und persönliche Beratung.",
+      "subtitle": "Echte Aufnahmen aus unserem Showroom. Wählen Sie ein Stück, um Details zu sehen und eine Anfrage zu senden.",
       "primaryCta": "Anfrage senden",
       "secondaryCta": "Kontakt",
       "stats": {
@@ -190,15 +224,17 @@
     },
     "grid": {
       "eyebrow": "Kollektion",
-      "title": "Nach Kategorie entdecken.",
+      "title": "Kategorien",
       "all": "Alle",
       "resultsSuffix": "Modelle",
       "emptyBadge": "Bald verfügbar",
       "emptyTitle": "Weitere Modelle folgen in Kürze.",
-      "emptyText": "Schreiben Sie uns gern, wenn Sie eine bestimmte Linie suchen."
+      "emptyText": "Schreiben Sie uns gern, wenn Sie eine bestimmte Linie suchen.",
+      "resultCount": "{count, plural, =0 {Keine Stücke} one {# Stück} other {# Stücke}}"
     },
     "card": {
-      "cta": "Details"
+      "cta": "Details",
+      "personalization": "Name nach Wunsch möglich"
     },
     "modal": {
       "close": "Schließen",
@@ -208,14 +244,17 @@
       "galleryCountSuffix": "Bilder",
       "tagsLabel": "Merkmale",
       "requestCta": "Anfrage senden",
-      "backCta": "Zurück"
+      "backCta": "Zurück",
+      "callCta": "Anrufen",
+      "noteTitle": "So geht es weiter",
+      "note": "Senden Sie eine Anfrage – wir melden uns mit Gewicht, Preis und Lieferzeit."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Kontakt",
-      "title": "Kontaktieren Sie Gold Helwah ohne Umwege.",
-      "subtitle": "Für Produktanfragen, Beratung und die Route zum Showroom steht hier alles Wesentliche bereit.",
+      "title": "Kontakt",
+      "subtitle": "Für Produktanfragen, Beratung und Sonderanfertigungen. Wir antworten persönlich.",
       "primaryCta": "Zur Kollektion",
       "secondaryCta": "Datenschutz lesen"
     },
@@ -259,7 +298,14 @@
         "email": "Bitte geben Sie eine gültige E-Mail-Adresse an.",
         "phone": "Bitte geben Sie eine gültige Telefonnummer an.",
         "message": "Bitte schreiben Sie eine kurze Nachricht."
-      }
+      },
+      "productTitle": "Ihre Anfrage zu",
+      "optionsTitle": "Ihre Wünsche",
+      "requestTitle": "Anfrage zu diesem Stück",
+      "requiredField": "Bitte füllen Sie dieses Feld aus.",
+      "productDefaultMessage": "Ich interessiere mich für dieses Schmuckstück und wünsche weitere Informationen.",
+      "optional": "optional",
+      "allRequired": "Alle Felder sind Pflichtfelder."
     },
     "location": {
       "eyebrow": "Standort",
@@ -269,7 +315,9 @@
       "phoneLabel": "Telefon",
       "routeCta": "Route planen",
       "callCta": "Anrufen",
-      "mapTitle": "Standort von Gold Helwah auf Google Maps"
+      "mapTitle": "Standort von Gold Helwah auf Google Maps",
+      "emailLabel": "E-Mail",
+      "whatsappCta": "WhatsApp"
     }
   },
   "Impressum": {
@@ -897,9 +945,9 @@
       "groupCount": "{count} Gruppen"
     },
     "orders": {
-      "eyebrow": "Bestellungen",
-      "title": "Bestellungen",
-      "description": "Bestellungen und Kundenstatus verfolgen.",
+      "eyebrow": "Aufträge",
+      "title": "Aufträge",
+      "description": "Aufträge verfolgen, zuweisen und den Status für Kunden aktualisieren.",
       "filtersTitle": "Aufträge filtern",
       "filtersDescription": "Suche nach Auftrag, Produkt, Kunde oder Werkstatt.",
       "searchPlaceholder": "Auftrag, Produkt oder Kunde suchen",
@@ -1960,7 +2008,7 @@
       "formTitle": "Tracking-Nummer eingeben",
       "formDescription": "Wir öffnen die aktuelle Auftragsseite für diese Tracking-Nummer.",
       "label": "Tracking-Nummer",
-      "placeholder": "GH-20260618-0001",
+      "placeholder": "GH-20260618-K7M2QX",
       "submit": "Auftrag verfolgen",
       "emptyError": "Bitte geben Sie Ihre Tracking-Nummer ein."
     },
@@ -1968,7 +2016,8 @@
       "title": "Kundenservice kontaktieren",
       "description": "Benötigen Sie Hilfe zu diesem Auftrag? Senden Sie uns eine Nachricht, unser Team meldet sich bei Ihnen.",
       "success": "Ihre Nachricht wurde gesendet.",
-      "error": "Ihre Nachricht konnte gerade nicht gesendet werden."
+      "error": "Ihre Nachricht konnte gerade nicht gesendet werden.",
+      "messageMin": "Bitte beschreiben Sie Ihr Anliegen in mindestens 10 Zeichen."
     },
     "stages": {
       "order_in_workshop": "Auftrag in der Werkstatt",
@@ -2028,5 +2077,33 @@
     "luxury": "Luxuskarte",
     "image": "Bildfunktion",
     "announcement": "Ankündigungsbanner"
+  },
+  "OrderEntry": {
+    "customer": "Kundendaten",
+    "customerEmail": "E-Mail",
+    "customerName": "Kundenname",
+    "customerPhone": "Telefon",
+    "description": "Dieser geschützte Link erfasst Werkstattaufträge direkt und sicher für das GoldHelwah-Dashboard.",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+    "emailUpdates": "E-Mail-Updates senden",
+    "emailUpdatesHint": "Updates werden nur versendet, wenn eine gültige E-Mail-Adresse eingetragen ist.",
+    "message": "Auftragsnotiz",
+    "noOptions": "Diesem Produkt sind keine individuellen Optionen zugewiesen.",
+    "options": "Produktoptionen",
+    "privacy": "Privater, geschützter Link",
+    "product": "Produkt",
+    "productRequired": "Bitte wählen Sie zuerst ein Produkt aus.",
+    "quantity": "Menge",
+    "required": "Bitte füllen Sie dieses Pflichtfeld aus.",
+    "submit": "Auftrag senden",
+    "submitPending": "Auftrag wird gesendet …",
+    "success": "Der Auftrag wurde erfolgreich angelegt.",
+    "title": "Werkstattauftrag",
+    "trackingCta": "Tracking anzeigen",
+    "defaultMessage": "Ich möchte {product} beauftragen.",
+    "yes": "Ja",
+    "no": "Nein",
+    "unavailableTitle": "Werkstattauftrag derzeit nicht verfügbar",
+    "unavailableDescription": "Es sind aktuell keine aktiven Produkte für diesen Link hinterlegt."
   }
 }

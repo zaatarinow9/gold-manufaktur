@@ -1,18 +1,4 @@
-import { Cormorant_Garamond, Inter } from "next/font/google";
 import localFont from "next/font/local";
-
-export const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-export const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-cormorant",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const thmanyah = localFont({
   src: [

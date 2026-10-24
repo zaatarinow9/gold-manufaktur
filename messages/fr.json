@@ -50,7 +50,9 @@
       "privacy": "Confidentialité",
       "agb": "Conditions générales",
       "tracking": "Suivi de commande"
-    }
+    },
+    "call": "Appeler",
+    "legalTitle": "Informations légales"
   },
   "Footer": {
     "description": "GoldHelwah GmbH propose des bijoux en or sélectionnés avec soin, un conseil personnalisé et une présentation claire à Sarrebruck.",
@@ -66,7 +68,8 @@
       "tiktok": "TikTok",
       "snapchat": "Snapchat",
       "whatsapp": "WhatsApp"
-    }
+    },
+    "legalTitle": "Informations légales"
   },
   "Home": {
     "hero": {
@@ -90,20 +93,22 @@
           "value": "Saarbrücken",
           "label": "Showroom"
         }
-      ]
+      ],
+      "locationLine": "Showroom Breite Straße, Sarrebruck"
     },
     "categories": {
       "eyebrow": "Catégories sélectionnées",
-      "title": "Des collections qui attirent immédiatement le regard.",
-      "description": "Choisissez parmi des lignes, des ensembles et des pièces en or marquantes.",
+      "title": "Parcourir par catégorie",
+      "description": "Des chaînes fines à l’or d’investissement – choisissez ce que vous cherchez.",
       "emptyTitle": "Aucun produit n'est visible pour le moment",
-      "emptyText": "Dès que de nouvelles collections sont activées dans le tableau de bord, elles apparaissent ici automatiquement."
+      "emptyText": "Dès que de nouvelles collections sont activées dans le tableau de bord, elles apparaissent ici automatiquement.",
+      "allCta": "Toutes les catégories"
     },
     "products": {
       "eyebrow": "Produits sélectionnés",
-      "title": "Visuels réels. Choix clair. Or de caractère.",
-      "description": "Des pièces sélectionnées dans différentes catégories.",
-      "sectionCta": "Voir le showroom",
+      "title": "Pièces choisies",
+      "description": "De vraies photos de notre showroom. Ouvrez une pièce pour voir les détails et envoyer une demande.",
+      "sectionCta": "Toute la collection",
       "cardCta": "Voir les détails",
       "emptyTitle": "Aucun produit n'est visible pour le moment",
       "emptyText": "Activez des produits dans le tableau de bord ou contactez-nous pour une sélection personnalisée."
@@ -120,14 +125,15 @@
     },
     "aboutGold": {
       "eyebrow": "À propos de l'or",
-      "title": "L'or qui reste.",
+      "title": "L’or qui demeure.",
       "description": "L'or est plus qu'un bijou. Il représente la valeur, le souvenir et les moments précieux. Chez GoldHelwah GmbH, nous sélectionnons des pièces à la présence visible et au sens personnel.",
       "imageAlt": "Détail de bijou en or de GoldHelwah GmbH",
       "points": [
         "Valeur durable",
         "Sens personnel",
         "Savoir-faire visible"
-      ]
+      ],
+      "storyLabel": "À propos de GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "À propos de nous",
@@ -143,19 +149,19 @@
       "items": [
         {
           "title": "Conseil personnalisé",
-          "description": "Un accompagnement direct et individuel."
+          "description": "Nous prenons le temps pour votre occasion et votre style."
         },
         {
-          "title": "Vraies photos produits",
-          "description": "La sélection montre de vraies pièces."
+          "title": "Vraies photos",
+          "description": "Chaque photo montre une vraie pièce de notre showroom."
         },
         {
           "title": "Créations sur mesure",
-          "description": "Toute idée qui vous vient à l’esprit peut être transformée en une pièce en or unique aux détails raffinés, de la gravure des noms aux ajustements de taille, jusqu’aux touches personnelles qui reflètent votre style."
+          "description": "Gravures, tailles et idées personnelles, réalisées en or."
         },
         {
-          "title": "Retrait à Saarbruecken",
-          "description": "Disponible sur place en personne."
+          "title": "Retrait à Sarrebruck",
+          "description": "Vous récupérez votre pièce chez nous, en personne."
         }
       ]
     },
@@ -165,13 +171,41 @@
       "description": "Nous vous conseillons volontiers sur le choix, les demandes spéciales et le retrait.",
       "primaryCta": "Voir la boutique",
       "secondaryCta": "Appeler"
+    },
+    "hallmarks": {
+      "title": "L’or en trois titres",
+      "description": "Nous fabriquons et conseillons en 21, 18 et 14 carats – de la pièce légère du quotidien à la parure de mariée.",
+      "items": [
+        {
+          "stamp": "875",
+          "label": "21 carats"
+        },
+        {
+          "stamp": "750",
+          "label": "18 carats"
+        },
+        {
+          "stamp": "585",
+          "label": "14 carats"
+        }
+      ]
+    },
+    "customName": {
+      "title": "Votre prénom en or",
+      "description": "Colliers prénom, gravures et pièces uniques selon votre idée. Écriture, carats et longueur sont définis avec vous.",
+      "primaryCta": "Voir les bijoux prénom",
+      "secondaryCta": "Parler de votre idée"
+    },
+    "visit": {
+      "title": "Rendez-nous visite ou écrivez-nous",
+      "description": "Pour vos demandes, conseils et retraits – nous répondons personnellement."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Collection",
-      "subtitle": "Vraies images produits, sélection claire et conseil personnalisé.",
+      "subtitle": "De vraies photos de notre showroom. Choisissez une pièce pour voir les détails et envoyer une demande.",
       "primaryCta": "Envoyer une demande",
       "secondaryCta": "Contact",
       "stats": {
@@ -190,15 +224,17 @@
     },
     "grid": {
       "eyebrow": "Collection",
-      "title": "Découvrir par catégorie.",
+      "title": "Catégories",
       "all": "Tout",
       "resultsSuffix": "modèles",
       "emptyBadge": "Sur demande",
       "emptyTitle": "Nous vous guidons volontiers vers la pièce adaptée à cette sélection.",
-      "emptyText": "Écrivez-nous si vous recherchez une ligne ou un modèle précis."
+      "emptyText": "Écrivez-nous si vous recherchez une ligne ou un modèle précis.",
+      "resultCount": "{count, plural, =0 {Aucune pièce} one {# pièce} other {# pièces}}"
     },
     "card": {
-      "cta": "Détails"
+      "cta": "Détails",
+      "personalization": "Prénom personnalisable"
     },
     "modal": {
       "close": "Fermer",
@@ -208,14 +244,17 @@
       "galleryCountSuffix": "images",
       "tagsLabel": "Détails",
       "requestCta": "Envoyer une demande",
-      "backCta": "Retour"
+      "backCta": "Retour",
+      "callCta": "Appeler",
+      "noteTitle": "La suite",
+      "note": "Envoyez une demande : nous revenons vers vous avec le poids, le prix et le délai."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Contact",
-      "title": "Contactez GoldHelwah GmbH sans détour.",
-      "subtitle": "Pour les demandes produit, les conseils et l’itinéraire vers le showroom, tout l’essentiel est réuni ici.",
+      "title": "Contact",
+      "subtitle": "Pour vos demandes, conseils et créations sur mesure. Nous répondons personnellement.",
       "primaryCta": "Voir la collection",
       "secondaryCta": "Lire la confidentialité"
     },
@@ -259,7 +298,14 @@
         "email": "Veuillez saisir une adresse e-mail valide.",
         "phone": "Veuillez saisir un numéro de téléphone valide.",
         "message": "Veuillez écrire un court message."
-      }
+      },
+      "productTitle": "Votre demande concernant",
+      "optionsTitle": "Vos souhaits",
+      "requestTitle": "Demander cette pièce",
+      "requiredField": "Veuillez remplir ce champ.",
+      "productDefaultMessage": "Cette pièce m’intéresse et je souhaite recevoir plus d’informations.",
+      "optional": "facultatif",
+      "allRequired": "Tous les champs sont obligatoires."
     },
     "location": {
       "eyebrow": "Adresse",
@@ -269,7 +315,9 @@
       "phoneLabel": "Téléphone",
       "routeCta": "Planifier l’itinéraire",
       "callCta": "Appeler",
-      "mapTitle": "Emplacement de GoldHelwah GmbH sur Google Maps"
+      "mapTitle": "Emplacement de GoldHelwah GmbH sur Google Maps",
+      "emailLabel": "E-mail",
+      "whatsappCta": "WhatsApp"
     }
   },
   "Impressum": {
@@ -1972,7 +2020,7 @@
       "formTitle": "Entrer le numéro de suivi",
       "formDescription": "Nous ouvrirons ensuite la page en direct pour ce numéro.",
       "label": "Numéro de suivi",
-      "placeholder": "GH-20260618-0001",
+      "placeholder": "GH-20260618-K7M2QX",
       "submit": "Suivi de commande",
       "emptyError": "Veuillez entrer votre numéro de suivi."
     },
@@ -1980,7 +2028,8 @@
       "title": "Contacter le support",
       "description": "Besoin d’aide pour cette commande ? Envoyez-nous un message et notre équipe vous recontactera.",
       "success": "Votre message a été envoyé.",
-      "error": "Nous n’avons pas pu envoyer votre message pour le moment."
+      "error": "Nous n’avons pas pu envoyer votre message pour le moment.",
+      "messageMin": "Veuillez décrire votre demande en au moins 10 caractères."
     },
     "stages": {
       "order_in_workshop": "Commande en atelier",
@@ -2040,5 +2089,33 @@
     "luxury": "Carte luxueuse",
     "image": "Mise en avant de l’image",
     "announcement": "Bannière d’annonce"
+  },
+  "OrderEntry": {
+    "customer": "Coordonnées du client",
+    "customerEmail": "E-mail",
+    "customerName": "Nom du client",
+    "customerPhone": "Téléphone",
+    "description": "Ce lien privé permet d’envoyer une commande atelier de façon sûre et directe dans le tableau de bord GoldHelwah.",
+    "emailInvalid": "Veuillez saisir une adresse e-mail valide.",
+    "emailUpdates": "Envoyer les mises à jour par e-mail",
+    "emailUpdatesHint": "Les mises à jour ne sont envoyées que si une adresse e-mail valide est indiquée.",
+    "message": "Note de commande",
+    "noOptions": "Aucune option personnalisée n’est attribuée à ce produit.",
+    "options": "Options du produit",
+    "privacy": "Lien privé et protégé",
+    "product": "Produit",
+    "productRequired": "Veuillez d’abord choisir un produit.",
+    "quantity": "Quantité",
+    "required": "Veuillez remplir ce champ.",
+    "submit": "Envoyer la commande",
+    "submitPending": "Envoi de la commande…",
+    "success": "La commande a bien été créée.",
+    "title": "Commande atelier",
+    "trackingCta": "Voir le suivi",
+    "defaultMessage": "Je souhaite commander {product}.",
+    "yes": "Oui",
+    "no": "Non",
+    "unavailableTitle": "Commande atelier indisponible pour le moment",
+    "unavailableDescription": "Aucun produit actif n’est actuellement associé à ce lien."
   }
 }

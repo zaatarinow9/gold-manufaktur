@@ -1,6 +1,6 @@
 import { getLocale } from "next-intl/server";
 
-import { cormorant, inter, thmanyah } from "@/lib/fonts";
+import { thmanyah } from "@/lib/fonts";
 import "./globals.css";
 
 export default async function RootLayout({
@@ -11,7 +11,7 @@ export default async function RootLayout({
   const locale = await getLocale();
   const isArabic = locale === "ar";
   const direction = isArabic ? "rtl" : "ltr";
-  const htmlClassName = [inter.variable, cormorant.variable, thmanyah.variable].join(" ");
+  const htmlClassName = thmanyah.variable;
   const bodyClassName = "relative bg-background text-foreground antialiased";
 
   return (

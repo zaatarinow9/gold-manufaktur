@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { KeyRound, Link2, Mail, Pencil, Plus, Power, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
@@ -13,15 +13,17 @@ import {
   sendEmployeePasswordResetAction,
   toggleEmployeeActiveAction,
 } from "@/app/[locale]/admin/employees/actions";
+import { AdminActionMenu, type AdminActionMenuItem } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
+import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminTextarea } from "@/components/admin/AdminTextarea";
-import { AdminToolbar } from "@/components/admin/AdminToolbar";
+import { AdminSwitch } from "@/components/admin/AdminSwitch";
 import type { AdminActionResult } from "@/lib/admin/actionResult";
 import type { EmployeeAccountRecord } from "@/lib/db/employeeAccounts";
 import type { WorkshopRecord } from "@/lib/db/workshops";
@@ -162,6 +164,12 @@ export function AdminEmployeesClient({
     }
   };
 
+  const openEditor = (state: EmployeeFormState) => {
+    setFeedback(null);
+    setFormState(state);
+    setEditorOpen(true);
+  };
+
   const resetForm = () => {
     setEditorOpen(false);
     setFormState(createEmptyForm(defaultWorkshopId));
@@ -233,18 +241,20 @@ export function AdminEmployeesClient({
       header: t("employees.table.accountStatus"),
       cell: (employee) => {
         const inviteDate = formatDateTime(locale, employee.lastInviteSentAt);
-        const resetDate = formatDateTime(locale, employee.lastPasswordResetSentAt);
         const loginDate = formatDateTime(locale, employee.lastLoginAt);
 
         return (
           <div className="space-y-1">
-            <AdminBadge variant={getAccountStatusVariant(employee.accountStatus)}>
-              {t(`employees.account.status.${employee.accountStatus}`)}
-            </AdminBadge>
+            {employee.isActive ? (
+              <AdminBadge variant={getAccountStatusVariant(employee.accountStatus)}>
+                {t(`employees.account.status.${employee.accountStatus}`)}
+              </AdminBadge>
+            ) : (
+              <AdminBadge variant="danger">{t("common.inactive")}</AdminBadge>
+            )}
             {!employee.email ? (
               <p className="text-xs text-muted">{t("employees.account.noEmail")}</p>
-            ) : null}
-            {loginDate ? (
+            ) : loginDate ? (
               <p className="text-xs text-muted">
                 {t("employees.account.lastLogin")}: {loginDate}
               </p>
@@ -252,27 +262,14 @@ export function AdminEmployeesClient({
               <p className="text-xs text-muted">
                 {t("employees.account.lastInvite")}: {inviteDate}
               </p>
-            ) : resetDate ? (
-              <p className="text-xs text-muted">
-                {t("employees.account.lastPasswordReset")}: {resetDate}
-              </p>
             ) : null}
           </div>
         );
       },
     },
     {
-      id: "status",
-      header: t("employees.table.status"),
-      cell: (employee) => (
-        <AdminBadge variant={employee.isActive ? "success" : "danger"}>
-          {employee.isActive ? t("common.active") : t("common.inactive")}
-        </AdminBadge>
-      ),
-    },
-    {
       id: "actions",
-      header: t("employees.table.actions"),
+      header: <span className="sr-only">{t("employees.table.actions")}</span>,
       align: "end",
       cell: (employee) => {
         const hasEmail = employee.email.trim().length > 0;
@@ -281,242 +278,87 @@ export function AdminEmployeesClient({
           employee.accountStatus === "invited" || employee.accountStatus === "active"
             ? t("employees.account.actions.resendInvite")
             : t("employees.account.actions.sendInvite");
+        const menuItems: AdminActionMenuItem[] = [
+          ...(employee.isActive && hasEmail
+            ? [{ icon: Mail, label: inviteLabel, onSelect: () => runRowAction(() => sendEmployeeInviteAction(locale, employee.id)) }]
+            : []),
+          ...(employee.isActive && employee.canLinkAccount
+            ? [{ icon: Link2, label: t("employees.account.actions.linkAccount"), onSelect: () => runRowAction(() => linkEmployeeAccountAction(locale, employee.id)) }]
+            : []),
+          ...(canResetPassword
+            ? [{ icon: KeyRound, label: t("employees.account.actions.resetPassword"), onSelect: () => runRowAction(() => sendEmployeePasswordResetAction(locale, employee.id)) }]
+            : []),
+          {
+            danger: employee.isActive,
+            icon: Power,
+            label: employee.isActive ? t("buttons.deactivate") : t("buttons.activate"),
+            onSelect: () => runRowAction(() => toggleEmployeeActiveAction(locale, employee.id, !employee.isActive)),
+          },
+        ];
 
         return (
-          <div className="flex flex-wrap justify-end gap-2">
-            <AdminButton
-              size="sm"
-              variant="secondary"
-              onClick={() => {
-                setFeedback(null);
-                setFormState(createEditForm(employee));
-                setEditorOpen(true);
-              }}
-            >
+          <div className="flex items-center justify-end gap-1">
+            <AdminButton size="sm" variant="secondary" onClick={() => openEditor(createEditForm(employee))}>
+              <Pencil />
               {t("buttons.edit")}
             </AdminButton>
-            {employee.isActive && hasEmail ? (
-              <AdminButton
-                size="sm"
-                variant="ghost"
-                onClick={() =>
-                  runRowAction(() => sendEmployeeInviteAction(locale, employee.id))
-                }
-              >
-                {inviteLabel}
-              </AdminButton>
-            ) : null}
-            {employee.isActive && employee.canLinkAccount ? (
-              <AdminButton
-                size="sm"
-                variant="ghost"
-                onClick={() =>
-                  runRowAction(() => linkEmployeeAccountAction(locale, employee.id))
-                }
-              >
-                {t("employees.account.actions.linkAccount")}
-              </AdminButton>
-            ) : null}
-            {canResetPassword ? (
-              <AdminButton
-                size="sm"
-                variant="ghost"
-                onClick={() =>
-                  runRowAction(() =>
-                    sendEmployeePasswordResetAction(locale, employee.id)
-                  )
-                }
-              >
-                {t("employees.account.actions.resetPassword")}
-              </AdminButton>
-            ) : null}
-            <AdminButton
-              size="sm"
-              variant={employee.isActive ? "ghost" : "danger"}
-              onClick={() =>
-                runRowAction(() =>
-                  toggleEmployeeActiveAction(locale, employee.id, !employee.isActive)
-                )
-              }
-            >
-              {employee.isActive ? t("buttons.deactivate") : t("buttons.activate")}
-            </AdminButton>
+            <AdminActionMenu label={t("productsPage.moreActions", { name: employee.fullName })} items={menuItems} />
           </div>
         );
       },
     },
   ];
 
+  const setField = <Key extends keyof EmployeeFormState>(key: Key, value: EmployeeFormState[Key]) =>
+    setFormState((current) => ({ ...current, [key]: value }));
+
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        eyebrow={t("employees.eyebrow")}
         title={t("employees.title")}
         description={t("employees.description")}
         actions={
-          <AdminButton
-            variant="primary"
-            onClick={() => {
-              setFeedback(null);
-              setFormState(createEmptyForm(defaultWorkshopId));
-              setEditorOpen(true);
-            }}
-          >
+          <AdminButton variant="primary" onClick={() => openEditor(createEmptyForm(defaultWorkshopId))}>
+            <Plus />
             {t("employees.account.create")}
           </AdminButton>
         }
       />
 
       {feedback ? (
-        <div
-          className={
-            feedback.kind === "success"
-              ? "rounded-[1rem] border border-gold/18 bg-gold/10 px-4 py-3 text-sm text-foreground"
-              : "rounded-[1rem] border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm text-rose-100"
-          }
-        >
+        <div className="admin-notice" data-tone={feedback.kind} role="status">
           {feedback.message}
         </div>
       ) : null}
 
-      {editorOpen ? (
-        <AdminCard
-          title={formState.id ? t("employees.account.edit") : t("employees.account.create")}
-          description={t("employees.account.formDescription")}
-          action={
-            <div className="flex gap-2">
-              <AdminButton variant="ghost" onClick={resetForm}>
-                {t("buttons.close")}
-              </AdminButton>
-              <AdminButton variant="primary" onClick={submitForm} disabled={isPending}>
-                {t("buttons.save")}
-              </AdminButton>
-            </div>
-          }
-        >
-          <div className="grid gap-4 xl:grid-cols-2">
-            <AdminInput
-              label={t("employees.form.fullName")}
-              value={formState.fullName}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  fullName: event.target.value,
-                }))
-              }
-            />
-            <AdminSelect
-              label={t("employees.table.workshop")}
-              value={formState.workshopId}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  workshopId: event.target.value,
-                }))
-              }
-            >
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <label className="relative block sm:max-w-sm sm:flex-1">
+          <span className="sr-only">{t("common.search")}</span>
+          <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            type="search"
+            className="admin-input admin-input-with-icon"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t("employees.searchPlaceholder")}
+          />
+        </label>
+        {workshops.length > 1 ? (
+          <label className="block sm:w-64">
+            <span className="sr-only">{t("filters.workshop")}</span>
+            <select className="admin-select" value={workshopFilter} onChange={(event) => setWorkshopFilter(event.target.value)}>
+              <option value="all">
+                {t("filters.workshop")}: {t("common.all")}
+              </option>
               {workshops.map((workshop) => (
                 <option key={workshop.id} value={workshop.id}>
                   {workshop.name}
                 </option>
               ))}
-            </AdminSelect>
-            <AdminSelect
-              label={t("employees.form.attendance")}
-              value={formState.attendanceStatus}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  attendanceStatus: event.target.value as EmployeeFormState["attendanceStatus"],
-                }))
-              }
-            >
-              {(["present", "absent", "vacation", "sick", "late"] as const).map((status) => (
-                <option key={status} value={status}>
-                  {t(`status.${status}`)}
-                </option>
-              ))}
-            </AdminSelect>
-            <AdminInput
-              label={t("employees.form.phone")}
-              value={formState.phone}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, phone: event.target.value }))
-              }
-            />
-            <AdminInput
-              label={t("employees.form.email")}
-              value={formState.email}
-              helperText={t("employees.form.emailHint")}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, email: event.target.value }))
-              }
-            />
-            <AdminInput
-              label={t("employees.form.shift")}
-              value={formState.shiftLabel}
-              onChange={(event) =>
-                setFormState((current) => ({
-                  ...current,
-                  shiftLabel: event.target.value,
-                }))
-              }
-            />
-            <div className="xl:col-span-2">
-              <AdminTextarea
-                label={t("employees.form.notes")}
-                value={formState.notes}
-                onChange={(event) =>
-                  setFormState((current) => ({ ...current, notes: event.target.value }))
-                }
-              />
-            </div>
-            <div className="xl:col-span-2">
-              <label className="rtl-inline-row flex items-center gap-2 text-sm text-foreground">
-                <input
-                  type="checkbox"
-                  checked={formState.isActive}
-                  onChange={(event) =>
-                    setFormState((current) => ({
-                      ...current,
-                      isActive: event.target.checked,
-                    }))
-                  }
-                  className="h-4 w-4 accent-[#c49a52]"
-                />
-                {t("employees.form.active")}
-              </label>
-            </div>
-          </div>
-        </AdminCard>
-      ) : null}
-
-      <AdminCard
-        title={t("employees.filtersTitle")}
-        description={t("employees.filtersDescription")}
-      >
-        <AdminToolbar>
-          <AdminInput
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            label={t("common.search")}
-            placeholder={t("employees.searchPlaceholder")}
-            icon={<Search className="h-4 w-4" />}
-          />
-          <AdminSelect
-            value={workshopFilter}
-            onChange={(event) => setWorkshopFilter(event.target.value)}
-            label={t("filters.workshop")}
-          >
-            <option value="all">{t("common.all")}</option>
-            {workshops.map((workshop) => (
-              <option key={workshop.id} value={workshop.id}>
-                {workshop.name}
-              </option>
-            ))}
-          </AdminSelect>
-        </AdminToolbar>
-      </AdminCard>
+            </select>
+          </label>
+        ) : null}
+      </div>
 
       <AdminCard>
         <AdminTable
@@ -527,6 +369,96 @@ export function AdminEmployeesClient({
           emptyState={t("employees.empty")}
         />
       </AdminCard>
+
+      <AdminDrawer
+        open={editorOpen}
+        onClose={resetForm}
+        title={formState.id ? t("employees.account.edit") : t("employees.account.create")}
+        description={t("employees.account.formDescription")}
+        footer={
+          <div className="flex justify-end gap-2">
+            <AdminButton variant="ghost" onClick={resetForm}>
+              {t("buttons.cancel")}
+            </AdminButton>
+            <AdminButton variant="primary" onClick={submitForm} disabled={isPending || !formState.fullName.trim()}>
+              {t("buttons.save")}
+            </AdminButton>
+          </div>
+        }
+      >
+        <AdminFormSection title={t("employees.table.employee")}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AdminInput
+              wrapperClassName="sm:col-span-2"
+              label={t("employees.form.fullName")}
+              required
+              requiredLabel={t("translations.required")}
+              value={formState.fullName}
+              onChange={(event) => setField("fullName", event.target.value)}
+            />
+            <AdminInput
+              label={t("employees.form.email")}
+              type="email"
+              dir="ltr"
+              value={formState.email}
+              helperText={t("employees.form.emailHint")}
+              onChange={(event) => setField("email", event.target.value)}
+            />
+            <AdminInput
+              label={t("employees.form.phone")}
+              type="tel"
+              dir="ltr"
+              value={formState.phone}
+              onChange={(event) => setField("phone", event.target.value)}
+            />
+          </div>
+        </AdminFormSection>
+
+        <AdminFormSection title={t("employees.table.workshop")}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AdminSelect
+              label={t("employees.table.workshop")}
+              value={formState.workshopId}
+              onChange={(event) => setField("workshopId", event.target.value)}
+            >
+              {workshops.map((workshop) => (
+                <option key={workshop.id} value={workshop.id}>
+                  {workshop.name}
+                </option>
+              ))}
+            </AdminSelect>
+            <AdminSelect
+              label={t("employees.form.attendance")}
+              value={formState.attendanceStatus}
+              onChange={(event) => setField("attendanceStatus", event.target.value as EmployeeFormState["attendanceStatus"])}
+            >
+              {(["present", "absent", "vacation", "sick", "late"] as const).map((status) => (
+                <option key={status} value={status}>
+                  {t(`status.${status}`)}
+                </option>
+              ))}
+            </AdminSelect>
+            <AdminInput
+              label={t("employees.form.shift")}
+              value={formState.shiftLabel}
+              onChange={(event) => setField("shiftLabel", event.target.value)}
+            />
+            <AdminTextarea
+              wrapperClassName="sm:col-span-2"
+              label={t("employees.form.notes")}
+              value={formState.notes}
+              onChange={(event) => setField("notes", event.target.value)}
+            />
+          </div>
+          <div className="mt-4">
+            <AdminSwitch
+              checked={formState.isActive}
+              onChange={(checked) => setField("isActive", checked)}
+              label={t("employees.form.active")}
+            />
+          </div>
+        </AdminFormSection>
+      </AdminDrawer>
     </div>
   );
 }

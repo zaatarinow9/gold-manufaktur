@@ -1,80 +1,79 @@
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import type { CatalogCategory } from "@/types/catalog";
-import { LuxuryMedia } from "@/components/shared/LuxuryMedia";
-import { SectionHeading } from "./SectionHeading";
 
 type FeaturedCategoriesProps = {
   categories: CatalogCategory[];
 };
 
-export function FeaturedCategories({
-  categories,
-}: FeaturedCategoriesProps) {
+/**
+ * The whole range as a compact index: every category is one row with a small
+ * photo, so 17 categories fit on one screen instead of 17 giant cards.
+ */
+export function FeaturedCategories({ categories }: FeaturedCategoriesProps) {
   const t = useTranslations("Home.categories");
-  const items = categories.slice(0, 6);
+
+  if (categories.length === 0) {
+    return null;
+  }
 
   return (
-    <section className="section-shell">
+    <section className="section-shell" aria-labelledby="home-categories-title">
       <div className="container-shell">
         <div className="content-shell">
-          <SectionHeading
-            eyebrow={t("eyebrow")}
-            title={t("title")}
-            description={t("description")}
-            align="center"
-            className="max-w-[56rem]"
-          />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <h2 id="home-categories-title" className="section-heading text-foreground">
+                {t("title")}
+              </h2>
+              <p className="section-copy mt-3">{t("description")}</p>
+            </div>
+            <Link href="/shop" className="text-link shrink-0 max-sm:hidden">
+              {t("allCta")}
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
 
-          {items.length > 0 ? (
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {items.map((item) => (
+          <ul className="mt-8 grid grid-cols-1 border-t border-[var(--border)] sm:mt-10 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3 lg:gap-x-10">
+            {categories.map((category) => (
+              <li key={category.slug} className="min-w-0 border-b border-[var(--border)] max-sm:[&:nth-child(n+9)]:hidden">
                 <Link
-                  key={item.slug}
-                  href={{ pathname: "/shop", query: { category: item.slug } }}
-                  className="group relative aspect-[4/4.8] overflow-hidden rounded-[30px] border border-white/10 bg-black/30"
+                  href={{ pathname: "/shop", query: { category: category.slug } }}
+                  className="group flex items-center gap-3.5 py-3 sm:gap-4 sm:py-3.5"
                 >
-                  <LuxuryMedia
-                    src={item.imageUrl}
-                    alt={item.name}
-                    sizes="(max-width: 639px) 100vw, (max-width: 1279px) 50vw, 25vw"
-                    imageClassName="transition duration-700 group-hover:scale-[1.05]"
-                    fallbackContent={
-                      <div className="absolute inset-x-5 bottom-5">
-                        <span className="gold-chip">{item.accent}</span>
-                      </div>
-                    }
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.82))]" />
-                  <div className="rtl-inline-row absolute inset-x-5 top-5 flex items-center justify-between gap-3">
-                    <span className="gold-chip">{item.accent}</span>
-                    <span className="rounded-full border border-white/10 bg-black/45 p-2 text-gold-soft transition group-hover:translate-x-0.5">
-                      <ArrowRight className="h-4 w-4" />
+                  <span className="media-frame relative h-12 w-12 shrink-0 !rounded-[10px] sm:h-14 sm:w-14">
+                    {category.imageUrl ? (
+                      <Image
+                        src={category.imageUrl}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 56px, 48px"
+                        className="object-cover transition duration-500 group-hover:scale-110"
+                      />
+                    ) : null}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium leading-snug text-foreground transition group-hover:text-gold-soft">
+                      {category.name}
                     </span>
-                  </div>
-                  <div className="absolute inset-x-5 bottom-5 text-start">
-                    <h3 className="card-title text-3xl text-foreground sm:text-[2.4rem]">
-                      {item.name}
-                    </h3>
-                    <p className="mt-2 max-w-sm text-sm leading-6 text-white/72">
-                      {item.shortDescription}
-                    </p>
-                  </div>
+                    {category.shortDescription ? (
+                      <span className="mt-0.5 hidden truncate text-sm text-text-soft sm:block">{category.shortDescription}</span>
+                    ) : null}
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-text-soft transition group-hover:text-gold-soft" />
                 </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="mt-10 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(22,18,13,0.92),rgba(9,9,9,0.98))] px-6 py-12 text-center sm:px-8">
-              <h3 className="card-title text-3xl text-foreground sm:text-4xl">
-                {t("emptyTitle")}
-              </h3>
-              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-muted sm:text-base">
-                {t("emptyText")}
-              </p>
-            </div>
-          )}
+              </li>
+            ))}
+          </ul>
+
+          {categories.length > 8 ? (
+            <Link href="/shop" className="ghost-button mt-6 w-full sm:hidden">
+              {t("allCta")}
+            </Link>
+          ) : null}
         </div>
       </div>
     </section>
