@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminPrivacyUiCopy } from "@/lib/admin/adminCopy";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -13,7 +14,6 @@ import { AdminSelect } from "@/components/admin/AdminSelect";
 import { AdminTable, type AdminTableColumn } from "@/components/admin/AdminTable";
 import { AdminTabs } from "@/components/admin/AdminTabs";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
-import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import {
   getAssignmentStatusMessageKey,
   getAssignmentStatusVariant,
@@ -90,60 +90,28 @@ function getOrderTabKey(order: OrderListRecord): Exclude<OrderTabKey, "all"> {
   return "pending";
 }
 
-function getOrdersUiCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      assignedWorker: "\u0627\u0644\u0639\u0627\u0645\u0644 \u0627\u0644\u0645\u0633\u0646\u062f",
-      archived: "\u0627\u0644\u0623\u0631\u0634\u064a\u0641",
-      assigned: "\u0645\u0633\u0646\u062f",
-      cancelled: "\u0645\u0644\u063a\u0649",
-      completed: "\u0645\u0643\u062a\u0645\u0644",
-      inProgress: "\u0642\u064a\u062f \u0627\u0644\u062a\u0646\u0641\u064a\u0630",
-      pending: "\u062c\u062f\u064a\u062f / \u0645\u0639\u0644\u0642",
-      noWorker: "\u063a\u064a\u0631 \u0645\u0633\u0646\u062f",
-      privacyHidden: "\u062a\u0645 \u0625\u062e\u0641\u0627\u0621 \u062a\u0641\u0627\u0635\u064a\u0644 \u0627\u0644\u0637\u0644\u0628\u0627\u062a \u0645\u0624\u0642\u062a\u0627\u064b",
-      reveal: "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
-      hideAgain: "\u0625\u062e\u0641\u0627\u0621 \u0627\u0644\u062a\u0641\u0627\u0635\u064a\u0644",
-      shipped: "\u0642\u064a\u062f \u0627\u0644\u0634\u062d\u0646",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      assignedWorker: "Zugewiesener Bearbeiter",
-      archived: "Archiv",
-      assigned: "Zugewiesen",
-      cancelled: "Storniert",
-      completed: "Abgeschlossen",
-      inProgress: "In Bearbeitung",
-      pending: "Neu / Offen",
-      noWorker: "Nicht zugewiesen",
-      privacyHidden: "Auftragsdetails sind voruebergehend ausgeblendet",
-      reveal: "Details einblenden",
-      hideAgain: "Details wieder ausblenden",
-      shipped: "Versand",
-    };
-  }
+function useOrdersUiCopy() {
+  const t = useTranslations("Admin.ordersPage");
 
   return {
-    assignedWorker: "Assigned worker",
-    archived: "Archived",
-    assigned: "Assigned",
-    cancelled: "Cancelled",
-    completed: "Completed",
-    inProgress: "In progress",
-    pending: "New / Pending",
-    noWorker: "Unassigned",
-    privacyHidden: "Order details are temporarily hidden",
-    reveal: "Reveal details",
-    hideAgain: "Hide details again",
-    shipped: "Shipped",
+    assignedWorker: t("assignedWorker"),
+    archived: t("archived"),
+    assigned: t("assigned"),
+    cancelled: t("cancelled"),
+    completed: t("completed"),
+    inProgress: t("inProgress"),
+    pending: t("pending"),
+    noWorker: t("noWorker"),
+    privacyHidden: t("privacyHidden"),
+    reveal: t("reveal"),
+    hideAgain: t("hideAgain"),
+    shipped: t("shipped"),
   };
 }
 
 function getQueueLabel(
   key: Exclude<OrderTabKey, "all">,
-  uiCopy: ReturnType<typeof getOrdersUiCopy>
+  uiCopy: ReturnType<typeof useOrdersUiCopy>
 ) {
   switch (key) {
     case "pending":
@@ -171,8 +139,8 @@ export function AdminOrdersClient({
   orders,
 }: AdminOrdersClientProps) {
   const t = useTranslations("Admin");
-  const uiCopy = getOrdersUiCopy(locale);
-  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const uiCopy = useOrdersUiCopy();
+  const privacyCopy = useAdminPrivacyUiCopy();
   const {
     enabled: privacyModeEnabled,
     masked: privacyMasked,

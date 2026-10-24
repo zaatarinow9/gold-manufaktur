@@ -1,11 +1,11 @@
 "use server";
 
+import { getOrderWorkflowCopy } from "@/lib/admin/adminCopy.server";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import {
-  getOrderWorkflowCopy,
   getSafeActionErrorMessage,
 } from "@/lib/admin/orderWorkflow";
 import type { AdminActionResult } from "@/lib/admin/actionResult";
@@ -87,7 +87,7 @@ export async function saveEmployeeAction(
   input: EmployeeAccountInput | EmployeeAccountUpdateInput
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -172,7 +172,7 @@ export async function toggleEmployeeActiveAction(
   isActive: boolean
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -231,7 +231,7 @@ export async function sendEmployeeInviteAction(
   employeeId: string
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -292,7 +292,7 @@ export async function sendEmployeePasswordResetAction(
   employeeId: string
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {
@@ -353,7 +353,7 @@ export async function linkEmployeeAccountAction(
   employeeId: string
 ): Promise<AdminActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
 
   if (access.state !== "authenticated") {

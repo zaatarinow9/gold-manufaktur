@@ -1,12 +1,12 @@
 "use server";
 
+import { getOrderWorkflowCopy } from "@/lib/admin/adminCopy.server";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { routing, type AppLocale } from "@/i18n/routing";
 import {
-  getOrderWorkflowCopy,
   getSafeActionErrorMessage,
 } from "@/lib/admin/orderWorkflow";
 import { requireAdminAccess } from "@/lib/admin/auth";
@@ -32,11 +32,9 @@ const workshopMembershipSchema = z.object({
   workshopId: z.string().uuid(),
 });
 
-function getWorkshopMutationError(locale: AppLocale, error: unknown, fallback: string) {
+async function getWorkshopMutationError(locale: AppLocale, error: unknown, fallback: string) {
   if (error instanceof Error && error.message.includes("CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN")) {
-    return locale === "ar"
-      ? "لا يمكن نقل مدير الورشة الحالي. عيّن مديراً بديلاً أو أزل تعيينه أولاً."
-      : "Die aktuelle Werkstattleitung kann erst nach Ersatz oder Aufhebung der Leitung verschoben werden.";
+    return await workshopActionMessage(locale, "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN");
   }
   return getSafeActionErrorMessage(error, fallback);
 }
@@ -56,7 +54,7 @@ export async function saveWorkshopAction(
   input: WorkshopInput | WorkshopUpdateInput
 ) {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
@@ -100,7 +98,7 @@ export async function toggleWorkshopActiveAction(
   isActive: boolean
 ) {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const copy = getOrderWorkflowCopy(locale);
+  const copy = (await getOrderWorkflowCopy(locale));
   const access = await requireAdminAccess(locale, ["super_admin"]);
 
   if (access.state !== "authenticated") {
@@ -133,16 +131,18 @@ export async function toggleWorkshopActiveAction(
   }
 }
 
-function workshopActionMessage(locale: AppLocale, code: string) {
-  const ar = locale === "ar";
-  const values: Record<string, [string, string]> = {
-    INVITE_SENT: ["تم إرسال الدعوة.", "Einladung wurde versendet."],
-    MANAGER_ACCOUNT_REQUIRED: ["أرسل دعوة للحساب أولاً ثم عيّن مدير الورشة بعد تفعيل الحساب.", "Senden Sie zuerst eine Einladung und ernennen Sie die Werkstattleitung nach der Kontoaktivierung."],
-    WORKSHOP_NOT_EMPTY: ["لا يمكن حذف الورشة نهائيًا قبل نقل الموظفين وإزالة الطلبات المرتبطة بها.", "Die Werkstatt kann erst endgültig gelöscht werden, wenn Mitarbeitende und zugeordnete Aufträge entfernt wurden."],
-    WORKSHOP_DELETED: ["تم حذف الورشة نهائيًا.", "Die Werkstatt wurde endgültig gelöscht."],
-    PERMISSION_DENIED: ["ليس لديك صلاحية للوصول", "Sie haben keine Berechtigung."],
-  };
-  return values[code]?.[ar ? 0 : 1] ?? (ar ? "تعذر إتمام العملية." : "Die Aktion konnte nicht abgeschlossen werden.");
+const workshopMessageCodes = new Set([
+  "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN",
+  "INVITE_SENT",
+  "MANAGER_ACCOUNT_REQUIRED",
+  "PERMISSION_DENIED",
+  "WORKSHOP_DELETED",
+  "WORKSHOP_NOT_EMPTY",
+]);
+
+async function workshopActionMessage(locale: AppLocale, code: string) {
+  const t = await getTranslations({ locale, namespace: "Admin.workshopMessages" });
+  return workshopMessageCodes.has(code) ? t(code) : t("FAILED");
 }
 
 export async function assignWorkshopManagerAction(
@@ -191,36 +191,36 @@ export async function assignWorkshopManagerAction(
     return { message: t("common.mockSubmit"), ok: true as const };
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
-    return { message: code === "MANAGER_ACCOUNT_REQUIRED" ? workshopActionMessage(locale, code) : getWorkshopMutationError(locale, error, getOrderWorkflowCopy(locale).formErrorFallback), ok: false as const };
+    return { message: code === "MANAGER_ACCOUNT_REQUIRED" ? await workshopActionMessage(locale, code) : await getWorkshopMutationError(locale, error, (await getOrderWorkflowCopy(locale)).formErrorFallback), ok: false as const };
   }
 }
 
 export async function sendWorkshopManagerInviteAction(locale: AppLocale, employeeId: string) {
   const access = await requireAdminAccess(locale, ["super_admin"]);
-  if (access.state !== "authenticated" || !access.user) return { message: workshopActionMessage(locale, "PERMISSION_DENIED"), ok: false as const };
+  if (access.state !== "authenticated" || !access.user) return { message: await workshopActionMessage(locale, "PERMISSION_DENIED"), ok: false as const };
   if (await isAdminDecoyEnabled()) return { message: getAdminDecoyUnavailableMessage(locale), ok: false as const };
   try {
     const result = await sendEmployeeInvite({ actor: access.user, employeeId, locale });
     revalidateWorkshopViews();
-    return { message: result.emailResult.delivered ? workshopActionMessage(locale, "INVITE_SENT") : getOrderWorkflowCopy(locale).formErrorFallback, ok: result.emailResult.delivered };
+    return { message: result.emailResult.delivered ? await workshopActionMessage(locale, "INVITE_SENT") : (await getOrderWorkflowCopy(locale)).formErrorFallback, ok: result.emailResult.delivered };
   } catch {
-    return { message: getOrderWorkflowCopy(locale).formErrorFallback, ok: false as const };
+    return { message: (await getOrderWorkflowCopy(locale)).formErrorFallback, ok: false as const };
   }
 }
 
 export async function permanentlyDeleteWorkshopAction(locale: AppLocale, workshopId: string) {
   const access = await requireAdminAccess(locale, ["super_admin"]);
-  if (access.state !== "authenticated" || !access.user) return { message: workshopActionMessage(locale, "PERMISSION_DENIED"), ok: false as const };
+  if (access.state !== "authenticated" || !access.user) return { message: await workshopActionMessage(locale, "PERMISSION_DENIED"), ok: false as const };
   const actor = access.user;
   if (await isAdminDecoyEnabled()) return { message: getAdminDecoyUnavailableMessage(locale), ok: false as const };
   try {
     const workshop = await permanentlyDeleteEmptyWorkshop(workshopId);
     await createRequiredAuditLog({ action: "workshop_permanently_deleted", actorEmail: actor.email, metadata: { workshopId: workshop.id, workshopName: workshop.name, actor: actor.email } });
     revalidateWorkshopViews();
-    return { message: workshopActionMessage(locale, "WORKSHOP_DELETED"), ok: true as const };
+    return { message: await workshopActionMessage(locale, "WORKSHOP_DELETED"), ok: true as const };
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
-    return { message: workshopActionMessage(locale, code), ok: false as const };
+    return { message: await workshopActionMessage(locale, code), ok: false as const };
   }
 }
 
@@ -249,6 +249,6 @@ export async function moveEmployeeToWorkshopAction(
     revalidateWorkshopViews();
     return { message: t("common.mockSubmit"), ok: true as const };
   } catch (error) {
-    return { message: getWorkshopMutationError(locale, error, getOrderWorkflowCopy(locale).formErrorFallback), ok: false as const };
+    return { message: await getWorkshopMutationError(locale, error, (await getOrderWorkflowCopy(locale)).formErrorFallback), ok: false as const };
   }
 }

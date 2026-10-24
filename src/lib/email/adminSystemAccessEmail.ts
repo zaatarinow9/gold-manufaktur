@@ -44,8 +44,8 @@ export function buildAdminSystemAccessEmail(
   const subject = "Systemzugriff aktualisiert – Gold Helwah";
   const expiresAtLabel = formatExpiry(input.expiresAt);
   const expiryLine = expiresAtLabel
-    ? `Der Link ist bis ${expiresAtLabel} gueltig.`
-    : "Der Link bleibt gueltig, bis er erneut aktualisiert oder deaktiviert wird.";
+    ? `Der Link ist bis ${expiresAtLabel} gültig.`
+    : "Der Link bleibt gültig, bis er erneut aktualisiert oder deaktiviert wird.";
   const text = [
     "Guten Tag,",
     "",
@@ -55,9 +55,9 @@ export function buildAdminSystemAccessEmail(
     "Neuer Zugriffslink:",
     input.link,
     "",
-    "Falls die Schaltflaeche in Ihrer Mail-App nicht angezeigt wird, koennen Sie den Link direkt in den Browser kopieren.",
+    "Falls die Schaltfläche in Ihrer Mail-App nicht angezeigt wird, können Sie den Link direkt in den Browser kopieren.",
     "",
-    "Rueckfragen:",
+    "Rückfragen:",
     companyInfo.emailDisplay,
     companyInfo.phoneDisplay,
   ].join("\n");
@@ -106,7 +106,7 @@ export function buildAdminSystemAccessEmail(
               <td style="padding:24px 30px 30px 30px;">
                 <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;">
                   <p style="margin:0;color:#c7b99e;font-size:13px;line-height:1.8;">
-                    Rueckfragen an ${escapeHtml(companyInfo.emailDisplay)} oder ${escapeHtml(companyInfo.phoneDisplay)}.
+                    Rückfragen an ${escapeHtml(companyInfo.emailDisplay)} oder ${escapeHtml(companyInfo.phoneDisplay)}.
                   </p>
                 </div>
               </td>

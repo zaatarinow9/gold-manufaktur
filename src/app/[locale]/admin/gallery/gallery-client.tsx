@@ -1,24 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import clsx from "clsx";
+import { ArrowRight, ImageOff, Search } from "lucide-react";
 import Image from "next/image";
-import { ArrowUpRight, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 
-import { AdminBadge } from "@/components/admin/AdminBadge";
-import { getAdminButtonClassName } from "@/components/admin/AdminButton";
-import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { AdminSelect } from "@/components/admin/AdminSelect";
-import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
-import type {
-  AdminCategoryRecord,
-  AdminProductRecord,
-} from "@/lib/db/adminCatalog";
+import type { AdminCategoryRecord, AdminProductRecord } from "@/lib/db/adminCatalog";
 
 type AdminGalleryClientProps = {
   categories: AdminCategoryRecord[];
@@ -26,227 +18,122 @@ type AdminGalleryClientProps = {
   products: AdminProductRecord[];
 };
 
-function getGalleryEmptyCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      description: "لا توجد منتجات في المعرض حالياً.",
-      title: "المعرض فارغ حالياً",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      description: "Derzeit sind keine Produkte in der Galerie vorhanden.",
-      title: "Keine Produkte in der Galerie",
-    };
-  }
-
-  return {
-    description: "There are currently no products in the gallery.",
-    title: "No gallery products available",
-  };
-}
-
-export function AdminGalleryClient({
-  categories,
-  locale,
-  products,
-}: AdminGalleryClientProps) {
-  const t = useTranslations("Admin");
-  const emptyCopy = getGalleryEmptyCopy(locale);
+/** Step 1 of a new order: pick the product. */
+export function AdminGalleryClient({ categories, products }: AdminGalleryClientProps) {
+  const t = useTranslations("Admin.galleryPage");
+  const tc = useTranslations("Admin");
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [featuredFilter, setFeaturedFilter] = useState("all");
 
-  const categoryItems = useMemo(
-    () => [
-      { slug: "all", label: t("common.all") },
-      ...categories.map((category) => ({
-        slug: category.slug,
-        label: category.displayName,
-      })),
-    ],
-    [categories, t]
+  const orderableProducts = useMemo(() => products.filter((product) => product.isActive), [products]);
+  const categoriesWithProducts = useMemo(
+    () => categories.filter((category) => orderableProducts.some((product) => product.categoryId === category.id)),
+    [categories, orderableProducts]
   );
 
   const visibleProducts = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return products.filter((product) => {
+    return orderableProducts.filter((product) => {
       const matchesSearch =
-        query.length === 0 ||
-        product.displayName.toLowerCase().includes(query) ||
-        product.displayDescription.toLowerCase().includes(query) ||
-        product.categoryName.toLowerCase().includes(query) ||
-        product.sku.toLowerCase().includes(query);
-      const matchesCategory =
-        categoryFilter === "all" || product.categorySlug === categoryFilter;
-      const matchesStatus =
-        statusFilter === "all" ||
-        (statusFilter === "active" ? product.isActive : !product.isActive);
-      const matchesFeatured =
-        featuredFilter === "all" ||
-        (featuredFilter === "featured" ? product.isFeatured : !product.isFeatured);
-
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesStatus &&
-        matchesFeatured
-      );
+        !query ||
+        [product.displayName, product.categoryName, product.sku].join(" ").toLowerCase().includes(query);
+      const matchesCategory = categoryFilter === "all" || product.categoryId === categoryFilter;
+      return matchesSearch && matchesCategory;
     });
-  }, [categoryFilter, featuredFilter, products, search, statusFilter]);
+  }, [categoryFilter, orderableProducts, search]);
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        eyebrow={t("gallery.eyebrow")}
-        title={t("gallery.title")}
-        description={t("gallery.description")}
-        actions={
-          <Link
-            href="/admin/gallery/new-order"
-            className={getAdminButtonClassName({ variant: "primary" })}
-          >
-            {t("buttons.createOrder")}
-          </Link>
-        }
-      />
+      <AdminPageHeader title={t("pickTitle")} description={t("pickDescription")} />
 
-      <AdminCard title={t("gallery.filtersTitle")} description={t("gallery.filtersDescription")}>
-        <div className="space-y-5">
-          <AdminToolbar>
-            <AdminInput
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              label={t("common.search")}
-              placeholder={t("gallery.searchPlaceholder")}
-              icon={<Search className="h-4 w-4" />}
-            />
-            <AdminSelect
-              value={categoryFilter}
-              onChange={(event) => setCategoryFilter(event.target.value)}
-              label={t("filters.category")}
+      <div className="space-y-3">
+        <label className="relative block max-w-md">
+          <span className="sr-only">{tc("common.search")}</span>
+          <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            type="search"
+            className="admin-input admin-input-with-icon"
+            placeholder={t("searchPlaceholder")}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+        </label>
+        {categoriesWithProducts.length > 1 ? (
+          <div className="flex flex-wrap gap-2" role="group" aria-label={tc("filters.category")}>
+            <button
+              type="button"
+              className="admin-chip"
+              aria-pressed={categoryFilter === "all"}
+              onClick={() => setCategoryFilter("all")}
             >
-              <option value="all">{t("common.all")}</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.slug}>
-                  {category.displayName}
-                </option>
-              ))}
-            </AdminSelect>
-            <AdminSelect
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-              label={t("filters.status")}
-            >
-              <option value="all">{t("common.all")}</option>
-              <option value="active">{t("common.active")}</option>
-              <option value="inactive">{t("common.inactive")}</option>
-            </AdminSelect>
-            <AdminSelect
-              value={featuredFilter}
-              onChange={(event) => setFeaturedFilter(event.target.value)}
-              label={t("filters.featured")}
-            >
-              <option value="all">{t("common.all")}</option>
-              <option value="featured">{t("products.featuredOnly")}</option>
-              <option value="regular">{t("products.regularOnly")}</option>
-            </AdminSelect>
-          </AdminToolbar>
-
-          <div className="flex flex-wrap gap-3 overflow-x-auto pb-1 md:overflow-visible">
-            {categoryItems.map((category) => {
-              const isActive = category.slug === categoryFilter;
-
-              return (
-                <button
-                  key={category.slug}
-                  type="button"
-                  onClick={() => setCategoryFilter(category.slug)}
-                  className={`inline-flex items-center whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-medium transition ${
-                    isActive
-                      ? "border-gold/30 bg-gold text-[#140d07] shadow-[0_16px_35px_rgba(196,154,82,0.18)]"
-                      : "border-white/10 bg-white/4 text-muted hover:border-gold/25 hover:bg-white/6 hover:text-foreground"
-                  }`}
-                >
-                  {category.label}
-                </button>
-              );
-            })}
+              {t("allCategories")}
+            </button>
+            {categoriesWithProducts.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className="admin-chip"
+                aria-pressed={categoryFilter === category.id}
+                onClick={() => setCategoryFilter(category.id)}
+              >
+                {category.displayName}
+              </button>
+            ))}
           </div>
-        </div>
-      </AdminCard>
+        ) : null}
+      </div>
 
       {visibleProducts.length === 0 ? (
         <AdminEmptyState
-          title={emptyCopy.title}
-          description={emptyCopy.description}
+          title={orderableProducts.length === 0 ? t("title") : t("noMatchTitle")}
+          description={orderableProducts.length === 0 ? t("description") : undefined}
         />
       ) : (
-        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {visibleProducts.map((product) => (
-            <article
-              key={product.id}
-              className="group overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,15,11,0.92),rgba(8,8,8,0.98))] transition hover:-translate-y-1 hover:border-gold/30"
-            >
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <Image
-                  src={product.imageUrl}
-                  alt={product.displayName}
-                  fill
-                  className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                  sizes="(max-width: 767px) 100vw, (max-width: 1535px) 50vw, 25vw"
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.86))]" />
-
-                <div className="absolute inset-x-4 top-4 flex flex-wrap items-start justify-between gap-3">
-                  <AdminBadge variant="gold" className="!rounded-full !px-3 !py-2 !text-[0.72rem]">
-                    {product.categoryName || t("common.notProvided")}
-                  </AdminBadge>
-                  <div className="flex flex-wrap justify-end gap-2">
-                    {!product.isActive ? (
-                      <AdminBadge variant="danger" className="!rounded-full !px-3 !py-2 !text-[0.72rem]">
-                        {t("common.inactive")}
-                      </AdminBadge>
-                    ) : null}
-                    {product.isFeatured ? (
-                      <AdminBadge variant="info" className="!rounded-full !px-3 !py-2 !text-[0.72rem]">
-                        {t("filters.featured")}
-                      </AdminBadge>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 px-5 py-5">
-                <div className="space-y-3">
-                  <h2 className="text-lg font-semibold text-foreground sm:text-xl">
-                    {product.displayName}
-                  </h2>
-                  <p className="text-sm leading-6 text-muted">
-                    {product.displayDescription}
-                  </p>
-                </div>
-
-                {product.isActive ? (
-                  <Link
-                    href={`/admin/gallery/new-order?product=${product.id}`}
-                    className={getAdminButtonClassName({ block: true, variant: "primary" })}
+            <li key={product.id}>
+              <Link
+                href={`/admin/gallery/new-order?product=${product.id}`}
+                className="admin-panel group flex h-full flex-col overflow-hidden transition hover:border-gold/30"
+              >
+                <span className="relative block aspect-[4/3] overflow-hidden bg-black/40">
+                  {product.imageUrl ? (
+                    <Image
+                      src={product.imageUrl}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1536px) 20vw, (min-width: 1024px) 28vw, (min-width: 640px) 45vw, 100vw"
+                      className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                    />
+                  ) : (
+                    <span className="flex h-full items-center justify-center text-muted">
+                      <ImageOff className="h-6 w-6" />
+                    </span>
+                  )}
+                </span>
+                <span className="flex flex-1 items-center gap-3 p-3.5">
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold text-foreground">{product.displayName}</span>
+                    <span className="block truncate text-sm text-muted">
+                      {product.categoryName || tc("productsPage.withoutCategory")}
+                    </span>
+                  </span>
+                  <span
+                    className={clsx(
+                      "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/30 text-gold-soft transition",
+                      "group-hover:bg-gold group-hover:text-[#1a1209]"
+                    )}
+                    aria-hidden="true"
                   >
-                    {t("gallery.createWorkshopOrder")}
-                    <ArrowUpRight className="h-4 w-4" />
-                  </Link>
-                ) : (
-                  <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-3 text-sm text-muted">
-                    {t("common.inactive")}
-                  </div>
-                )}
-              </div>
-            </article>
+                    <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+                  </span>
+                  <span className="sr-only">{t("startOrder", { name: product.displayName })}</span>
+                </span>
+              </Link>
+            </li>
           ))}
-        </section>
+        </ul>
       )}
     </div>
   );

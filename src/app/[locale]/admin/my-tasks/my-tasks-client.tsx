@@ -23,43 +23,23 @@ type AdminMyTasksClientProps = {
   orders: OrderListRecord[];
 };
 
-function getCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      description:
-        "\u0627\u0637\u0644\u0639 \u0639\u0644\u0649 \u0627\u0644\u0645\u0647\u0627\u0645 \u0627\u0644\u0645\u0633\u0646\u062f\u0629 \u0625\u0644\u064a\u0643 \u0648\u0627\u0641\u062a\u062d \u0643\u0644 \u0637\u0644\u0628 \u0644\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u062a\u0642\u062f\u0645.",
-      empty: "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0647\u0627\u0645 \u0645\u0633\u0646\u062f\u0629 \u0625\u0644\u064a\u0643 \u062d\u0627\u0644\u064a\u0627\u064b.",
-      openTask: "\u0641\u062a\u062d \u0627\u0644\u0645\u0647\u0645\u0629",
-      searchPlaceholder: "\u0627\u0628\u062d\u062b \u0639\u0646 \u0631\u0642\u0645 \u0627\u0644\u0637\u0644\u0628 \u0623\u0648 \u0627\u0644\u0645\u0646\u062a\u062c",
-      title: "\u0645\u0647\u0627\u0645\u064a",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      description:
-        "Sehen Sie nur Ihre zugewiesenen Auftraege und oeffnen Sie jede Aufgabe direkt fuer die Bearbeitung.",
-      empty: "Ihnen wurden aktuell keine Aufgaben zugewiesen.",
-      openTask: "Aufgabe oeffnen",
-      searchPlaceholder: "Nach Auftrag oder Produkt suchen",
-      title: "Meine Aufgaben",
-    };
-  }
+function useMyTasksCopy() {
+  const t = useTranslations("Admin.myTasksPage");
 
   return {
-    description: "Review only the orders assigned to you and open each task directly.",
-    empty: "No tasks are assigned to you right now.",
-    openTask: "Open task",
-    searchPlaceholder: "Search by order or product",
-    title: "My Tasks",
+    description: t("description"),
+    empty: t("empty"),
+    openTask: t("openTask"),
+    searchPlaceholder: t("searchPlaceholder"),
+    title: t("title"),
   };
 }
 
 export function AdminMyTasksClient({
-  locale,
   orders,
 }: AdminMyTasksClientProps) {
-  const copy = getCopy(locale);
+  const copy = useMyTasksCopy();
+  const tTask = useTranslations("Admin.taskCard");
   const t = useTranslations("Admin");
   const [search, setSearch] = useState("");
   const filteredOrders = useMemo(() => {
@@ -126,19 +106,10 @@ export function AdminMyTasksClient({
                 </div>
                 <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
                   <p className="text-xs text-muted">
-                    {locale === "de"
-                      ? "Zuweisungshinweis"
-                      : locale === "ar"
-                        ? "\u0645\u0644\u0627\u062d\u0638\u0629 \u0627\u0644\u0625\u0633\u0646\u0627\u062f"
-                        : "Assignment note"}
+                    {tTask("assignmentNote")}
                   </p>
                   <p className="mt-2 text-sm text-foreground">
-                    {order.assignmentNote ||
-                      (locale === "de"
-                        ? "Kein Hinweis hinterlegt."
-                        : locale === "ar"
-                          ? "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0644\u0627\u062d\u0638\u0629."
-                          : "No note added.")}
+                    {order.assignmentNote || tTask("noAssignmentNote")}
                   </p>
                 </div>
               </div>

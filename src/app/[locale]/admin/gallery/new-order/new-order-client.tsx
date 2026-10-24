@@ -82,95 +82,30 @@ function resolveLocalizedText(fields: LocalizedText, locale: AppLocale) {
   return fields.de.trim();
 }
 
-function getNewOrderUiCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      allCategories: "كل التصنيفات",
-      categoryEmpty: "لا توجد منتجات ضمن هذا التصنيف.",
-      customerSectionDescription: "أدخل بيانات العميل ثم اختر إن كانت تحديثات البريد مطلوبة.",
-      customerSectionTitle: "بيانات العميل",
-      customerNote: "ملاحظة العميل",
-      emailUpdatesHint:
-        "سيتم إرسال التحديثات فقط عند إدخال بريد إلكتروني صالح.",
-      internalNote: "ملاحظة داخلية",
-      noOptionGroup: "لا توجد خيارات مخصصة لهذا المنتج.",
-      optionDetailsDescription:
-        "تظهر فقط الحقول القادمة من مجموعة الخيارات المرتبطة بالمنتج المحدد.",
-      optionDetailsTitle: "خيارات المنتج",
-      optionRequired: "يرجى تعبئة هذا الحقل.",
-      previewCategory: "التصنيف",
-      previewGroup: "مجموعة الخيارات",
-      previewSku: "رمز المنتج",
-      previewValues: "القيم المحددة",
-      productSectionDescription:
-        "اختر التصنيف أولاً ثم حدد المنتج المرتبط به لإظهار خياراته فقط.",
-      summaryActionDescription:
-        "راجع المعاينة ثم أنشئ طلب الورشة عند اكتمال البيانات.",
-      summaryActionTitle: "الإنشاء والمتابعة",
-      summaryDescription:
-        "تتحدث بطاقة المعاينة فوراً مع تغيير المنتج أو تعبئة الخيارات.",
-      trackingSectionTitle: "التحديثات البريدية",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      allCategories: "Alle Kategorien",
-      categoryEmpty: "Fuer diese Kategorie sind keine Produkte verfuegbar.",
-      customerSectionDescription:
-        "Pflegen Sie die Kundendaten und aktivieren Sie E-Mail-Updates nur bei Bedarf.",
-      customerSectionTitle: "Kundendaten",
-      customerNote: "Kundennotiz",
-      emailUpdatesHint:
-        "Updates werden nur versendet, wenn eine gueltige E-Mail-Adresse eingetragen ist.",
-      internalNote: "Interne Notiz",
-      noOptionGroup: "Diesem Produkt ist keine eigene Optionsgruppe zugewiesen.",
-      optionDetailsDescription:
-        "Es werden nur die Felder aus der zugewiesenen Optionsgruppe des Produkts angezeigt.",
-      optionDetailsTitle: "Produktoptionen",
-      optionRequired: "Bitte fuellen Sie dieses Pflichtfeld aus.",
-      previewCategory: "Kategorie",
-      previewGroup: "Optionsgruppe",
-      previewSku: "SKU",
-      previewValues: "Ausgewaehlte Werte",
-      productSectionDescription:
-        "Waehlen Sie zuerst eine Kategorie und danach nur ein passendes Produkt aus dieser Kategorie.",
-      summaryActionDescription:
-        "Die Auftragsvorschau bleibt sichtbar, waehrend wir die Werkstattanfrage vorbereiten.",
-      summaryActionTitle: "Auftrag anlegen",
-      summaryDescription:
-        "Produktbild, Kategorie, SKU und gewaehlte Optionen bleiben hier im Blick.",
-      trackingSectionTitle: "E-Mail-Updates",
-    };
-  }
+function useNewOrderUiCopy() {
+  const t = useTranslations("Admin.newOrderPage");
 
   return {
-    allCategories: "All categories",
-    categoryEmpty: "No products are available in this category.",
-    customerSectionDescription:
-      "Capture customer details and enable email updates only when they make sense.",
-    customerSectionTitle: "Customer details",
-    customerNote: "Customer note",
-    emailUpdatesHint:
-      "Updates are only sent when a valid customer email address is provided.",
-    internalNote: "Internal note",
-    noOptionGroup: "No custom options are assigned to this product.",
-    optionDetailsDescription:
-      "Only fields from the selected product's assigned option group appear here.",
-    optionDetailsTitle: "Product options",
-    optionRequired: "Please complete this required field.",
-    previewCategory: "Category",
-    previewGroup: "Option group",
-    previewSku: "SKU",
-    previewValues: "Selected values",
-    productSectionDescription:
-      "Choose a category first, then pick one product from that filtered list.",
-    summaryActionDescription:
-      "Review the live snapshot, then create the workshop order once everything looks right.",
-    summaryActionTitle: "Create workshop order",
-    summaryDescription:
-      "The preview updates immediately as the product and option values change.",
-    trackingSectionTitle: "Email updates",
+    allCategories: t("allCategories"),
+    categoryEmpty: t("categoryEmpty"),
+    customerSectionDescription: t("customerSectionDescription"),
+    customerSectionTitle: t("customerSectionTitle"),
+    customerNote: t("customerNote"),
+    emailUpdatesHint: t("emailUpdatesHint"),
+    internalNote: t("internalNote"),
+    noOptionGroup: t("noOptionGroup"),
+    optionDetailsDescription: t("optionDetailsDescription"),
+    optionDetailsTitle: t("optionDetailsTitle"),
+    optionRequired: t("optionRequired"),
+    previewCategory: t("previewCategory"),
+    previewGroup: t("previewGroup"),
+    previewSku: t("previewSku"),
+    previewValues: t("previewValues"),
+    productSectionDescription: t("productSectionDescription"),
+    summaryActionDescription: t("summaryActionDescription"),
+    summaryActionTitle: t("summaryActionTitle"),
+    summaryDescription: t("summaryDescription"),
+    trackingSectionTitle: t("trackingSectionTitle"),
   };
 }
 
@@ -223,7 +158,7 @@ function normalizeFieldValue(
 }
 
 function formatOptionValue(
-  locale: AppLocale,
+  labels: { no: string; yes: string },
   type: OrderFormOptionField["type"],
   value: OptionFieldValue | undefined
 ) {
@@ -232,15 +167,7 @@ function formatOptionValue(
       return "";
     }
 
-    if (locale === "ar") {
-      return value ? "نعم" : "لا";
-    }
-
-    if (locale === "de") {
-      return value ? "Ja" : "Nein";
-    }
-
-    return value ? "Yes" : "No";
+    return value ? labels.yes : labels.no;
   }
 
   if (Array.isArray(value)) {
@@ -265,7 +192,8 @@ export function NewOrderClient({
   products,
 }: NewOrderClientProps) {
   const t = useTranslations("Admin");
-  const uiCopy = getNewOrderUiCopy(locale);
+  const uiCopy = useNewOrderUiCopy();
+  const tn = useTranslations("Admin.newOrderPage");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -286,18 +214,8 @@ export function NewOrderClient({
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(true);
   const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const requiredLabel = getRequiredFieldBadge(locale);
-  const productRequiredMessage =
-    locale === "de"
-      ? "Bitte waehlen Sie zuerst ein Produkt aus."
-      : locale === "ar"
-        ? "يرجى اختيار منتج أولاً."
-        : "Please choose a product first.";
-  const emailInvalidMessage =
-    locale === "de"
-      ? "Bitte geben Sie eine gueltige E-Mail-Adresse ein."
-      : locale === "ar"
-        ? "يرجى إدخال بريد إلكتروني صالح."
-        : "Please enter a valid email address.";
+  const productRequiredMessage = tn("productRequired");
+  const emailInvalidMessage = tn("emailInvalid");
 
   const categoryChoices = useMemo<CategoryChoice[]>(() => {
     const seen = new Set<string>();
@@ -353,7 +271,7 @@ export function NewOrderClient({
     () =>
       productOptions
         .map((field) => {
-          const value = formatOptionValue(locale, field.type, optionValues[field.id]);
+          const value = formatOptionValue({ no: tn("no"), yes: tn("yes") }, field.type, optionValues[field.id]);
 
           if (!value) {
             return null;
@@ -365,7 +283,7 @@ export function NewOrderClient({
           };
         })
         .filter((entry): entry is { label: string; value: string } => entry !== null),
-    [locale, optionValues, productOptions]
+    [optionValues, productOptions, tn]
   );
   const canSendEmailUpdates = customerEmail.trim().length > 0;
   const emailUpdatesChecked = canSendEmailUpdates ? emailUpdatesEnabled : false;
@@ -400,12 +318,7 @@ export function NewOrderClient({
     const nextErrors: FieldErrors = {};
 
     if (!customerName.trim()) {
-      nextErrors.customerName =
-        locale === "ar"
-          ? "يرجى إدخال اسم العميل."
-          : locale === "de"
-            ? "Bitte geben Sie den Kundennamen ein."
-            : "Please enter the customer name.";
+      nextErrors.customerName = tn("customerNameRequired");
     }
 
     if (customerEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(customerEmail.trim())) {
@@ -413,12 +326,7 @@ export function NewOrderClient({
     }
 
     if (!Number.isFinite(quantity) || quantity < 1) {
-      nextErrors.quantity =
-        locale === "ar"
-          ? "يرجى إدخال كمية صحيحة."
-          : locale === "de"
-            ? "Bitte geben Sie eine gueltige Menge ein."
-            : "Please enter a valid quantity.";
+      nextErrors.quantity = tn("quantityInvalid");
     }
 
     productOptions.forEach((field) => {

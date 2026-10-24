@@ -17,40 +17,12 @@ export type LoginActionState = {
   message: string;
 };
 
-function getLoginValidationCopy(
+async function getLoginValidationCopy(
   locale: AppLocale,
   key: "emailInvalid" | "emailRequired" | "passwordRequired"
 ) {
-  if (locale === "de") {
-    switch (key) {
-      case "emailInvalid":
-        return "Bitte geben Sie eine gueltige E-Mail-Adresse ein.";
-      case "emailRequired":
-        return "Bitte geben Sie Ihre E-Mail-Adresse ein.";
-      case "passwordRequired":
-        return "Bitte geben Sie Ihr Passwort ein.";
-    }
-  }
-
-  if (locale === "ar") {
-    switch (key) {
-      case "emailInvalid":
-        return "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0628\u0631\u064a\u062f \u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0635\u062d\u064a\u062d.";
-      case "emailRequired":
-        return "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a.";
-      case "passwordRequired":
-        return "\u064a\u0631\u062c\u0649 \u0625\u062f\u062e\u0627\u0644 \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631.";
-    }
-  }
-
-  switch (key) {
-    case "emailInvalid":
-      return "Please enter a valid email address.";
-    case "emailRequired":
-      return "Please enter your email address.";
-    case "passwordRequired":
-      return "Please enter your password.";
-  }
+  const t = await getTranslations({ locale, namespace: "Admin.login.validation" });
+  return t(key);
 }
 
 export async function loginAction(
@@ -65,13 +37,13 @@ export async function loginAction(
   const redirectTo = String(formData.get("redirectTo") ?? "").trim();
 
   if (!email) {
-    fieldErrors.email = getLoginValidationCopy(locale, "emailRequired");
+    fieldErrors.email = await getLoginValidationCopy(locale, "emailRequired");
   } else if (!z.string().email().safeParse(email).success) {
-    fieldErrors.email = getLoginValidationCopy(locale, "emailInvalid");
+    fieldErrors.email = await getLoginValidationCopy(locale, "emailInvalid");
   }
 
   if (!password) {
-    fieldErrors.password = getLoginValidationCopy(locale, "passwordRequired");
+    fieldErrors.password = await getLoginValidationCopy(locale, "passwordRequired");
   }
 
   if (Object.keys(fieldErrors).length > 0) {

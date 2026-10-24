@@ -14,7 +14,8 @@
     "decoy:hash": "\"%npm_node_execpath%\" scripts/decoy-hash.mjs",
     "decoy:rotate": "\"%npm_node_execpath%\" scripts/decoy-rotate-gate.mjs",
     "decoy:disable-gate": "\"%npm_node_execpath%\" scripts/decoy-disable-gate.mjs",
-    "decoy:status": "\"%npm_node_execpath%\" scripts/decoy-status.mjs"
+    "decoy:status": "\"%npm_node_execpath%\" scripts/decoy-status.mjs",
+    "check:translations": "node scripts/check-translation-usage.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",

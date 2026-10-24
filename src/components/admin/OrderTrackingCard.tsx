@@ -1,5 +1,6 @@
 "use client";
 
+import { useAdminPrivacyUiCopy, useOrderWorkflowCopy } from "@/lib/admin/adminCopy";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,7 +12,6 @@ import {
   updateOrderWorkflowAction,
   withdrawOrderAssignmentAction,
 } from "@/app/[locale]/admin/orders/actions";
-import { getOrderWorkflowCopy } from "@/lib/admin/orderWorkflow";
 import { getTrackingLinkPath } from "@/lib/admin/tracking";
 import {
   focusFirstInvalidField,
@@ -21,7 +21,6 @@ import {
   getAssignmentStatusMessageKey,
   getAssignmentStatusVariant,
 } from "@/lib/admin/assignmentStatus";
-import { getAdminPrivacyUiCopy } from "@/lib/admin/privacy";
 import type { EmployeeRecord } from "@/lib/db/employees";
 import type { AppLocale } from "@/i18n/routing";
 import type {
@@ -96,65 +95,25 @@ function createWorkflowState(input: {
   } satisfies WorkflowState;
 }
 
-function getOrderCardUiCopy(locale: AppLocale) {
-  if (locale === "ar") {
-    return {
-      archiveConfirm: "\u0647\u0644 \u062a\u0631\u064a\u062f \u0623\u0631\u0634\u0641\u0629 \u0647\u0630\u0627 \u0627\u0644\u0637\u0644\u0628\u061f",
-      assignmentLabel: "\u0625\u0633\u0646\u0627\u062f \u0627\u0644\u0645\u0647\u0645\u0629",
-      assignmentNoteLabel: "\u0645\u0644\u0627\u062d\u0638\u0629 \u0627\u0644\u0625\u0633\u0646\u0627\u062f",
-      assignmentSection: "\u062a\u0648\u0632\u064a\u0639 \u0627\u0644\u0645\u0647\u0645\u0629",
-      currentEmployee: "\u0627\u0644\u0645\u0648\u0638\u0641 \u0627\u0644\u0645\u0633\u0624\u0648\u0644",
-      currentEmployeeNote: "\u0645\u0644\u0627\u062d\u0638\u0629 \u0627\u0644\u0645\u0648\u0638\u0641",
-      currentStatus: "\u062d\u0627\u0644\u0629 \u0627\u0644\u0645\u0647\u0645\u0629",
-      deleteConfirm: "\u0647\u0644 \u062a\u0631\u064a\u062f \u062d\u0630\u0641 \u0647\u0630\u0627 \u0627\u0644\u0637\u0644\u0628 \u0645\u0646 \u0642\u0648\u0627\u0626\u0645 \u0627\u0644\u0639\u0645\u0644\u061f",
-      description:
-        "\u062d\u062f\u0651\u062b \u0627\u0644\u0625\u0633\u0646\u0627\u062f \u0648\u062d\u0627\u0644\u0629 \u0627\u0644\u0637\u0644\u0628 \u0648\u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0627\u062a \u0645\u0646 \u0645\u0643\u0627\u0646 \u0648\u0627\u062d\u062f.",
-      noEmployeeNote: "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0644\u0627\u062d\u0638\u0627\u062a \u0645\u0648\u0638\u0641 \u0628\u0639\u062f.",
-      reassignLabel: "\u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u0625\u0633\u0646\u0627\u062f",
-      selectEmployee: "\u0627\u062e\u062a\u0631 \u0645\u0648\u0638\u0641\u0627\u064b",
-      title: "\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0637\u0644\u0628",
-      trackingSection: "\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0637\u0644\u0628",
-      withdrawLabel: "\u0633\u062d\u0628 \u0627\u0644\u0625\u0633\u0646\u0627\u062f",
-    };
-  }
-
-  if (locale === "de") {
-    return {
-      archiveConfirm: "Moechten Sie diesen Auftrag archivieren?",
-      assignmentLabel: "Aufgabe zuweisen",
-      assignmentNoteLabel: "Zuweisungshinweis",
-      assignmentSection: "Aufgabenverteilung",
-      currentEmployee: "Zustaendiger Mitarbeiter",
-      currentEmployeeNote: "Mitarbeiterhinweis",
-      currentStatus: "Aufgabenstatus",
-      deleteConfirm: "Moechten Sie diesen Auftrag aus den aktiven Listen entfernen?",
-      description:
-        "Pflegen Sie Zuweisung, Status und Hinweise zentral an einem Ort.",
-      noEmployeeNote: "Es liegt noch kein Mitarbeiterhinweis vor.",
-      reassignLabel: "Erneut zuweisen",
-      selectEmployee: "Mitarbeiter auswaehlen",
-      title: "Auftrag steuern",
-      trackingSection: "Auftragsverlauf",
-      withdrawLabel: "Zuweisung zurueckziehen",
-    };
-  }
+function useOrderCardUiCopy() {
+  const t = useTranslations("Admin.orderCard");
 
   return {
-    archiveConfirm: "Do you want to archive this order?",
-    assignmentLabel: "Assign task",
-    assignmentNoteLabel: "Assignment note",
-    assignmentSection: "Task assignment",
-    currentEmployee: "Assigned employee",
-    currentEmployeeNote: "Employee note",
-    currentStatus: "Task status",
-    deleteConfirm: "Do you want to remove this order from the active queues?",
-    description: "Manage assignment, status, and notes in one place.",
-    noEmployeeNote: "No employee note has been added yet.",
-    reassignLabel: "Reassign task",
-    selectEmployee: "Select employee",
-    title: "Manage order",
-    trackingSection: "Order tracking",
-    withdrawLabel: "Withdraw assignment",
+    archiveConfirm: t("archiveConfirm"),
+    assignmentLabel: t("assignmentLabel"),
+    assignmentNoteLabel: t("assignmentNoteLabel"),
+    assignmentSection: t("assignmentSection"),
+    currentEmployee: t("currentEmployee"),
+    currentEmployeeNote: t("currentEmployeeNote"),
+    currentStatus: t("currentStatus"),
+    deleteConfirm: t("deleteConfirm"),
+    description: t("description"),
+    noEmployeeNote: t("noEmployeeNote"),
+    reassignLabel: t("reassignLabel"),
+    selectEmployee: t("selectEmployee"),
+    title: t("title"),
+    trackingSection: t("trackingSection"),
+    withdrawLabel: t("withdrawLabel"),
   };
 }
 
@@ -176,9 +135,9 @@ export function OrderTrackingCard({
   trackingNumber,
 }: OrderTrackingCardProps) {
   const t = useTranslations("Admin");
-  const copy = getOrderWorkflowCopy(locale);
-  const uiCopy = getOrderCardUiCopy(locale);
-  const privacyCopy = getAdminPrivacyUiCopy(locale);
+  const copy = useOrderWorkflowCopy();
+  const uiCopy = useOrderCardUiCopy();
+  const privacyCopy = useAdminPrivacyUiCopy();
   const { masked: privacyModeMasked } = useAdminPrivacyMode();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

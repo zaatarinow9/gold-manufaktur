@@ -779,11 +779,11 @@ function getTrackingStatusNote(
     }
 
     if (locale === "fr") {
-      return "Votre commande a bien ete recue. Le statut sera bientot mis a jour.";
+      return "Votre commande a bien été reçue. Le statut sera bientôt mis à jour.";
     }
 
     if (locale === "tr") {
-      return "Siparisiniz alindi. Durum yakinda guncellenecek.";
+      return "Siparişiniz alındı. Durum yakında güncellenecek.";
     }
 
     return "We received your order. The status will be updated soon.";
@@ -804,7 +804,7 @@ function getTrackingStatusNote(
       }
 
       if (locale === "tr") {
-        return "Siparisiniz su anda atolyede.";
+        return "Siparişiniz şu anda atölyede.";
       }
 
       return "Your order is now in the workshop.";
@@ -818,11 +818,11 @@ function getTrackingStatusNote(
       }
 
       if (locale === "fr") {
-        return "Votre commande est en cours d expedition.";
+        return "Votre commande est en cours d’expédition.";
       }
 
       if (locale === "tr") {
-        return "Siparisiniz su anda kargoya veriliyor.";
+        return "Siparişiniz şu anda kargoya veriliyor.";
       }
 
       return "Your order is being shipped.";
@@ -836,11 +836,11 @@ function getTrackingStatusNote(
       }
 
       if (locale === "fr") {
-        return "Votre commande est prete au retrait.";
+        return "Votre commande est prête à être retirée.";
       }
 
       if (locale === "tr") {
-        return "Siparisiniz teslim almaya hazir.";
+        return "Siparişiniz teslim almaya hazır.";
       }
 
       return "Your order is ready for pickup.";
@@ -1456,7 +1456,7 @@ function buildWorkerAssignmentEmailText(input: {
       : [
           "Guten Tag,",
           "",
-          "Der folgende Auftrag wurde bei GoldHelwah zurueckgezogen und soll nicht weiter bearbeitet werden.",
+          "Der folgende Auftrag wurde bei GoldHelwah zurückgezogen und soll nicht weiter bearbeitet werden.",
           "",
         ];
 
@@ -1498,7 +1498,7 @@ async function dispatchWorkerAssignmentEmail(input: {
   const subject =
     input.kind === "assigned"
       ? "Neuer Auftrag zugewiesen - GoldHelwah"
-      : "Auftrag wurde zurueckgezogen - GoldHelwah";
+      : "Auftrag wurde zurückgezogen - GoldHelwah";
 
   return sendTransactionalEmail({
     metadata: {
@@ -1574,7 +1574,7 @@ async function dispatchAdminOrderNotificationEmail(input: {
       ? `Kundennotiz: ${input.customerNote.trim()}`
       : "",
     "",
-    "Auftrag oeffnen:",
+    "Auftrag öffnen:",
     orderUrl,
     "",
     "GoldHelwah GmbH",
@@ -1591,7 +1591,7 @@ async function dispatchAdminOrderNotificationEmail(input: {
     `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Kunde</td><td>${input.customerName || "Nicht angegeben"}</td></tr>`,
     `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Eingegangen am</td><td>${new Date(input.createdAt).toLocaleString("de-DE")}</td></tr>`,
     "</table>",
-    `<p><a href="${orderUrl}" style="display:inline-block;background:#c49a52;color:#111;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">Auftrag oeffnen</a></p>`,
+    `<p><a href="${orderUrl}" style="display:inline-block;background:#c49a52;color:#111;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">Auftrag öffnen</a></p>`,
     "<p>GoldHelwah GmbH</p>",
     "</div>",
   ].join("");
@@ -2351,8 +2351,8 @@ export async function withdrawOrderAssignment(viewer: AdminViewer, orderId: stri
     entityId: order.id,
     entityType: "order",
     linkPath: `/admin/orders/${order.id}`,
-    message: `${order.internalOrderNumber} wurde in die Admin-Warteschlange zurueckgegeben.`,
-    title: "Zuweisung zurueckgezogen",
+    message: `${order.internalOrderNumber} wurde in die Admin-Warteschlange zurückgegeben.`,
+    title: "Zuweisung zurückgezogen",
     type: "order_updated",
     workshopId: order.workshopId,
   });

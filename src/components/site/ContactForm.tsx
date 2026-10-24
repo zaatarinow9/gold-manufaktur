@@ -34,7 +34,7 @@ function getProductDefaultMessage(locale: string) {
   }
 
   if (locale === "de") {
-    return "Ich interessiere mich fuer dieses Schmuckstueck und wuensche weitere Informationen.";
+    return "Ich interessiere mich für dieses Schmuckstück und wünsche weitere Informationen.";
   }
 
   return "I am interested in this piece and would like to receive more information.";
@@ -106,8 +106,8 @@ function getProductFormCopy(locale: string) {
   if (locale === "de") {
     return {
       optionsTitle: "Anfrage-Details",
-      productTitle: "Ausgewaehltes Produkt",
-      requiredField: "Bitte fuellen Sie dieses Pflichtfeld aus.",
+      productTitle: "Ausgewähltes Produkt",
+      requiredField: "Bitte füllen Sie dieses Pflichtfeld aus.",
       requestTitle: "Anfrage zu diesem Produkt",
     };
   }

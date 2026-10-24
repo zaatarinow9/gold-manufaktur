@@ -53,19 +53,19 @@ function getCopy(locale: AppLocale) {
       customerName: "Kundenname",
       customerPhone: "Telefon",
       description:
-        "Dieser geschuetzte Link erfasst Werkstattauftraege direkt und sicher fuer das GoldHelwah-Dashboard.",
-      emailInvalid: "Bitte geben Sie eine gueltige E-Mail-Adresse ein.",
+        "Dieser geschützte Link erfasst Werkstattaufträge direkt und sicher für das GoldHelwah-Dashboard.",
+      emailInvalid: "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
       emailUpdates: "E-Mail-Updates senden",
       emailUpdatesHint:
-        "Updates werden nur versendet, wenn eine gueltige E-Mail-Adresse eingetragen ist.",
+        "Updates werden nur versendet, wenn eine gültige E-Mail-Adresse eingetragen ist.",
       message: "Auftragsnotiz",
       noOptions: "Diesem Produkt sind keine individuellen Optionen zugewiesen.",
       options: "Produktoptionen",
-      privacy: "Privater, geschuetzter Link",
+      privacy: "Privater, geschützter Link",
       product: "Produkt",
-      productRequired: "Bitte waehlen Sie zuerst ein Produkt aus.",
+      productRequired: "Bitte wählen Sie zuerst ein Produkt aus.",
       quantity: "Menge",
-      required: "Bitte fuellen Sie dieses Pflichtfeld aus.",
+      required: "Bitte füllen Sie dieses Pflichtfeld aus.",
       submit: "Auftrag senden",
       submitPending: "Auftrag wird gesendet...",
       success: "Der Auftrag wurde erfolgreich angelegt.",
@@ -107,7 +107,7 @@ function getDefaultMessage(locale: AppLocale, productName: string) {
   }
 
   if (locale === "de") {
-    return `Ich moechte ${productName} beauftragen.`;
+    return `Ich möchte ${productName} beauftragen.`;
   }
 
   return `I would like to order ${productName}.`;

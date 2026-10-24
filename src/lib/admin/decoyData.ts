@@ -95,7 +95,7 @@ const decoyOptionCatalog = [
     groupKey: "decoy-core",
     groupName: "Kerndetails",
     helpText: createLocalizedText(
-      "Grundlegende Auswahl fuer die Werkbank.",
+      "Grundlegende Auswahl für die Werkbank.",
       "اختيار أساسي للورشة.",
       "Core workshop selection.",
       "Selection essentielle pour l'atelier.",
@@ -113,7 +113,7 @@ const decoyOptionCatalog = [
       "Profil"
     ),
     placeholder: createLocalizedText(
-      "Profil waehlen",
+      "Profil wählen",
       "اختر النمط",
       "Select profile",
       "Choisir le profil",
@@ -135,7 +135,7 @@ const decoyOptionCatalog = [
     groupKey: "decoy-finish",
     groupName: "Finish",
     helpText: createLocalizedText(
-      "Oberflaeche fuer die aktuelle Charge.",
+      "Oberfläche für die aktuelle Charge.",
       "سطح للدفعة الحالية.",
       "Surface for the current batch.",
       "Surface pour le lot actuel.",
@@ -153,7 +153,7 @@ const decoyOptionCatalog = [
       "Yuzey"
     ),
     placeholder: createLocalizedText(
-      "Finish waehlen",
+      "Finish wählen",
       "اختر التشطيب",
       "Select finish",
       "Choisir la finition",
@@ -174,7 +174,7 @@ const decoyOptionCatalog = [
     groupKey: "decoy-core",
     groupName: "Kerndetails",
     helpText: createLocalizedText(
-      "Kurzer interner Hinweis fuer die Vorbereitung.",
+      "Kurzer interner Hinweis für die Vorbereitung.",
       "ملاحظة قصيرة للتحضير.",
       "Short preparation note.",
       "Courte note de preparation.",
@@ -228,7 +228,7 @@ const decoyCategoryCatalog = [
   {
     accent: "#c49a52",
     description: createLocalizedText(
-      "Klare Kernmodelle fuer die interne Ansicht.",
+      "Klare Kernmodelle für die interne Ansicht.",
       "نماذج أساسية واضحة للعرض الداخلي.",
       "Clear core models for the internal view.",
       "Modeles essentiels pour la vue interne.",
@@ -253,7 +253,7 @@ const decoyCategoryCatalog = [
   {
     accent: "#e8c987",
     description: createLocalizedText(
-      "Schlichte Anhangerlinie fuer die Werkbankansicht.",
+      "Schlichte Anhangerlinie für die Werkbankansicht.",
       "مجموعة تعليقات بسيطة لعرض الورشة.",
       "Minimal pendant line for the workshop view.",
       "Ligne de pendentifs minimaliste pour l'atelier.",
@@ -283,7 +283,7 @@ const decoyProductCatalog = [
     categoryName: decoyCategoryCatalog[0].name,
     categorySlug: decoyCategoryCatalog[0].slug,
     description: createLocalizedText(
-      "Standardmodell fuer die laufende Vorbereitung.",
+      "Standardmodell für die laufende Vorbereitung.",
       "نموذج قياسي للتحضير الحالي.",
       "Standard model for the current preparation.",
       "Modele standard pour la preparation actuelle.",
@@ -310,7 +310,7 @@ const decoyProductCatalog = [
     categoryName: decoyCategoryCatalog[0].name,
     categorySlug: decoyCategoryCatalog[0].slug,
     description: createLocalizedText(
-      "Breitere Ausfuehrung fuer die interne Uebersicht.",
+      "Breitere Ausführung für die interne Übersicht.",
       "تنفيذ أعرض للعرض الداخلي.",
       "Wider version for the internal overview.",
       "Version plus large pour la vue interne.",
@@ -337,7 +337,7 @@ const decoyProductCatalog = [
     categoryName: decoyCategoryCatalog[1].name,
     categorySlug: decoyCategoryCatalog[1].slug,
     description: createLocalizedText(
-      "Kompakter Anhaenger fuer die aktuelle Anzeige.",
+      "Kompakter Anhänger für die aktuelle Anzeige.",
       "معلقة مدمجة للعرض الحالي.",
       "Compact pendant for the current display.",
       "Pendentif compact pour l'affichage actuel.",
@@ -504,7 +504,7 @@ function createDecoyOrderList(): OrderListRecord[] {
       archivedAt: "",
       assignedAt: "2026-06-18T08:10:00.000Z",
       assignedWorkerEmail: "atelier.alpha@example.invalid",
-      assignmentNote: "Politur und Form vor Beginn pruefen.",
+      assignmentNote: "Politur und Form vor Beginn prüfen.",
       assignmentStatus: "in_progress",
       cancelledAt: "",
       completedAt: "",
@@ -538,7 +538,7 @@ function createDecoyOrderList(): OrderListRecord[] {
       archivedAt: "",
       assignedAt: "2026-06-17T07:35:00.000Z",
       assignedWorkerEmail: "atelier.beta@example.invalid",
-      assignmentNote: "Fassung vor Versand final pruefen.",
+      assignmentNote: "Fassung vor Versand final prüfen.",
       assignmentStatus: "waiting",
       cancelledAt: "",
       completedAt: "",
