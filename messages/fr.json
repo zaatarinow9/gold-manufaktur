@@ -145,7 +145,7 @@
     },
     "trust": {
       "eyebrow": "Pourquoi GoldHelwah GmbH",
-      "title": "Clair, personnel et proche du produit.",
+      "title": "Pourquoi GoldHelwah",
       "items": [
         {
           "title": "Un conseil sans hâte",
@@ -163,7 +163,8 @@
           "title": "Remise en main propre",
           "description": "Nous vous remettons votre bijou en personne, contrôlé et au titre vérifié."
         }
-      ]
+      ],
+      "description": "De l’or véritable en 21, 18 et 14 carats, un conseil honnête et des pièces faites selon vos souhaits."
     },
     "cta": {
       "badge": "Service GoldHelwah GmbH",
@@ -171,24 +172,6 @@
       "description": "Nous vous conseillons volontiers sur le choix, les demandes spéciales et le retrait.",
       "primaryCta": "Voir la boutique",
       "secondaryCta": "Appeler"
-    },
-    "hallmarks": {
-      "title": "21, 18 ou 14 carats, poinçonnés",
-      "description": "Le poinçon indique la pureté : 875, 750 ou 585 millièmes. Nous vous disons franchement lequel convient à votre bijou et à votre usage.",
-      "items": [
-        {
-          "stamp": "875",
-          "label": "21 carats"
-        },
-        {
-          "stamp": "750",
-          "label": "18 carats"
-        },
-        {
-          "stamp": "585",
-          "label": "14 carats"
-        }
-      ]
     },
     "customName": {
       "title": "Votre prénom en or",

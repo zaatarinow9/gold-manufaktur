@@ -35,7 +35,7 @@ export async function TrackingOrderView({ locale, order }: { locale: AppLocale; 
         <div className="container-shell">
           <div className="content-shell pb-10 pt-12 sm:pb-12 sm:pt-16">
             <p className="text-sm text-text-soft">{t("trackingNumberLabel")}</p>
-            <h1 dir="ltr" className="mt-1 text-start text-[clamp(1.75rem,5vw,2.75rem)] font-semibold tracking-wide text-foreground">
+            <h1 dir="ltr" className="mt-1 text-[clamp(1.75rem,5vw,2.75rem)] font-semibold tracking-wide text-foreground">
               {order.trackingNumber}
             </h1>
             <p className="mt-4 text-lg text-foreground">
@@ -116,7 +116,7 @@ export async function TrackingOrderView({ locale, order }: { locale: AppLocale; 
                       </p>
                       <p className="text-sm text-text-soft">{formatTrackingDate(locale, event.createdAt)}</p>
                     </div>
-                    <p className="leading-7 text-foreground">{event.description}</p>
+                    <p dir="auto" className="text-start leading-7 text-foreground">{event.description}</p>
                   </li>
                 ))}
               </ul>

@@ -31,10 +31,6 @@
     font-family: var(--font-body), sans-serif;
   }
 
-  :is(html[lang="ar"]) .admin-shell {
-    font-family: var(--font-thmanyah), system-ui, sans-serif;
-  }
-
   .admin-content {
     width: 100%;
     min-width: 0;
@@ -157,7 +153,7 @@
   }
 
   .admin-heading {
-    font-family: var(--font-display), serif;
+    font-family: var(--font-display), sans-serif;
     font-size: clamp(1.85rem, 2.6vw, 2.4rem);
     font-weight: 600;
     line-height: 1.15;
@@ -166,7 +162,6 @@
   }
 
   :is(html[lang="ar"]) .admin-heading {
-    font-family: var(--font-thmanyah), system-ui, sans-serif;
     font-size: clamp(1.6rem, 2.2vw, 2rem);
     font-weight: 700;
     letter-spacing: 0;

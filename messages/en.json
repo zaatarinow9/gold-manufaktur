@@ -145,7 +145,7 @@
     },
     "trust": {
       "eyebrow": "Why GoldHelwah GmbH",
-      "title": "Clear, personal, and close to the product.",
+      "title": "Why GoldHelwah",
       "items": [
         {
           "title": "Unhurried advice",
@@ -163,7 +163,8 @@
           "title": "Handed over in person",
           "description": "We hand you your piece in person, inspected and with its fineness confirmed."
         }
-      ]
+      ],
+      "description": "Genuine gold in 21, 18 and 14 karat, honest advice and pieces made to your wishes."
     },
     "cta": {
       "badge": "GoldHelwah GmbH Service",
@@ -171,24 +172,6 @@
       "description": "We are happy to guide you through selection, special requests, and personal consultation.",
       "primaryCta": "View shop",
       "secondaryCta": "Call now"
-    },
-    "hallmarks": {
-      "title": "21, 18 or 14 karat – hallmarked",
-      "description": "The stamp states the purity: 875, 750 or 585 parts per thousand. We tell you plainly which one suits your piece and the way you’ll wear it.",
-      "items": [
-        {
-          "stamp": "875",
-          "label": "21 karat"
-        },
-        {
-          "stamp": "750",
-          "label": "18 karat"
-        },
-        {
-          "stamp": "585",
-          "label": "14 karat"
-        }
-      ]
     },
     "customName": {
       "title": "Your name in gold",

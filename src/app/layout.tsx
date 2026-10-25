@@ -1,6 +1,5 @@
 import { getLocale } from "next-intl/server";
 
-import { thmanyah } from "@/lib/fonts";
 import "./globals.css";
 
 export default async function RootLayout({
@@ -11,7 +10,6 @@ export default async function RootLayout({
   const locale = await getLocale();
   const isArabic = locale === "ar";
   const direction = isArabic ? "rtl" : "ltr";
-  const htmlClassName = thmanyah.variable;
   const bodyClassName = "relative bg-background text-foreground antialiased";
 
   return (
@@ -21,7 +19,6 @@ export default async function RootLayout({
       data-locale={locale}
       data-dir={direction}
       data-scroll-behavior="smooth"
-      className={htmlClassName}
     >
       <body className={bodyClassName}>{children}</body>
     </html>

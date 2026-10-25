@@ -145,7 +145,7 @@
     },
     "trust": {
       "eyebrow": "Warum Gold Helwah",
-      "title": "Klar, persönlich und nah am Produkt.",
+      "title": "Warum GoldHelwah",
       "items": [
         {
           "title": "Beratung mit Zeit",
@@ -163,7 +163,8 @@
           "title": "Persönliche Übergabe",
           "description": "Wir übergeben Ihr Stück persönlich – geprüft und mit bestätigtem Feingehalt."
         }
-      ]
+      ],
+      "description": "Echtes Gold in 21, 18 und 14 Karat, ehrliche Beratung und Stücke, die nach Ihren Wünschen entstehen."
     },
     "cta": {
       "badge": "Gold Helwah Service",
@@ -171,24 +172,6 @@
       "description": "Wir beraten Sie gerne zu Auswahl, Sonderwünschen und Abholung.",
       "primaryCta": "Shop ansehen",
       "secondaryCta": "Anrufen"
-    },
-    "hallmarks": {
-      "title": "21, 18 oder 14 Karat – gestempelt",
-      "description": "Der Stempel nennt den Feingehalt: 875, 750 oder 585 Tausendstel. Wir sagen Ihnen offen, welcher zu Ihrem Stück und Ihrem Alltag passt.",
-      "items": [
-        {
-          "stamp": "875",
-          "label": "21 Karat"
-        },
-        {
-          "stamp": "750",
-          "label": "18 Karat"
-        },
-        {
-          "stamp": "585",
-          "label": "14 Karat"
-        }
-      ]
     },
     "customName": {
       "title": "Ihr Name in Gold",
