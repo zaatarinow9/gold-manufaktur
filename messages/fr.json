@@ -1,30 +1,30 @@
 {
   "Metadata": {
     "site": {
-      "brand": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH à Sarrebruck : parures de mariée, colliers prénom, bagues et or d’investissement en 21, 18 et 14 carats. Conseil personnel et pièces sur mesure.",
+      "brand": "GoldHelwah",
+      "title": "GoldHelwah",
+      "description": "GoldHelwah à Sarrebruck : parures de mariée, colliers prénom, chaînes et or d’investissement en 21, 18 et 14 carats poinçonnés – conseil personnel, fabrication sur mesure.",
       "keywords": [
-        "GoldHelwah GmbH",
-        "bijoux en or",
-        "bijoux de luxe",
-        "catalogue de bijoux",
-        "showroom",
-        "alliances"
+        "GoldHelwah",
+        "bijoux en or Sarrebruck",
+        "or 21 carats",
+        "parure de mariée",
+        "collier prénom en or",
+        "or d’investissement"
       ]
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah – Bijoux en or à Sarrebruck",
-        "description": "Parures de mariée, bijoux prénom, chaînes et or d’investissement en 21, 18 et 14 carats. Showroom Breite Straße 9, Sarrebruck."
+        "title": "GoldHelwah – bijoux en or à Sarrebruck",
+        "description": "Parures de mariée, colliers prénom, chaînes et or d’investissement en 21, 18 et 14 carats – conseil personnel, sur mesure."
       },
       "shop": {
         "title": "Collection",
-        "description": "La collection GoldHelwah : parures, bijoux prénom, chaînes, bracelets, bagues et lingots. Demande directement en ligne."
+        "description": "La collection GoldHelwah : parures, bijoux prénom, chaînes, bracelets, bagues et lingots. Découvrez les détails et faites votre demande."
       },
       "contact": {
         "title": "Contact",
-        "description": "Showroom Breite Straße 9, Sarrebruck. Téléphone, WhatsApp, e-mail et formulaire de demande."
+        "description": "GoldHelwah, Breite Straße 9, Sarrebruck – téléphone, WhatsApp, e-mail et formulaire de contact."
       },
       "impressum": {
         "title": "Mentions légales",
@@ -37,14 +37,14 @@
     }
   },
   "Nav": {
-    "tagline": "Bijoux en or de luxe",
+    "tagline": "Joaillerie en or",
     "language": "Changer de langue",
     "currentLanguage": "Actuel",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "links": {
       "home": "Accueil",
-      "shop": "Shop",
+      "shop": "Collection",
       "contact": "Contact",
       "impressum": "Mentions légales",
       "privacy": "Confidentialité",
@@ -55,12 +55,12 @@
     "legalTitle": "Informations légales"
   },
   "Footer": {
-    "description": "Bijoux en or et or d’investissement à Sarrebruck. Conseil personnel, sur mesure à la demande.",
+    "description": "Bijoux en or et or d’investissement à Sarrebruck : conseil personnel, fabrication sur mesure.",
     "navigationTitle": "Pages",
     "contactTitle": "Contact",
     "socialTitle": "Suivez-nous",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Pas de vente en ligne : demande, conseil et remise en personne.",
+    "legalNote": "Pas de vente en ligne : conseil, commande et remise se font en personne.",
     "rights": "GoldHelwah GmbH. Tous droits réservés.",
     "socials": {
       "instagram": "Instagram",
@@ -74,12 +74,12 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "GoldHelwah à Sarrebruck",
-      "subtitle": "L’or qui se porte et se transmet.",
-      "description": "Parures de mariée, colliers prénom, bijoux à pièces et or d’investissement en 21, 18 et 14 carats. Choisissez au showroom ou en ligne : nous vous conseillons en personne et réalisons vos pièces sur mesure.",
-      "primaryCta": "Voir la collection",
-      "secondaryCta": "Demander conseil",
-      "backgroundAlt": "Visuel principal GoldHelwah GmbH",
+      "title": "Joaillerie en or",
+      "subtitle": "L’or, façonné avec soin. Fait pour les générations.",
+      "description": "Parures de mariée, bijoux prénom, pièces et lingots d’investissement, poinçonnés en 21, 18 et 14 carats. Nous vous conseillons personnellement et réalisons chaque pièce selon vos souhaits.",
+      "primaryCta": "Découvrir la collection",
+      "secondaryCta": "Demander un conseil",
+      "backgroundAlt": "Bijou en or GoldHelwah",
       "stats": [
         {
           "value": "17",
@@ -94,21 +94,21 @@
           "label": "Showroom"
         }
       ],
-      "locationLine": "Showroom : Breite Straße 9, Sarrebruck"
+      "locationLine": "Breite Straße 9, Sarrebruck"
     },
     "categories": {
       "eyebrow": "Catégories sélectionnées",
-      "title": "La collection",
-      "description": "Des chaînes fines du quotidien aux parures de mariée et aux onces d’or.",
+      "title": "Collections",
+      "description": "De la chaîne fine du quotidien à la parure de mariée et à l’once d’investissement.",
       "emptyTitle": "Aucun produit n'est visible pour le moment",
       "emptyText": "Dès que de nouvelles collections sont activées dans le tableau de bord, elles apparaissent ici automatiquement.",
-      "allCta": "Toutes les catégories"
+      "allCta": "Toutes les collections"
     },
     "products": {
       "eyebrow": "Produits sélectionnés",
-      "title": "Du showroom",
-      "description": "Ouvrez une pièce pour voir les détails et la demander directement.",
-      "sectionCta": "Toute la collection",
+      "title": "Pièces choisies",
+      "description": "Ouvrez une pièce pour voir ses détails et la demander directement.",
+      "sectionCta": "Voir toute la collection",
       "cardCta": "Voir les détails",
       "emptyTitle": "Aucun produit n'est visible pour le moment",
       "emptyText": "Activez des produits dans le tableau de bord ou contactez-nous pour une sélection personnalisée."
@@ -125,22 +125,22 @@
     },
     "aboutGold": {
       "eyebrow": "À propos de l'or",
-      "title": "L’or qui reste.",
-      "description": "L’or garde sa valeur et porte les souvenirs d’une génération à l’autre. C’est pourquoi nous prenons le temps pour chaque pièce, au choix comme à la fabrication.",
+      "title": "L’or qui demeure.",
+      "description": "L’or garde sa valeur et transmet les souvenirs d’une génération à l’autre. Chaque pièce reçoit donc le soin qu’elle mérite, du choix à la fabrication.",
       "imageAlt": "Détail de bijou en or de GoldHelwah GmbH",
       "points": [
         "Titre poinçonné",
-        "Fabrication sur mesure",
-        "Remise en personne"
+        "Sur mesure",
+        "Remise en main propre"
       ],
       "storyLabel": "À propos de GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "À propos de nous",
-      "title": "GoldHelwah GmbH",
-      "description": "Notre showroom se trouve Breite Straße, à Sarrebruck. Nous y présentons nos pièces sans hâte, vous conseillons nous-mêmes et accueillons les demandes particulières.",
+      "title": "À propos de GoldHelwah",
+      "description": "Une maison de joaillerie en or à Sarrebruck, qui unit l’orfèvrerie orientale à la rigueur allemande. Nous acceptons les commandes spéciales et suivons chaque étape nous-mêmes.",
       "teamLabel": "Notre approche",
-      "story": "De la première question à la remise, vous traitez directement avec nous, sans intermédiaire.",
+      "story": "De la première question à la remise du bijou, vous traitez directement avec nous, sans intermédiaire.",
       "locationLabel": "Sur place"
     },
     "trust": {
@@ -148,20 +148,20 @@
       "title": "Clair, personnel et proche du produit.",
       "items": [
         {
-          "title": "Un conseil qui prend son temps",
-          "description": "Pour un mariage, un cadeau ou le quotidien : nous écoutons d’abord, puis nous montrons."
+          "title": "Un conseil sans hâte",
+          "description": "Mariage, cadeau ou quotidien : nous écoutons d’abord, puis proposons ce qui vous ressemble."
         },
         {
           "title": "De vraies pièces, de vraies photos",
-          "description": "Chaque photo montre une pièce de notre propre sélection."
+          "description": "Chaque image montre une pièce de notre propre collection, sans artifice."
         },
         {
           "title": "Sur mesure",
-          "description": "Prénoms, gravures, longueurs et tailles : nous transformons votre idée en or."
+          "description": "Prénom, gravure, longueur et taille : votre idée devient un bijou."
         },
         {
           "title": "Remise en main propre",
-          "description": "Nous vous remettons votre pièce nous-mêmes à Sarrebruck."
+          "description": "Nous vous remettons votre bijou en personne, contrôlé et au titre vérifié."
         }
       ]
     },
@@ -173,8 +173,8 @@
       "secondaryCta": "Appeler"
     },
     "hallmarks": {
-      "title": "21, 18 ou 14 carats",
-      "description": "Le poinçon indique la pureté de l’or : 875, 750 ou 585 millièmes. Nous vous disons franchement lequel convient à votre pièce.",
+      "title": "21, 18 ou 14 carats, poinçonnés",
+      "description": "Le poinçon indique la pureté : 875, 750 ou 585 millièmes. Nous vous disons franchement lequel convient à votre bijou et à votre usage.",
       "items": [
         {
           "stamp": "875",
@@ -192,21 +192,21 @@
     },
     "customName": {
       "title": "Votre prénom en or",
-      "description": "En écriture arabe ou latine, en collier, bracelet ou pendentif. Nous choisissons avec vous l’écriture, le carat et la longueur, puis nous réalisons la pièce.",
+      "description": "En écriture arabe ou latine, en chaîne, bracelet ou pendentif. Nous choisissons ensemble l’écriture, le carat et la longueur, puis réalisons votre pièce.",
       "primaryCta": "Voir les bijoux prénom",
       "secondaryCta": "Parler de votre idée"
     },
     "visit": {
-      "title": "Venez nous voir, ou écrivez-nous",
-      "description": "Nous répondons personnellement."
+      "title": "Visite et contact",
+      "description": "Nous répondons personnellement à chaque message."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Collection",
-      "subtitle": "Ouvrez une pièce pour voir les détails. Prix et poids sur demande.",
-      "primaryCta": "Envoyer une demande",
+      "subtitle": "Ouvrez une pièce pour voir ses détails. Prix et poids vous sont communiqués sur demande.",
+      "primaryCta": "Demander un conseil",
       "secondaryCta": "Contact",
       "stats": {
         "categories": "Catégories",
@@ -228,8 +228,8 @@
       "all": "Tout",
       "resultsSuffix": "modèles",
       "emptyBadge": "Sur demande",
-      "emptyTitle": "Rien n’est en ligne dans cette catégorie pour le moment.",
-      "emptyText": "Nous réalisons beaucoup de pièces sur commande. Décrivez-nous ce que vous cherchez.",
+      "emptyTitle": "Aucune pièce exposée dans cette catégorie pour le moment.",
+      "emptyText": "Beaucoup de pièces sont réalisées sur commande. Décrivez-nous ce que vous cherchez.",
       "resultCount": "{count, plural, =0 {Aucune pièce} one {# pièce} other {# pièces}}"
     },
     "card": {
@@ -243,18 +243,18 @@
       "galleryLabel": "Galerie",
       "galleryCountSuffix": "images",
       "tagsLabel": "Détails",
-      "requestCta": "Envoyer une demande",
+      "requestCta": "Demander cette pièce",
       "backCta": "Retour",
       "callCta": "Appeler",
-      "noteTitle": "Et ensuite ?",
-      "note": "Envoyez une demande. Nous vous répondons avec le poids, le prix et le délai de fabrication."
+      "noteTitle": "La suite",
+      "note": "Envoyez votre demande : nous revenons vers vous avec le poids, le prix et le délai de fabrication."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Contact",
       "title": "Contact",
-      "subtitle": "Une question sur une pièce, une création sur mesure ou un rendez-vous au showroom : écrivez-nous ou appelez-nous.",
+      "subtitle": "Pour une question sur une pièce, une commande spéciale ou un rendez-vous, écrivez-nous ou appelez-nous.",
       "primaryCta": "Voir la collection",
       "secondaryCta": "Lire la confidentialité"
     },
@@ -275,7 +275,7 @@
     "form": {
       "eyebrow": "Prendre contact",
       "title": "Votre message",
-      "description": "Une phrase suffit. Nous revenons vers vous avec tous les détails.",
+      "description": "Quelques mots suffisent : nous revenons vers vous avec tous les détails.",
       "highlights": "Contact",
       "fields": {
         "name": "Nom",
@@ -309,13 +309,13 @@
     },
     "location": {
       "eyebrow": "Adresse",
-      "title": "Rendez visite à GoldHelwah GmbH à Saarbrücken.",
-      "description": "Adresse, téléphone et itinéraire en un coup d’œil.",
+      "title": "Notre adresse à Sarrebruck",
+      "description": "Sur rendez-vous, nous vous présentons la collection et vous conseillons en toute tranquillité.",
       "addressLabel": "Adresse",
       "phoneLabel": "Téléphone",
       "routeCta": "Planifier l’itinéraire",
       "callCta": "Appeler",
-      "mapTitle": "Emplacement de GoldHelwah GmbH sur Google Maps",
+      "mapTitle": "GoldHelwah sur Google Maps",
       "emailLabel": "E-mail",
       "whatsappCta": "WhatsApp"
     }
@@ -517,9 +517,10 @@
       "language": "Langue du tableau de bord"
     },
     "roles": {
-      "super_admin": "Super administrateur",
-      "admin": "Administrateur",
-      "employee": "Employé"
+      "super_admin": "Direction",
+      "admin": "Showroom",
+      "employee": "Équipe d’atelier",
+      "workshop_manager": "Responsable d’atelier"
     },
     "nav": {
       "overview": "Aperçu",
@@ -529,7 +530,7 @@
       "options": "Questions de commande",
       "orders": "Commandes",
       "workshops": "Ateliers",
-      "employees": "Employés",
+      "employees": "Tout le personnel",
       "attendance": "Présences",
       "reports": "Rapports",
       "archive": "Archives",
@@ -537,7 +538,10 @@
       "myTasks": "Mes tâches",
       "inquiries": "Demandes clients",
       "ariaLabel": "Navigation principale",
-      "countLabel": "{count} en attente"
+      "countLabel": "{count} en attente",
+      "messages": "Messages",
+      "team": "Mon équipe",
+      "workshopOrders": "Commandes de l’atelier"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1338,12 +1342,15 @@
       "publicStageUpdate": "Mise à jour de l’étape publique"
     },
     "assignmentStatus": {
-      "assigned": "Attribuée",
+      "assigned": "Nouvellement attribuée",
       "accepted": "Acceptée",
       "in_progress": "En cours",
       "waiting": "En attente",
       "completed": "Terminée",
-      "returned": "Retournée"
+      "returned": "Revenue au responsable",
+      "problem": "Problème signalé",
+      "shipped": "Envoyée au showroom",
+      "declined": "Refusée"
     },
     "accountSetup": {
       "title": "Configurer votre accès",
@@ -1378,24 +1385,9 @@
       "smtpTitle": "État des e-mails",
       "smtpConfigured": "SMTP configuré",
       "smtpMissing": "SMTP incomplet",
-      "orderEntryTitle": "Lien externe de saisie de commande",
       "orderEntryDescription": "Activez le lien externe, vérifiez l’adresse complète, puis copiez-la ou envoyez-la par e-mail.",
       "save": "Enregistrer",
-      "rotateLink": "Créer un nouveau lien",
-      "orderEntryEnabled": "Activer le lien externe de saisie de commande",
-      "expiresAt": "Expire le",
-      "fullLinkLabel": "Lien complet",
-      "fullLinkHelp": "L’adresse complète est toujours affichée telle qu’elle sera partagée. Si le serveur indique encore localhost, l’adresse du navigateur est utilisée.",
-      "linkDisabled": "Le lien externe de saisie de commande est actuellement désactivé.",
-      "copyLink": "Copier le lien",
-      "copySuccess": "Le lien complet a été copié.",
-      "copyUnavailable": "Aucun lien complet n’est disponible pour le moment.",
-      "statusEnabled": "Activé",
       "statusDisabled": "Désactivé",
-      "rotatedAt": "Dernier renouvellement",
-      "linkRecipient": "Envoyer le lien à",
-      "linkRecipientHelp": "Un e-mail professionnel en allemand avec un bouton et un lien de secours sera envoyé.",
-      "sendLink": "Envoyer le lien par e-mail",
       "userListTitle": "Utilisateurs et rôles",
       "manageUsersHint": "La gestion des utilisateurs est réservée aux super administrateurs.",
       "userSave": "Enregistrer l’utilisateur",
@@ -1415,8 +1407,8 @@
       "userDelete": "Supprimer",
       "userEdit": "Modifier",
       "inviteAgain": "Envoyer un nouveau lien",
-      "roleOwner": "Propriétaire",
-      "roleAdmin": "Administrateur",
+      "roleOwner": "Direction (accès complet)",
+      "roleAdmin": "Tablette du showroom",
       "roleEmployee": "Employé",
       "userDeleteConfirm": "Supprimer l’accès de {name} ?",
       "userDeleteText": "Cette personne ne pourra plus se connecter.",
@@ -1884,11 +1876,6 @@
       "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
       "invalidName": "Veuillez saisir un nom d’affichage valide.",
       "noAccess": "Accès refusé.",
-      "orderEntryRotated": "Un nouveau lien de saisie de commande a été créé.",
-      "orderEntrySendDisabled": "Activez le lien externe de saisie de commande avant de l’envoyer par e-mail.",
-      "orderEntrySendFailed": "Le lien de saisie de commande n’a pas pu être envoyé par e-mail.",
-      "orderEntrySendSavedOnly": "L’e-mail a été préparé mais pas envoyé, car le SMTP n’est pas encore entièrement configuré.",
-      "orderEntrySent": "Le lien de saisie de commande a été envoyé par e-mail.",
       "privacyPhrase": "La phrase de protection est incorrecte.",
       "saved": "Paramètres enregistrés.",
       "userCreated": "L’utilisateur a été créé. Le lien d’accès a été envoyé ou consigné.",
@@ -1896,7 +1883,8 @@
       "userInviteSent": "Un nouveau lien d’accès a été créé.",
       "userPasswordResetSent": "Un lien de réinitialisation du mot de passe a été créé.",
       "userUpdated": "L’utilisateur a été mis à jour.",
-      "userVisibilityChanged": "Le statut de l’utilisateur a été mis à jour."
+      "userVisibilityChanged": "Le statut de l’utilisateur a été mis à jour.",
+      "emailNotSent": "Enregistré, mais l’e-mail n’a pas pu être envoyé. Vérifiez les réglages e-mail."
     },
     "taskCard": {
       "assignmentNote": "Note d’attribution",
@@ -1988,7 +1976,16 @@
       "newWorkshopOrder": "Nouvelle commande atelier",
       "newWorkshopOrderMessage": "Une nouvelle commande a été attribuée à votre atelier.",
       "newTask": "Nouvelle tâche",
-      "newTaskMessage": "Une commande atelier vous a été attribuée."
+      "newTaskMessage": "Une commande atelier vous a été attribuée.",
+      "workshopOrderReceived": "Nouvelle commande pour votre atelier",
+      "newMessage": "Nouveau message",
+      "taskStatus_accepted": "Commande acceptée",
+      "taskStatus_in_progress": "Travail commencé",
+      "taskStatus_problem": "Problème sur une commande",
+      "taskStatus_completed": "Commande terminée",
+      "taskStatus_shipped": "Commande envoyée au showroom",
+      "taskStatus_declined": "Commande refusée",
+      "taskStatus_assigned": "Commande attribuée"
     },
     "workshopMessages": {
       "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN": "Le responsable actuel de l’atelier ne peut être déplacé qu’après la nomination d’un remplaçant ou le retrait du rôle.",
@@ -2030,36 +2027,27 @@
     "settingsSections": {
       "website": "Site web",
       "emails": "E-mails",
-      "orderLink": "Lien de commande",
       "access": "Accès",
       "data": "Données et réinitialisation",
       "imagesTitle": "Images du site",
       "imagesText": "La grande image de l’accueil et celle à côté du titre de la boutique. Sans image, une photo de produit est utilisée.",
       "homeHeroHint": "Actuellement : une photo de produit, choisie automatiquement.",
       "shopHeroHint": "Actuellement : pas d’image, seulement le titre.",
-      "promoTitle": "Fenêtre promotionnelle",
-      "promoText": "Une petite fenêtre qui présente une offre aux visiteurs à l’ouverture de l’accueil, par exemple pour les fêtes.",
-      "promoEnabledHint": "Désactivée, les visiteurs ne voient rien ; vos saisies restent enregistrées.",
-      "promoContent": "Contenu",
-      "promoLook": "Apparence",
-      "promoWhen": "Période",
       "promoImageHint": "Facultative. Affichée dans la fenêtre.",
       "emailsText": "Où la boutique envoie les e-mails sur les nouvelles commandes, demandes et messages d’assistance.",
       "adminEmailHint": "Reçoit les nouvelles commandes et demandes produit.",
       "supportEmailHint": "Reçoit les questions des clients sur une commande.",
       "ownerEmailHint": "Reçoit les messages système importants.",
-      "orderLinkText": "Un lien privé permettant à des partenaires, par exemple une succursale ou un atelier, de saisir des commandes sans connexion.",
-      "expiresHint": "Laissez vide si le lien ne doit pas expirer.",
-      "rotateHint": "Crée un nouveau lien. L’ancien ne fonctionne plus, utile s’il est tombé entre de mauvaises mains.",
-      "accessText": "Qui peut se connecter au tableau de bord et ce qu’il peut voir.",
+      "accessText": "Comptes de la direction et de la tablette du showroom. Pour saisir les commandes au showroom, connectez-vous sur la tablette avec e-mail et mot de passe.",
       "you": "vous",
       "userEditorText": "La personne reçoit un e-mail pour définir son mot de passe.",
       "userEmailHint": "Utilisé pour la connexion.",
       "roleHint": {
-        "super_admin": "Voit et modifie tout, y compris les paramètres et les accès.",
-        "admin": "Gère commandes, employés et demandes, sans les paramètres.",
-        "employee": "Ne voit que ses propres tâches."
-      }
+        "super_admin": "Voit et modifie tout : ateliers, boutique, réglages et accès.",
+        "admin": "Pour la tablette du showroom : créer des commandes et les envoyer à un atelier. Sans réglages.",
+        "employee": "L’équipe d’atelier est invitée par son responsable."
+      },
+      "staffNote": "Les responsables d’atelier sont invités à la création de l’atelier et invitent eux-mêmes leur équipe ; ces comptes n’apparaissent donc pas ici."
     },
     "settingsData": {
       "notificationsTitle": "Vider les notifications",
@@ -2067,6 +2055,287 @@
       "clearNotificationsButton": "Vider les notifications",
       "clearNotificationsConfirm": "Supprimer toutes les notifications ?",
       "clearNotificationsText": "Les commandes, demandes et autres données restent inchangées."
+    },
+    "flow": {
+      "errors": {
+        "FAILED": "Cela n’a pas fonctionné. Veuillez réessayer.",
+        "INVALID": "Vérifiez votre saisie : un champ obligatoire est vide ou l’adresse e-mail est invalide.",
+        "PERMISSION_DENIED": "Votre compte n’a pas l’autorisation nécessaire.",
+        "EMAIL_IN_USE": "Cette adresse e-mail appartient déjà à un autre membre.",
+        "EMAIL_IS_OFFICE_ACCOUNT": "Cette adresse est déjà un compte de la direction ou du showroom. Utilisez-en une autre.",
+        "CANNOT_CHANGE_SELF": "Vous ne pouvez pas modifier votre propre compte ici.",
+        "WORKSHOP_NOT_FOUND": "Cet atelier n’existe plus.",
+        "WORKSHOP_INACTIVE": "Cet atelier est en pause. Réactivez-le d’abord.",
+        "WORKSHOP_HAS_NO_MANAGER": "Cet atelier n’a pas encore de responsable.",
+        "ORDER_NOT_FOUND": "Commande introuvable.",
+        "TASK_NOTE_REQUIRED": "Indiquez brièvement le problème : votre responsable a besoin de la raison.",
+        "MESSAGE_EMPTY": "Le message est vide.",
+        "MESSAGE_TOO_LONG": "Le message est trop long (4 000 caractères maximum).",
+        "THREAD_NOT_FOUND": "Cette conversation n’existe plus."
+      },
+      "done": {
+        "workshopCreated": "Atelier créé. Le responsable a reçu une invitation par e-mail.",
+        "workshopCreatedNoEmail": "Atelier créé, mais l’invitation n’a pas pu être envoyée. Vérifiez les réglages e-mail et renvoyez-la depuis la page de l’atelier.",
+        "workshopSaved": "Atelier enregistré.",
+        "workshopActivated": "L’atelier est de nouveau actif.",
+        "workshopPaused": "Atelier en pause. Il ne recevra plus de nouvelles commandes.",
+        "workshopDeleted": "Atelier supprimé. Ses commandes ouvertes sont revenues dans « Pas encore envoyées ».",
+        "managerChanged": "Nouveau responsable invité.",
+        "managerChangedNoEmail": "Responsable changé, mais l’invitation n’a pas pu être envoyée.",
+        "inviteSent": "Invitation renvoyée.",
+        "inviteSentNoEmail": "L’invitation n’a pas pu être envoyée. Vérifiez les réglages e-mail.",
+        "memberInvited": "Invitation envoyée. Dès que le mot de passe est défini, la personne peut prendre des commandes.",
+        "memberInvitedNoEmail": "Membre ajouté, mais l’invitation n’a pas pu être envoyée.",
+        "memberActivated": "De nouveau actif.",
+        "memberPaused": "En pause. La personne ne peut plus se connecter pour l’instant.",
+        "memberRemoved": "Retiré de l’équipe. Ses commandes ouvertes vous reviennent.",
+        "messageSent": "Message envoyé.",
+        "orderSent": "Envoyée à {workshop}. Le responsable a été prévenu par e-mail.",
+        "orderSentNoEmail": "Envoyée à {workshop}. L’e-mail au responsable a échoué, mais il verra la commande dans son tableau de bord.",
+        "orderSentNoManager": "Envoyée à {workshop}. Attention : l’atelier n’a pas encore de responsable pour répartir la commande."
+      },
+      "workshops": {
+        "pageHint": "Chaque atelier a un responsable. Vous envoyez les commandes à l’atelier, le responsable les répartit dans son équipe.",
+        "new": "Nouvel atelier",
+        "newTitle": "Créer un atelier",
+        "newHint": "Le responsable reçoit un e-mail, définit son mot de passe puis invite lui-même son équipe.",
+        "sectionWorkshop": "Atelier",
+        "sectionManager": "Responsable",
+        "managerHint": "Cette personne reçoit les commandes et les répartit.",
+        "name": "Nom de l’atelier",
+        "namePlaceholder": "ex. Atelier Istanbul",
+        "location": "Lieu",
+        "phone": "Téléphone",
+        "notes": "Note interne",
+        "managerName": "Nom",
+        "managerEmail": "Adresse e-mail",
+        "managerEmailHint": "L’invitation est envoyée ici ; c’est aussi l’identifiant du responsable.",
+        "create": "Créer et envoyer l’invitation",
+        "creating": "Création…",
+        "emptyTitle": "Aucun atelier pour l’instant",
+        "emptyText": "Créez le premier atelier et nommez son responsable.",
+        "manager": "Responsable",
+        "managerActive": "Connecté",
+        "managerInvited": "Invitation en attente",
+        "noManager": "Sans responsable",
+        "noManagerText": "Cet atelier n’a pas de responsable. Invitez quelqu’un pour répartir les commandes.",
+        "openOrders": "Commandes ouvertes",
+        "teamSize": "Équipe",
+        "open": "Ouvrir",
+        "actionsFor": "Actions pour {name}",
+        "pause": "Mettre en pause",
+        "resume": "Réactiver",
+        "paused": "En pause",
+        "running": "Active",
+        "deleteTitle": "Supprimer « {name} » ?",
+        "deleteText": "{team, plural, =0 {L’atelier n’a pas d’équipe.} one {Le membre de l’équipe perd son accès.} other {Les # membres de l’équipe perdent leur accès.}} {orders, plural, =0 {} one {Sa commande ouverte revient dans « Pas encore envoyées ».} other {Ses # commandes ouvertes reviennent dans « Pas encore envoyées ».}}",
+        "delete": "Supprimer l’atelier",
+        "dangerTitle": "Supprimer l’atelier",
+        "dangerHint": "Supprime l’atelier et son équipe. Les commandes ouvertes ne sont pas perdues, elles reviennent à la direction.",
+        "saving": "Enregistrement…",
+        "messageManager": "Écrire au responsable",
+        "managerCardHint": "Le responsable reçoit vos commandes et les répartit dans l’équipe.",
+        "resendInvite": "Renvoyer l’invitation",
+        "changeManager": "Changer de responsable",
+        "changeManagerHint": "Le nouveau responsable reçoit une invitation. S’il fait déjà partie de l’équipe, il est simplement promu.",
+        "sendManagerInvite": "Inviter le responsable",
+        "openOrdersTitle": "Commandes en cours",
+        "openOrdersHint": "Qui travaille sur quoi et où en est le travail.",
+        "noOpenOrders": "Aucune commande ouverte pour le moment.",
+        "notAssignedYet": "Pas encore attribuée",
+        "waitingForManager": "En attente de répartition",
+        "teamTitle": "Équipe",
+        "teamHintOffice": "Le responsable gère lui-même son équipe.",
+        "noTeam": "Pas encore de personnel.",
+        "managerBadge": "Responsable",
+        "memberPaused": "En pause",
+        "openTasks": "{count, plural, =0 {aucune tâche ouverte} one {# tâche ouverte} other {# tâches ouvertes}}",
+        "detailsTitle": "Informations sur l’atelier",
+        "peopleHint": "Le personnel est invité par son responsable d’atelier. Ici, vous voyez tout le monde et pouvez suspendre ou supprimer des comptes."
+      },
+      "team": {
+        "title": "Mon équipe",
+        "description": "Invitez votre équipe. Chaque personne reçoit un e-mail, définit son mot de passe puis voit les commandes que vous lui confiez.",
+        "membersTitle": "{count, plural, =0 {Personne dans l’équipe} one {# personne dans l’équipe} other {# personnes dans l’équipe}}",
+        "empty": "Invitez la première personne avec son nom et son e-mail.",
+        "you": "Vous · Responsable",
+        "active": "Actif",
+        "invited": "Invitation en attente",
+        "paused": "En pause",
+        "openTasks": "{count, plural, =0 {disponible} one {# tâche} other {# tâches}}",
+        "actionsFor": "Actions pour {name}",
+        "message": "Écrire un message",
+        "resend": "Renvoyer l’invitation",
+        "pause": "Suspendre",
+        "resume": "Réactiver",
+        "remove": "Retirer de l’équipe",
+        "removeTitle": "Retirer {name} de l’équipe ?",
+        "removeText": "{count, plural, =0 {Son accès est désactivé.} one {Son accès est désactivé et sa tâche ouverte vous revient.} other {Son accès est désactivé et ses # tâches ouvertes vous reviennent.}}",
+        "inviteTitle": "Inviter quelqu’un",
+        "inviteHint": "L’invitation arrive par e-mail ; la personne se connecte ensuite avec cette adresse.",
+        "name": "Nom",
+        "email": "Adresse e-mail",
+        "phone": "Téléphone (facultatif)",
+        "invite": "Envoyer l’invitation",
+        "sending": "Envoi…",
+        "inviteFootnote": "Le lien de l’e-mail est personnel et valable peu de temps. S’il expire, renvoyez simplement l’invitation."
+      },
+      "workshopOrders": {
+        "title": "Commandes de l’atelier",
+        "description": "Les commandes de la direction pour votre atelier. Confiez chacune à un membre de l’équipe : il reçoit tous les détails par e-mail.",
+        "tabs": {
+          "toAssign": "À répartir",
+          "inProgress": "En cours",
+          "finished": "Terminées"
+        },
+        "empty": {
+          "toAssign": "Tout est réparti. Les nouvelles commandes apparaîtront ici.",
+          "inProgress": "Rien n’est en cours pour l’instant.",
+          "finished": "Rien de terminé pour l’instant."
+        },
+        "due": "Pour le {date}",
+        "new": "Nouvelle",
+        "assignTo": "Qui prend cette commande ?",
+        "reassignTo": "Confier à quelqu’un d’autre",
+        "noTeam": "Invitez d’abord votre équipe (Mon équipe)",
+        "taskCount": "{count, plural, =0 {(disponible)} one {(# tâche)} other {(# tâches)}}",
+        "assign": "Attribuer",
+        "details": "Détails"
+      },
+      "myTasks": {
+        "title": "Mes tâches",
+        "description": "Les commandes que votre responsable vous a confiées. Ouvrez-en une pour indiquer où elle en est.",
+        "writeManager": "Écrire au responsable",
+        "current": "En cours",
+        "done": "Terminées",
+        "emptyCurrent": "Aucune tâche ouverte",
+        "emptyCurrentText": "Dès qu’une commande vous est confiée, elle apparaît ici et vous recevez un e-mail.",
+        "emptyDone": "Rien de terminé pour l’instant.",
+        "due": "Pour le {date}",
+        "newTask": "Nouvelle – à accepter"
+      },
+      "task": {
+        "title": "Où en est cette commande ?",
+        "hint": "Votre responsable est prévenu à chaque changement.",
+        "now": "Actuellement :",
+        "due": "Échéance : {date}",
+        "managerNote": "Note du responsable",
+        "choose": "Nouvel état",
+        "explain": {
+          "accepted": "Je prends cette commande.",
+          "in_progress": "J’y travaille en ce moment.",
+          "problem": "Il manque quelque chose ou c’est flou – indiquez la raison.",
+          "completed": "La pièce est terminée.",
+          "shipped": "La pièce est en route vers le showroom.",
+          "declined": "Je ne peux pas prendre cette commande – indiquez la raison."
+        },
+        "reasonLabel": "Raison",
+        "reasonPlaceholder": "ex. taille de bague manquante, pierre indisponible…",
+        "noteLabel": "Note pour le responsable (facultatif)",
+        "notePlaceholder": "ex. prête jeudi",
+        "save": "Mettre à jour",
+        "saving": "Mise à jour…"
+      },
+      "orderCard": {
+        "workshopTitle": "Atelier",
+        "workshopHint": "Choisissez l’atelier. Son responsable reçoit la commande et tous les détails par e-mail, puis la répartit.",
+        "managedBy": "Responsable : {name}",
+        "noManager": "Sans responsable",
+        "noWorkshops": "Créez d’abord un atelier dans « Ateliers ».",
+        "chooseWorkshop": "À quel atelier ?",
+        "moveTo": "Atelier",
+        "selectPlaceholder": "Choisir un atelier",
+        "noteForManager": "Message au responsable (facultatif)",
+        "notePlaceholder": "ex. le client passe samedi",
+        "send": "Envoyer à l’atelier",
+        "sendAgain": "Renvoyer",
+        "moveWarning": "L’atelier actuel cède la commande ; l’attribution en cours prend fin.",
+        "craftsman": "Réalisée par",
+        "notAssigned": "Pas encore attribuée",
+        "progress": "État",
+        "craftsmanNote": "Note de l’atelier",
+        "notSent": "Pas encore envoyée",
+        "teamTitle": "Qui réalise cette commande ?",
+        "teamHint": "La personne reçoit un e-mail avec tous les détails et indique ici son avancement.",
+        "noteForCraftsman": "Note pour la personne (facultatif)",
+        "craftsmanNotePlaceholder": "ex. pour vendredi, merci",
+        "assign": "Attribuer et prévenir",
+        "updateNote": "Enregistrer la note"
+      },
+      "messages": {
+        "title": "Messages",
+        "description": {
+          "admin": "Votre ligne directe avec les responsables d’atelier.",
+          "manager": "Écrivez à la direction ou à un membre de votre équipe.",
+          "employee": "Questions, problèmes ou nouvelles rapides pour votre responsable."
+        },
+        "noThreads": "Aucune conversation pour l’instant",
+        "noThreadsText": {
+          "admin": "Dès qu’un atelier existe, vous pouvez écrire ici à son responsable.",
+          "manager": "Invitez votre équipe pour lui écrire.",
+          "employee": "Vous n’êtes encore rattaché à aucun atelier."
+        },
+        "office": "Direction",
+        "officeHint": "Pour vos questions et remarques à la direction",
+        "teamMember": "Votre équipe",
+        "yourManager": "Votre responsable d’atelier",
+        "threadEmpty": "Aucun message pour l’instant. Écrivez le premier.",
+        "placeholder": "Écrire un message…",
+        "send": "Envoyer",
+        "aboutOrder": "à propos de {order}",
+        "roles": {
+          "admin": "Direction",
+          "manager": "Responsable d’atelier",
+          "employee": "Atelier"
+        },
+        "orderTitle": "Messages sur cette commande",
+        "orderHint": "Questions et accords restent attachés à la commande.",
+        "orderEmpty": "Rien n’a encore été écrit sur cette commande.",
+        "withOffice": "Direction ↔ responsable",
+        "withPerson": "Avec {name}"
+      },
+      "promo": {
+        "title": "Fenêtre promotionnelle",
+        "description": "Un court message affiché à l’ouverture de l’accueil, par exemple pour une fête ou une nouvelle collection.",
+        "enabled": "Afficher sur le site",
+        "enabledOn": "Les visiteurs la verront après l’enregistrement.",
+        "enabledOff": "Désactivée – vos textes restent enregistrés.",
+        "fieldTitle": "Titre",
+        "titlePlaceholder": "ex. Notre nouvelle collection du Ramadan",
+        "fieldText": "Texte",
+        "textPlaceholder": "Une ou deux phrases suffisent.",
+        "fieldButton": "Texte du bouton",
+        "buttonPlaceholder": "ex. Voir la collection",
+        "fieldLink": "Destination du bouton",
+        "linkHint": "« /shop » pour la boutique, « /contact » pour le contact ou une adresse complète en https://. Sans destination, aucun bouton n’est affiché.",
+        "fieldImage": "Image (facultative)",
+        "from": "Afficher à partir du",
+        "fromHint": "Vide = dès maintenant",
+        "until": "Afficher jusqu’au",
+        "untilHint": "Vide = sans fin",
+        "showOnce": "N’afficher qu’une fois par visiteur",
+        "showOnceHint": "Si vous changez le titre, tout le monde la reverra.",
+        "preview": "Aperçu",
+        "previewEmptyTitle": "Votre titre",
+        "previewDismiss": "Plus tard",
+        "previewOff": "Actuellement désactivée – les visiteurs ne voient rien.",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…",
+        "badLink": "La destination doit commencer par « / » ou « https:// ».",
+        "tooLong": "Un des textes est trop long.",
+        "titleRequired": "Ajoutez un titre avant d’activer la fenêtre."
+      },
+      "newOrder": {
+        "dueDate": "À livrer pour le (facultatif)",
+        "priority": "Priorité",
+        "workshop": "Envoyer directement à un atelier",
+        "workshopHint": "Le responsable de l’atelier reçoit aussitôt la commande avec tous les détails.",
+        "noWorkshops": "Aucun atelier pour l’instant – vous pourrez envoyer la commande plus tard.",
+        "later": "Décider plus tard",
+        "workshopNotes": "Note pour l’atelier (facultatif)",
+        "workshopNotesPlaceholder": "ex. gravure en arabe, la cliente passe samedi",
+        "createAndSend": "Créer et envoyer la commande"
+      }
     }
   },
   "Tracking": {
@@ -2154,57 +2423,60 @@
       }
     ]
   },
-  "PublicVisuals": {
-    "title": "Visuels publics",
-    "description": "Paramètres des images hero et de la fenêtre promotionnelle.",
-    "homeHero": "URL de l’image hero d’accueil",
-    "shopHero": "URL de l’image hero de la boutique",
-    "enabled": "Afficher la fenêtre promotionnelle",
-    "showOnce": "N’afficher qu’une fois par visiteur",
-    "promoTitle": "Titre",
-    "promoDescription": "Texte court",
-    "ctaText": "Texte du bouton",
-    "ctaUrl": "Lien du bouton",
-    "imageUrl": "URL de l’image promotionnelle",
-    "videoUrl": "Lien vidéo (facultatif)",
-    "start": "Afficher à partir du",
-    "end": "Afficher jusqu’au",
-    "style": "Mise en page",
-    "save": "Enregistrer",
-    "reset": "Réinitialiser les images hero",
-    "luxury": "Carte avec texte",
-    "image": "Grande image",
-    "announcement": "Bandeau fin"
-  },
-  "OrderEntry": {
-    "customer": "Coordonnées du client",
-    "customerEmail": "E-mail",
-    "customerName": "Nom du client",
-    "customerPhone": "Téléphone",
-    "description": "Ce lien privé permet d’envoyer une commande atelier de façon sûre et directe dans le tableau de bord GoldHelwah.",
-    "emailInvalid": "Veuillez saisir une adresse e-mail valide.",
-    "emailUpdates": "Envoyer les mises à jour par e-mail",
-    "emailUpdatesHint": "Les mises à jour ne sont envoyées que si une adresse e-mail valide est indiquée.",
-    "message": "Note de commande",
-    "noOptions": "Aucune option personnalisée n’est attribuée à ce produit.",
-    "options": "Options du produit",
-    "privacy": "Lien privé et protégé",
-    "product": "Produit",
-    "productRequired": "Veuillez d’abord choisir un produit.",
-    "quantity": "Quantité",
-    "required": "Veuillez remplir ce champ.",
-    "submit": "Envoyer la commande",
-    "submitPending": "Envoi de la commande…",
-    "success": "La commande a bien été créée.",
-    "title": "Commande atelier",
-    "trackingCta": "Voir le suivi",
-    "defaultMessage": "Je souhaite commander {product}.",
-    "yes": "Oui",
-    "no": "Non",
-    "unavailableTitle": "Commande atelier indisponible pour le moment",
-    "unavailableDescription": "Aucun produit actif n’est actuellement associé à ce lien."
-  },
   "Common": {
     "loading": "Chargement…"
+  },
+  "Promo": {
+    "close": "Fermer",
+    "dismiss": "Plus tard"
+  },
+  "StaffEmail": {
+    "greeting": "Bonjour {name},",
+    "greetingPlain": "Bonjour,",
+    "signature": "Cordialement\nGoldHelwah GmbH",
+    "linkFallback": "Si le bouton ne fonctionne pas, ouvrez ce lien :",
+    "privateLink": "Ce lien est personnel. Merci de ne pas le partager.",
+    "invite": {
+      "subject": "Votre accès GoldHelwah",
+      "introManager": "Vous êtes invité à diriger l’atelier « {workshop} ». Vous y recevrez les commandes de la direction et les répartirez dans votre équipe.",
+      "introEmployee": "Vous êtes invité à rejoindre l’équipe de l’atelier « {workshop} ». Vous y verrez les commandes qui vous sont confiées et indiquerez votre avancement.",
+      "introStaff": "Un accès au tableau de bord GoldHelwah a été créé pour vous.",
+      "steps": "Cliquez sur le bouton et choisissez un mot de passe, c’est tout. Vous vous connecterez ensuite avec cette adresse e-mail.",
+      "cta": "Accepter l’invitation"
+    },
+    "reset": {
+      "subject": "Nouveau mot de passe GoldHelwah",
+      "intro": "Utilisez le bouton ci-dessous pour définir un nouveau mot de passe. Si vous n’avez rien demandé, ignorez cet e-mail.",
+      "cta": "Définir le mot de passe"
+    },
+    "workshopOrder": {
+      "subject": "Nouvelle commande {order} pour votre atelier",
+      "intro": "La direction a envoyé une nouvelle commande à l’atelier « {workshop} ».",
+      "next": "Merci de la confier à un membre de votre équipe dans le tableau de bord.",
+      "cta": "Ouvrir la commande"
+    },
+    "employeeTask": {
+      "subject": "Nouvelle commande pour vous : {order}",
+      "intro": "{manager} vous a confié une commande. Voici tous les détails.",
+      "next": "Merci de l’accepter dans le tableau de bord et d’y indiquer votre avancement.",
+      "cta": "Voir la commande"
+    },
+    "taskAlert": {
+      "problem": "{employee} signale un problème sur la commande {order}.",
+      "declined": "{employee} ne peut pas prendre la commande {order}. Merci de la confier à quelqu’un d’autre.",
+      "problemSubject": "Problème sur la commande {order}",
+      "declinedSubject": "Commande {order} refusée",
+      "cta": "Ouvrir la commande"
+    },
+    "rows": {
+      "order": "Commande",
+      "product": "Produit",
+      "quantity": "Quantité",
+      "priority": "Priorité",
+      "dueDate": "Échéance",
+      "noteFromOffice": "Note de la direction",
+      "noteFromManager": "Note du responsable",
+      "reason": "Raison"
+    }
   }
 }

@@ -1,5 +1,7 @@
 import "server-only";
 
+import { getUnreadMessageCount } from "@/lib/db/staffMessages";
+
 import { getDecoyAdminNavCounts } from "@/lib/admin/decoyData";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
 import type { AdminViewer } from "@/lib/db/adminScope";
@@ -16,7 +18,10 @@ type AdminNavCounts = Partial<
     | "inquiries"
     | "options"
     | "orders"
-    | "settings",
+    | "settings"
+    | "messages"
+    | "myTasks"
+    | "workshopOrders",
     number
   >
 >;
@@ -158,14 +163,29 @@ export async function getAdminNavCounts(viewer: AdminViewer): Promise<AdminNavCo
       ? 0
       : 1;
 
+  const messages = await getUnreadMessageCount(viewer);
+
   if (viewer.role === "employee") {
+    if (viewer.managedWorkshopId) {
+      // The manager's queue: new or bounced orders waiting for someone.
+      const waiting = (orders ?? []).filter(
+        (order) =>
+          order.workshop_id === viewer.managedWorkshopId &&
+          !isDeletedOrder(order) &&
+          !["delivered", "cancelled", "archived"].includes(String(order.status)) &&
+          (!order.employee_id || ["declined", "returned", "problem"].includes(String(order.assignment_status)))
+      ).length;
+      return { messages, workshopOrders: waiting };
+    }
     return {
-      orders: visibleOrders.filter(isActiveQueueOrder).length,
+      messages,
+      myTasks: visibleOrders.filter((order) => order.assignment_status === "assigned").length,
     };
   }
 
   return {
     inquiries: unreadInquiryCount,
+    messages,
     orders: visibleOrders.filter(needsAdminAttention).length,
     overview: openSupportCount,
     settings: settingsCount,

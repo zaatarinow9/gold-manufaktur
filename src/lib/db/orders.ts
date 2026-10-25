@@ -502,6 +502,9 @@ function normalizeAssignmentStatus(value?: string | null): OrderAssignmentStatus
     case "waiting":
     case "completed":
     case "returned":
+    case "declined":
+    case "problem":
+    case "shipped":
       return value;
     default:
       return "assigned";

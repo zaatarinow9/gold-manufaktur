@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateDashboard } from "@/lib/admin/revalidate";
+
 import { getOrderWorkflowCopy } from "@/lib/admin/adminCopy.server";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
@@ -23,6 +25,9 @@ import {
   type OrderCreatePayload,
   type OrderWorkflowUpdatePayload,
 } from "@/lib/db/orders";
+import type { EmployeeTaskStatus } from "@/lib/admin/assignmentStatus";
+import { flowErrorMessage, runFlowAction } from "@/lib/admin/flowActions";
+import { sendOrderToWorkshop } from "@/lib/db/workshopFlow";
 import {
   assignOrderToEmployee,
   updateMyAssignmentStatus,
@@ -219,6 +224,8 @@ async function getOrderFailure(
 
   if (error instanceof Error) {
     switch (error.message) {
+      case "TASK_NOTE_REQUIRED":
+        return { message: await flowErrorMessage(locale, error), ok: false as const };
       case "INVALID_EMPLOYEE_SELECTION":
       case "INVALID_EMPLOYEE_WORKSHOP":
         return {
@@ -279,6 +286,7 @@ async function getOrderFailure(
 }
 
 function revalidateOrderViews(orderId?: string, trackingNumber?: string) {
+  revalidateDashboard();
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}/admin`);
     revalidatePath(`/${locale}/admin/orders`);
@@ -410,7 +418,7 @@ export async function assignOrderToEmployeeAction(
   }
 
   try {
-    const result = await assignOrderToEmployee(access.user, input);
+    const result = await assignOrderToEmployee(access.user, input, locale);
     revalidateOrderViews(input.orderId, result.trackingNumber);
 
     let message = await getAssignmentEmailMessage(locale, "saved");
@@ -436,7 +444,7 @@ export async function updateMyTaskAction(
   input: {
     employeeNote: string;
     orderId: string;
-    status: "assigned" | "accepted" | "in_progress" | "waiting" | "completed";
+    status: EmployeeTaskStatus;
   }
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
@@ -457,7 +465,7 @@ export async function updateMyTaskAction(
   }
 
   try {
-    const result = await updateMyAssignmentStatus(access.user, input);
+    const result = await updateMyAssignmentStatus(access.user, input, locale);
     revalidateOrderViews(input.orderId, result.trackingNumber);
 
     return {
@@ -570,4 +578,16 @@ export async function withdrawOrderAssignmentAction(
   } catch (error) {
     return getOrderFailure(locale, error, "update");
   }
+}
+
+/** Head office (or the showroom) hands an order to a workshop's manager. */
+export async function sendOrderToWorkshopAction(
+  locale: AppLocale,
+  input: { note: string; orderId: string; workshopId: string }
+) {
+  return runFlowAction(locale, ["super_admin", "admin"], async (user) => {
+    const result = await sendOrderToWorkshop(user, locale, input);
+    if (!result.hasManager) return { key: "orderSentNoManager", values: { workshop: result.workshopName } };
+    return { key: result.emailStatus === "sent" ? "orderSent" : "orderSentNoEmail", values: { workshop: result.workshopName } };
+  });
 }

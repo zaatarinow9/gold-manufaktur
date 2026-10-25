@@ -483,7 +483,7 @@
     border-color: rgba(255, 255, 255, 0.18);
   }
 
-  .admin-chip:is([aria-pressed="true"], [aria-checked="true"]) {
+  .admin-chip:is([aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]) {
     border-color: rgba(232, 201, 135, 0.4);
     background: rgba(196, 154, 82, 0.14);
     color: var(--admin-text);
@@ -495,7 +495,7 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .admin-chip:is([aria-pressed="true"], [aria-checked="true"]) .admin-chip-count {
+  .admin-chip:is([aria-pressed="true"], [aria-checked="true"], [aria-selected="true"]) .admin-chip-count {
     color: var(--gold-soft);
   }
 

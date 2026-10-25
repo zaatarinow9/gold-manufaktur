@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { HomeContent } from "@/components/site/HomeContent";
 import { PromoPopup } from "@/components/site/PromoPopup";
 import { getHomepageCatalog } from "@/lib/db/catalog";
-import { getPublicVisualSettings } from "@/lib/db/siteSettings";
+import { getPublicVisualSettings, resolvePromoPopup } from "@/lib/db/siteSettings";
 import { createPageMetadata } from "@/lib/metadata";
 import { resolveLocale } from "@/lib/site";
 
@@ -24,7 +24,7 @@ export default async function LocaleHomePage({
   const [homepageCatalog, visualSettings] = await Promise.all([getHomepageCatalog(locale), getPublicVisualSettings()]);
   return (
     <>
-      <PromoPopup promo={visualSettings.promoPopup} />
+      <PromoPopup promo={resolvePromoPopup(visualSettings.promoPopup, locale)} />
       <HomeContent
         categories={homepageCatalog.categories}
         featuredProducts={homepageCatalog.featuredProducts}

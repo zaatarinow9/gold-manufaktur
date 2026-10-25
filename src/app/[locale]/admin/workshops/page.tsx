@@ -50,5 +50,5 @@ export default async function AdminWorkshopsPage({
   }
 
   const workshops = await getScopedWorkshops(access.user);
-  return <AdminWorkshopsClient canCreate locale={locale} workshops={workshops} />;
+  return <AdminWorkshopsClient locale={locale} workshops={workshops} />;
 }

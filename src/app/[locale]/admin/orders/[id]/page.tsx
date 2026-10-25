@@ -13,8 +13,12 @@ import { OrderTrackingCard } from "@/components/admin/OrderTrackingCard";
 import { PhoneInline } from "@/components/site/PhoneInline";
 import { Link } from "@/i18n/navigation";
 import { requireAdminAccess } from "@/lib/admin/auth";
-import { getScopedEmployees } from "@/lib/db/employees";
+import { OrderConversation, type OrderThread } from "@/components/admin/OrderConversation";
+import { OrderManagerCard, OrderWorkshopCard } from "@/components/admin/OrderWorkshopCard";
 import { getScopedOrderDetail } from "@/lib/db/orders";
+import { getOrderThreads } from "@/lib/db/staffMessages";
+import { getWorkshopTeam } from "@/lib/db/workshopFlow";
+import { getScopedWorkshops } from "@/lib/db/workshops";
 import { resolveLocale } from "@/lib/site";
 
 type OrderDetailPageProps = {
@@ -220,11 +224,9 @@ export default async function AdminOrderDetailPage({
     );
   }
 
-  const isEmployeeView = access.user.role === "employee";
-  const [order, employees] = await Promise.all([
-    getScopedOrderDetail(access.user, id),
-    getScopedEmployees(access.user),
-  ]);
+  const viewer = access.user;
+  const isEmployeeView = viewer.role === "employee";
+  const order = await getScopedOrderDetail(viewer, id);
 
   if (!order) {
     return (
@@ -234,6 +236,33 @@ export default async function AdminOrderDetailPage({
       />
     );
   }
+
+  const isManagerView = isEmployeeView && Boolean(viewer.managedWorkshopId) && viewer.managedWorkshopId === order.workshopId;
+  const isOwnTask = isEmployeeView && Boolean(order.employeeId) && order.employeeId === viewer.linkedEmployeeId;
+  const [workshops, team, rawThreads] = await Promise.all([
+    isEmployeeView ? Promise.resolve([]) : getScopedWorkshops(viewer),
+    isManagerView && viewer.managedWorkshopId ? getWorkshopTeam(viewer.managedWorkshopId) : Promise.resolve([]),
+    getOrderThreads(viewer, { employeeId: order.employeeId, id: order.id, workshopId: order.workshopId }),
+  ]);
+  const threads: OrderThread[] = rawThreads.map((thread) => ({
+    channel: thread.access.channel,
+    key: thread.key,
+    messages: thread.messages,
+    withName:
+      thread.access.channel === "management"
+        ? viewer.role === "super_admin"
+          ? thread.access.managerName
+          : ""
+        : viewer.linkedEmployeeId === thread.access.employeeId
+          ? thread.access.managerName
+          : thread.access.employeeName,
+  }));
+  const assignment = {
+    assignmentStatus: order.assignmentStatus,
+    employeeId: order.employeeId,
+    employeeName: order.employeeName,
+    employeeNote: order.employeeNote,
+  };
 
   const item = order.items[0];
   const notProvided = t("common.notProvided");
@@ -314,7 +343,7 @@ export default async function AdminOrderDetailPage({
         }
         actions={
           <Link
-            href={isEmployeeView ? "/admin/my-tasks" : "/admin/orders"}
+            href={isManagerView ? "/admin/workshop-orders" : isEmployeeView ? "/admin/my-tasks" : "/admin/orders"}
             className={getAdminButtonClassName({ variant: "ghost" })}
           >
             {isEmployeeView ? t("buttons.backToTasks") : t("buttons.backToOrders")}
@@ -612,7 +641,7 @@ export default async function AdminOrderDetailPage({
             </AdminPrivacyGuard>
           ) : null}
 
-          {isEmployeeView ? (
+          {isOwnTask ? (
             <EmployeeTaskCard
               assignmentNote={order.assignmentNote}
               dueDate={order.dueDate}
@@ -621,16 +650,40 @@ export default async function AdminOrderDetailPage({
               locale={locale}
               orderId={order.id}
             />
-          ) : (
+          ) : null}
+
+          {isManagerView ? (
+            <OrderManagerCard
+              assignment={assignment}
+              assignmentNote={order.assignmentNote}
+              locale={locale}
+              orderId={order.id}
+              team={team.filter((member) => member.isActive).map((member) => ({ id: member.id, name: member.name, openTasks: member.openTasks }))}
+            />
+          ) : null}
+
+          {!isEmployeeView ? (
+            <OrderWorkshopCard
+              assignment={assignment}
+              locale={locale}
+              orderId={order.id}
+              workshopId={order.workshopId}
+              workshops={workshops.map((workshop) => ({
+                id: workshop.id,
+                isActive: workshop.isActive,
+                managerName: workshop.manager?.name ?? "",
+                name: workshop.name,
+              }))}
+            />
+          ) : null}
+
+          {threads.length > 0 ? <OrderConversation locale={locale} orderId={order.id} threads={threads} /> : null}
+
+          {!isEmployeeView ? (
             <OrderTrackingCard
-              currentUserRole={access.user.role}
+              currentUserRole={viewer.role}
               customerEmail={order.customerEmail}
               emailUpdatesEnabled={order.emailUpdatesEnabled}
-              employees={employees}
-              initialAssignmentNote={order.assignmentNote}
-              initialAssignmentStatus={order.assignmentStatus}
-              initialEmployeeId={order.employeeId}
-              initialEmployeeNote={order.employeeNote}
               initialEvents={order.trackingEvents}
               initialPublicStage={order.publicTrackingStage}
               initialStatus={order.trackingStatus}
@@ -638,7 +691,7 @@ export default async function AdminOrderDetailPage({
               orderId={order.id}
               trackingNumber={order.trackingNumber}
             />
-          )}
+          ) : null}
         </div>
       </section>
     </div>

@@ -26,7 +26,7 @@ export function AdminHeader({ currentUser, onOpenNav }: AdminHeaderProps) {
   const pathname = usePathname() ?? "/admin";
   const locale = useLocale() as AppLocale;
   const t = useTranslations("Admin");
-  const currentItem = findActiveAdminNavItem(currentUser.role, pathname);
+  const currentItem = findActiveAdminNavItem(currentUser, pathname);
 
   return (
     <header className="admin-topbar sticky top-0 z-30">

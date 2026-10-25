@@ -1,13 +1,6 @@
 import "server-only";
 
 import { cache } from "react";
-import {
-  createCipheriv,
-  createDecipheriv,
-  createHash,
-  randomBytes,
-  timingSafeEqual,
-} from "node:crypto";
 
 import { getDecoySettingsSnapshot } from "@/lib/admin/decoyData";
 import type {
@@ -15,6 +8,7 @@ import type {
   StaticSiteImageSlot,
 } from "@/lib/site-images";
 import { isAdminDecoyEnabled } from "@/lib/db/adminDecoy";
+import type { AppLocale } from "@/i18n/routing";
 import type { Json } from "@/lib/supabase/types";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -68,12 +62,7 @@ export type SmtpStatus = {
 export type AdminSettingsSnapshot = {
   adminNotificationEmail: string;
   diagnostics: SiteSettingsDiagnostics;
-  orderEntryEnabled: boolean;
-  orderEntryExpiresAt: string;
-  orderEntryToken: string;
-  orderEntryTokenHint: string;
-  orderEntryRotatedAt: string;
-  ownerEmail: string;
+    ownerEmail: string;
   privacyModeEnabled: boolean;
   privacyModeReason: string;
   privacyModeUpdatedAt: string;
@@ -96,13 +85,6 @@ export const siteSettingKeys = {
   staticImagePromoPopupImage: "static_image_promo_popup_image",
   staticImageShopHero: "static_image_shop_hero",
   adminNotificationEmail: "admin_notification_email",
-  orderEntryEnabled: "order_entry_enabled",
-  orderEntryExpiresAt: "order_entry_expires_at",
-  orderEntryTokenHash: "order_entry_token_hash",
-  orderEntryTokenSealed: "order_entry_token_sealed",
-  orderEntryToken: "order_entry_token",
-  orderEntryTokenHint: "order_entry_token_hint",
-  orderEntryRotatedAt: "order_entry_rotated_at",
   ownerEmail: "owner_email",
   privacyModeEnabled: "privacy_mode_enabled",
   privacyModeReason: "privacy_mode_reason",
@@ -110,18 +92,34 @@ export const siteSettingKeys = {
   supportNotificationEmail: "support_notification_email",
 } as const;
 
+/** Text of the pop-up per website language; empty languages fall back. */
+export type PromoText = Record<AppLocale, string>;
+
 export type PublicPromoPopup = {
-  ctaText: string;
+  ctaText: PromoText;
+  /** "/shop", "/contact" or a full https:// address. */
   ctaUrl: string;
-  description: string;
+  description: PromoText;
   enabled: boolean;
   endsAt: string;
   imageUrl: string;
   showOnce: boolean;
   startsAt: string;
-  style: "announcement" | "image" | "luxury";
+  title: PromoText;
+};
+
+/** What one visitor sees, already in their language. */
+export type ResolvedPromoPopup = {
+  ctaText: string;
+  ctaUrl: string;
+  description: string;
+  endsAt: string;
+  imageUrl: string;
+  showOnce: boolean;
+  startsAt: string;
   title: string;
-  videoUrl: string;
+  /** Changes when the content changes, so "show once" starts over. */
+  version: string;
 };
 
 export type PublicPromoPopupSettings = Omit<PublicPromoPopup, "imageUrl">;
@@ -136,7 +134,64 @@ export type PublicVisualSettings = {
   staticImages: StaticSiteImageMap;
 };
 
-const emptyPromoPopup: PublicPromoPopup = { ctaText: "", ctaUrl: "", description: "", enabled: false, endsAt: "", imageUrl: "", showOnce: false, startsAt: "", style: "luxury", title: "", videoUrl: "" };
+const promoLocales = ["de", "ar", "en", "fr", "tr"] as const satisfies readonly AppLocale[];
+
+export function emptyPromoText(): PromoText {
+  return { ar: "", de: "", en: "", fr: "", tr: "" };
+}
+
+const emptyPromoPopup: PublicPromoPopup = {
+  ctaText: emptyPromoText(),
+  ctaUrl: "",
+  description: emptyPromoText(),
+  enabled: false,
+  endsAt: "",
+  imageUrl: "",
+  showOnce: true,
+  startsAt: "",
+  title: emptyPromoText(),
+};
+
+/** Accepts the old single-language strings as well as the per-language form. */
+function toPromoText(value: unknown): PromoText {
+  const result = emptyPromoText();
+  if (typeof value === "string") {
+    for (const locale of promoLocales) result[locale] = value.trim();
+    return result;
+  }
+  if (value && typeof value === "object") {
+    for (const locale of promoLocales) {
+      const entry = (value as Record<string, unknown>)[locale];
+      result[locale] = typeof entry === "string" ? entry.trim() : "";
+    }
+  }
+  return result;
+}
+
+function pickPromoText(text: PromoText, locale: AppLocale) {
+  return text[locale] || text.de || promoLocales.map((code) => text[code]).find(Boolean) || "";
+}
+
+export function resolvePromoPopup(promo: PublicPromoPopup, locale: AppLocale): ResolvedPromoPopup | null {
+  const title = pickPromoText(promo.title, locale);
+  if (!promo.enabled || !title) return null;
+  const rawUrl = promo.ctaUrl.trim();
+  const ctaUrl = rawUrl.startsWith("/") && !/^\/(de|ar|en|fr|tr)(\/|$)/.test(rawUrl) ? `/${locale}${rawUrl}` : rawUrl;
+  const resolved = {
+    ctaText: pickPromoText(promo.ctaText, locale),
+    ctaUrl,
+    description: pickPromoText(promo.description, locale),
+    endsAt: promo.endsAt,
+    imageUrl: promo.imageUrl,
+    showOnce: promo.showOnce,
+    startsAt: promo.startsAt,
+    title,
+  };
+  const fingerprint = JSON.stringify([promo.title, promo.description, promo.startsAt, promo.imageUrl]);
+  let hash = 0;
+  for (let index = 0; index < fingerprint.length; index += 1) hash = (hash * 31 + fingerprint.charCodeAt(index)) | 0;
+  return { ...resolved, version: Math.abs(hash).toString(36) };
+}
 
 function createEmptyStaticSiteImages(): StaticSiteImageMap {
   return {
@@ -182,11 +237,19 @@ function normalizeStaticSiteImageRecord(
   };
 }
 
-function parsePromoPopup(value: string) {
+function parsePromoPopup(value: string): PublicPromoPopup {
   try {
+    const raw = JSON.parse(value) as Record<string, unknown>;
     return {
-      ...emptyPromoPopup,
-      ...JSON.parse(value),
+      ctaText: toPromoText(raw.ctaText),
+      ctaUrl: typeof raw.ctaUrl === "string" ? raw.ctaUrl.trim() : "",
+      description: toPromoText(raw.description),
+      enabled: raw.enabled === true,
+      endsAt: typeof raw.endsAt === "string" ? raw.endsAt : "",
+      imageUrl: typeof raw.imageUrl === "string" ? raw.imageUrl : "",
+      showOnce: raw.showOnce !== false,
+      startsAt: typeof raw.startsAt === "string" ? raw.startsAt : "",
+      title: toPromoText(raw.title),
     };
   } catch {
     return emptyPromoPopup;
@@ -634,92 +697,6 @@ async function saveSiteSettings(inputs: UpsertSiteSettingInput[]) {
   }
 }
 
-function generateOrderEntryToken() {
-  return randomBytes(24).toString("base64url");
-}
-
-function getTokenHint(token: string) {
-  if (token.length <= 8) {
-    return token;
-  }
-
-  return token.slice(-8);
-}
-
-function stringsMatch(expectedValue: string, providedValue: string) {
-  const expected = Buffer.from(expectedValue, "utf8");
-  const provided = Buffer.from(providedValue, "utf8");
-
-  if (expected.length !== provided.length) {
-    return false;
-  }
-
-  return timingSafeEqual(expected, provided);
-}
-
-function getOrderEntryTokenSecret() {
-  const secret =
-    process.env.ORDER_ENTRY_TOKEN_SECRET?.trim() ??
-    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ??
-    "";
-
-  if (!secret) {
-    throw new Error("Missing order-entry token secret.");
-  }
-
-  return secret;
-}
-
-function getOrderEntryTokenEncryptionKey() {
-  return createHash("sha256")
-    .update(getOrderEntryTokenSecret(), "utf8")
-    .digest();
-}
-
-function hashOrderEntryToken(token: string) {
-  return createHash("sha256").update(token, "utf8").digest("hex");
-}
-
-function sealOrderEntryToken(token: string) {
-  const iv = randomBytes(12);
-  const cipher = createCipheriv(
-    "aes-256-gcm",
-    getOrderEntryTokenEncryptionKey(),
-    iv
-  );
-  const encrypted = Buffer.concat([
-    cipher.update(token, "utf8"),
-    cipher.final(),
-  ]);
-  const authTag = cipher.getAuthTag();
-
-  return Buffer.concat([iv, authTag, encrypted]).toString("base64url");
-}
-
-function unsealOrderEntryToken(sealedToken: string) {
-  const payload = Buffer.from(sealedToken, "base64url");
-
-  if (payload.length <= 28) {
-    throw new Error("Malformed sealed order-entry token payload.");
-  }
-
-  const iv = payload.subarray(0, 12);
-  const authTag = payload.subarray(12, 28);
-  const encrypted = payload.subarray(28);
-  const decipher = createDecipheriv(
-    "aes-256-gcm",
-    getOrderEntryTokenEncryptionKey(),
-    iv
-  );
-
-  decipher.setAuthTag(authTag);
-
-  return Buffer.concat([
-    decipher.update(encrypted),
-    decipher.final(),
-  ]).toString("utf8");
-}
-
 type SiteSettingRowMap = Map<
   string,
   {
@@ -727,149 +704,6 @@ type SiteSettingRowMap = Map<
     valueText: string | null;
   }
 >;
-
-type OrderEntryTokenState = {
-  token: string;
-  tokenHash: string;
-  tokenHint: string;
-};
-
-async function getOrderEntryTokenState(
-  rows: SiteSettingRowMap
-): Promise<OrderEntryTokenState> {
-  const legacyToken = normalizeSettingText(
-    rows.get(siteSettingKeys.orderEntryToken)?.valueText
-  );
-  const sealedToken = normalizeSettingText(
-    rows.get(siteSettingKeys.orderEntryTokenSealed)?.valueText
-  );
-  const storedTokenHash = normalizeSettingText(
-    rows.get(siteSettingKeys.orderEntryTokenHash)?.valueText
-  );
-  const storedTokenHint = normalizeSettingText(
-    rows.get(siteSettingKeys.orderEntryTokenHint)?.valueText
-  );
-
-  if (sealedToken) {
-    try {
-      const token = unsealOrderEntryToken(sealedToken);
-      const tokenHash = hashOrderEntryToken(token);
-      const tokenHint = storedTokenHint || getTokenHint(token);
-
-      if (
-        legacyToken ||
-        !storedTokenHash ||
-        !stringsMatch(storedTokenHash, tokenHash) ||
-        storedTokenHint !== tokenHint
-      ) {
-        await saveSiteSettings([
-          {
-            key: siteSettingKeys.orderEntryToken,
-            valueText: null,
-          },
-          {
-            key: siteSettingKeys.orderEntryTokenHash,
-            valueText: tokenHash,
-          },
-          {
-            key: siteSettingKeys.orderEntryTokenHint,
-            valueText: tokenHint,
-          },
-        ]);
-      }
-
-      return {
-        token,
-        tokenHash,
-        tokenHint,
-      };
-    } catch (error) {
-      console.error(
-        `[site-settings] Unable to read sealed order-entry token: ${
-          error instanceof Error ? error.message : "unknown_error"
-        }`
-      );
-    }
-  }
-
-  if (legacyToken) {
-    const tokenHash = hashOrderEntryToken(legacyToken);
-    const tokenHint = storedTokenHint || getTokenHint(legacyToken);
-
-    await saveSiteSettings([
-      {
-        key: siteSettingKeys.orderEntryToken,
-        valueText: null,
-      },
-      {
-        key: siteSettingKeys.orderEntryTokenHash,
-        valueText: tokenHash,
-      },
-      {
-        key: siteSettingKeys.orderEntryTokenHint,
-        valueText: tokenHint,
-      },
-      {
-        key: siteSettingKeys.orderEntryTokenSealed,
-        valueText: sealOrderEntryToken(legacyToken),
-      },
-    ]);
-
-    return {
-      token: legacyToken,
-      tokenHash,
-      tokenHint,
-    };
-  }
-
-  return {
-    token: "",
-    tokenHash: storedTokenHash,
-    tokenHint: storedTokenHint,
-  };
-}
-
-async function persistOrderEntryToken(input: {
-  enabled: boolean;
-  expiresAt: string;
-  rotatedAt: string;
-  token: string;
-}) {
-  const normalizedExpiresAt = normalizeSettingText(input.expiresAt) || null;
-  const tokenHash = hashOrderEntryToken(input.token);
-  const tokenHint = getTokenHint(input.token);
-
-  await saveSiteSettings([
-    {
-      key: siteSettingKeys.orderEntryEnabled,
-      valueText: input.enabled ? "true" : "false",
-    },
-    {
-      key: siteSettingKeys.orderEntryExpiresAt,
-      valueText: normalizedExpiresAt,
-    },
-    {
-      key: siteSettingKeys.orderEntryToken,
-      valueText: null,
-    },
-    {
-      key: siteSettingKeys.orderEntryTokenHash,
-      valueText: tokenHash,
-    },
-    {
-      key: siteSettingKeys.orderEntryTokenHint,
-      valueText: tokenHint,
-    },
-    {
-      key: siteSettingKeys.orderEntryTokenSealed,
-      valueText: sealOrderEntryToken(input.token),
-    },
-    {
-      key: siteSettingKeys.orderEntryRotatedAt,
-      valueText: input.rotatedAt,
-    },
-  ]);
-}
 
 export async function getSiteSettingsAvailability() {
   return getSiteSettingsDiagnostics();
@@ -922,11 +756,6 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
     return {
       adminNotificationEmail: "",
       diagnostics,
-      orderEntryEnabled: false,
-      orderEntryExpiresAt: "",
-      orderEntryToken: "",
-      orderEntryTokenHint: "",
-      orderEntryRotatedAt: "",
       ownerEmail: "",
       privacyModeEnabled: false,
       privacyModeReason: "",
@@ -943,24 +772,12 @@ export async function getAdminSettingsSnapshot(): Promise<AdminSettingsSnapshot>
   }
 
   const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
-  const tokenState = await getOrderEntryTokenState(rows);
 
   return {
     adminNotificationEmail: normalizeSettingText(
       rows.get(siteSettingKeys.adminNotificationEmail)?.valueText
     ),
     diagnostics,
-    orderEntryEnabled: normalizeBooleanText(
-      rows.get(siteSettingKeys.orderEntryEnabled)?.valueText
-    ),
-    orderEntryExpiresAt: normalizeSettingText(
-      rows.get(siteSettingKeys.orderEntryExpiresAt)?.valueText
-    ),
-    orderEntryToken: tokenState.token,
-    orderEntryTokenHint: tokenState.tokenHint,
-    orderEntryRotatedAt: normalizeSettingText(
-      rows.get(siteSettingKeys.orderEntryRotatedAt)?.valueText
-    ),
     ownerEmail: normalizeSettingText(
       rows.get(siteSettingKeys.ownerEmail)?.valueText
     ),
@@ -1031,114 +848,4 @@ export async function setPrivacyMode(input: {
       updatedAt,
     },
   });
-}
-
-export async function saveOrderEntrySettings(input: {
-  enabled: boolean;
-  expiresAt: string;
-}) {
-  const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
-  const tokenState = await getOrderEntryTokenState(rows);
-  const currentToken = tokenState.token || generateOrderEntryToken();
-  const rotatedAt =
-    normalizeSettingText(rows.get(siteSettingKeys.orderEntryRotatedAt)?.valueText) ||
-    new Date().toISOString();
-
-  await persistOrderEntryToken({
-    enabled: input.enabled,
-    expiresAt: input.expiresAt,
-    rotatedAt,
-    token: currentToken,
-  });
-
-  return currentToken;
-}
-
-export async function rotateOrderEntryAccess(input: {
-  actorEmail?: string | null;
-  enabled?: boolean;
-  expiresAt?: string;
-}) {
-  const token = generateOrderEntryToken();
-  const rotatedAt = new Date().toISOString();
-  await persistOrderEntryToken({
-    enabled: input.enabled !== false,
-    expiresAt: input.expiresAt ?? "",
-    rotatedAt,
-    token,
-  });
-
-  await createAuditLog({
-    action: "order_entry_token_rotated",
-    actorEmail: input.actorEmail ?? null,
-    metadata: {
-      enabled: input.enabled !== false,
-      expiresAt: normalizeSettingText(input.expiresAt),
-      rotatedAt,
-      tokenHint: getTokenHint(token),
-    },
-  });
-
-  return {
-    fullUrl: buildOrderEntryUrl("de", token),
-    token,
-  };
-}
-
-export function buildOrderEntryPath(locale: string, token: string) {
-  return `/${locale}/order-entry/${token}`;
-}
-
-export function buildOrderEntryUrl(locale: string, token: string) {
-  return `${getSiteBaseUrl()}${buildOrderEntryPath(locale, token)}`;
-}
-
-export async function getOrderEntryAccessState() {
-  const snapshot = await getAdminSettingsSnapshot();
-
-  if (!snapshot.orderEntryEnabled) {
-    return {
-      enabled: false,
-      expiresAt: snapshot.orderEntryExpiresAt,
-      rotatedAt: snapshot.orderEntryRotatedAt,
-      token: "",
-      tokenHash: "",
-      tokenHint: snapshot.orderEntryTokenHint,
-    };
-  }
-
-  const rows = await ensureSiteSettingsRows(Object.values(siteSettingKeys));
-  const tokenState = await getOrderEntryTokenState(rows);
-
-  return {
-    enabled: snapshot.orderEntryEnabled,
-    expiresAt: snapshot.orderEntryExpiresAt,
-    rotatedAt: snapshot.orderEntryRotatedAt,
-    token: tokenState.token,
-    tokenHash: tokenState.tokenHash,
-    tokenHint:
-      snapshot.orderEntryTokenHint ||
-      tokenState.tokenHint ||
-      (tokenState.token
-        ? getTokenHint(tokenState.token)
-        : ""),
-  };
-}
-
-export async function validateOrderEntryToken(token: string) {
-  const access = await getOrderEntryAccessState();
-
-  if (!access.enabled || !access.tokenHash) {
-    return false;
-  }
-
-  if (access.expiresAt) {
-    const expiresAt = Date.parse(access.expiresAt);
-
-    if (!Number.isNaN(expiresAt) && expiresAt < Date.now()) {
-      return false;
-    }
-  }
-
-  return stringsMatch(access.tokenHash, hashOrderEntryToken(token));
 }

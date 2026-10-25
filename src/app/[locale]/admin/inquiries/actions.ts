@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateDashboard } from "@/lib/admin/revalidate";
+
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
@@ -17,6 +19,7 @@ import {
 } from "@/lib/db/inquiries";
 
 function revalidateInquiryViews() {
+  revalidateDashboard();
   ["ar", "de", "en", "fr", "tr"].forEach((locale) => {
     revalidatePath(`/${locale}/admin`);
     revalidatePath(`/${locale}/admin/inquiries`);

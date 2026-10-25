@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { KeyRound, Link2, Mail, Pencil, Plus, Power, Search, Trash2 } from "lucide-react";
+import { KeyRound, Link2, Mail, Pencil, Power, Search, Trash2, Wrench } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { AppLocale } from "@/i18n/routing";
@@ -17,7 +17,8 @@ import {
 import { AdminActionMenu, type AdminActionMenuItem } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
 import { useAdminConfirm } from "@/components/admin/AdminConfirm";
-import { AdminButton } from "@/components/admin/AdminButton";
+import { AdminButton, getAdminButtonClassName } from "@/components/admin/AdminButton";
+import { Link } from "@/i18n/navigation";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
 import { AdminInput } from "@/components/admin/AdminInput";
@@ -127,6 +128,8 @@ export function AdminEmployeesClient({
   const [workshopFilter, setWorkshopFilter] = useState("all");
   const [feedback, setFeedback] = useState<FeedbackState>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  // Deleted people vanish from the list immediately.
+  const [removedIds, setRemovedIds] = useState<Set<string>>(() => new Set());
   const [formState, setFormState] = useState<EmployeeFormState>(() =>
     createEmptyForm(defaultWorkshopId)
   );
@@ -135,6 +138,7 @@ export function AdminEmployeesClient({
     const normalizedSearch = search.toLowerCase();
 
     return employees.filter((employee) => {
+      if (removedIds.has(employee.id)) return false;
       const matchesSearch =
         search.length === 0 ||
         employee.fullName.toLowerCase().includes(normalizedSearch) ||
@@ -144,7 +148,7 @@ export function AdminEmployeesClient({
 
       return matchesSearch && matchesWorkshop;
     });
-  }, [employees, search, workshopFilter]);
+  }, [employees, removedIds, search, workshopFilter]);
 
   const pushFeedback = (result: AdminActionResult) => {
     setFeedback({
@@ -306,7 +310,19 @@ export function AdminEmployeesClient({
                 description: t("employees.deleteConfirmText"),
                 title: t("employees.deleteConfirm", { name: employee.fullName }),
               });
-              if (confirmed) runRowAction(() => deleteEmployeeAction(locale, employee.id));
+              if (!confirmed) return;
+              setRemovedIds((current) => new Set(current).add(employee.id));
+              startTransition(async () => {
+                const result = await deleteEmployeeAction(locale, employee.id);
+                if (!result.ok) {
+                  setRemovedIds((current) => {
+                    const next = new Set(current);
+                    next.delete(employee.id);
+                    return next;
+                  });
+                }
+                handleResult(result);
+              });
             },
           },
         ];
@@ -333,12 +349,16 @@ export function AdminEmployeesClient({
         title={t("employees.title")}
         description={t("employees.description")}
         actions={
-          <AdminButton variant="primary" onClick={() => openEditor(createEmptyForm(defaultWorkshopId))}>
-            <Plus />
-            {t("employees.account.create")}
-          </AdminButton>
+          <Link href="/admin/workshops" className={getAdminButtonClassName({ variant: "secondary" })}>
+            <Wrench />
+            {t("nav.workshops")}
+          </Link>
         }
       />
+
+      <p className="admin-notice">
+        {t("flow.workshops.peopleHint")}
+      </p>
 
       {feedback ? (
         <div className="admin-notice" data-tone={feedback.kind} role="status">

@@ -1,30 +1,30 @@
 {
   "Metadata": {
     "site": {
-      "brand": "Gold Helwah",
-      "title": "Gold Helwah",
-      "description": "GoldHelwah GmbH in Saarbrücken: Brautsets, Namensketten, Ringe und Anlagegold in 21, 18 und 14 Karat. Persönliche Beratung und Anfertigung nach Maß.",
+      "brand": "GoldHelwah",
+      "title": "GoldHelwah",
+      "description": "GoldHelwah in Saarbrücken: Brautschmuck, Namensketten, Ketten und Anlagegold in gestempelten 21, 18 und 14 Karat – persönlich beraten, nach Maß gefertigt.",
       "keywords": [
-        "Gold Helwah",
-        "Goldschmuck",
-        "Luxusschmuck",
-        "Schmuckkatalog",
-        "Showroom",
-        "Trauringe"
+        "GoldHelwah",
+        "Goldschmuck Saarbrücken",
+        "21 Karat Gold",
+        "Brautschmuck",
+        "Namenskette Gold",
+        "Anlagegold"
       ]
     },
     "pages": {
       "home": {
         "title": "GoldHelwah – Goldschmuck in Saarbrücken",
-        "description": "Brautsets, Namensschmuck, Ketten und Anlagegold in 21, 18 und 14 Karat. Showroom in der Breiten Straße 9, Saarbrücken."
+        "description": "Brautschmuck, Namensketten, Ketten und Anlagegold in 21, 18 und 14 Karat – persönlich beraten, nach Maß gefertigt."
       },
       "shop": {
         "title": "Kollektion",
-        "description": "Die Kollektion von GoldHelwah: Schmucksets, Namensschmuck, Ketten, Armbänder, Ringe und Goldbarren. Anfrage direkt online."
+        "description": "Die Kollektion von GoldHelwah: Sets, Namensschmuck, Ketten, Armbänder, Ringe und Barren. Details ansehen und direkt anfragen."
       },
       "contact": {
         "title": "Kontakt",
-        "description": "Showroom in der Breiten Straße 9, Saarbrücken. Telefon, WhatsApp, E-Mail und Anfrageformular."
+        "description": "GoldHelwah, Breite Straße 9, Saarbrücken – Telefon, WhatsApp, E-Mail und Kontaktformular."
       },
       "impressum": {
         "title": "Impressum",
@@ -37,14 +37,14 @@
     }
   },
   "Nav": {
-    "tagline": "Luxuriöser Goldschmuck",
+    "tagline": "Feiner Goldschmuck",
     "language": "Sprache wechseln",
     "currentLanguage": "Aktiv",
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "links": {
       "home": "Startseite",
-      "shop": "Shop",
+      "shop": "Kollektion",
       "contact": "Kontakt",
       "tracking": "Auftrag verfolgen",
       "impressum": "Impressum",
@@ -55,13 +55,13 @@
     "legalTitle": "Rechtliches"
   },
   "Footer": {
-    "description": "Goldschmuck und Anlagegold aus Saarbrücken. Persönlich beraten, auf Wunsch nach Maß gefertigt.",
+    "description": "Goldschmuck und Anlagegold aus Saarbrücken – persönlich beraten, nach Maß gefertigt.",
     "navigationTitle": "Seiten",
     "contactTitle": "Kontakt",
     "socialTitle": "Folgen Sie uns",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Kein Onlineverkauf – Anfrage, Beratung und Übergabe persönlich.",
-    "rights": "Gold Helwah. Alle Rechte vorbehalten.",
+    "legalNote": "Kein Online-Verkauf: Beratung, Bestellung und Übergabe erfolgen persönlich.",
+    "rights": "GoldHelwah GmbH. Alle Rechte vorbehalten.",
     "socials": {
       "instagram": "Instagram",
       "facebook": "Facebook",
@@ -74,12 +74,12 @@
   "Home": {
     "hero": {
       "eyebrow": "Gold Helwah",
-      "title": "GoldHelwah in Saarbrücken",
-      "subtitle": "Gold zum Tragen und Weitergeben.",
-      "description": "Brautsets, Namensketten, Münzschmuck und Anlagegold in 21, 18 und 14 Karat. Wählen Sie im Showroom oder online – wir beraten persönlich und fertigen auf Wunsch nach Maß.",
-      "primaryCta": "Kollektion ansehen",
+      "title": "Feiner Goldschmuck",
+      "subtitle": "Gold, mit Sorgfalt gefertigt. Gemacht für Generationen.",
+      "description": "Brautschmuck, Namensketten, Goldmünzen und Anlagebarren – gestempelt in 21, 18 und 14 Karat. Wir beraten Sie persönlich und fertigen jedes Stück nach Ihren Wünschen.",
+      "primaryCta": "Kollektion entdecken",
       "secondaryCta": "Beratung anfragen",
-      "backgroundAlt": "Gold Helwah Hero-Komposition",
+      "backgroundAlt": "Goldschmuck von GoldHelwah",
       "stats": [
         {
           "value": "17",
@@ -94,21 +94,21 @@
           "label": "Showroom"
         }
       ],
-      "locationLine": "Showroom: Breite Straße 9, Saarbrücken"
+      "locationLine": "Breite Straße 9, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Ausgewählte Kategorien",
-      "title": "Die Kollektion",
-      "description": "Von der feinen Alltagskette bis zum Brautset und zur Goldunze.",
+      "title": "Kollektionen",
+      "description": "Von der feinen Kette für jeden Tag bis zum Brautset und zur Anlageunze.",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
       "emptyText": "Sobald im Dashboard neue Kollektionen aktiviert werden, erscheinen sie hier automatisch.",
-      "allCta": "Alle Kategorien"
+      "allCta": "Alle Kollektionen"
     },
     "products": {
       "eyebrow": "Ausgewählte Produkte",
-      "title": "Aus dem Showroom",
-      "description": "Öffnen Sie ein Stück, um Details zu sehen und direkt anzufragen.",
-      "sectionCta": "Zur Kollektion",
+      "title": "Ausgewählte Stücke",
+      "description": "Öffnen Sie ein Stück, um alle Details zu sehen und es direkt anzufragen.",
+      "sectionCta": "Zur ganzen Kollektion",
       "cardCta": "Details ansehen",
       "emptyTitle": "Derzeit sind keine Produkte sichtbar",
       "emptyText": "Aktivieren Sie Produkte im Dashboard oder kontaktieren Sie uns für eine persönliche Auswahl."
@@ -126,21 +126,21 @@
     "aboutGold": {
       "eyebrow": "Über Gold",
       "title": "Gold, das bleibt.",
-      "description": "Gold behält seinen Wert und trägt Erinnerungen über Generationen. Darum geben wir jedem Stück Zeit – bei der Auswahl wie bei der Fertigung.",
+      "description": "Gold behält seinen Wert und trägt Erinnerungen von Generation zu Generation. Deshalb geben wir jedem Stück die Zeit, die es verdient – bei der Auswahl wie bei der Fertigung.",
       "imageAlt": "Goldschmuck von GoldHelwah GmbH in warmer Nahaufnahme",
       "points": [
         "Gestempelter Feingehalt",
-        "Fertigung nach Maß",
+        "Nach Maß gefertigt",
         "Persönliche Übergabe"
       ],
       "storyLabel": "Über GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "Über uns",
-      "title": "GoldHelwah GmbH",
-      "description": "Unser Showroom liegt in der Breiten Straße in Saarbrücken. Hier zeigen wir unsere Stücke in Ruhe, beraten Sie selbst und nehmen Sonderwünsche auf.",
+      "title": "Über GoldHelwah",
+      "description": "Ein Haus für Goldschmuck in Saarbrücken, das orientalische Goldschmiedekunst mit deutscher Sorgfalt verbindet. Wir nehmen Sonderanfertigungen an und begleiten jeden Schritt selbst.",
       "teamLabel": "Unser Ansatz",
-      "story": "Von der ersten Frage bis zur Übergabe sprechen Sie direkt mit uns – ohne Umwege.",
+      "story": "Vom ersten Gespräch bis zur Übergabe sprechen Sie direkt mit uns – ohne Zwischenhändler.",
       "locationLabel": "Vor Ort"
     },
     "trust": {
@@ -148,20 +148,20 @@
       "title": "Klar, persönlich und nah am Produkt.",
       "items": [
         {
-          "title": "Beratung, die sich Zeit nimmt",
-          "description": "Für die Hochzeit, ein Geschenk oder jeden Tag: Wir hören erst zu, dann zeigen wir."
+          "title": "Beratung mit Zeit",
+          "description": "Ob Hochzeit, Geschenk oder Alltag: Wir hören zuerst zu und empfehlen dann, was zu Ihnen passt."
         },
         {
           "title": "Echte Stücke, echte Fotos",
-          "description": "Jedes Foto zeigt ein Stück aus unserer eigenen Auswahl."
+          "description": "Jedes Bild zeigt ein Stück aus unserer eigenen Kollektion – ohne Übertreibung."
         },
         {
           "title": "Nach Maß gefertigt",
-          "description": "Namen, Gravuren, Längen und Größen – wir setzen Ihre Idee in Gold um."
+          "description": "Name, Gravur, Länge und Größe: Aus Ihrer Idee wird ein Schmuckstück."
         },
         {
           "title": "Persönliche Übergabe",
-          "description": "Ihr Stück übergeben wir Ihnen persönlich in Saarbrücken."
+          "description": "Wir übergeben Ihr Stück persönlich – geprüft und mit bestätigtem Feingehalt."
         }
       ]
     },
@@ -173,8 +173,8 @@
       "secondaryCta": "Anrufen"
     },
     "hallmarks": {
-      "title": "21, 18 oder 14 Karat",
-      "description": "Der Stempel im Gold zeigt den Feingehalt: 875, 750 oder 585 Teile Gold von tausend. Wir sagen Ihnen offen, welcher zu Ihrem Stück passt.",
+      "title": "21, 18 oder 14 Karat – gestempelt",
+      "description": "Der Stempel nennt den Feingehalt: 875, 750 oder 585 Tausendstel. Wir sagen Ihnen offen, welcher zu Ihrem Stück und Ihrem Alltag passt.",
       "items": [
         {
           "stamp": "875",
@@ -192,21 +192,21 @@
     },
     "customName": {
       "title": "Ihr Name in Gold",
-      "description": "In arabischer oder lateinischer Schrift, als Kette, Armband oder Anhänger. Schrift, Karat und Länge legen wir gemeinsam fest – dann fertigen wir das Stück für Sie.",
+      "description": "In arabischer oder lateinischer Schrift, als Kette, Armband oder Anhänger. Schrift, Karat und Länge wählen wir gemeinsam – dann fertigen wir Ihr Stück.",
       "primaryCta": "Namensschmuck ansehen",
-      "secondaryCta": "Idee besprechen"
+      "secondaryCta": "Ihre Idee besprechen"
     },
     "visit": {
-      "title": "Kommen Sie vorbei – oder schreiben Sie uns",
-      "description": "Wir antworten persönlich."
+      "title": "Besuch und Kontakt",
+      "description": "Jede Nachricht beantworten wir persönlich."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "Gold Helwah",
       "title": "Kollektion",
-      "subtitle": "Öffnen Sie ein Stück für Details. Preis und Gewicht nennen wir Ihnen auf Anfrage.",
-      "primaryCta": "Anfrage senden",
+      "subtitle": "Öffnen Sie ein Stück für alle Details. Preis und Gewicht nennen wir Ihnen auf Anfrage.",
+      "primaryCta": "Beratung anfragen",
       "secondaryCta": "Kontakt",
       "stats": {
         "categories": "Kategorien",
@@ -228,8 +228,8 @@
       "all": "Alle",
       "resultsSuffix": "Modelle",
       "emptyBadge": "Bald verfügbar",
-      "emptyTitle": "In dieser Kategorie ist gerade nichts online.",
-      "emptyText": "Vieles fertigen wir auf Anfrage. Beschreiben Sie uns, was Sie suchen.",
+      "emptyTitle": "In dieser Kategorie ist gerade nichts ausgestellt.",
+      "emptyText": "Viele Stücke fertigen wir auf Bestellung. Beschreiben Sie uns, was Sie suchen.",
       "resultCount": "{count, plural, =0 {Keine Stücke} one {# Stück} other {# Stücke}}"
     },
     "card": {
@@ -243,18 +243,18 @@
       "galleryLabel": "Galerie",
       "galleryCountSuffix": "Bilder",
       "tagsLabel": "Merkmale",
-      "requestCta": "Anfrage senden",
+      "requestCta": "Dieses Stück anfragen",
       "backCta": "Zurück",
       "callCta": "Anrufen",
       "noteTitle": "So geht es weiter",
-      "note": "Senden Sie eine Anfrage. Wir melden uns mit Gewicht, Preis und Fertigungszeit."
+      "note": "Senden Sie Ihre Anfrage – wir melden uns mit Gewicht, Preis und Fertigungszeit."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Kontakt",
       "title": "Kontakt",
-      "subtitle": "Eine Frage zu einem Stück, eine Sonderanfertigung oder ein Termin im Showroom – schreiben Sie uns oder rufen Sie an.",
+      "subtitle": "Für Fragen zu einem Stück, eine Sonderanfertigung oder einen Termin: Schreiben Sie uns oder rufen Sie an.",
       "primaryCta": "Zur Kollektion",
       "secondaryCta": "Datenschutz lesen"
     },
@@ -275,7 +275,7 @@
     "form": {
       "eyebrow": "Kontakt aufnehmen",
       "title": "Ihre Nachricht",
-      "description": "Ein Satz genügt. Wir melden uns mit allen Details.",
+      "description": "Ein paar Worte genügen – wir melden uns mit allen Details.",
       "highlights": "Kontakt",
       "fields": {
         "name": "Name",
@@ -309,13 +309,13 @@
     },
     "location": {
       "eyebrow": "Standort",
-      "title": "Besuchen Sie Gold Helwah in Saarbrücken.",
-      "description": "Adresse, Telefon und Route auf einen Blick.",
+      "title": "Unsere Adresse in Saarbrücken",
+      "description": "Nach Absprache zeigen wir Ihnen die Kollektion und beraten Sie in Ruhe.",
       "addressLabel": "Adresse",
       "phoneLabel": "Telefon",
       "routeCta": "Route planen",
       "callCta": "Anrufen",
-      "mapTitle": "Standort von Gold Helwah auf Google Maps",
+      "mapTitle": "GoldHelwah auf Google Maps",
       "emailLabel": "E-Mail",
       "whatsappCta": "WhatsApp"
     }
@@ -517,9 +517,10 @@
       "language": "Sprache der Verwaltung"
     },
     "roles": {
-      "super_admin": "Hauptadministrator",
-      "admin": "Administrator",
-      "employee": "Mitarbeiter"
+      "super_admin": "Zentrale",
+      "admin": "Showroom",
+      "employee": "Werkstatt-Team",
+      "workshop_manager": "Werkstattleitung"
     },
     "nav": {
       "overview": "Übersicht",
@@ -529,7 +530,7 @@
       "options": "Bestellfragen",
       "orders": "Aufträge",
       "workshops": "Werkstätten",
-      "employees": "Mitarbeiter",
+      "employees": "Alle Mitarbeitenden",
       "attendance": "Arbeitszeiten",
       "reports": "Berichte",
       "archive": "Archiv",
@@ -537,7 +538,10 @@
       "myTasks": "Meine Aufgaben",
       "inquiries": "Kundenanfragen",
       "ariaLabel": "Hauptnavigation",
-      "countLabel": "{count} offen"
+      "countLabel": "{count} offen",
+      "messages": "Nachrichten",
+      "team": "Mein Team",
+      "workshopOrders": "Werkstattaufträge"
     },
     "buttons": {
       "openMenu": "Menü",
@@ -1080,12 +1084,15 @@
       "publicStageUpdate": "Update zum öffentlichen Status"
     },
     "assignmentStatus": {
-      "assigned": "Zugewiesen",
+      "assigned": "Neu zugewiesen",
       "accepted": "Angenommen",
-      "in_progress": "In Bearbeitung",
-      "waiting": "Wartend",
-      "completed": "Abgeschlossen",
-      "returned": "Zurückgegeben"
+      "in_progress": "In Arbeit",
+      "waiting": "Wartet",
+      "completed": "Fertig",
+      "returned": "Zurück an die Leitung",
+      "problem": "Problem gemeldet",
+      "shipped": "An Showroom geschickt",
+      "declined": "Abgelehnt"
     },
     "workshops": {
       "eyebrow": "Werkstätten",
@@ -1378,24 +1385,9 @@
       "smtpTitle": "E-Mail-Status",
       "smtpConfigured": "E-Mail-Versand ist eingerichtet",
       "smtpMissing": "E-Mail-Versand ist nicht vollständig eingerichtet",
-      "orderEntryTitle": "Externer Link zur Auftragserfassung",
       "orderEntryDescription": "Den externen Link aktivieren, prüfen und direkt kopieren oder per E-Mail senden.",
       "save": "Speichern",
-      "rotateLink": "Neuen Link erstellen",
-      "orderEntryEnabled": "Externen Auftragserfassungs-Link aktivieren",
-      "expiresAt": "Gültig bis",
-      "fullLinkLabel": "Vollständiger Link",
-      "fullLinkHelp": "Dies ist der vollständige Link zur Weitergabe.",
-      "linkDisabled": "Der externe Auftragserfassungs-Link ist derzeit deaktiviert.",
-      "copyLink": "Link kopieren",
-      "copySuccess": "Der vollständige Link wurde kopiert.",
-      "copyUnavailable": "Derzeit ist kein vollständiger Link verfügbar.",
-      "statusEnabled": "Aktiviert",
       "statusDisabled": "Deaktiviert",
-      "rotatedAt": "Zuletzt aktualisiert",
-      "linkRecipient": "Link senden an",
-      "linkRecipientHelp": "Es wird eine E-Mail mit dem Link gesendet.",
-      "sendLink": "Link per E-Mail senden",
       "userListTitle": "Benutzer und Rollen",
       "manageUsersHint": "Die Benutzerverwaltung erfordert die Berechtigung als Hauptadministrator.",
       "userSave": "Benutzer speichern",
@@ -1415,8 +1407,8 @@
       "userDelete": "Löschen",
       "userEdit": "Bearbeiten",
       "inviteAgain": "Neuen Link senden",
-      "roleOwner": "Hauptadministrator",
-      "roleAdmin": "Administrator",
+      "roleOwner": "Zentrale (voller Zugriff)",
+      "roleAdmin": "Showroom-Tablet",
       "roleEmployee": "Mitarbeiter",
       "userDeleteConfirm": "Zugang von {name} löschen?",
       "userDeleteText": "Die Person kann sich danach nicht mehr anmelden.",
@@ -1884,11 +1876,6 @@
       "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
       "invalidName": "Bitte geben Sie einen gültigen Anzeigenamen ein.",
       "noAccess": "Kein Zugriff.",
-      "orderEntryRotated": "Der Auftragserfassungslink wurde neu erzeugt.",
-      "orderEntrySendDisabled": "Aktivieren Sie den externen Auftragserfassungslink, bevor Sie ihn per E-Mail versenden.",
-      "orderEntrySendFailed": "Der Auftragserfassungslink konnte per E-Mail nicht versendet werden.",
-      "orderEntrySendSavedOnly": "Die E-Mail wurde vorbereitet, aber nicht versendet, weil SMTP noch nicht vollständig eingerichtet ist.",
-      "orderEntrySent": "Der Auftragserfassungslink wurde per E-Mail versendet.",
       "privacyPhrase": "Die Schutz-Passphrase ist ungültig.",
       "saved": "Die Einstellungen wurden gespeichert.",
       "userCreated": "Der Benutzer wurde angelegt. Der Zugangslink wurde versendet oder protokolliert.",
@@ -1896,7 +1883,8 @@
       "userInviteSent": "Ein neuer Zugangslink wurde erstellt.",
       "userPasswordResetSent": "Der Passwort-Link wurde erstellt.",
       "userUpdated": "Die Benutzerdaten wurden aktualisiert.",
-      "userVisibilityChanged": "Der Benutzerstatus wurde aktualisiert."
+      "userVisibilityChanged": "Der Benutzerstatus wurde aktualisiert.",
+      "emailNotSent": "Gespeichert, aber die E-Mail konnte nicht gesendet werden. Bitte prüfen Sie die E-Mail-Einstellungen."
     },
     "taskCard": {
       "assignmentNote": "Zuweisungshinweis",
@@ -1988,7 +1976,16 @@
       "newWorkshopOrder": "Neuer Werkstattauftrag",
       "newWorkshopOrderMessage": "Ihrer Werkstatt wurde ein neuer Auftrag zugewiesen.",
       "newTask": "Neue Aufgabe",
-      "newTaskMessage": "Ihnen wurde ein Werkstattauftrag zugewiesen."
+      "newTaskMessage": "Ihnen wurde ein Werkstattauftrag zugewiesen.",
+      "workshopOrderReceived": "Neuer Auftrag für Ihre Werkstatt",
+      "newMessage": "Neue Nachricht",
+      "taskStatus_accepted": "Auftrag angenommen",
+      "taskStatus_in_progress": "Arbeit begonnen",
+      "taskStatus_problem": "Problem bei einem Auftrag",
+      "taskStatus_completed": "Auftrag fertig",
+      "taskStatus_shipped": "Auftrag an den Showroom geschickt",
+      "taskStatus_declined": "Auftrag abgelehnt",
+      "taskStatus_assigned": "Auftrag zugewiesen"
     },
     "workshopMessages": {
       "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN": "Die aktuelle Werkstattleitung kann erst verschoben werden, wenn eine neue Leitung ernannt oder die Leitung aufgehoben wurde.",
@@ -2030,36 +2027,27 @@
     "settingsSections": {
       "website": "Website",
       "emails": "E-Mails",
-      "orderLink": "Auftragslink",
       "access": "Zugänge",
       "data": "Daten & Zurücksetzen",
       "imagesTitle": "Bilder der Website",
       "imagesText": "Großes Bild auf der Startseite und neben dem Shop-Titel. Ohne eigenes Bild wird ein Produktfoto verwendet.",
       "homeHeroHint": "Aktuell: automatisch ein Produktfoto.",
       "shopHeroHint": "Aktuell: kein Bild, nur der Titel.",
-      "promoTitle": "Aktions-Fenster",
-      "promoText": "Ein kleines Fenster, das Besuchern beim Öffnen der Startseite eine Aktion zeigt – z. B. zu Feiertagen.",
-      "promoEnabledHint": "Ausgeschaltet sehen Besucher nichts, Ihre Eingaben bleiben gespeichert.",
-      "promoContent": "Inhalt",
-      "promoLook": "Aussehen",
-      "promoWhen": "Zeitraum",
       "promoImageHint": "Optional. Wird im Aktions-Fenster angezeigt.",
       "emailsText": "Wohin der Shop E-Mails über neue Aufträge, Anfragen und Support-Nachrichten schickt.",
       "adminEmailHint": "Erhält neue Aufträge und Produktanfragen.",
       "supportEmailHint": "Erhält Fragen von Kunden zu einem Auftrag.",
       "ownerEmailHint": "Erhält wichtige Systemmeldungen.",
-      "orderLinkText": "Ein privater Link, über den Partner – z. B. eine Filiale oder Werkstatt – Aufträge ohne Login eintragen können.",
-      "expiresHint": "Leer lassen, wenn der Link nicht ablaufen soll.",
-      "rotateHint": "Erstellt einen neuen Link. Der alte Link funktioniert danach nicht mehr – nützlich, wenn er in falsche Hände geraten ist.",
-      "accessText": "Wer sich im Dashboard anmelden darf und was diese Person sehen kann.",
+      "accessText": "Konten der Zentrale und des Showroom-Tablets. Für den Auftrag im Showroom genügt die Anmeldung mit E-Mail und Passwort auf dem Tablet.",
       "you": "Sie",
       "userEditorText": "Die Person erhält eine E-Mail, um ihr Passwort festzulegen.",
       "userEmailHint": "Wird für die Anmeldung verwendet.",
       "roleHint": {
-        "super_admin": "Sieht und ändert alles, auch Einstellungen und Zugänge.",
-        "admin": "Verwaltet Aufträge, Mitarbeiter und Anfragen – keine Einstellungen.",
-        "employee": "Sieht nur die eigenen Aufgaben."
-      }
+        "super_admin": "Sieht und ändert alles: Werkstätten, Shop, Einstellungen und Zugänge.",
+        "admin": "Für das Tablet im Showroom: Aufträge anlegen und an eine Werkstatt senden. Keine Einstellungen.",
+        "employee": "Werkstatt-Mitarbeitende werden von ihrer Werkstattleitung eingeladen."
+      },
+      "staffNote": "Werkstattleitungen werden beim Anlegen einer Werkstatt eingeladen, ihre Mitarbeitenden laden sie selbst ein. Deshalb erscheinen sie hier nicht."
     },
     "settingsData": {
       "notificationsTitle": "Benachrichtigungen leeren",
@@ -2067,6 +2055,287 @@
       "clearNotificationsButton": "Benachrichtigungen leeren",
       "clearNotificationsConfirm": "Alle Benachrichtigungen löschen?",
       "clearNotificationsText": "Aufträge, Anfragen und andere Daten bleiben unverändert."
+    },
+    "flow": {
+      "errors": {
+        "FAILED": "Das hat nicht geklappt. Bitte versuchen Sie es noch einmal.",
+        "INVALID": "Bitte prüfen Sie die Eingaben – ein Pflichtfeld fehlt oder die E-Mail-Adresse ist ungültig.",
+        "PERMISSION_DENIED": "Dafür fehlt Ihrem Konto die Berechtigung.",
+        "EMAIL_IN_USE": "Diese E-Mail-Adresse gehört bereits zu einem anderen Teammitglied.",
+        "EMAIL_IS_OFFICE_ACCOUNT": "Diese E-Mail-Adresse ist bereits ein Konto der Zentrale oder des Showrooms. Bitte eine andere Adresse verwenden.",
+        "CANNOT_CHANGE_SELF": "Ihr eigenes Konto können Sie hier nicht ändern.",
+        "WORKSHOP_NOT_FOUND": "Diese Werkstatt gibt es nicht mehr.",
+        "WORKSHOP_INACTIVE": "Diese Werkstatt ist pausiert. Aktivieren Sie sie zuerst.",
+        "WORKSHOP_HAS_NO_MANAGER": "Diese Werkstatt hat noch keine Leitung.",
+        "ORDER_NOT_FOUND": "Dieser Auftrag wurde nicht gefunden.",
+        "TASK_NOTE_REQUIRED": "Bitte schreiben Sie kurz, was los ist – die Werkstattleitung braucht den Grund.",
+        "MESSAGE_EMPTY": "Die Nachricht ist leer.",
+        "MESSAGE_TOO_LONG": "Die Nachricht ist zu lang (höchstens 4000 Zeichen).",
+        "THREAD_NOT_FOUND": "Dieses Gespräch gibt es nicht mehr."
+      },
+      "done": {
+        "workshopCreated": "Werkstatt angelegt. Die Leitung hat per E-Mail eine Einladung erhalten.",
+        "workshopCreatedNoEmail": "Werkstatt angelegt, aber die Einladung konnte nicht gesendet werden. Prüfen Sie die E-Mail-Einstellungen und senden Sie sie in der Werkstatt erneut.",
+        "workshopSaved": "Werkstatt gespeichert.",
+        "workshopActivated": "Werkstatt ist wieder aktiv.",
+        "workshopPaused": "Werkstatt pausiert. Sie erhält keine neuen Aufträge.",
+        "workshopDeleted": "Werkstatt gelöscht. Offene Aufträge stehen wieder unter „Noch nicht gesendet“.",
+        "managerChanged": "Neue Werkstattleitung eingeladen.",
+        "managerChangedNoEmail": "Leitung geändert, aber die Einladung konnte nicht gesendet werden.",
+        "inviteSent": "Einladung erneut gesendet.",
+        "inviteSentNoEmail": "Die Einladung konnte nicht gesendet werden. Bitte prüfen Sie die E-Mail-Einstellungen.",
+        "memberInvited": "Einladung verschickt. Sobald das Passwort gesetzt ist, kann die Person Aufträge übernehmen.",
+        "memberInvitedNoEmail": "Teammitglied angelegt, aber die Einladung konnte nicht gesendet werden.",
+        "memberActivated": "Wieder aktiv.",
+        "memberPaused": "Pausiert. Die Person kann sich vorerst nicht anmelden.",
+        "memberRemoved": "Aus dem Team entfernt. Offene Aufträge liegen wieder bei Ihnen.",
+        "messageSent": "Nachricht gesendet.",
+        "orderSent": "An {workshop} gesendet. Die Leitung wurde per E-Mail informiert.",
+        "orderSentNoEmail": "An {workshop} gesendet. Die E-Mail an die Leitung konnte nicht zugestellt werden – sie sieht den Auftrag aber im Dashboard.",
+        "orderSentNoManager": "An {workshop} gesendet. Achtung: Die Werkstatt hat noch keine Leitung, die den Auftrag verteilen kann."
+      },
+      "workshops": {
+        "pageHint": "Jede Werkstatt hat eine Leitung. Sie senden Aufträge an die Werkstatt, die Leitung verteilt sie an ihr Team.",
+        "new": "Neue Werkstatt",
+        "newTitle": "Neue Werkstatt anlegen",
+        "newHint": "Die Leitung erhält eine E-Mail, setzt ihr Passwort und lädt danach ihr Team selbst ein.",
+        "sectionWorkshop": "Werkstatt",
+        "sectionManager": "Werkstattleitung",
+        "managerHint": "Diese Person nimmt Aufträge entgegen und verteilt sie.",
+        "name": "Name der Werkstatt",
+        "namePlaceholder": "z. B. Werkstatt Istanbul",
+        "location": "Ort",
+        "phone": "Telefon",
+        "notes": "Interne Notiz",
+        "managerName": "Name",
+        "managerEmail": "E-Mail-Adresse",
+        "managerEmailHint": "Hierhin geht die Einladung. Damit meldet sich die Leitung später an.",
+        "create": "Anlegen und Einladung senden",
+        "creating": "Wird angelegt …",
+        "emptyTitle": "Noch keine Werkstatt",
+        "emptyText": "Legen Sie die erste Werkstatt an und benennen Sie ihre Leitung.",
+        "manager": "Leitung",
+        "managerActive": "Angemeldet",
+        "managerInvited": "Einladung offen",
+        "noManager": "Keine Leitung",
+        "noManagerText": "Diese Werkstatt hat keine Leitung. Laden Sie jemanden ein, damit Aufträge verteilt werden können.",
+        "openOrders": "Offene Aufträge",
+        "teamSize": "Team",
+        "open": "Öffnen",
+        "actionsFor": "Aktionen für {name}",
+        "pause": "Pausieren",
+        "resume": "Wieder aktivieren",
+        "paused": "Pausiert",
+        "running": "Aktiv",
+        "deleteTitle": "„{name}“ löschen?",
+        "deleteText": "{team, plural, =0 {Die Werkstatt hat kein Team.} one {Das Teammitglied verliert seinen Zugang.} other {Die # Teammitglieder verlieren ihren Zugang.}} {orders, plural, =0 {} one {Der offene Auftrag kommt zurück unter „Noch nicht gesendet“.} other {Die # offenen Aufträge kommen zurück unter „Noch nicht gesendet“.}}",
+        "delete": "Werkstatt löschen",
+        "dangerTitle": "Werkstatt löschen",
+        "dangerHint": "Entfernt die Werkstatt mit ihrem Team. Offene Aufträge gehen nicht verloren, sie kommen zurück zur Zentrale.",
+        "saving": "Wird gespeichert …",
+        "messageManager": "Nachricht an die Leitung",
+        "managerCardHint": "Die Leitung erhält Ihre Aufträge und verteilt sie an das Team.",
+        "resendInvite": "Einladung erneut senden",
+        "changeManager": "Leitung wechseln",
+        "changeManagerHint": "Die neue Leitung erhält eine Einladung. Ist sie bereits im Team, wird sie einfach befördert.",
+        "sendManagerInvite": "Leitung einladen",
+        "openOrdersTitle": "Aufträge in Arbeit",
+        "openOrdersHint": "Wer woran arbeitet und wie weit es ist.",
+        "noOpenOrders": "Zurzeit keine offenen Aufträge.",
+        "notAssignedYet": "Noch niemandem zugeteilt",
+        "waitingForManager": "Wartet auf Verteilung",
+        "teamTitle": "Team",
+        "teamHintOffice": "Das Team pflegt die Werkstattleitung selbst.",
+        "noTeam": "Noch keine Mitarbeitenden.",
+        "managerBadge": "Leitung",
+        "memberPaused": "Pausiert",
+        "openTasks": "{count, plural, =0 {keine offenen Aufgaben} one {# offene Aufgabe} other {# offene Aufgaben}}",
+        "detailsTitle": "Angaben zur Werkstatt",
+        "peopleHint": "Mitarbeitende werden von ihrer Werkstattleitung eingeladen. Hier sehen Sie alle auf einen Blick und können Konten pausieren oder löschen."
+      },
+      "team": {
+        "title": "Mein Team",
+        "description": "Laden Sie Ihre Mitarbeitenden ein. Jede Person erhält eine E-Mail, setzt ihr Passwort und sieht danach die Aufträge, die Sie ihr geben.",
+        "membersTitle": "{count, plural, =0 {Noch niemand im Team} one {# Person im Team} other {# Personen im Team}}",
+        "empty": "Laden Sie die erste Person ein – rechts mit Name und E-Mail.",
+        "you": "Sie · Leitung",
+        "active": "Aktiv",
+        "invited": "Einladung offen",
+        "paused": "Pausiert",
+        "openTasks": "{count, plural, =0 {frei} one {# Aufgabe} other {# Aufgaben}}",
+        "actionsFor": "Aktionen für {name}",
+        "message": "Nachricht schreiben",
+        "resend": "Einladung erneut senden",
+        "pause": "Pausieren",
+        "resume": "Wieder aktivieren",
+        "remove": "Aus dem Team entfernen",
+        "removeTitle": "{name} aus dem Team entfernen?",
+        "removeText": "{count, plural, =0 {Der Zugang wird gesperrt.} one {Der Zugang wird gesperrt. Die offene Aufgabe kommt zu Ihnen zurück.} other {Der Zugang wird gesperrt. Die # offenen Aufgaben kommen zu Ihnen zurück.}}",
+        "inviteTitle": "Person einladen",
+        "inviteHint": "Die Einladung kommt per E-Mail. Danach meldet sich die Person mit dieser Adresse an.",
+        "name": "Name",
+        "email": "E-Mail-Adresse",
+        "phone": "Telefon (optional)",
+        "invite": "Einladung senden",
+        "sending": "Wird gesendet …",
+        "inviteFootnote": "Der Link in der E-Mail ist persönlich und nur kurze Zeit gültig. Ist er abgelaufen, senden Sie die Einladung einfach erneut."
+      },
+      "workshopOrders": {
+        "title": "Werkstattaufträge",
+        "description": "Aufträge der Zentrale an Ihre Werkstatt. Geben Sie jeden Auftrag einer Person aus Ihrem Team – sie erhält alle Details per E-Mail.",
+        "tabs": {
+          "toAssign": "Zu verteilen",
+          "inProgress": "In Arbeit",
+          "finished": "Erledigt"
+        },
+        "empty": {
+          "toAssign": "Alles verteilt. Neue Aufträge erscheinen hier.",
+          "inProgress": "Gerade ist nichts in Arbeit.",
+          "finished": "Noch nichts erledigt."
+        },
+        "due": "Fällig am {date}",
+        "new": "Neu",
+        "assignTo": "Wer übernimmt den Auftrag?",
+        "reassignTo": "Jemand anderem geben",
+        "noTeam": "Erst Team einladen (Mein Team)",
+        "taskCount": "{count, plural, =0 {(frei)} one {(# Aufgabe)} other {(# Aufgaben)}}",
+        "assign": "Zuteilen",
+        "details": "Details"
+      },
+      "myTasks": {
+        "title": "Meine Aufgaben",
+        "description": "Die Aufträge, die Ihre Werkstattleitung Ihnen gegeben hat. Öffnen Sie einen Auftrag, um den Stand zu melden.",
+        "writeManager": "Nachricht an die Leitung",
+        "current": "Aktuell",
+        "done": "Erledigt",
+        "emptyCurrent": "Keine offenen Aufgaben",
+        "emptyCurrentText": "Sobald Ihnen ein Auftrag gegeben wird, erscheint er hier und Sie erhalten eine E-Mail.",
+        "emptyDone": "Noch nichts erledigt.",
+        "due": "Fällig am {date}",
+        "newTask": "Neu – bitte annehmen"
+      },
+      "task": {
+        "title": "Wie weit ist der Auftrag?",
+        "hint": "Ihre Werkstattleitung wird bei jeder Änderung benachrichtigt.",
+        "now": "Aktuell:",
+        "due": "Fällig: {date}",
+        "managerNote": "Hinweis der Werkstattleitung",
+        "choose": "Neuer Stand",
+        "explain": {
+          "accepted": "Ich übernehme den Auftrag.",
+          "in_progress": "Ich arbeite gerade daran.",
+          "problem": "Etwas fehlt oder ist unklar – bitte Grund angeben.",
+          "completed": "Das Stück ist fertig.",
+          "shipped": "Das Stück ist auf dem Weg zum Showroom.",
+          "declined": "Ich kann den Auftrag nicht übernehmen – bitte Grund angeben."
+        },
+        "reasonLabel": "Grund",
+        "reasonPlaceholder": "z. B. Ringgröße fehlt, Stein nicht vorrätig …",
+        "noteLabel": "Hinweis für die Leitung (optional)",
+        "notePlaceholder": "z. B. fertig am Donnerstag",
+        "save": "Stand melden",
+        "saving": "Wird gemeldet …"
+      },
+      "orderCard": {
+        "workshopTitle": "Werkstatt",
+        "workshopHint": "Wählen Sie die Werkstatt. Ihre Leitung erhält den Auftrag mit allen Details per E-Mail und verteilt ihn.",
+        "managedBy": "Leitung: {name}",
+        "noManager": "Ohne Leitung",
+        "noWorkshops": "Legen Sie zuerst unter „Werkstätten“ eine Werkstatt an.",
+        "chooseWorkshop": "An welche Werkstatt?",
+        "moveTo": "Werkstatt",
+        "selectPlaceholder": "Werkstatt wählen",
+        "noteForManager": "Nachricht an die Leitung (optional)",
+        "notePlaceholder": "z. B. Kunde holt am Samstag ab",
+        "send": "An die Werkstatt senden",
+        "sendAgain": "Erneut senden",
+        "moveWarning": "Die bisherige Werkstatt gibt den Auftrag dann ab; eine laufende Zuteilung endet.",
+        "craftsman": "Bearbeitet von",
+        "notAssigned": "Noch nicht verteilt",
+        "progress": "Stand",
+        "craftsmanNote": "Hinweis aus der Werkstatt",
+        "notSent": "Noch nicht gesendet",
+        "teamTitle": "Wer macht diesen Auftrag?",
+        "teamHint": "Die Person erhält eine E-Mail mit allen Details und meldet hier ihren Fortschritt.",
+        "noteForCraftsman": "Hinweis für die Person (optional)",
+        "craftsmanNotePlaceholder": "z. B. bitte bis Freitag",
+        "assign": "Zuteilen und benachrichtigen",
+        "updateNote": "Hinweis speichern"
+      },
+      "messages": {
+        "title": "Nachrichten",
+        "description": {
+          "admin": "Ihr direkter Draht zu den Werkstattleitungen.",
+          "manager": "Schreiben Sie der Zentrale oder einzelnen Personen aus Ihrem Team.",
+          "employee": "Fragen, Probleme oder kurze Rückmeldungen an Ihre Werkstattleitung."
+        },
+        "noThreads": "Noch keine Gespräche",
+        "noThreadsText": {
+          "admin": "Sobald eine Werkstatt angelegt ist, können Sie hier mit ihrer Leitung schreiben.",
+          "manager": "Laden Sie Ihr Team ein, um mit ihm zu schreiben.",
+          "employee": "Sie sind noch keiner Werkstatt zugeordnet."
+        },
+        "office": "Zentrale",
+        "officeHint": "Für Rückfragen und Hinweise an die Zentrale",
+        "teamMember": "Ihr Team",
+        "yourManager": "Ihre Werkstattleitung",
+        "threadEmpty": "Noch keine Nachrichten. Schreiben Sie die erste.",
+        "placeholder": "Nachricht schreiben …",
+        "send": "Senden",
+        "aboutOrder": "zu {order}",
+        "roles": {
+          "admin": "Zentrale",
+          "manager": "Werkstattleitung",
+          "employee": "Werkstatt"
+        },
+        "orderTitle": "Nachrichten zu diesem Auftrag",
+        "orderHint": "Fragen und Absprachen bleiben so direkt am Auftrag.",
+        "orderEmpty": "Zu diesem Auftrag wurde noch nichts geschrieben.",
+        "withOffice": "Zentrale ↔ Werkstattleitung",
+        "withPerson": "Mit {name}"
+      },
+      "promo": {
+        "title": "Aktionsfenster",
+        "description": "Ein kurzer Hinweis, der beim Öffnen der Startseite erscheint – etwa zu Feiertagen oder einer neuen Kollektion.",
+        "enabled": "Auf der Website zeigen",
+        "enabledOn": "Besucher sehen das Fenster nach dem Speichern.",
+        "enabledOff": "Ausgeschaltet – Ihre Texte bleiben gespeichert.",
+        "fieldTitle": "Überschrift",
+        "titlePlaceholder": "z. B. Neue Kollektion zum Ramadan",
+        "fieldText": "Text",
+        "textPlaceholder": "Ein bis zwei Sätze genügen.",
+        "fieldButton": "Text auf dem Knopf",
+        "buttonPlaceholder": "z. B. Kollektion ansehen",
+        "fieldLink": "Ziel des Knopfes",
+        "linkHint": "„/shop“ für den Shop, „/contact“ für Kontakt oder eine volle Adresse mit https://. Ohne Ziel wird kein Knopf gezeigt.",
+        "fieldImage": "Bild (optional)",
+        "from": "Anzeigen ab",
+        "fromHint": "Leer = ab sofort",
+        "until": "Anzeigen bis",
+        "untilHint": "Leer = ohne Ende",
+        "showOnce": "Jedem Besucher nur einmal zeigen",
+        "showOnceHint": "Ändern Sie die Überschrift, sehen alle das Fenster erneut.",
+        "preview": "Vorschau",
+        "previewEmptyTitle": "Ihre Überschrift",
+        "previewDismiss": "Nicht jetzt",
+        "previewOff": "Zurzeit ausgeschaltet – Besucher sehen nichts.",
+        "save": "Speichern",
+        "saving": "Wird gespeichert …",
+        "badLink": "Das Ziel des Knopfes muss mit „/“ oder „https://“ beginnen.",
+        "tooLong": "Ein Text ist zu lang.",
+        "titleRequired": "Bitte geben Sie eine Überschrift ein, bevor Sie das Fenster einschalten."
+      },
+      "newOrder": {
+        "dueDate": "Fertig bis (optional)",
+        "priority": "Priorität",
+        "workshop": "Direkt an Werkstatt senden",
+        "workshopHint": "Die Werkstattleitung erhält den Auftrag sofort mit allen Details.",
+        "noWorkshops": "Noch keine Werkstatt angelegt – Sie können den Auftrag später senden.",
+        "later": "Später entscheiden",
+        "workshopNotes": "Hinweis für die Werkstatt (optional)",
+        "workshopNotesPlaceholder": "z. B. Gravur in arabischer Schrift, Kundin holt Samstag ab",
+        "createAndSend": "Auftrag anlegen und senden"
+      }
     }
   },
   "Tracking": {
@@ -2154,57 +2423,60 @@
       }
     ]
   },
-  "PublicVisuals": {
-    "title": "Öffentliche Bilder",
-    "description": "Hero-Bildüberschreibungen und Aktions-Popup-Einstellungen.",
-    "homeHero": "URL des Startseiten-Hero-Bildes",
-    "shopHero": "URL des Shop-Hero-Bildes",
-    "enabled": "Aktions-Fenster anzeigen",
-    "showOnce": "Jedem Besucher nur einmal zeigen",
-    "promoTitle": "Überschrift",
-    "promoDescription": "Kurzer Text",
-    "ctaText": "Text auf dem Knopf",
-    "ctaUrl": "Ziel des Knopfes (Link)",
-    "imageUrl": "URL des Aktionsbildes",
-    "videoUrl": "Video-Link (optional)",
-    "start": "Anzeigen ab",
-    "end": "Anzeigen bis",
-    "style": "Darstellung",
-    "save": "Speichern",
-    "reset": "Hero-Bilder zurücksetzen",
-    "luxury": "Karte mit Text",
-    "image": "Großes Bild",
-    "announcement": "Schmales Banner"
-  },
-  "OrderEntry": {
-    "customer": "Kundendaten",
-    "customerEmail": "E-Mail",
-    "customerName": "Kundenname",
-    "customerPhone": "Telefon",
-    "description": "Dieser geschützte Link erfasst Werkstattaufträge direkt und sicher für das GoldHelwah-Dashboard.",
-    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-    "emailUpdates": "E-Mail-Updates senden",
-    "emailUpdatesHint": "Updates werden nur versendet, wenn eine gültige E-Mail-Adresse eingetragen ist.",
-    "message": "Auftragsnotiz",
-    "noOptions": "Diesem Produkt sind keine individuellen Optionen zugewiesen.",
-    "options": "Produktoptionen",
-    "privacy": "Privater, geschützter Link",
-    "product": "Produkt",
-    "productRequired": "Bitte wählen Sie zuerst ein Produkt aus.",
-    "quantity": "Menge",
-    "required": "Bitte füllen Sie dieses Pflichtfeld aus.",
-    "submit": "Auftrag senden",
-    "submitPending": "Auftrag wird gesendet …",
-    "success": "Der Auftrag wurde erfolgreich angelegt.",
-    "title": "Werkstattauftrag",
-    "trackingCta": "Tracking anzeigen",
-    "defaultMessage": "Ich möchte {product} beauftragen.",
-    "yes": "Ja",
-    "no": "Nein",
-    "unavailableTitle": "Werkstattauftrag derzeit nicht verfügbar",
-    "unavailableDescription": "Es sind aktuell keine aktiven Produkte für diesen Link hinterlegt."
-  },
   "Common": {
     "loading": "Wird geladen …"
+  },
+  "Promo": {
+    "close": "Schließen",
+    "dismiss": "Nicht jetzt"
+  },
+  "StaffEmail": {
+    "greeting": "Guten Tag {name},",
+    "greetingPlain": "Guten Tag,",
+    "signature": "Mit freundlichen Grüßen\nGoldHelwah GmbH",
+    "linkFallback": "Falls der Knopf nicht funktioniert, öffnen Sie diesen Link:",
+    "privateLink": "Der Link ist persönlich. Bitte nicht weitergeben.",
+    "invite": {
+      "subject": "Ihr Zugang zu GoldHelwah",
+      "introManager": "Sie wurden als Leitung der Werkstatt „{workshop}“ eingeladen. Hier erhalten Sie die Aufträge der Zentrale und verteilen sie an Ihr Team.",
+      "introEmployee": "Sie wurden in das Team der Werkstatt „{workshop}“ eingeladen. Hier sehen Sie die Aufträge, die Ihnen gegeben werden, und melden Ihren Fortschritt.",
+      "introStaff": "Für Sie wurde ein Zugang zum GoldHelwah-Dashboard eingerichtet.",
+      "steps": "Klicken Sie auf den Knopf, wählen Sie ein Passwort – fertig. Danach melden Sie sich mit dieser E-Mail-Adresse an.",
+      "cta": "Einladung annehmen"
+    },
+    "reset": {
+      "subject": "Neues Passwort für GoldHelwah",
+      "intro": "Über den folgenden Knopf setzen Sie ein neues Passwort. Haben Sie das nicht angefordert, können Sie diese E-Mail ignorieren.",
+      "cta": "Passwort festlegen"
+    },
+    "workshopOrder": {
+      "subject": "Neuer Auftrag {order} für Ihre Werkstatt",
+      "intro": "Die Zentrale hat der Werkstatt „{workshop}“ einen neuen Auftrag gesendet.",
+      "next": "Bitte geben Sie ihn im Dashboard einer Person aus Ihrem Team.",
+      "cta": "Auftrag öffnen"
+    },
+    "employeeTask": {
+      "subject": "Neuer Auftrag für Sie: {order}",
+      "intro": "{manager} hat Ihnen einen Auftrag gegeben. Hier sind alle Details.",
+      "next": "Bitte nehmen Sie den Auftrag im Dashboard an und melden Sie dort Ihren Fortschritt.",
+      "cta": "Auftrag ansehen"
+    },
+    "taskAlert": {
+      "problem": "{employee} meldet ein Problem beim Auftrag {order}.",
+      "declined": "{employee} kann den Auftrag {order} nicht übernehmen. Bitte geben Sie ihn jemand anderem.",
+      "problemSubject": "Problem beim Auftrag {order}",
+      "declinedSubject": "Auftrag {order} abgelehnt",
+      "cta": "Auftrag öffnen"
+    },
+    "rows": {
+      "order": "Auftrag",
+      "product": "Produkt",
+      "quantity": "Menge",
+      "priority": "Priorität",
+      "dueDate": "Fällig am",
+      "noteFromOffice": "Hinweis der Zentrale",
+      "noteFromManager": "Hinweis der Leitung",
+      "reason": "Begründung"
+    }
   }
 }

@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateDashboard } from "@/lib/admin/revalidate";
+
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
@@ -22,6 +24,7 @@ import {
 } from "@/lib/db/adminCatalog";
 
 function revalidateCategoryViews() {
+  revalidateDashboard();
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}`);
     revalidatePath(`/${locale}/admin`);

@@ -5,7 +5,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
-import { createOrderAction } from "@/app/[locale]/admin/orders/actions";
+import { createOrderAction, sendOrderToWorkshopAction } from "@/app/[locale]/admin/orders/actions";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminInput } from "@/components/admin/AdminInput";
@@ -28,6 +28,7 @@ type NewOrderClientProps = {
   locale: AppLocale;
   preselectedProductId?: string;
   products: AdminProductRecord[];
+  workshops: Array<{ id: string; managerName: string; name: string }>;
 };
 
 type CategoryChoice = {
@@ -190,6 +191,7 @@ export function NewOrderClient({
   locale,
   preselectedProductId,
   products,
+  workshops,
 }: NewOrderClientProps) {
   const t = useTranslations("Admin");
   const uiCopy = useNewOrderUiCopy();
@@ -211,6 +213,11 @@ export function NewOrderClient({
   const [customerReference, setCustomerReference] = useState("");
   const [customerNotes, setCustomerNotes] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState<"normal" | "urgent" | "express">("normal");
+  const [workshopId, setWorkshopId] = useState(workshops.length === 1 ? workshops[0].id : "");
+  const [workshopNotes, setWorkshopNotes] = useState("");
+  const tf = useTranslations("Admin.flow.newOrder");
   const [emailUpdatesEnabled, setEmailUpdatesEnabled] = useState(true);
   const [optionValues, setOptionValues] = useState<Record<string, OptionFieldValue>>({});
   const requiredLabel = getRequiredFieldBadge(locale);
@@ -354,7 +361,7 @@ export function NewOrderClient({
         customerName,
         customerPhone,
         customerReference,
-        dueDate: "",
+        dueDate,
         emailUpdatesEnabled: emailUpdatesChecked,
         goldDetails: {},
         measurements: {},
@@ -365,10 +372,10 @@ export function NewOrderClient({
           packagingNotes: "",
           qualityRequirements: "",
           specialInstructions: "",
-          workshopNotes: "",
+          workshopNotes,
         },
         personalization: {},
-        priority: "normal",
+        priority,
         productCategoryName: selectedProduct.categoryName,
         productCategorySlug: selectedProduct.categorySlug || "all",
         productId: selectedProduct.id,
@@ -408,6 +415,10 @@ export function NewOrderClient({
       }
 
       if (result.orderId) {
+        if (workshopId) {
+          // Straight on to the workshop; the order page shows the outcome.
+          await sendOrderToWorkshopAction(locale, { note: "", orderId: result.orderId, workshopId });
+        }
         router.push(`/${locale}/admin/orders/${result.orderId}`);
       }
     });
@@ -885,6 +896,42 @@ export function NewOrderClient({
             description={uiCopy.summaryActionDescription}
           >
             <div className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                <AdminInput
+                  type="date"
+                  label={tf("dueDate")}
+                  value={dueDate}
+                  min={new Date().toISOString().slice(0, 10)}
+                  onChange={(event) => setDueDate(event.target.value)}
+                />
+                <AdminSelect label={tf("priority")} value={priority} onChange={(event) => setPriority(event.target.value as typeof priority)}>
+                  <option value="normal">{t("priority.normal")}</option>
+                  <option value="urgent">{t("priority.urgent")}</option>
+                  <option value="express">{t("priority.express")}</option>
+                </AdminSelect>
+              </div>
+              <AdminSelect
+                label={tf("workshop")}
+                helperText={workshops.length === 0 ? tf("noWorkshops") : tf("workshopHint")}
+                value={workshopId}
+                onChange={(event) => setWorkshopId(event.target.value)}
+              >
+                <option value="">{tf("later")}</option>
+                {workshops.map((workshop) => (
+                  <option key={workshop.id} value={workshop.id}>
+                    {workshop.name}
+                    {workshop.managerName ? ` – ${workshop.managerName}` : ""}
+                  </option>
+                ))}
+              </AdminSelect>
+              {workshopId ? (
+                <AdminTextarea
+                  label={tf("workshopNotes")}
+                  placeholder={tf("workshopNotesPlaceholder")}
+                  value={workshopNotes}
+                  onChange={(event) => setWorkshopNotes(event.target.value)}
+                />
+              ) : null}
               <div className="rounded-[1rem] border border-white/8 bg-white/4 px-4 py-4 text-sm text-muted">
                 {uiCopy.trackingSectionTitle}:{" "}
                 {emailUpdatesChecked ? t("common.enabled") : t("common.disabled")}
@@ -895,7 +942,7 @@ export function NewOrderClient({
                 onClick={submitForm}
                 disabled={isPending || !selectedProduct}
               >
-                {t("buttons.createOrder")}
+                {workshopId ? tf("createAndSend") : t("buttons.createOrder")}
               </AdminButton>
             </div>
           </AdminCard>

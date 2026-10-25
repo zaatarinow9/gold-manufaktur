@@ -4,7 +4,7 @@ import type { AdminUser } from "@/types/admin";
 
 export type AdminViewer = Pick<
   AdminUser,
-  "email" | "id" | "isActive" | "linkedEmployeeId" | "name" | "role" | "workshopId"
+  "email" | "id" | "isActive" | "linkedEmployeeId" | "managedWorkshopId" | "name" | "role" | "workshopId" | "workshopRole"
 >;
 
 type WithWorkshopId = {
@@ -48,6 +48,11 @@ export function canAccessEmployee(
   workshopId?: string | null
 ) {
   if (viewer.role === "super_admin" || viewer.role === "admin") {
+    return true;
+  }
+
+  // A workshop manager sees everyone in their own workshop.
+  if (viewer.managedWorkshopId && workshopId && viewer.managedWorkshopId === workshopId) {
     return true;
   }
 

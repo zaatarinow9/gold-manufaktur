@@ -9,6 +9,7 @@ import type { AppLocale } from "@/i18n/routing";
 import type { AdminRole, AdminUser } from "@/types/admin";
 
 import { isAdminRole } from "./roleAccess";
+import { createSupabaseAdminClient } from "../supabase/admin";
 import { createSupabaseServerClient } from "../supabase/server";
 
 type AdminAccessState = "anonymous" | "authenticated" | "denied";
@@ -150,13 +151,36 @@ export const getAdminSessionContext = cache(async (): Promise<AdminSessionContex
     };
   }
 
+  const user = buildAdminUser(authUser, profile);
+  if (user.role === "employee" && user.linkedEmployeeId) {
+    Object.assign(user, await getWorkshopMembership(user.linkedEmployeeId));
+  }
+
   return {
     authUserId: authUser.id,
     deniedReason: null,
     state: "authenticated",
-    user: buildAdminUser(authUser, profile),
+    user,
   };
 });
+
+/** Which workshop a staff member belongs to and whether they run it. */
+async function getWorkshopMembership(employeeId: string): Promise<Partial<AdminUser>> {
+  try {
+    const supabase = createSupabaseAdminClient();
+    const [{ data: employee }, { data: managed }] = await Promise.all([
+      supabase.from("employees").select("workshop_id, workshop_role").eq("id", employeeId).maybeSingle(),
+      supabase.from("workshops").select("id").eq("manager_employee_id", employeeId).maybeSingle(),
+    ]);
+    return {
+      managedWorkshopId: managed?.id ?? undefined,
+      workshopId: employee?.workshop_id ?? undefined,
+      workshopRole: managed ? "workshop_manager" : "workshop_employee",
+    };
+  } catch {
+    return {};
+  }
+}
 
 export async function getAdminShellUser() {
   const context = await getAdminSessionContext();

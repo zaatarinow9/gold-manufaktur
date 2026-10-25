@@ -11,7 +11,11 @@ import { getSiteBaseUrl } from "@/lib/db/siteSettings";
 import { sendTransactionalEmail, type EmailDispatchResult } from "@/lib/email/service";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { TableInsert, TableUpdate } from "@/lib/supabase/types";
-import type { OrderAssignmentStatus } from "@/types/admin";
+import type { AppLocale } from "@/i18n/routing";
+import { employeeTaskStatusValues, statusesNeedingNote } from "@/lib/admin/assignmentStatus";
+import { notifyChainAboutTask } from "@/lib/db/workshopFlow";
+import { buildEmployeeTaskEmail } from "@/lib/email/staffEmails";
+import type { OrderAssignmentStatus, WorkshopOrderStatus } from "@/types/admin";
 
 const assignOrderSchema = z.object({
   assignmentNote: z.string().trim().max(4000).optional().default(""),
@@ -22,7 +26,7 @@ const assignOrderSchema = z.object({
 const employeeTaskSchema = z.object({
   employeeNote: z.string().trim().max(4000).optional().default(""),
   orderId: z.string().uuid(),
-  status: z.enum(["assigned", "accepted", "in_progress", "waiting", "completed"]),
+  status: z.enum(employeeTaskStatusValues),
 });
 
 export type AssignOrderInput = z.infer<typeof assignOrderSchema>;
@@ -32,35 +36,13 @@ function normalizeText(value?: string | null) {
   return value?.trim() ?? "";
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function escapeHtmlAttribute(value: string) {
-  return escapeHtml(value);
-}
-
 function buildTaskPath(orderId: string) {
   return `/admin/orders/${orderId}`;
 }
 
-function buildLocalizedTaskPath(orderId: string) {
-  return `/de/admin/orders/${orderId}`;
-}
-
-function buildTaskUrl(orderId: string) {
-  return `${getSiteBaseUrl()}${buildLocalizedTaskPath(orderId)}`;
-}
-
-function buildTaskLoginUrl(orderId: string) {
-  const redirectPath = buildLocalizedTaskPath(orderId);
-  const query = encodeURIComponent(redirectPath);
-  return `${getSiteBaseUrl()}/de/admin/login?next=${query}`;
+function buildTaskLoginUrl(locale: AppLocale, orderId: string) {
+  const next = encodeURIComponent(`/${locale}/admin/orders/${orderId}`);
+  return `${getSiteBaseUrl()}/${locale}/admin/login?next=${next}`;
 }
 
 function buildAssignmentAuditDescription(input: {
@@ -88,108 +70,10 @@ function buildAssignmentAuditDescription(input: {
   return lines.join("\n");
 }
 
-function buildEmployeeAssignmentEmail(input: {
-  assignmentNote: string;
-  assignedAt: string;
-  employeeName: string;
-  orderId: string;
-  orderNumber: string;
-  productName: string;
-  trackingNumber: string;
-}) {
-  const taskUrl = buildTaskUrl(input.orderId);
-  const loginUrl = buildTaskLoginUrl(input.orderId);
-  const assignedAt = new Intl.DateTimeFormat("de-DE", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(input.assignedAt));
-
-  const subject = "Neuer Auftrag wurde Ihnen zugewiesen - Gold Helwah";
-  const text = [
-    `Guten Tag ${input.employeeName},`,
-    "",
-    "Ihnen wurde ein neuer Werkstattauftrag zugewiesen.",
-    "",
-    `Auftragsreferenz: ${input.orderNumber}`,
-    `Tracking-Nummer: ${input.trackingNumber}`,
-    `Produkt: ${input.productName}`,
-    `Zugewiesen am: ${assignedAt}`,
-    input.assignmentNote ? `Hinweis: ${input.assignmentNote}` : "",
-    "",
-    "Auftrag ansehen:",
-    taskUrl,
-    "",
-    "Falls Sie sich erst anmelden muessen, verwenden Sie diesen Link:",
-    loginUrl,
-    "",
-    "GoldHelwah GmbH",
-  ]
-    .filter(Boolean)
-    .join("\n");
-  const escapedEmployeeName = escapeHtml(input.employeeName);
-  const escapedOrderNumber = escapeHtml(input.orderNumber);
-  const escapedTrackingNumber = escapeHtml(input.trackingNumber);
-  const escapedProductName = escapeHtml(input.productName);
-  const escapedAssignedAt = escapeHtml(assignedAt);
-  const escapedAssignmentNote = escapeHtml(input.assignmentNote);
-  const escapedTaskUrl = escapeHtmlAttribute(taskUrl);
-  const escapedLoginUrl = escapeHtmlAttribute(loginUrl);
-  const html = [
-    "<div style=\"font-family:Arial,sans-serif;color:#111;line-height:1.6\">",
-    `<p>Guten Tag ${escapedEmployeeName},</p>`,
-    "<p>Ihnen wurde ein neuer Werkstattauftrag zugewiesen.</p>",
-    "<table style=\"border-collapse:collapse;margin:16px 0\">",
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Auftragsreferenz</td><td>${escapedOrderNumber}</td></tr>`,
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Tracking-Nummer</td><td>${escapedTrackingNumber}</td></tr>`,
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Produkt</td><td>${escapedProductName}</td></tr>`,
-    `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Zugewiesen am</td><td>${escapedAssignedAt}</td></tr>`,
-    input.assignmentNote
-      ? `<tr><td style="padding:4px 12px 4px 0;font-weight:600">Hinweis</td><td>${escapedAssignmentNote}</td></tr>`
-      : "",
-    "</table>",
-    `<p><a href="${escapedTaskUrl}" style="display:inline-block;background:#c49a52;color:#111;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700">Auftrag ansehen</a></p>`,
-    `<p style="font-size:13px;color:#555">Falls Sie sich erst anmelden muessen, verwenden Sie diesen Link: <a href="${escapedLoginUrl}">${escapeHtml(loginUrl)}</a></p>`,
-    "<p>GoldHelwah GmbH</p>",
-    "</div>",
-  ]
-    .filter(Boolean)
-    .join("");
-
-  return {
-    html,
-    subject,
-    text,
-  };
-}
-
-async function sendEmployeeAssignmentEmail(input: {
-  assignmentNote: string;
-  assignedAt: string;
-  employeeEmail: string;
-  employeeName: string;
-  orderId: string;
-  orderNumber: string;
-  productName: string;
-  trackingNumber: string;
-}) {
-  const email = buildEmployeeAssignmentEmail(input);
-
-  return sendTransactionalEmail({
-    html: email.html,
-    metadata: {
-      kind: "worker_order_assigned",
-      trackingNumber: input.trackingNumber,
-    },
-    orderId: input.orderId,
-    recipientEmail: input.employeeEmail,
-    subject: email.subject,
-    text: email.text,
-  });
-}
-
 export async function assignOrderToEmployee(
   viewer: AdminViewer,
-  input: AssignOrderInput
+  input: AssignOrderInput,
+  locale: AppLocale = "de"
 ) {
   const parsed = assignOrderSchema.parse(input);
   const order = await getScopedOrderDetail(viewer, parsed.orderId);
@@ -220,7 +104,7 @@ export async function assignOrderToEmployee(
 
   const { data: employee, error: employeeError } = await supabase
     .from("employees")
-    .select("email, full_name, id, is_active, workshop_id")
+    .select("email, full_name, id, is_active, profile_id, workshop_id")
     .eq("id", parsed.employeeId)
     .maybeSingle();
 
@@ -248,6 +132,7 @@ export async function assignOrderToEmployee(
     assignment_status: nextStatus,
     employee_id: employee.id,
     employee_note: employeeChanged ? null : order.employeeNote || null,
+    status: employeeChanged && ["draft", "sent_to_workshop", "accepted"].includes(order.status) ? "assigned" : order.status,
     workshop_id: order.workshopId,
   };
 
@@ -297,31 +182,35 @@ export async function assignOrderToEmployee(
     },
   });
 
-  await createAdminNotification({
-    employeeId: employee.id,
-    entityId: order.id,
-    entityType: "order",
-    linkPath: buildTaskPath(order.id),
-    message: employeeChanged
-      ? `${order.internalOrderNumber} wurde ${employee.full_name} zugewiesen.`
-      : `${order.internalOrderNumber} wurde aktualisiert.`,
-    title: employeeChanged ? "Auftrag zugewiesen" : "Zuweisung aktualisiert",
-    type: "order_updated",
-    workshopId: employee.workshop_id ?? order.workshopId,
-  });
+  if (employeeChanged && employee.profile_id) {
+    await createAdminNotification({
+      entityId: order.id,
+      entityType: "order",
+      linkPath: buildTaskPath(order.id),
+      message: `${order.internalOrderNumber} · ${productName}`,
+      profileId: employee.profile_id,
+      title: "task_assigned",
+      type: "order_updated",
+      workshopId: employee.workshop_id ?? order.workshopId,
+    });
+  }
 
   let emailResult: EmailDispatchResult | undefined;
 
   if (employeeChanged && normalizeText(employee.email)) {
-    emailResult = await sendEmployeeAssignmentEmail({
-      assignedAt,
-      assignmentNote,
-      employeeEmail: employee.email ?? "",
-      employeeName: employee.full_name,
+    const email = await buildEmployeeTaskEmail({
+      locale,
+      managerName: viewer.name,
+      note: assignmentNote,
+      order,
+      recipientName: employee.full_name,
+      url: buildTaskLoginUrl(locale, order.id),
+    });
+    emailResult = await sendTransactionalEmail({
+      ...email,
+      metadata: { kind: "worker_order_assigned", trackingNumber: order.trackingNumber },
       orderId: order.id,
-      orderNumber: order.internalOrderNumber,
-      productName,
-      trackingNumber: order.trackingNumber,
+      recipientEmail: employee.email ?? "",
     });
   }
 
@@ -331,9 +220,18 @@ export async function assignOrderToEmployee(
   };
 }
 
+/** How an employee's task state moves the order along for head office. */
+const orderStatusForTask: Partial<Record<OrderAssignmentStatus, WorkshopOrderStatus>> = {
+  accepted: "accepted",
+  completed: "ready",
+  in_progress: "in_production",
+  shipped: "delivered",
+};
+
 export async function updateMyAssignmentStatus(
   viewer: AdminViewer,
-  input: EmployeeTaskInput
+  input: EmployeeTaskInput,
+  locale: AppLocale = "de"
 ) {
   const parsed = employeeTaskSchema.parse(input);
   await assertEmployeeAssignedToOrder(viewer, parsed.orderId);
@@ -349,11 +247,17 @@ export async function updateMyAssignmentStatus(
     throw new Error("ORDER_NOT_FOUND");
   }
 
-  const supabase = createSupabaseAdminClient();
   const employeeNote = normalizeText(parsed.employeeNote);
+  if (statusesNeedingNote.includes(parsed.status) && !employeeNote) {
+    throw new Error("TASK_NOTE_REQUIRED");
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const nextOrderStatus = orderStatusForTask[parsed.status];
   const payload: TableUpdate<"orders"> = {
     assignment_status: parsed.status,
     employee_note: employeeNote || null,
+    ...(nextOrderStatus && !["cancelled", "archived"].includes(order.status) ? { status: nextOrderStatus } : {}),
   };
 
   const { error: updateError } = await supabase
@@ -366,17 +270,10 @@ export async function updateMyAssignmentStatus(
     throw new Error(`Unable to update task status: ${updateError.message}`);
   }
 
-  const noteDescription = [
-    `Aufgabenstatus: ${parsed.status}`,
-    employeeNote ? `Mitarbeiterhinweis: ${employeeNote}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
   const { error: eventError } = await supabase.from("order_status_events").insert({
     actor_name: viewer.name,
     created_by: viewer.id,
-    description: noteDescription,
+    description: [`Aufgabenstatus: ${parsed.status}`, employeeNote ? `Hinweis: ${employeeNote}` : ""].filter(Boolean).join("\n"),
     is_public: false,
     notify_customer: false,
     order_id: parsed.orderId,
@@ -388,16 +285,17 @@ export async function updateMyAssignmentStatus(
     throw new Error(`Unable to log employee progress: ${eventError.message}`);
   }
 
-  await createAdminNotification({
-    employeeId: linkedEmployeeId,
-    entityId: parsed.orderId,
-    entityType: "order",
-    linkPath: buildTaskPath(parsed.orderId),
-    message: `${order.internalOrderNumber}: ${parsed.status}`,
-    title: "Aufgabenstatus aktualisiert",
-    type: "order_updated",
-    workshopId: order.workshopId,
-  });
+  if (parsed.status !== order.assignmentStatus || employeeNote !== order.employeeNote) {
+    await notifyChainAboutTask({
+      employeeName: viewer.name,
+      locale,
+      note: employeeNote,
+      orderId: order.id,
+      orderNumber: order.internalOrderNumber,
+      status: parsed.status,
+      workshopId: order.workshopId,
+    });
+  }
 
   return {
     trackingNumber: order.trackingNumber,

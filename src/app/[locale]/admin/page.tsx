@@ -4,6 +4,7 @@ import {
   Clock3,
   ImageOff,
   Inbox,
+  MessagesSquare,
   type LucideIcon,
   Package,
   PackagePlus,
@@ -51,7 +52,7 @@ export default async function AdminDashboardPage({ params }: AdminDashboardPageP
   }
 
   if (access.user.role === "employee") {
-    redirect(getRoleDashboardPath(locale, access.user.role));
+    redirect(getRoleDashboardPath(locale, access.user.role, Boolean(access.user.managedWorkshopId)));
   }
 
   const currentUser = access.user;
@@ -99,7 +100,8 @@ export default async function AdminDashboardPage({ params }: AdminDashboardPageP
   const quickActions = [
     { href: "/admin/gallery", icon: ShoppingBag, label: t("overview.actions.createOrder") },
     ...(isSuperAdmin ? [{ href: "/admin/products?new=1", icon: PackagePlus, label: t("overview.actions.addProduct") }] : []),
-    { href: "/admin/employees", icon: UserPlus, label: t("overview.actions.addEmployee") },
+    ...(isSuperAdmin ? [{ href: "/admin/workshops", icon: UserPlus, label: t("flow.workshops.new") }] : []),
+    ...(isSuperAdmin ? [{ href: "/admin/messages", icon: MessagesSquare, label: t("nav.messages") }] : []),
   ];
 
   return (

@@ -27,6 +27,9 @@ export const orderAssignmentStatusValues = [
   "waiting",
   "completed",
   "returned",
+  "declined",
+  "problem",
+  "shipped",
 ] as const;
 
 export type OrderAssignmentStatus =
@@ -88,6 +91,9 @@ export type AdminUser = {
   role: AdminRole;
   workshopId?: string;
   linkedEmployeeId?: string;
+  /** Set for staff who run a workshop (they manage its team and orders). */
+  managedWorkshopId?: string;
+  workshopRole?: "workshop_manager" | "workshop_employee";
   avatarLabel: string;
   isActive: boolean;
 };

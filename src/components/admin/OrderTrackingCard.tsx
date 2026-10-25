@@ -9,32 +9,23 @@ import { useTranslations } from "next-intl";
 
 import {
   archiveOrderAction,
-  assignOrderToEmployeeAction,
   deleteOrderAction,
   updateOrderWorkflowAction,
-  withdrawOrderAssignmentAction,
 } from "@/app/[locale]/admin/orders/actions";
 import { getTrackingLinkPath } from "@/lib/admin/tracking";
 import {
   focusFirstInvalidField,
   getRequiredFieldBadge,
 } from "@/lib/admin/clientForm";
-import {
-  getAssignmentStatusMessageKey,
-  getAssignmentStatusVariant,
-} from "@/lib/admin/assignmentStatus";
-import type { EmployeeRecord } from "@/lib/db/employees";
 import type { AppLocale } from "@/i18n/routing";
 import type {
   AdminRole,
-  OrderAssignmentStatus,
   OrderTrackingEvent,
   PublicTrackingStage,
   TrackingStatus,
 } from "@/types/admin";
 import { publicTrackingStageValues, trackingStatusValues } from "@/types/admin";
 
-import { AdminBadge } from "./AdminBadge";
 import { AdminButton } from "./AdminButton";
 import { AdminCard } from "./AdminCard";
 import { useAdminPrivacyMode } from "./AdminPrivacyMode";
@@ -46,11 +37,6 @@ type OrderTrackingCardProps = {
   currentUserRole: AdminRole;
   customerEmail?: string;
   emailUpdatesEnabled: boolean;
-  employees: EmployeeRecord[];
-  initialAssignmentNote?: string;
-  initialAssignmentStatus: OrderAssignmentStatus;
-  initialEmployeeId?: string | null;
-  initialEmployeeNote?: string;
   initialEvents?: OrderTrackingEvent[];
   initialPublicStage?: PublicTrackingStage | null;
   initialStatus: TrackingStatus;
@@ -67,25 +53,10 @@ type FeedbackState =
     }
   | null;
 
-type AssignmentState = {
-  assignmentNote: string;
-  employeeId: string;
-};
-
 type WorkflowState = {
   publicStage: string;
   status: TrackingStatus;
 };
-
-function createAssignmentState(input: {
-  assignmentNote?: string | null;
-  employeeId?: string | null;
-}) {
-  return {
-    assignmentNote: input.assignmentNote?.trim() ?? "",
-    employeeId: input.employeeId?.trim() ?? "",
-  } satisfies AssignmentState;
-}
 
 function createWorkflowState(input: {
   publicStage?: PublicTrackingStage | null;
@@ -102,20 +73,10 @@ function useOrderCardUiCopy() {
 
   return {
     archiveConfirm: t("archiveConfirm"),
-    assignmentLabel: t("assignmentLabel"),
-    assignmentNoteLabel: t("assignmentNoteLabel"),
-    assignmentSection: t("assignmentSection"),
-    currentEmployee: t("currentEmployee"),
-    currentEmployeeNote: t("currentEmployeeNote"),
-    currentStatus: t("currentStatus"),
     deleteConfirm: t("deleteConfirm"),
     description: t("description"),
-    noEmployeeNote: t("noEmployeeNote"),
-    reassignLabel: t("reassignLabel"),
-    selectEmployee: t("selectEmployee"),
     title: t("title"),
     trackingSection: t("trackingSection"),
-    withdrawLabel: t("withdrawLabel"),
   };
 }
 
@@ -123,11 +84,6 @@ export function OrderTrackingCard({
   currentUserRole,
   customerEmail,
   emailUpdatesEnabled,
-  employees,
-  initialAssignmentNote,
-  initialAssignmentStatus,
-  initialEmployeeId,
-  initialEmployeeNote,
   initialEvents = [],
   initialPublicStage,
   initialStatus,
@@ -146,20 +102,10 @@ export function OrderTrackingCard({
   const [isPending, startTransition] = useTransition();
   const [feedback, setFeedback] = useState<FeedbackState>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [employeeId, setEmployeeId] = useState(initialEmployeeId ?? "");
-  const [assignmentNote, setAssignmentNote] = useState(initialAssignmentNote ?? "");
-  const [assignmentStatus, setAssignmentStatus] =
-    useState<OrderAssignmentStatus>(initialAssignmentStatus);
   const [publicStage, setPublicStage] = useState(initialPublicStage ?? "");
   const [trackingStatus, setTrackingStatus] = useState<TrackingStatus>(initialStatus);
   const [internalNote, setInternalNote] = useState("");
   const [customerNote, setCustomerNote] = useState("");
-  const [savedAssignmentState, setSavedAssignmentState] = useState(() =>
-    createAssignmentState({
-      assignmentNote: initialAssignmentNote,
-      employeeId: initialEmployeeId,
-    })
-  );
   const [savedWorkflowState, setSavedWorkflowState] = useState(() =>
     createWorkflowState({
       publicStage: initialPublicStage,
@@ -168,16 +114,6 @@ export function OrderTrackingCard({
   );
   const requiredLabel = getRequiredFieldBadge(locale);
   const trackingPath = getTrackingLinkPath(locale, trackingNumber);
-  const activeEmployees = employees
-    .filter((employee) => employee.isActive && employee.role === "employee")
-    .sort((left, right) => left.fullName.localeCompare(right.fullName, locale));
-  const currentEmployee =
-    activeEmployees.find((employee) => employee.id === employeeId) ??
-    employees.find((employee) => employee.id === employeeId) ??
-    null;
-  const assignmentChanged =
-    employeeId !== savedAssignmentState.employeeId ||
-    assignmentNote.trim() !== savedAssignmentState.assignmentNote;
   const workflowChanged =
     publicStage !== savedWorkflowState.publicStage ||
     trackingStatus !== savedWorkflowState.status ||
@@ -219,53 +155,6 @@ export function OrderTrackingCard({
     }
   };
 
-  const handleAssignmentSave = () => {
-    if (!assignmentChanged) {
-      setFeedback({ kind: "error", message: copy.noChanges });
-      return;
-    }
-
-    if (!employeeId) {
-      const message = copy.invalidSelection;
-      setFieldErrors({ employeeId: message });
-      setFeedback({ kind: "error", message });
-      return;
-    }
-
-    setFeedback(null);
-    const employeeChanged = employeeId !== savedAssignmentState.employeeId;
-
-    startTransition(async () => {
-      const result = await assignOrderToEmployeeAction(locale, {
-        assignmentNote,
-        employeeId,
-        orderId,
-      });
-
-      setFieldErrors(result.fieldErrors ?? {});
-      setFeedback({
-        kind: result.ok ? "success" : "error",
-        message: result.message,
-      });
-
-      if (!result.ok) {
-        focusFirstInvalidField(result.fieldErrors ?? {});
-        return;
-      }
-
-      setSavedAssignmentState(
-        createAssignmentState({
-          assignmentNote,
-          employeeId,
-        })
-      );
-      if (employeeChanged) {
-        setAssignmentStatus("assigned");
-      }
-      router.refresh();
-    });
-  };
-
   const handleWorkflowSave = () => {
     if (!workflowChanged) {
       setFeedback({ kind: "error", message: copy.noChanges });
@@ -303,36 +192,6 @@ export function OrderTrackingCard({
         createWorkflowState({
           publicStage: publicStage ? (publicStage as PublicTrackingStage) : null,
           status: trackingStatus,
-        })
-      );
-      router.refresh();
-    });
-  };
-
-  const handleWithdrawAssignment = () => {
-    if (!savedAssignmentState.employeeId) {
-      return;
-    }
-
-    startTransition(async () => {
-      const result = await withdrawOrderAssignmentAction(locale, orderId);
-
-      setFeedback({
-        kind: result.ok ? "success" : "error",
-        message: result.message,
-      });
-
-      if (!result.ok) {
-        return;
-      }
-
-      setEmployeeId("");
-      setAssignmentNote("");
-      setAssignmentStatus("returned");
-      setSavedAssignmentState(
-        createAssignmentState({
-          assignmentNote: "",
-          employeeId: null,
         })
       );
       router.refresh();
@@ -394,14 +253,6 @@ export function OrderTrackingCard({
             </p>
           </div>
           <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
-            <p className="text-xs text-muted">{uiCopy.currentStatus}</p>
-            <div className="mt-2">
-              <AdminBadge variant={getAssignmentStatusVariant(assignmentStatus)}>
-                {t(getAssignmentStatusMessageKey(assignmentStatus))}
-              </AdminBadge>
-            </div>
-          </div>
-          <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
             <p className="text-xs text-muted">{t("orders.emailUpdatesLabel")}</p>
             <p className="mt-2 text-sm text-foreground">
               {emailUpdatesEnabled ? t("common.enabled") : t("common.disabled")}
@@ -418,16 +269,6 @@ export function OrderTrackingCard({
           >
             {t("buttons.copyTrackingLink")}
           </AdminButton>
-          {savedAssignmentState.employeeId ? (
-            <AdminButton
-              size="sm"
-              variant="ghost"
-              onClick={handleWithdrawAssignment}
-              disabled={isPending}
-            >
-              {uiCopy.withdrawLabel}
-            </AdminButton>
-          ) : null}
           {currentUserRole === "super_admin" ? (
             <>
               <AdminButton
@@ -461,76 +302,6 @@ export function OrderTrackingCard({
             {feedback.message}
           </div>
         ) : null}
-
-        <section className="space-y-4 rounded-[1rem] border border-white/8 bg-black/18 p-4">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-sm font-semibold text-foreground">
-              {uiCopy.assignmentSection}
-            </h3>
-            <AdminBadge variant={getAssignmentStatusVariant(assignmentStatus)}>
-              {t(getAssignmentStatusMessageKey(assignmentStatus))}
-            </AdminBadge>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
-              <p className="text-xs text-muted">{uiCopy.currentEmployee}</p>
-              <p className="mt-2 text-sm text-foreground">
-                {currentEmployee?.fullName || copy.noWorkshopAssigned}
-              </p>
-            </div>
-            <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3 lg:col-span-2">
-              <p className="text-xs text-muted">{uiCopy.currentEmployeeNote}</p>
-              <p className="mt-2 text-sm text-foreground">
-                {initialEmployeeNote?.trim() || uiCopy.noEmployeeNote}
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
-            <AdminSelect
-              id="employeeId"
-              name="employeeId"
-              label={copy.employeeLabel}
-              value={employeeId}
-              errorText={fieldErrors.employeeId}
-              required
-              requiredLabel={requiredLabel}
-              onChange={(event) => {
-                clearFieldError("employeeId");
-                setEmployeeId(event.target.value);
-              }}
-            >
-              <option value="">{uiCopy.selectEmployee}</option>
-              {activeEmployees.map((employee) => (
-                <option key={employee.id} value={employee.id}>
-                  {employee.fullName}
-                  {employee.email ? ` - ${employee.email}` : ""}
-                </option>
-              ))}
-            </AdminSelect>
-            <div className="flex items-end">
-              <AdminButton
-                block
-                variant="primary"
-                onClick={handleAssignmentSave}
-                disabled={isPending}
-              >
-                {savedAssignmentState.employeeId
-                  ? uiCopy.reassignLabel
-                  : uiCopy.assignmentLabel}
-              </AdminButton>
-            </div>
-          </div>
-
-          <AdminTextarea
-            id="assignmentNote"
-            name="assignmentNote"
-            label={uiCopy.assignmentNoteLabel}
-            value={assignmentNote}
-            onChange={(event) => setAssignmentNote(event.target.value)}
-          />
-        </section>
 
         <section className="space-y-4 rounded-[1rem] border border-white/8 bg-black/18 p-4">
           <h3 className="text-sm font-semibold text-foreground">{uiCopy.trackingSection}</h3>

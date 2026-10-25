@@ -1,21 +1,95 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { X } from "lucide-react";
-import type { PublicPromoPopup } from "@/lib/db/siteSettings";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
-export function PromoPopup({ promo }: { promo: PublicPromoPopup }) {
-  const [open, setOpen] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const now = Date.now();
-    const valid = promo.enabled && promo.title && promo.description && (!promo.startsAt || Date.parse(promo.startsAt) <= now) && (!promo.endsAt || Date.parse(promo.endsAt) >= now);
-    return Boolean(valid && (!promo.showOnce || !localStorage.getItem("goldhelwah-promo-dismissed")));
-  });
-  const [failedImageUrl, setFailedImageUrl] = useState("");
-  const imageVisible = Boolean(promo.imageUrl) && failedImageUrl !== promo.imageUrl;
+import type { ResolvedPromoPopup } from "@/lib/db/siteSettings";
 
-  if (!open) return null;
-  const close = () => { if (promo.showOnce) localStorage.setItem("goldhelwah-promo-dismissed", "1"); setOpen(false); };
-  return <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 sm:items-center" role="dialog" aria-modal="true"><section className="relative w-full max-w-lg overflow-hidden rounded-[2rem] border border-gold/25 bg-[#0b0a08] p-6 shadow-2xl sm:p-8"><button type="button" aria-label="Close" onClick={close} className="absolute right-4 top-4 rounded-full p-2 text-muted hover:text-foreground"><X className="h-5 w-5" /></button>{promo.imageUrl && imageVisible ? <div className="relative mb-6 h-44 w-full overflow-hidden rounded-2xl"><Image src={promo.imageUrl} alt="" fill sizes="(max-width: 640px) 100vw, 32rem" className="object-cover" onError={() => setFailedImageUrl(promo.imageUrl)} /></div> : null}<h2 className="text-3xl font-semibold text-foreground">{promo.title}</h2><p className="mt-4 leading-7 text-muted">{promo.description}</p>{promo.ctaText && promo.ctaUrl ? <a className="gold-button mt-6" href={promo.ctaUrl}>{promo.ctaText}</a> : null}{promo.videoUrl ? <a className="mt-4 block text-sm text-gold-soft underline" href={promo.videoUrl} target="_blank" rel="noreferrer">Video</a> : null}</section></div>;
+const storageKey = "goldhelwah-promo-seen";
+
+function isWithinPeriod(promo: ResolvedPromoPopup) {
+  const now = Date.now();
+  return (!promo.startsAt || Date.parse(promo.startsAt) <= now) && (!promo.endsAt || Date.parse(promo.endsAt) >= now);
+}
+
+function wasSeen(version: string) {
+  try {
+    return window.localStorage.getItem(storageKey) === version;
+  } catch {
+    return false;
+  }
+}
+
+/** A quiet announcement shown once on the homepage, e.g. for a season or an event. */
+export function PromoPopup({ promo }: { promo: ResolvedPromoPopup | null }) {
+  const t = useTranslations("Promo");
+  const [open, setOpen] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!promo || !isWithinPeriod(promo) || (promo.showOnce && wasSeen(promo.version))) return;
+    // Let the page settle first; an instant pop-up feels like an ad.
+    const timer = window.setTimeout(() => setOpen(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, [promo]);
+
+  useEffect(() => {
+    if (!open) return;
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  if (!promo || !open) return null;
+
+  const close = () => {
+    if (promo.showOnce) {
+      try {
+        window.localStorage.setItem(storageKey, promo.version);
+      } catch {
+        // Without storage the pop-up may simply show again next time.
+      }
+    }
+    setOpen(false);
+  };
+
+  const showImage = Boolean(promo.imageUrl) && !imageFailed;
+
+  return (
+    <div className="promo-layer" role="dialog" aria-modal="true" aria-labelledby="promo-title">
+      <button type="button" className="promo-backdrop" aria-hidden="true" tabIndex={-1} onClick={close} />
+      <section className="promo-card">
+        <button ref={closeRef} type="button" aria-label={t("close")} onClick={close} className="promo-close">
+          <X className="h-5 w-5" />
+        </button>
+        {showImage ? (
+          <div className="promo-media">
+            <Image src={promo.imageUrl} alt="" fill sizes="(max-width: 640px) 100vw, 30rem" className="object-cover" onError={() => setImageFailed(true)} />
+          </div>
+        ) : null}
+        <div className="promo-body">
+          <h2 id="promo-title" className="promo-title">
+            {promo.title}
+          </h2>
+          {promo.description ? <p className="promo-text">{promo.description}</p> : null}
+          <div className="promo-actions">
+            {promo.ctaText && promo.ctaUrl ? (
+              <a className="gold-button" href={promo.ctaUrl} onClick={close}>
+                {promo.ctaText}
+              </a>
+            ) : null}
+            <button type="button" className="promo-dismiss" onClick={close}>
+              {t("dismiss")}
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }

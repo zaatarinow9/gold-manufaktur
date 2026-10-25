@@ -1,21 +1,24 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
 
 import { updateMyTaskAction } from "@/app/[locale]/admin/orders/actions";
 import type { AppLocale } from "@/i18n/routing";
 import {
+  employeeTaskStatusValues,
   getAssignmentStatusMessageKey,
   getAssignmentStatusVariant,
+  statusesNeedingNote,
+  type EmployeeTaskStatus,
 } from "@/lib/admin/assignmentStatus";
 import type { OrderAssignmentStatus } from "@/types/admin";
 
 import { AdminBadge } from "./AdminBadge";
 import { AdminButton } from "./AdminButton";
 import { AdminCard } from "./AdminCard";
-import { AdminSelect } from "./AdminSelect";
 import { AdminTextarea } from "./AdminTextarea";
 
 type EmployeeTaskCardProps = {
@@ -27,39 +30,11 @@ type EmployeeTaskCardProps = {
   orderId: string;
 };
 
-type FeedbackState =
-  | {
-      kind: "error" | "success";
-      message: string;
-    }
-  | null;
-
-type EmployeeTaskStatus = Extract<
-  OrderAssignmentStatus,
-  "assigned" | "accepted" | "in_progress" | "waiting" | "completed"
->;
-
-const editableStatuses: Array<Exclude<OrderAssignmentStatus, "assigned" | "returned">> = [
-  "accepted",
-  "in_progress",
-  "waiting",
-  "completed",
-];
-
-function useTaskCardCopy() {
-  const t = useTranslations("Admin.taskCard");
-
-  return {
-    assignmentNote: t("assignmentNote"),
-    dueDate: t("dueDate"),
-    employeeNote: t("employeeNote"),
-    noAssignmentNote: t("noAssignmentNote"),
-    save: t("save"),
-    status: t("status"),
-    title: t("title"),
-  };
+function asTaskStatus(status: OrderAssignmentStatus): EmployeeTaskStatus | null {
+  return (employeeTaskStatusValues as readonly string[]).includes(status) ? (status as EmployeeTaskStatus) : null;
 }
 
+/** The employee's own controls: where the piece stands, and what's wrong if anything. */
 export function EmployeeTaskCard({
   assignmentNote,
   dueDate,
@@ -68,126 +43,89 @@ export function EmployeeTaskCard({
   locale,
   orderId,
 }: EmployeeTaskCardProps) {
-  const copy = useTaskCardCopy();
-  const t = useTranslations("Admin");
+  const t = useTranslations("Admin.flow.task");
+  const tc = useTranslations("Admin");
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [feedback, setFeedback] = useState<FeedbackState>(null);
-  const initialTaskStatus: EmployeeTaskStatus =
-    initialStatus === "returned" ? "assigned" : initialStatus;
-  const [status, setStatus] = useState<EmployeeTaskStatus>(initialTaskStatus);
-  const [employeeNote, setEmployeeNote] = useState(initialEmployeeNote ?? "");
-  const [savedState, setSavedState] = useState({
-    employeeNote: initialEmployeeNote?.trim() ?? "",
-    status: initialTaskStatus,
-  });
-  const statusOptions = useMemo(() => {
-    if (initialTaskStatus === "assigned") {
-      return ["assigned", ...editableStatuses] satisfies EmployeeTaskStatus[];
-    }
+  const [pending, startTransition] = useTransition();
+  const [feedback, setFeedback] = useState<{ message: string; ok: boolean } | null>(null);
+  const [status, setStatus] = useState<EmployeeTaskStatus | null>(asTaskStatus(initialStatus));
+  const [note, setNote] = useState(initialEmployeeNote ?? "");
+  const needsNote = status ? statusesNeedingNote.includes(status) : false;
+  const changed = status !== asTaskStatus(initialStatus) || note.trim() !== (initialEmployeeNote ?? "").trim();
 
-    return editableStatuses;
-  }, [initialTaskStatus]);
-
-  const hasChanges =
-    status !== savedState.status ||
-    employeeNote.trim() !== savedState.employeeNote;
-
-  const handleSave = () => {
-    if (!hasChanges) {
-      return;
-    }
-
+  const save = () => {
+    if (!status) return;
     startTransition(async () => {
-      const result = await updateMyTaskAction(locale, {
-        employeeNote,
-        orderId,
-        status,
-      });
-
-      setFeedback({
-        kind: result.ok ? "success" : "error",
-        message: result.message,
-      });
-
-      if (!result.ok) {
-        return;
-      }
-
-      setSavedState({
-        employeeNote: employeeNote.trim(),
-        status,
-      });
-      router.refresh();
+      const result = await updateMyTaskAction(locale, { employeeNote: note, orderId, status });
+      setFeedback({ message: result.message, ok: result.ok });
+      if (result.ok) router.refresh();
     });
   };
 
   return (
-    <AdminCard title={copy.title}>
-      <div className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
-            <p className="text-xs text-muted">{copy.status}</p>
-            <div className="mt-2">
-              <AdminBadge variant={getAssignmentStatusVariant(status)}>
-                {t(getAssignmentStatusMessageKey(status))}
-              </AdminBadge>
-            </div>
-          </div>
-          <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
-            <p className="text-xs text-muted">{copy.dueDate}</p>
-            <p className="mt-2 text-sm text-foreground">{dueDate || "-"}</p>
-          </div>
+    <AdminCard title={t("title")} description={t("hint")}>
+      <div className="space-y-5">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-muted">{t("now")}</span>
+          <AdminBadge variant={getAssignmentStatusVariant(initialStatus)}>{tc(getAssignmentStatusMessageKey(initialStatus))}</AdminBadge>
+          {dueDate ? <span className="ms-auto text-muted">{t("due", { date: dueDate })}</span> : null}
         </div>
 
-        <div className="rounded-[0.95rem] border border-white/8 bg-white/4 px-4 py-3">
-          <p className="text-xs text-muted">{copy.assignmentNote}</p>
-          <p className="mt-2 text-sm text-foreground">
-            {assignmentNote?.trim() || copy.noAssignmentNote}
-          </p>
-        </div>
+        {assignmentNote?.trim() ? (
+          <div className="rounded-[0.8rem] border border-gold/15 bg-gold/[0.06] px-4 py-3">
+            <p className="text-xs text-gold-soft">{t("managerNote")}</p>
+            <p className="mt-1 whitespace-pre-line text-sm text-foreground">{assignmentNote}</p>
+          </div>
+        ) : null}
 
-        <AdminSelect
-          id="taskStatus"
-          name="taskStatus"
-          label={copy.status}
-          value={status}
-          onChange={(event) => setStatus(event.target.value as EmployeeTaskStatus)}
-        >
-          {statusOptions.map((option) => (
-            <option key={option} value={option}>
-              {t(getAssignmentStatusMessageKey(option))}
-            </option>
-          ))}
-        </AdminSelect>
+        <fieldset>
+          <legend className="admin-label mb-2">{t("choose")}</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {employeeTaskStatusValues.map((value) => (
+              <label
+                key={value}
+                className={clsx(
+                  "flex cursor-pointer flex-col gap-0.5 rounded-[0.75rem] border px-3.5 py-3 transition",
+                  status === value
+                    ? value === "declined" || value === "problem"
+                      ? "border-rose-400/50 bg-rose-400/[0.08]"
+                      : "border-gold/50 bg-gold/[0.08]"
+                    : "border-white/[0.08] hover:border-white/20"
+                )}
+              >
+                <span className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name={`task-status-${orderId}`}
+                    value={value}
+                    checked={status === value}
+                    onChange={() => setStatus(value)}
+                    className="accent-[var(--color-gold)]"
+                  />
+                  <span className="text-sm font-semibold text-foreground">{tc(getAssignmentStatusMessageKey(value))}</span>
+                </span>
+                <span className="ps-6 text-xs leading-5 text-muted">{t(`explain.${value}`)}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
 
         <AdminTextarea
-          id="employeeNote"
-          name="employeeNote"
-          label={copy.employeeNote}
-          value={employeeNote}
-          onChange={(event) => setEmployeeNote(event.target.value)}
+          label={needsNote ? t("reasonLabel") : t("noteLabel")}
+          required={needsNote}
+          placeholder={needsNote ? t("reasonPlaceholder") : t("notePlaceholder")}
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
         />
 
         {feedback ? (
-          <div
-            className={
-              feedback.kind === "success"
-                ? "rounded-[0.95rem] border border-gold/18 bg-gold/10 px-4 py-3 text-sm text-foreground"
-                : "rounded-[0.95rem] border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm text-rose-100"
-            }
-          >
+          <div className="admin-notice" data-tone={feedback.ok ? "success" : "error"} role="status">
             {feedback.message}
           </div>
         ) : null}
 
-        <AdminButton
-          block
-          variant="primary"
-          onClick={handleSave}
-          disabled={isPending || !hasChanges}
-        >
-          {copy.save}
+        <AdminButton block variant="primary" onClick={save} disabled={pending || !status || !changed || (needsNote && !note.trim())}>
+          {pending ? t("saving") : t("save")}
         </AdminButton>
       </div>
     </AdminCard>

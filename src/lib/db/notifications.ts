@@ -49,12 +49,13 @@ function canViewNotification(
     workshop_id: string | null;
   }
 ) {
-  if (viewer.role === "super_admin") {
-    return true;
-  }
-
+  // Personal notifications belong to one person only.
   if (notification.profile_id) {
     return notification.profile_id === viewer.id;
+  }
+
+  if (viewer.role === "super_admin") {
+    return true;
   }
 
   if (viewer.role === "admin") {
@@ -63,6 +64,10 @@ function canViewNotification(
 
   if (notification.employee_id && viewer.linkedEmployeeId) {
     return notification.employee_id === viewer.linkedEmployeeId;
+  }
+
+  if (notification.workshop_id && viewer.managedWorkshopId) {
+    return notification.workshop_id === viewer.managedWorkshopId;
   }
 
   if (notification.workshop_id && viewer.workshopId) {

@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 
 import { AdminAccessDenied } from "@/components/admin/AdminAccessDenied";
 import { requireAdminAccess } from "@/lib/admin/auth";
+import { getScopedOrders } from "@/lib/db/orders";
+import { getWorkshopTeam } from "@/lib/db/workshopFlow";
 import { getScopedWorkshops } from "@/lib/db/workshops";
-import { getScopedEmployeeAccounts } from "@/lib/db/employeeAccounts";
 import { resolveLocale } from "@/lib/site";
 
 import { WorkshopDetailClient } from "./workshop-detail-client";
@@ -21,6 +22,15 @@ export default async function WorkshopDetailPage({ params }: Props) {
   }
   const workshop = (await getScopedWorkshops(access.user)).find((entry) => entry.id === id);
   if (!workshop) notFound();
-  const employees = (await getScopedEmployeeAccounts(access.user)).filter((employee) => employee.workshopId === id);
-  return <WorkshopDetailClient locale={locale} workshop={workshop} employees={employees} />;
+  const [team, orders] = await Promise.all([getWorkshopTeam(id), getScopedOrders(access.user)]);
+  const openOrders = orders
+    .filter(
+      (order) =>
+        order.workshopId === id &&
+        !order.archivedAt &&
+        !order.deletedAt &&
+        !["delivered", "cancelled", "archived"].includes(order.status)
+    )
+    .slice(0, 20);
+  return <WorkshopDetailClient locale={locale} openOrders={openOrders} team={team} workshop={workshop} />;
 }

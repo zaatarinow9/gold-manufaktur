@@ -18,6 +18,20 @@ export function localizeNotification(notification: NotificationLike, t: Translat
   const message = notification.message.trim();
   let match: RegExpMatchArray | null;
 
+  // Newer notifications store a stable code as their title.
+  if (title === "workshop_order_received") {
+    return { message, title: t("workshopOrderReceived") };
+  }
+  if (title === "task_assigned") {
+    return { message, title: t("newTask") };
+  }
+  if ((match = title.match(/^task_status:([a-z_]+)$/))) {
+    return { message, title: t(`taskStatus_${match[1]}`) };
+  }
+  if ((match = title.match(/^message:(team|management)$/))) {
+    return { message, title: t("newMessage") };
+  }
+
   if (notification.type === "ticket_created" && (match = title.match(/^Support request for (.+)$/))) {
     return { message, title: t("ticketCreated", { ref: match[1] }) };
   }

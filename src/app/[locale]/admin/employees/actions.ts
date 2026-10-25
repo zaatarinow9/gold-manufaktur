@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateDashboard } from "@/lib/admin/revalidate";
+
 import { getOrderWorkflowCopy } from "@/lib/admin/adminCopy.server";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
@@ -30,6 +32,7 @@ import {
 import { StaffAccountError } from "@/lib/admin/staffAuth";
 
 function revalidateEmployeeViews() {
+  revalidateDashboard();
   routing.locales.forEach((locale) => {
     revalidatePath(`/${locale}/admin`);
     revalidatePath(`/${locale}/admin/employees`);

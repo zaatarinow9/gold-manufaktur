@@ -195,25 +195,29 @@ export async function setEmployeeActive(employeeId: string, isActive: boolean) {
 }
 
 /**
- * Removes an employee. Employees who still have orders are kept (orders must
- * never lose who made them); deactivate those instead. A linked login is
- * switched off so nobody can sign in with a deleted employee's account.
+ * Removes an employee. Orders they were working on go back to their
+ * workshop manager's queue ("returned"), finished orders simply lose the
+ * link. Their login is switched off so nobody can sign in with it.
  */
 export async function deleteEmployeeRecord(employeeId: string) {
   const supabase = createSupabaseAdminClient();
 
-  const [{ data: employee, error: employeeError }, { count: orderCount, error: orderError }] = await Promise.all([
-    supabase.from("employees").select("id, full_name").eq("id", employeeId).maybeSingle(),
-    supabase.from("orders").select("id", { count: "exact", head: true }).eq("employee_id", employeeId),
-  ]);
-
+  const { data: employee, error: employeeError } = await supabase
+    .from("employees")
+    .select("id, full_name, workshop_id, profile_id")
+    .eq("id", employeeId)
+    .maybeSingle();
   if (employeeError || !employee) throw new Error("EMPLOYEE_NOT_FOUND");
-  if (orderError) throw new Error("EMPLOYEE_DELETE_FAILED");
-  if ((orderCount ?? 0) > 0) throw new Error("EMPLOYEE_HAS_ORDERS");
+
+  const { error: releaseError } = await supabase
+    .from("orders")
+    .update({ assigned_at: null, assigned_worker_email: null, assignment_status: "returned", employee_id: null })
+    .eq("employee_id", employeeId);
+  if (releaseError) throw new Error("EMPLOYEE_DELETE_FAILED");
 
   const { error: profileError } = await supabase
     .from("profiles")
-    .update({ is_active: false })
+    .update({ employee_id: null, is_active: false, workshop_id: null })
     .eq("employee_id", employeeId)
     .eq("role", "employee");
   if (profileError) throw new Error("EMPLOYEE_DELETE_FAILED");
@@ -221,5 +225,5 @@ export async function deleteEmployeeRecord(employeeId: string) {
   const { error } = await supabase.from("employees").delete().eq("id", employeeId);
   if (error) throw new Error(error.code === "23503" ? "EMPLOYEE_HAS_ORDERS" : "EMPLOYEE_DELETE_FAILED");
 
-  return { id: employee.id, name: employee.full_name };
+  return { id: employee.id, name: employee.full_name, profileId: employee.profile_id, workshopId: employee.workshop_id };
 }

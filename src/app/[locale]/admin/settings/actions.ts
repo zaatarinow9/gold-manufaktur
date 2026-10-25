@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidateDashboard } from "@/lib/admin/revalidate";
+
 import { getTranslations } from "next-intl/server";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
@@ -19,10 +21,7 @@ import {
   updateManagedAdminUser,
 } from "@/lib/db/adminUsers";
 import {
-  buildOrderEntryUrl,
-  rotateOrderEntryAccess,
   saveNotificationSettings,
-  saveOrderEntrySettings,
   savePublicVisualSettings,
   SiteSettingsError,
 } from "@/lib/db/siteSettings";
@@ -30,9 +29,6 @@ import {
   getAdminDecoyUnavailableMessage,
   isAdminDecoyEnabled,
 } from "@/lib/db/adminDecoy";
-import { buildOrderEntryLinkEmail } from "@/lib/email/orderEntryLinkEmail";
-import { sendTransactionalEmail } from "@/lib/email/service";
-import { companyInfo } from "@/lib/site";
 import {
   archiveOrder,
   deleteOrder,
@@ -55,28 +51,27 @@ const managedUserSchema = z.object({
   role: z.enum(["super_admin", "admin", "employee"]),
 });
 
-const orderEntrySchema = z.object({
-  enabled: z.boolean(),
-  expiresAt: z.string().trim().max(80).default(""),
-});
-
-const sendOrderEntryLinkEmailSchema = z.object({
-  enabled: z.boolean(),
-  expiresAt: z.string().trim().max(80).default(""),
-  recipientEmail: z.string().trim().email().max(160),
+const promoTextSchema = z.object({
+  ar: z.string().trim().max(1200),
+  de: z.string().trim().max(1200),
+  en: z.string().trim().max(1200),
+  fr: z.string().trim().max(1200),
+  tr: z.string().trim().max(1200),
 });
 const publicVisualSettingsSchema = z.object({
   promoPopup: z.object({
+    ctaText: promoTextSchema,
+    ctaUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .refine((value) => value === "" || value.startsWith("/") || /^https?:\/\//i.test(value), "url"),
+    description: promoTextSchema,
     enabled: z.boolean(),
-    title: z.string().trim().max(160),
-    description: z.string().trim().max(1200),
-    ctaText: z.string().trim().max(80),
-    ctaUrl: z.string().trim().url().or(z.literal("")),
-    videoUrl: z.string().trim().url().or(z.literal("")),
-    style: z.enum(["luxury", "image", "announcement"]),
-    startsAt: z.string().trim().max(80),
     endsAt: z.string().trim().max(80),
     showOnce: z.boolean(),
+    startsAt: z.string().trim().max(80),
+    title: promoTextSchema,
   }),
 });
 const orderMaintenanceModeSchema = z.enum([
@@ -459,11 +454,7 @@ async function getSettingsActionCopy(locale: AppLocale) {
     invalidEmail: t("invalidEmail"),
     invalidName: t("invalidName"),
     noAccess: t("noAccess"),
-    orderEntryRotated: t("orderEntryRotated"),
-    orderEntrySendDisabled: t("orderEntrySendDisabled"),
-    orderEntrySendFailed: t("orderEntrySendFailed"),
-    orderEntrySendSavedOnly: t("orderEntrySendSavedOnly"),
-    orderEntrySent: t("orderEntrySent"),
+    emailNotSent: t("emailNotSent"),
     privacyPhrase: t("privacyPhrase"),
     saved: t("saved"),
     userCreated: t("userCreated"),
@@ -476,6 +467,7 @@ async function getSettingsActionCopy(locale: AppLocale) {
 }
 
 function revalidateSettingsViews() {
+  revalidateDashboard();
   routing.locales.forEach((targetLocale) => {
     revalidatePath(`/${targetLocale}`);
     revalidatePath(`/${targetLocale}/admin`);
@@ -493,7 +485,15 @@ export async function savePublicVisualSettingsAction(locale: AppLocale, input: z
   const blocked = await getDecoyBlockedResult(locale);
   if (blocked) return blocked;
   const parsed = publicVisualSettingsSchema.safeParse(input);
-  if (!parsed.success) return { message: (await getSettingsActionCopy(locale)).invalidEmail, ok: false };
+  if (!parsed.success) {
+    const t = await getTranslations({ locale, namespace: "Admin.flow.promo" });
+    const badUrl = parsed.error.issues.some((issue) => issue.path.includes("ctaUrl"));
+    return { message: badUrl ? t("badLink") : t("tooLong"), ok: false };
+  }
+  if (parsed.data.promoPopup.enabled && !Object.values(parsed.data.promoPopup.title).some(Boolean)) {
+    const t = await getTranslations({ locale, namespace: "Admin.flow.promo" });
+    return { message: t("titleRequired"), ok: false };
+  }
   try { await savePublicVisualSettings(parsed.data); revalidateSettingsViews(); return { message: (await getSettingsActionCopy(locale)).saved, ok: true }; }
   catch (error) { return { message: error instanceof Error ? error.message : (await getSettingsActionCopy(locale)).saved, ok: false }; }
 }
@@ -582,211 +582,6 @@ export async function saveNotificationSettingsAction(
   }
 }
 
-export async function saveOrderEntrySettingsAction(
-  locale: AppLocale,
-  input: z.infer<typeof orderEntrySchema>
-): Promise<SettingsActionWithLink> {
-  const user = await requireSettingsAccess(locale);
-  const copy = (await getSettingsActionCopy(locale));
-
-  if (!user) {
-    return {
-      message: copy.noAccess,
-      ok: false,
-    };
-  }
-
-  const blockedResult = await getDecoyBlockedResult(locale);
-
-  if (blockedResult) {
-    return blockedResult;
-  }
-
-  const parsed = orderEntrySchema.safeParse(input);
-
-  if (!parsed.success) {
-    return {
-      message: copy.saved,
-      ok: false,
-    };
-  }
-
-  try {
-    const token = await saveOrderEntrySettings(parsed.data);
-    revalidateSettingsViews();
-    return {
-      link: buildOrderEntryUrl(locale, token),
-      message: copy.saved,
-      ok: true,
-    };
-  } catch (error) {
-    return {
-      message:
-        error instanceof SiteSettingsError
-          ? error.messageForUi
-          : error instanceof Error
-            ? error.message
-            : copy.saved,
-      ok: false,
-    };
-  }
-}
-
-export async function rotateOrderEntryAccessAction(
-  locale: AppLocale,
-  input: z.infer<typeof orderEntrySchema>
-): Promise<SettingsActionWithLink> {
-  const user = await requireSettingsAccess(locale);
-  const copy = (await getSettingsActionCopy(locale));
-
-  if (!user) {
-    return {
-      message: copy.noAccess,
-      ok: false,
-    };
-  }
-
-  const blockedResult = await getDecoyBlockedResult(locale);
-
-  if (blockedResult) {
-    return blockedResult;
-  }
-
-  const parsed = orderEntrySchema.safeParse(input);
-
-  if (!parsed.success) {
-    return {
-      message: copy.saved,
-      ok: false,
-    };
-  }
-
-  try {
-    const result = await rotateOrderEntryAccess({
-      actorEmail: user.email,
-      enabled: parsed.data.enabled,
-      expiresAt: parsed.data.expiresAt,
-    });
-    revalidateSettingsViews();
-
-    return {
-      link: buildOrderEntryUrl(locale, result.token),
-      message: copy.orderEntryRotated,
-      ok: true,
-    };
-  } catch (error) {
-    return {
-      message:
-        error instanceof SiteSettingsError
-          ? error.messageForUi
-          : error instanceof Error
-            ? error.message
-            : copy.saved,
-      ok: false,
-    };
-  }
-}
-
-export async function sendOrderEntryLinkEmailAction(
-  locale: AppLocale,
-  input: z.infer<typeof sendOrderEntryLinkEmailSchema>
-): Promise<SettingsActionWithLink> {
-  const user = await requireSettingsAccess(locale);
-  const copy = (await getSettingsActionCopy(locale));
-
-  if (!user) {
-    return {
-      message: copy.noAccess,
-      ok: false,
-    };
-  }
-
-  const blockedResult = await getDecoyBlockedResult(locale);
-
-  if (blockedResult) {
-    return blockedResult;
-  }
-
-  const parsed = sendOrderEntryLinkEmailSchema.safeParse(input);
-
-  if (!parsed.success) {
-    return await getValidationFailure(locale);
-  }
-
-  if (!parsed.data.enabled) {
-    return {
-      message: copy.orderEntrySendDisabled,
-      ok: false,
-    };
-  }
-
-  try {
-    const token = await saveOrderEntrySettings({
-      enabled: parsed.data.enabled,
-      expiresAt: parsed.data.expiresAt,
-    });
-    const link = buildOrderEntryUrl(locale, token);
-    const email = buildOrderEntryLinkEmail({
-      expiresAt: parsed.data.expiresAt,
-      link,
-    });
-    const redactedLink = "[redacted order entry link]";
-    const emailResult = await sendTransactionalEmail({
-      html: email.html,
-      logHtml: email.html.replaceAll(link, redactedLink),
-      logMetadata: {
-        actorEmail: user.email,
-        expiresAt: parsed.data.expiresAt || null,
-        kind: "order_entry_link_email",
-      },
-      logText: email.text.replaceAll(link, redactedLink),
-      metadata: {
-        actorEmail: user.email,
-        expiresAt: parsed.data.expiresAt || null,
-        kind: "order_entry_link_email",
-      },
-      recipientEmail: parsed.data.recipientEmail,
-      replyTo: companyInfo.emailDisplay,
-      subject: email.subject,
-      text: email.text,
-    });
-
-    revalidateSettingsViews();
-
-    if (!emailResult.ok) {
-      return {
-        link,
-        message: copy.orderEntrySendFailed,
-        ok: false,
-      };
-    }
-
-    if (emailResult.status !== "sent") {
-      return {
-        link,
-        message: copy.orderEntrySendSavedOnly,
-        ok: false,
-      };
-    }
-
-    return {
-      link,
-      message: copy.orderEntrySent,
-      ok: true,
-    };
-  } catch (error) {
-    return {
-      message:
-        error instanceof SiteSettingsError
-          ? error.messageForUi
-          : error instanceof Error
-            ? error.message
-            : copy.orderEntrySendFailed,
-      ok: false,
-    };
-  }
-}
-
 export async function createManagedAdminUserAction(
   locale: AppLocale,
   input: z.infer<typeof managedUserSchema>
@@ -823,7 +618,7 @@ export async function createManagedAdminUserAction(
       message:
         result.emailResult.status === "sent"
           ? copy.userCreated
-          : copy.orderEntrySendSavedOnly,
+          : copy.emailNotSent,
       ok: result.emailResult.status === "sent",
       shouldRefresh: true,
     };
@@ -926,7 +721,7 @@ export async function resendManagedAdminInviteAction(
       message:
         result.status === "sent"
           ? copy.userInviteSent
-          : copy.orderEntrySendSavedOnly,
+          : copy.emailNotSent,
       ok: result.status === "sent",
       shouldRefresh: true,
     };
@@ -977,7 +772,7 @@ export async function sendManagedAdminPasswordResetAction(
       message:
         result.status === "sent"
           ? copy.userPasswordResetSent
-          : copy.orderEntrySendSavedOnly,
+          : copy.emailNotSent,
       ok: result.status === "sent",
       shouldRefresh: true,
     };
