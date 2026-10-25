@@ -36,8 +36,13 @@ export function HeroSection({ imageUrl, visualProduct }: HeroSectionProps) {
         <div className="relative z-10 order-2 -mt-16 flex items-center px-4 pb-14 sm:px-6 lg:order-1 lg:mt-0 lg:py-20 lg:pe-12 lg:ps-[max(2.5rem,calc((100vw_-_78rem)/2))]">
           <div className="hero-reveal max-w-[36rem]">
             <p className="eyebrow">{t("title")}</p>
-            <h1 className="hero-heading mt-4 text-foreground">{t("subtitle")}</h1>
-            <p className="mt-6 max-w-[32rem] text-[1.0625rem] leading-8 text-muted">{t("description")}</p>
+            {/* The company name is the headline, always in its Latin form. */}
+            <h1 className="hero-brand mt-5" dir="ltr">
+              <span className="hero-brand-name">Gold Helwah</span>
+              <span className="hero-brand-suffix">GmbH</span>
+            </h1>
+            <p className="hero-tagline mt-6">{t("subtitle")}</p>
+            <p className="mt-4 max-w-[32rem] text-[1.0625rem] leading-8 text-muted">{t("description")}</p>
 
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/shop" className="gold-button">

@@ -1080,3 +1080,73 @@ html[dir="rtl"] :is(input, textarea, h1, h2, h3, p, div, dd, td)[dir="ltr"]:not(
 html[dir="rtl"] :is(input, textarea)[dir="ltr"]:not([lang])::placeholder {
   text-align: right;
 }
+
+/* ------------------------------------------------------------------ */
+/* Hero wordmark: the company name is the first thing visitors read.   */
+/* ------------------------------------------------------------------ */
+
+.hero-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+}
+
+.hero-brand-name {
+  font-size: clamp(3.1rem, 7vw, 6rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #f8e8bf 0%, #e3c27c 45%, #b98d45 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-brand-suffix {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.hero-brand-suffix::after {
+  content: "";
+  width: 3rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+html[dir="rtl"] .hero-brand {
+  align-items: flex-end;
+}
+
+html[dir="rtl"] .hero-brand-suffix::after {
+  content: none;
+}
+
+html[dir="rtl"] .hero-brand-suffix::before {
+  content: "";
+  width: 3rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.hero-tagline {
+  max-width: 30rem;
+  font-size: clamp(1.2rem, 1.9vw, 1.55rem);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+
+:is(html[lang="ar"]) .hero-tagline {
+  line-height: 1.7;
+}
