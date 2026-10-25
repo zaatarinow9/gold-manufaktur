@@ -42,10 +42,19 @@ export type WorkshopRecord = {
   id: string;
   isActive: boolean;
   location: string;
+  manager: WorkshopManagerSummary | null;
   name: string;
   notes: string;
   onTimeRate: number;
   phone: string;
+};
+
+export type WorkshopManagerSummary = {
+  email: string;
+  employeeId: string;
+  /** The manager accepted the invitation and has signed in. */
+  hasSignedIn: boolean;
+  name: string;
 };
 
 function nullableText(value: string) {
@@ -178,6 +187,20 @@ async function loadWorkshopEmployees() {
   return data;
 }
 
+/** Which of these accounts have signed in at least once. */
+export async function loadSignedInProfiles(profileIds: string[]) {
+  const result = new Set<string>();
+  if (profileIds.length === 0) return result;
+  const supabase = createSupabaseAdminClient();
+  await Promise.all(
+    profileIds.map(async (id) => {
+      const { data } = await supabase.auth.admin.getUserById(id);
+      if (data.user?.last_sign_in_at) result.add(id);
+    })
+  );
+  return result;
+}
+
 export async function getScopedWorkshops(
   viewer: AdminViewer
 ): Promise<WorkshopRecord[]> {
@@ -190,6 +213,11 @@ export async function getScopedWorkshops(
     loadWorkshopOrders(),
     loadWorkshopEmployees(),
   ]);
+  const signedIn = await loadSignedInProfiles(
+    workshops
+      .map((workshop) => employees.find((employee) => employee.id === workshop.manager_employee_id)?.profile_id)
+      .filter((id): id is string => Boolean(id))
+  );
 
   return workshops
     .filter((workshop) => canAccessWorkshop(viewer, workshop.id))
@@ -199,8 +227,18 @@ export async function getScopedWorkshops(
         (employee) => employee.workshop_id === workshop.id
       );
 
+      const managerRow = employees.find((employee) => employee.id === workshop.manager_employee_id);
+
       return {
         activeOrders: workshopOrders.filter(isOrderActive).length,
+        manager: managerRow
+          ? {
+              email: managerRow.email ?? "",
+              employeeId: managerRow.id,
+              hasSignedIn: Boolean(managerRow.profile_id && signedIn.has(managerRow.profile_id)),
+              name: managerRow.full_name,
+            }
+          : null,
         address: workshop.address ?? "",
         code: buildWorkshopCode(workshop),
         completedThisMonth: workshopOrders.filter(
@@ -270,37 +308,51 @@ export async function setWorkshopActive(workshopId: string, isActive: boolean) {
   return data;
 }
 
-/** Deletes only a workshop which has no operational or membership references. */
 /**
- * Deletes a workshop. Its employees stay in the system and are simply
- * detached (they can be moved to another workshop later). A workshop that
- * still has orders cannot be deleted, so no order ever loses its workshop.
+ * Deletes a workshop together with its team. Open orders go back to the
+ * office's "not sent yet" list so nothing is lost; the team's logins are
+ * switched off.
  */
-export async function permanentlyDeleteEmptyWorkshop(
-  workshopId: string
-) {
+export async function permanentlyDeleteEmptyWorkshop(workshopId: string) {
   const supabase = createSupabaseAdminClient();
-  const [{ data: workshop, error: workshopError }, { count: orderCount, error: orderError }] = await Promise.all([
-    supabase.from("workshops").select("id, name").eq("id", workshopId).maybeSingle(),
-    supabase.from("orders").select("id", { count: "exact", head: true }).eq("workshop_id", workshopId),
-  ]);
-
+  const { data: workshop, error: workshopError } = await supabase
+    .from("workshops")
+    .select("id, name")
+    .eq("id", workshopId)
+    .maybeSingle();
   if (workshopError || !workshop) throw new Error("WORKSHOP_NOT_FOUND");
-  if (orderError) throw new Error("WORKSHOP_DELETE_FAILED");
-  if ((orderCount ?? 0) > 0) throw new Error("WORKSHOP_HAS_ORDERS");
+
+  // Changing the workshop also clears the employee (database trigger).
+  const { error: ordersError } = await supabase
+    .from("orders")
+    .update({ status: "draft", workshop_id: null })
+    .eq("workshop_id", workshopId)
+    .not("status", "in", "(delivered,cancelled,archived)");
+  if (ordersError) throw new Error("WORKSHOP_DELETE_FAILED");
+  const { error: finishedError } = await supabase.from("orders").update({ workshop_id: null }).eq("workshop_id", workshopId);
+  if (finishedError) throw new Error("WORKSHOP_DELETE_FAILED");
 
   const { error: managerError } = await supabase.from("workshops").update({ manager_employee_id: null }).eq("id", workshopId);
   if (managerError) throw new Error("WORKSHOP_DELETE_FAILED");
 
-  const { error: detachError } = await supabase.from("employees").update({ workshop_id: null }).eq("workshop_id", workshopId);
-  if (detachError) throw new Error("WORKSHOP_DELETE_FAILED");
+  const { data: members } = await supabase.from("employees").select("id").eq("workshop_id", workshopId);
+  const memberIds = (members ?? []).map((member) => member.id);
+  if (memberIds.length > 0) {
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ employee_id: null, is_active: false, workshop_id: null })
+      .in("employee_id", memberIds)
+      .eq("role", "employee");
+    if (profileError) throw new Error("WORKSHOP_DELETE_FAILED");
+    const { error: membersError } = await supabase.from("employees").delete().in("id", memberIds);
+    if (membersError) throw new Error("WORKSHOP_DELETE_FAILED");
+  }
 
+  await supabase.from("profiles").update({ workshop_id: null }).eq("workshop_id", workshopId);
   const { error: notificationError } = await supabase.from("admin_notifications").delete().eq("workshop_id", workshopId);
   if (notificationError) throw new Error("WORKSHOP_DELETE_FAILED");
 
-  // Orders reference workshops without cascade, so a concurrent assignment
-  // still makes this delete fail instead of orphaning the order.
   const { data, error } = await supabase.from("workshops").delete().eq("id", workshopId).select("id, name");
-  if (error || !data?.length) throw new Error(error?.code === "23503" ? "WORKSHOP_HAS_ORDERS" : "WORKSHOP_DELETE_FAILED");
-  return data[0];
+  if (error || !data?.length) throw new Error("WORKSHOP_DELETE_FAILED");
+  return { ...data[0], memberCount: memberIds.length };
 }

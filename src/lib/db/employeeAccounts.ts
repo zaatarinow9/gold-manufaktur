@@ -212,12 +212,13 @@ async function updateEmployeeLink(
 }
 
 async function createEmployeeRow(
-  input: z.infer<typeof employeeAccountInputSchema>
+  input: z.infer<typeof employeeAccountInputSchema>,
+  workshopRole: "workshop_manager" | "workshop_employee" = "workshop_employee"
 ) {
   const supabase = getAdminSupabase();
   const { data, error } = await supabase
     .from("employees")
-    .insert(toEmployeeWriteRow(input) as TableInsert<"employees">)
+    .insert({ ...toEmployeeWriteRow(input), workshop_role: workshopRole } as TableInsert<"employees">)
     .select("*")
     .single();
 
@@ -509,10 +510,14 @@ export async function getScopedEmployeeAccounts(
   });
 }
 
+type InviteEmailContext = { roleLabel?: "manager" | "employee"; workshopName?: string };
+
 export async function createEmployeeWithAccount(input: {
   actor: Pick<AdminUser, "email" | "role">;
+  emailContext?: InviteEmailContext;
   locale: AppLocale;
   values: z.infer<typeof employeeAccountInputSchema>;
+  workshopRole?: "workshop_manager" | "workshop_employee";
 }) {
   assertCanManageEmployee(input.actor);
 
@@ -549,10 +554,13 @@ export async function createEmployeeWithAccount(input: {
   }
 
   try {
-    const employee = await createEmployeeRow({
-      ...input.values,
-      email: normalizedEmail,
-    });
+    const employee = await createEmployeeRow(
+      {
+        ...input.values,
+        email: normalizedEmail,
+      },
+      input.workshopRole
+    );
     createdEmployeeId = employee.id;
     const ensuredLink = await ensureEmployeeAuthLink({
       createIfMissing: false,
@@ -571,6 +579,7 @@ export async function createEmployeeWithAccount(input: {
         nextPath: getRoleDashboardPath(input.locale, "employee"),
       }));
     const emailResult = await sendStaffAccessEmail({
+    locale: input.locale,
       actorEmail: input.actor.email,
       authUserId: ensuredLink.authUser.id,
       callbackUrl: accessLink.callbackUrl,
@@ -581,6 +590,7 @@ export async function createEmployeeWithAccount(input: {
       recipientEmail: normalizedEmail,
       redactedCallbackUrl: accessLink.redactedCallbackUrl,
       role: "employee",
+      ...input.emailContext,
     });
 
     await createAuditLog({
@@ -696,6 +706,7 @@ export async function linkEmployeeToExistingAuthUser(input: {
 
 export async function sendEmployeeInvite(input: {
   actor: Pick<AdminUser, "email" | "role">;
+  emailContext?: InviteEmailContext;
   employeeId: string;
   locale: AppLocale;
 }) {
@@ -724,6 +735,7 @@ export async function sendEmployeeInvite(input: {
       nextPath: getRoleDashboardPath(input.locale, "employee"),
     }));
   const emailResult = await sendStaffAccessEmail({
+    locale: input.locale,
     actorEmail: input.actor.email,
     authUserId: ensuredLink.authUser.id,
     callbackUrl: accessLink.callbackUrl,
@@ -734,6 +746,7 @@ export async function sendEmployeeInvite(input: {
     recipientEmail: normalizedEmail,
     redactedCallbackUrl: accessLink.redactedCallbackUrl,
     role: "employee",
+    ...input.emailContext,
   });
 
   await createAuditLog({
@@ -781,6 +794,7 @@ export async function sendEmployeePasswordReset(input: {
     nextPath: getRoleDashboardPath(input.locale, "employee"),
   });
   const emailResult = await sendStaffAccessEmail({
+    locale: input.locale,
     actorEmail: input.actor.email,
     authUserId: ensuredLink.authUser.id,
     callbackUrl: accessLink.callbackUrl,

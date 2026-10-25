@@ -6,6 +6,7 @@ import type { AppLocale } from "@/i18n/routing";
 import { getRoleDashboardPath } from "@/lib/admin/roleAccess";
 import { createAuditLog } from "@/lib/db/auditLogs";
 import { getSiteBaseUrl } from "@/lib/db/siteSettings";
+import { buildStaffAccessEmailContent } from "@/lib/email/staffEmails";
 import {
   sendTransactionalEmail,
   type EmailDispatchResult,
@@ -63,6 +64,10 @@ export type StaffAccessEmailInput = {
   recipientEmail: string;
   redactedCallbackUrl: string;
   role: StaffManagedRole;
+  /** Language of the email; defaults to German. */
+  locale?: AppLocale;
+  roleLabel?: "manager" | "employee" | "staff";
+  workshopName?: string;
 };
 
 export type ResolveStaffAccountStatusInput = {
@@ -128,83 +133,6 @@ function buildStaffAuthCallbackPath(input: {
 
 function buildStaffAuthCallbackUrl(path: string) {
   return `${getSiteBaseUrl()}${path}`;
-}
-
-function getInviteEmailSubject(kind: StaffAccessEmailKind) {
-  return kind === "invite"
-    ? "Ihr Zugang zum Gold Helwah Adminbereich"
-    : "Passwort für den Gold Helwah Adminbereich zurücksetzen";
-}
-
-function getInviteEmailButtonLabel(kind: StaffAccessEmailKind) {
-  return kind === "invite" ? "Zugang einrichten" : "Passwort zurücksetzen";
-}
-
-function buildStaffAccessEmail(input: {
-  callbackUrl: string;
-  displayName: string;
-  kind: StaffAccessEmailKind;
-}) {
-  const subject = getInviteEmailSubject(input.kind);
-  const buttonLabel = getInviteEmailButtonLabel(input.kind);
-  const greeting = normalizeStaffText(input.displayName) || "Guten Tag";
-  const intro =
-    input.kind === "invite"
-      ? "für Sie wurde ein Zugang zur Gold Helwah Plattform eingerichtet."
-      : "für Ihr Konto im Gold Helwah Adminbereich wurde ein neuer Link zum Setzen Ihres Passworts angefordert.";
-  const actionText =
-    input.kind === "invite"
-      ? "Bitte richten Sie Ihren Zugang über den folgenden Link ein:"
-      : "Bitte setzen Sie Ihr Passwort über den folgenden Link neu:";
-  const text = [
-    `Guten Tag ${greeting},`,
-    "",
-    intro,
-    actionText,
-    "",
-    input.callbackUrl,
-    "",
-    "Bitte teilen Sie diesen Link nicht mit anderen Personen.",
-    "",
-    "Mit freundlichen Grüßen",
-    "Gold Helwah",
-    "service@goldhelwah.de",
-  ].join("\n");
-
-  const html = [
-    `<p>Guten Tag ${escapeHtml(greeting)},</p>`,
-    `<p>${escapeHtml(intro)}</p>`,
-    `<p><a href="${escapeHtmlAttribute(
-      input.callbackUrl
-    )}" style="display:inline-block;padding:12px 20px;border-radius:999px;background:#c49a52;color:#111111;text-decoration:none;font-weight:700;">${escapeHtml(
-      buttonLabel
-    )}</a></p>`,
-    `<p>Falls die Schaltfläche nicht funktioniert, verwenden Sie bitte diesen Link:</p>`,
-    `<p><a href="${escapeHtmlAttribute(input.callbackUrl)}">${escapeHtml(
-      input.callbackUrl
-    )}</a></p>`,
-    `<p>Bitte teilen Sie diesen Link nicht mit anderen Personen.</p>`,
-    `<p>Mit freundlichen Grüßen<br />Gold Helwah<br /><a href="mailto:service@goldhelwah.de">service@goldhelwah.de</a></p>`,
-  ].join("");
-
-  return {
-    html,
-    subject,
-    text,
-  };
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function escapeHtmlAttribute(value: string) {
-  return escapeHtml(value);
 }
 
 export async function listAllAuthUsers() {
@@ -457,16 +385,15 @@ export async function generateStaffAccessLink(input: {
 export async function sendStaffAccessEmail(
   input: StaffAccessEmailInput
 ): Promise<EmailDispatchResult> {
-  const email = buildStaffAccessEmail({
-    callbackUrl: input.callbackUrl,
+  const emailOptions = {
     displayName: input.displayName,
     kind: input.kind,
-  });
-  const redactedEmail = buildStaffAccessEmail({
-    callbackUrl: input.redactedCallbackUrl,
-    displayName: input.displayName,
-    kind: input.kind,
-  });
+    locale: input.locale ?? "de",
+    roleLabel: input.roleLabel,
+    workshopName: input.workshopName,
+  } as const;
+  const email = await buildStaffAccessEmailContent({ ...emailOptions, callbackUrl: input.callbackUrl });
+  const redactedEmail = await buildStaffAccessEmailContent({ ...emailOptions, callbackUrl: input.redactedCallbackUrl });
   const result = await sendTransactionalEmail({
     html: email.html,
     logHtml: redactedEmail.html,

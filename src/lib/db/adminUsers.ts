@@ -180,9 +180,10 @@ export async function listManagedAdminUsers(): Promise<ManagedAdminUserRecord[]>
       role: normalizeRole(profile.role),
     }));
 
-  return [...authBackedUsers, ...profileOnlyUsers].sort((left, right) =>
-    right.createdAt.localeCompare(left.createdAt)
-  );
+  // Deleted accounts are kept for the records but never listed.
+  return [...authBackedUsers, ...profileOnlyUsers]
+    .filter((user) => !user.deletedAt)
+    .sort((left, right) => right.createdAt.localeCompare(left.createdAt));
 }
 
 export async function createManagedAdminUser(
@@ -209,6 +210,7 @@ export async function createManagedAdminUser(
   });
 
   const emailResult = await sendStaffAccessEmail({
+    locale: locale,
     actorEmail,
     authUserId: accessLink.authUser.id,
     callbackUrl: accessLink.callbackUrl,
@@ -294,6 +296,7 @@ export async function resendManagedAdminInvite(
     locale,
   });
   const emailResult = await sendStaffAccessEmail({
+    locale: locale,
     actorEmail,
     authUserId: userId,
     callbackUrl: accessLink.callbackUrl,
@@ -346,6 +349,7 @@ export async function sendManagedAdminPasswordReset(
     locale,
   });
   const emailResult = await sendStaffAccessEmail({
+    locale: locale,
     actorEmail,
     authUserId: userId,
     callbackUrl: accessLink.callbackUrl,

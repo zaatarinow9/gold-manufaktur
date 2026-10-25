@@ -8,6 +8,7 @@ import {
   LoaderCircle,
   LogOut,
   MessageSquareMore,
+  MessagesSquare,
   Package,
   PlusCircle,
   Settings2,
@@ -33,12 +34,15 @@ export type AdminNavKey =
   | "employees"
   | "gallery"
   | "inquiries"
+  | "messages"
   | "myTasks"
   | "options"
   | "orders"
   | "overview"
   | "products"
   | "settings"
+  | "team"
+  | "workshopOrders"
   | "workshops";
 
 export type AdminNavCounts = Partial<Record<AdminNavKey, number>>;
@@ -59,9 +63,12 @@ export const adminNavItems: AdminNavItem[] = [
   { group: "orders", href: "/admin/gallery", icon: PlusCircle, key: "gallery", section: "gallery" },
   { group: "orders", href: "/admin/inquiries", icon: MessageSquareMore, key: "inquiries", section: "inquiries" },
   { group: "orders", href: "/admin/my-tasks", icon: BriefcaseBusiness, key: "myTasks", section: "my_tasks" },
+  { group: "orders", href: "/admin/workshop-orders", icon: BriefcaseBusiness, key: "workshopOrders", section: "workshop_orders" },
+  { group: "orders", href: "/admin/messages", icon: MessagesSquare, key: "messages", section: "messages" },
   { group: "catalog", href: "/admin/products", icon: Package, key: "products", section: "products" },
   { group: "catalog", href: "/admin/categories", icon: Layers3, key: "categories", section: "categories" },
   { group: "catalog", href: "/admin/options", icon: SlidersHorizontal, key: "options", section: "options" },
+  { group: "team", href: "/admin/team", icon: Users, key: "team", section: "team" },
   { group: "team", href: "/admin/employees", icon: Users, key: "employees", section: "employees" },
   { group: "team", href: "/admin/workshops", icon: Wrench, key: "workshops", section: "workshops" },
   { group: "system", href: "/admin/settings", icon: Settings2, key: "settings", section: "settings" },
@@ -69,8 +76,10 @@ export const adminNavItems: AdminNavItem[] = [
 
 const navGroupOrder: AdminNavGroupKey[] = ["main", "orders", "catalog", "team", "customers", "system"];
 
-export function getVisibleAdminNavItems(role: AdminUser["role"]) {
-  return adminNavItems.filter((item) => canViewAdminSection(role, item.section));
+type NavViewer = Pick<AdminUser, "managedWorkshopId" | "role">;
+
+export function getVisibleAdminNavItems(viewer: NavViewer) {
+  return adminNavItems.filter((item) => canViewAdminSection(viewer, item.section));
 }
 
 export function getAdminNavLabelKey(key: AdminNavKey) {
@@ -86,8 +95,8 @@ export function isAdminNavItemActive(item: AdminNavItem, pathname: string) {
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 
-export function findActiveAdminNavItem(role: AdminUser["role"], pathname: string) {
-  return getVisibleAdminNavItems(role).find((item) => isAdminNavItemActive(item, pathname)) ?? null;
+export function findActiveAdminNavItem(viewer: NavViewer, pathname: string) {
+  return getVisibleAdminNavItems(viewer).find((item) => isAdminNavItemActive(item, pathname)) ?? null;
 }
 
 type AdminNavListProps = {
@@ -100,7 +109,7 @@ export function AdminNavList({ currentUser, navCounts, onNavigate }: AdminNavLis
   const pathname = usePathname() ?? "/admin";
   const t = useTranslations("Admin");
   const [pendingHref, setPendingHref] = useState<string | null>(null);
-  const visibleItems = getVisibleAdminNavItems(currentUser.role);
+  const visibleItems = getVisibleAdminNavItems(currentUser);
 
   return (
     <nav aria-label={t("nav.ariaLabel")} className="space-y-0.5">
@@ -165,7 +174,9 @@ export function AdminUserCard({ currentUser, onNavigate }: { currentUser: AdminU
       </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-foreground">{currentUser.name}</p>
-        <p className="truncate text-xs text-muted">{t(`roles.${currentUser.role}`)}</p>
+        <p className="truncate text-xs text-muted">
+          {currentUser.managedWorkshopId ? t("roles.workshop_manager") : t(`roles.${currentUser.role}`)}
+        </p>
       </div>
       <AdminLogoutButton
         className="admin-icon-button admin-icon-button-quiet"

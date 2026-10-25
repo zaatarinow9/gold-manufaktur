@@ -77,7 +77,7 @@ export async function setPasswordAction(
     getSafeRedirectPath(
       locale,
       redirectTo,
-      getRoleDashboardPath(locale, access.user.role)
+      getRoleDashboardPath(locale, access.user.role, Boolean(access.user.managedWorkshopId))
     )
   );
 }

@@ -248,7 +248,13 @@ export function AdminOrdersClient({
               <bdi>{order.employeeName || order.assignedWorkerEmail}</bdi>
             </p>
           ) : null}
-          <p className="text-xs text-muted">{t(getAssignmentStatusMessageKey(order.assignmentStatus))}</p>
+          <p className="text-xs text-muted">
+            {order.employeeId
+              ? t(getAssignmentStatusMessageKey(order.assignmentStatus))
+              : order.workshopId
+                ? t("flow.workshops.waitingForManager")
+                : t("flow.orderCard.notSent")}
+          </p>
         </div>
       ),
     },
@@ -384,11 +390,6 @@ export function AdminOrdersClient({
               currentUserRole={currentUserRole}
               customerEmail={selectedOrder.customerEmail}
               emailUpdatesEnabled={selectedOrder.emailUpdatesEnabled}
-              employees={employees}
-              initialAssignmentNote={selectedOrder.assignmentNote}
-              initialAssignmentStatus={selectedOrder.assignmentStatus}
-              initialEmployeeId={selectedOrder.employeeId}
-              initialEmployeeNote={selectedOrder.employeeNote}
               initialPublicStage={selectedOrder.publicTrackingStage}
               initialStatus={selectedOrder.trackingStatus}
               locale={locale}

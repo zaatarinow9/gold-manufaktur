@@ -1,30 +1,30 @@
 {
   "Metadata": {
     "site": {
-      "brand": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "description": "Saarbrücken’de GoldHelwah GmbH: 21, 18 ve 14 ayar gelin setleri, isim kolyeleri, yüzükler ve yatırımlık altın. Kişisel danışmanlık ve siparişe özel üretim.",
+      "brand": "GoldHelwah",
+      "title": "GoldHelwah",
+      "description": "Saarbrücken’de GoldHelwah: gelin setleri, isim kolyeleri, zincirler ve damgalı 21, 18 ve 14 ayar yatırımlık altın; kişisel danışmanlık, siparişe özel üretim.",
       "keywords": [
-        "GoldHelwah GmbH",
-        "altın takı",
-        "lüks taki",
-        "takı kataloğu",
-        "showroom",
-        "alyans"
+        "GoldHelwah",
+        "Saarbrücken altın mücevher",
+        "21 ayar altın",
+        "gelin seti",
+        "altın isim kolye",
+        "yatırımlık altın"
       ]
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah – Saarbrücken’de altın takı",
-        "description": "21, 18 ve 14 ayar gelin setleri, isim takıları, zincirler ve yatırımlık altın. Showroom: Breite Straße 9, Saarbrücken."
+        "title": "GoldHelwah – Saarbrücken’de altın mücevher",
+        "description": "Gelin setleri, isim kolyeleri, zincirler ve 21, 18, 14 ayar yatırımlık altın; kişisel danışmanlık, siparişe özel üretim."
       },
       "shop": {
         "title": "Koleksiyon",
-        "description": "GoldHelwah koleksiyonu: takı setleri, isim takıları, zincirler, bilezikler, yüzükler ve külçe altın. Talebinizi online gönderin."
+        "description": "GoldHelwah koleksiyonu: setler, isim takıları, zincirler, bileklikler, yüzükler ve külçeler. Ayrıntıları görün ve doğrudan talep edin."
       },
       "contact": {
         "title": "İletişim",
-        "description": "Showroom: Breite Straße 9, Saarbrücken. Telefon, WhatsApp, e-posta ve talep formu."
+        "description": "GoldHelwah, Breite Straße 9, Saarbrücken: telefon, WhatsApp, e-posta ve iletişim formu."
       },
       "impressum": {
         "title": "Yasal Bilgiler",
@@ -37,14 +37,14 @@
     }
   },
   "Nav": {
-    "tagline": "Lüks Altin Taki",
+    "tagline": "Seçkin altın mücevher",
     "language": "Dili değiştir",
     "currentLanguage": "Aktif",
     "openMenu": "Menüyü aç",
     "closeMenu": "Menüyü kapat",
     "links": {
       "home": "Ana sayfa",
-      "shop": "Shop",
+      "shop": "Koleksiyon",
       "contact": "İletişim",
       "impressum": "Yasal Bilgiler",
       "privacy": "Gizlilik",
@@ -55,13 +55,13 @@
     "legalTitle": "Yasal bilgiler"
   },
   "Footer": {
-    "description": "Saarbrücken’den altın takılar ve yatırımlık altın. Kişisel danışmanlık, isteğe göre özel üretim.",
+    "description": "Saarbrücken’den altın mücevher ve yatırımlık altın; kişisel danışmanlık, siparişe özel üretim.",
     "navigationTitle": "Sayfalar",
     "contactTitle": "İletişim",
     "socialTitle": "Bizi takip edin",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "Online satış yok – talep, danışmanlık ve teslimat yüz yüze.",
-    "rights": "GoldHelwah GmbH. Tüm haklari saklidir.",
+    "legalNote": "Çevrimiçi satış yoktur; danışmanlık, sipariş ve teslim yüz yüze yapılır.",
+    "rights": "GoldHelwah GmbH. Tüm hakları saklıdır.",
     "socials": {
       "instagram": "Instagram",
       "facebook": "Facebook",
@@ -74,12 +74,12 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "Saarbrücken’de GoldHelwah",
-      "subtitle": "Takılan, miras kalan altın.",
-      "description": "21, 18 ve 14 ayar gelin setleri, isim kolyeleri, sikkeli takılar ve yatırımlık altın. Showroom’da ya da online seçin; sizi bizzat bilgilendirir, isterseniz özel olarak üretiriz.",
-      "primaryCta": "Koleksiyonu gör",
-      "secondaryCta": "Danışmanlık iste",
-      "backgroundAlt": "GoldHelwah GmbH ana görseli",
+      "title": "Seçkin altın mücevher",
+      "subtitle": "Özenle işlenen altın. Nesiller boyu kalıcı.",
+      "description": "Gelin setleri, isim kolyeleri, altın liralar ve yatırımlık külçeler; 21, 18 ve 14 ayar damgalı. Sizi bizzat yönlendiriyor, her parçayı isteğinize göre işliyoruz.",
+      "primaryCta": "Koleksiyonu keşfedin",
+      "secondaryCta": "Danışmanlık isteyin",
+      "backgroundAlt": "GoldHelwah altın mücevheri",
       "stats": [
         {
           "value": "17",
@@ -94,21 +94,21 @@
           "label": "Showroom"
         }
       ],
-      "locationLine": "Showroom: Breite Straße 9, Saarbrücken"
+      "locationLine": "Breite Straße 9, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Seçili Kategoriler",
-      "title": "Koleksiyon",
-      "description": "Günlük ince zincirlerden gelin setlerine ve altın onslarına kadar.",
+      "title": "Koleksiyonlar",
+      "description": "Günlük ince zincirden gelin setine ve yatırımlık onsa kadar.",
       "emptyTitle": "Şu anda görünen ürün bulunmuyor",
       "emptyText": "Panelde yeni koleksiyonlar etkinleştirildiğinde burada otomatik olarak görünecekler.",
-      "allCta": "Tüm kategoriler"
+      "allCta": "Tüm koleksiyonlar"
     },
     "products": {
       "eyebrow": "Seçili ürünler",
-      "title": "Showroom’dan",
-      "description": "Ayrıntıları görmek ve doğrudan talep etmek için bir parçayı açın.",
-      "sectionCta": "Tüm koleksiyon",
+      "title": "Seçkin parçalar",
+      "description": "Ayrıntılarını görmek ve doğrudan talep etmek için bir parçayı açın.",
+      "sectionCta": "Tüm koleksiyonu görün",
       "cardCta": "Ayrıntıları gör",
       "emptyTitle": "Şu anda görünen ürün bulunmuyor",
       "emptyText": "Ürünleri panelden etkinleştirin veya size özel seçim için bizimle iletişime geçin."
@@ -126,21 +126,21 @@
     "aboutGold": {
       "eyebrow": "Altın hakkında",
       "title": "Kalıcı altın.",
-      "description": "Altın değerini korur ve anıları nesilden nesile taşır. Bu yüzden her parçaya hem seçerken hem üretirken zaman ayırırız.",
+      "description": "Altın değerini korur, anıları nesilden nesile taşır. Bu yüzden her parçaya hak ettiği özeni gösteriyoruz; seçerken de işlerken de.",
       "imageAlt": "GoldHelwah GmbH'den altın takı detayı",
       "points": [
         "Damgalı ayar",
-        "Siparişe özel üretim",
+        "Siparişe özel",
         "Elden teslim"
       ],
       "storyLabel": "GoldHelwah hakkında"
     },
     "aboutCompany": {
       "eyebrow": "Hakkımızda",
-      "title": "GoldHelwah GmbH",
-      "description": "Showroom’umuz Saarbrücken’de, Breite Straße’de. Burada parçalarımızı acele etmeden gösterir, sizi bizzat bilgilendirir ve özel istekleri alırız.",
+      "title": "GoldHelwah hakkında",
+      "description": "Saarbrücken’de, Doğu kuyumculuğunu Alman titizliğiyle buluşturan bir altın mücevher evi. Özel siparişleri kabul ediyor, her aşamayı bizzat yürütüyoruz.",
       "teamLabel": "Yaklaşımımız",
-      "story": "İlk sorunuzdan teslimata kadar doğrudan bizimle görüşürsünüz, aracı olmadan.",
+      "story": "İlk sorudan parçayı teslim alana kadar doğrudan bizimle görüşürsünüz; aracı yok.",
       "locationLabel": "Adres"
     },
     "trust": {
@@ -148,20 +148,20 @@
       "title": "Net, kişisel ve ürüne yakın.",
       "items": [
         {
-          "title": "Acele etmeyen danışmanlık",
-          "description": "Düğün, hediye ya da günlük kullanım için: önce dinler, sonra gösteririz."
+          "title": "Acelesiz danışmanlık",
+          "description": "Düğün, hediye ya da günlük kullanım için: önce sizi dinliyor, sonra size yakışanı öneriyoruz."
         },
         {
           "title": "Gerçek parçalar, gerçek fotoğraflar",
-          "description": "Her fotoğraf kendi seçkimizden bir parçayı gösterir."
+          "description": "Her görsel kendi koleksiyonumuzdan bir parçayı gösterir; abartısız."
         },
         {
-          "title": "Siparişe özel üretim",
-          "description": "İsimler, gravürler, uzunluklar ve ölçüler: fikrinizi altına dönüştürürüz."
+          "title": "Siparişe özel",
+          "description": "İsim, gravür, uzunluk ve ölçü: fikrinizi kusursuz bir parçaya dönüştürüyoruz."
         },
         {
           "title": "Elden teslim",
-          "description": "Parçanızı Saarbrücken’de size bizzat teslim ederiz."
+          "description": "Parçanızı kontrol edilmiş ve ayarı doğrulanmış olarak elden teslim ediyoruz."
         }
       ]
     },
@@ -173,8 +173,8 @@
       "secondaryCta": "Ara"
     },
     "hallmarks": {
-      "title": "21, 18 veya 14 ayar",
-      "description": "Altındaki damga saflığı gösterir: binde 875, 750 veya 585 altın. Parçanıza hangisinin uygun olduğunu size açıkça söyleriz.",
+      "title": "21, 18 veya 14 ayar, damgalı",
+      "description": "Damga altının saflığını gösterir: binde 875, 750 veya 585. Hangisinin parçanıza ve kullanımınıza uygun olduğunu açıkça söylüyoruz.",
       "items": [
         {
           "stamp": "875",
@@ -192,21 +192,21 @@
     },
     "customName": {
       "title": "Adınız altında",
-      "description": "Arap veya Latin harfleriyle; kolye, bilezik ya da kolye ucu olarak. Yazı tipini, ayarı ve uzunluğu sizinle birlikte belirler, parçayı sizin için üretiriz.",
-      "primaryCta": "İsim takılarını gör",
+      "description": "Arapça ya da Latin harflerle; kolye, bileklik veya kolye ucu olarak. Yazıyı, ayarı ve uzunluğu birlikte seçiyor, ardından yalnızca size ait parçayı işliyoruz.",
+      "primaryCta": "İsim takılarını görün",
       "secondaryCta": "Fikrinizi konuşalım"
     },
     "visit": {
-      "title": "Bize uğrayın ya da yazın",
-      "description": "Size bizzat yanıt veririz."
+      "title": "Ziyaret ve iletişim",
+      "description": "Her mesajı bizzat yanıtlıyoruz."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Koleksiyon",
-      "subtitle": "Ayrıntılar için bir parçayı açın. Fiyat ve gramajı talep üzerine iletiriz.",
-      "primaryCta": "Talep gönder",
+      "subtitle": "Ayrıntılar için bir parçayı açın. Fiyat ve ağırlığı talep üzerine bildiriyoruz.",
+      "primaryCta": "Danışmanlık isteyin",
       "secondaryCta": "İletişim",
       "stats": {
         "categories": "Kategoriler",
@@ -228,8 +228,8 @@
       "all": "Tümü",
       "resultsSuffix": "model",
       "emptyBadge": "Talep üzerine",
-      "emptyTitle": "Bu kategoride şu anda online parça yok.",
-      "emptyText": "Birçok parçayı siparişe özel üretiyoruz. Ne aradığınızı bize anlatın.",
+      "emptyTitle": "Bu kategoride şu anda sergilenen parça yok.",
+      "emptyText": "Birçok parçayı siparişe göre işliyoruz. Aradığınızı bize anlatın.",
       "resultCount": "{count, plural, =0 {Parça yok} other {# parça}}"
     },
     "card": {
@@ -243,18 +243,18 @@
       "galleryLabel": "Galeri",
       "galleryCountSuffix": "görsel",
       "tagsLabel": "özellikler",
-      "requestCta": "Talep gönder",
+      "requestCta": "Bu parçayı talep edin",
       "backCta": "Geri",
       "callCta": "Ara",
       "noteTitle": "Sonraki adım",
-      "note": "Talep gönderin; gramaj, fiyat ve üretim süresiyle size dönelim."
+      "note": "Talebinizi gönderin; ağırlık, fiyat ve işçilik süresiyle size dönelim."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "İletişim",
       "title": "İletişim",
-      "subtitle": "Bir parça hakkında soru, özel sipariş ya da showroom randevusu için bize yazın veya arayın.",
+      "subtitle": "Bir parça hakkında soru, özel sipariş ya da randevu için bize yazın veya arayın.",
       "primaryCta": "Koleksiyonu görüntüle",
       "secondaryCta": "Gizliliği oku"
     },
@@ -275,7 +275,7 @@
     "form": {
       "eyebrow": "İletişime geçin",
       "title": "Mesajınız",
-      "description": "Tek bir cümle yeter. Tüm ayrıntılarla size dönüş yaparız.",
+      "description": "Birkaç kelime yeterli; tüm ayrıntılarla size dönelim.",
       "highlights": "İletişim",
       "fields": {
         "name": "Ad",
@@ -309,13 +309,13 @@
     },
     "location": {
       "eyebrow": "Konum",
-      "title": "GoldHelwah GmbH'yi Saarbrücken'de ziyaret edin.",
-      "description": "Adres, telefon ve rota tek bakışta hazır.",
+      "title": "Saarbrücken’deki adresimiz",
+      "description": "Randevuyla koleksiyonu gösteriyor, sizi acele etmeden yönlendiriyoruz.",
       "addressLabel": "Adres",
       "phoneLabel": "Telefon",
       "routeCta": "Yol tarifi al",
       "callCta": "Ara",
-      "mapTitle": "Google Maps üzerinde GoldHelwah GmbH konumu",
+      "mapTitle": "Google Haritalar’da GoldHelwah",
       "emailLabel": "E-posta",
       "whatsappCta": "WhatsApp"
     }
@@ -517,9 +517,10 @@
       "language": "Panel dili"
     },
     "roles": {
-      "super_admin": "Süper yönetici",
-      "admin": "Yönetici",
-      "employee": "Çalışan"
+      "super_admin": "Genel yönetim",
+      "admin": "Showroom",
+      "employee": "Atölye ekibi",
+      "workshop_manager": "Atölye müdürü"
     },
     "nav": {
       "overview": "Genel bakış",
@@ -529,7 +530,7 @@
       "options": "Sipariş soruları",
       "orders": "Siparişler",
       "workshops": "Atölyeler",
-      "employees": "Çalışanlar",
+      "employees": "Tüm çalışanlar",
       "attendance": "Mesai",
       "reports": "Raporlar",
       "archive": "Arşiv",
@@ -537,7 +538,10 @@
       "myTasks": "Görevlerim",
       "inquiries": "Müşteri talepleri",
       "ariaLabel": "Ana menü",
-      "countLabel": "{count} bekliyor"
+      "countLabel": "{count} bekliyor",
+      "messages": "Mesajlar",
+      "team": "Ekibim",
+      "workshopOrders": "Atölye siparişleri"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1338,12 +1342,15 @@
       "publicStageUpdate": "Genel aşama güncellemesi"
     },
     "assignmentStatus": {
-      "assigned": "Atandı",
+      "assigned": "Yeni atandı",
       "accepted": "Kabul edildi",
-      "in_progress": "İşlemde",
+      "in_progress": "Yapılıyor",
       "waiting": "Bekliyor",
       "completed": "Tamamlandı",
-      "returned": "Geri verildi"
+      "returned": "Müdüre geri döndü",
+      "problem": "Sorun bildirildi",
+      "shipped": "Showrooma gönderildi",
+      "declined": "Reddedildi"
     },
     "accountSetup": {
       "title": "Erişiminizi hazırlayın",
@@ -1378,24 +1385,9 @@
       "smtpTitle": "E-posta durumu",
       "smtpConfigured": "SMTP yapılandırıldı",
       "smtpMissing": "SMTP eksik",
-      "orderEntryTitle": "Harici sipariş giriş bağlantısı",
       "orderEntryDescription": "Harici bağlantıyı etkinleştirin, tam adresi kontrol edin ve buradan kopyalayın ya da e-postayla gönderin.",
       "save": "Kaydet",
-      "rotateLink": "Yeni bağlantı oluştur",
-      "orderEntryEnabled": "Harici sipariş giriş bağlantısını etkinleştir",
-      "expiresAt": "Bitiş tarihi",
-      "fullLinkLabel": "Tam bağlantı",
-      "fullLinkHelp": "Tam adres her zaman paylaşılacağı şekilde gösterilir. Sunucu hâlâ localhost bildiriyorsa tarayıcının adresi kullanılır.",
-      "linkDisabled": "Harici sipariş giriş bağlantısı şu anda kapalı.",
-      "copyLink": "Bağlantıyı kopyala",
-      "copySuccess": "Tam bağlantı kopyalandı.",
-      "copyUnavailable": "Şu anda tam bağlantı yok.",
-      "statusEnabled": "Açık",
       "statusDisabled": "Kapalı",
-      "rotatedAt": "Son yenileme",
-      "linkRecipient": "Bağlantıyı gönder",
-      "linkRecipientHelp": "Düğmeli ve yedek bağlantılı, Almanca profesyonel bir e-posta gönderilir.",
-      "sendLink": "Bağlantıyı e-postayla gönder",
       "userListTitle": "Kullanıcılar ve roller",
       "manageUsersHint": "Kullanıcı yönetimi yalnızca süper yöneticilere açıktır.",
       "userSave": "Kullanıcıyı kaydet",
@@ -1415,8 +1407,8 @@
       "userDelete": "Sil",
       "userEdit": "Düzenle",
       "inviteAgain": "Yeni bağlantı gönder",
-      "roleOwner": "Sahip",
-      "roleAdmin": "Yönetici",
+      "roleOwner": "Genel yönetim (tam yetki)",
+      "roleAdmin": "Showroom tableti",
       "roleEmployee": "Çalışan",
       "userDeleteConfirm": "{name} erişimi silinsin mi?",
       "userDeleteText": "Bu kişi artık giriş yapamayacak.",
@@ -1884,11 +1876,6 @@
       "invalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
       "invalidName": "Lütfen geçerli bir görünen ad girin.",
       "noAccess": "Erişim yok.",
-      "orderEntryRotated": "Yeni bir sipariş giriş bağlantısı oluşturuldu.",
-      "orderEntrySendDisabled": "E-postayla göndermeden önce harici sipariş giriş bağlantısını etkinleştirin.",
-      "orderEntrySendFailed": "Sipariş giriş bağlantısı e-postayla gönderilemedi.",
-      "orderEntrySendSavedOnly": "E-posta hazırlandı ancak SMTP henüz tam yapılandırılmadığı için gönderilmedi.",
-      "orderEntrySent": "Sipariş giriş bağlantısı e-postayla gönderildi.",
       "privacyPhrase": "Koruma ifadesi geçersiz.",
       "saved": "Ayarlar kaydedildi.",
       "userCreated": "Kullanıcı oluşturuldu. Erişim bağlantısı gönderildi veya kaydedildi.",
@@ -1896,7 +1883,8 @@
       "userInviteSent": "Yeni bir erişim bağlantısı oluşturuldu.",
       "userPasswordResetSent": "Şifre sıfırlama bağlantısı oluşturuldu.",
       "userUpdated": "Kullanıcı güncellendi.",
-      "userVisibilityChanged": "Kullanıcı durumu güncellendi."
+      "userVisibilityChanged": "Kullanıcı durumu güncellendi.",
+      "emailNotSent": "Kaydedildi ancak e-posta gönderilemedi. Lütfen e-posta ayarlarını kontrol edin."
     },
     "taskCard": {
       "assignmentNote": "Atama notu",
@@ -1988,7 +1976,16 @@
       "newWorkshopOrder": "Yeni atölye siparişi",
       "newWorkshopOrderMessage": "Atölyenize yeni bir sipariş atandı.",
       "newTask": "Yeni görev",
-      "newTaskMessage": "Size bir atölye siparişi atandı."
+      "newTaskMessage": "Size bir atölye siparişi atandı.",
+      "workshopOrderReceived": "Atölyeniz için yeni sipariş",
+      "newMessage": "Yeni mesaj",
+      "taskStatus_accepted": "Sipariş kabul edildi",
+      "taskStatus_in_progress": "Çalışma başladı",
+      "taskStatus_problem": "Bir siparişte sorun var",
+      "taskStatus_completed": "Sipariş tamamlandı",
+      "taskStatus_shipped": "Sipariş showrooma gönderildi",
+      "taskStatus_declined": "Sipariş reddedildi",
+      "taskStatus_assigned": "Sipariş atandı"
     },
     "workshopMessages": {
       "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN": "Mevcut atölye yöneticisi ancak yeni bir yönetici atandıktan veya rol kaldırıldıktan sonra taşınabilir.",
@@ -2030,36 +2027,27 @@
     "settingsSections": {
       "website": "Web sitesi",
       "emails": "E-postalar",
-      "orderLink": "Sipariş bağlantısı",
       "access": "Erişimler",
       "data": "Veriler ve sıfırlama",
       "imagesTitle": "Site görselleri",
       "imagesText": "Ana sayfadaki büyük görsel ve mağaza başlığının yanındaki görsel. Kendi görseliniz yoksa bir ürün fotoğrafı kullanılır.",
       "homeHeroHint": "Şu an: otomatik olarak bir ürün fotoğrafı.",
       "shopHeroHint": "Şu an: görsel yok, yalnızca başlık.",
-      "promoTitle": "Kampanya penceresi",
-      "promoText": "Ana sayfa açıldığında ziyaretçilere bir kampanya gösteren küçük pencere; örneğin bayramlarda.",
-      "promoEnabledHint": "Kapalıyken ziyaretçiler hiçbir şey görmez; girdiğiniz bilgiler kayıtlı kalır.",
-      "promoContent": "İçerik",
-      "promoLook": "Görünüm",
-      "promoWhen": "Zaman aralığı",
       "promoImageHint": "İsteğe bağlı. Pencerenin içinde gösterilir.",
       "emailsText": "Mağazanın yeni siparişler, talepler ve destek mesajları için e-posta gönderdiği adresler.",
       "adminEmailHint": "Yeni siparişleri ve ürün taleplerini alır.",
       "supportEmailHint": "Müşterilerin bir siparişle ilgili sorularını alır.",
       "ownerEmailHint": "Önemli sistem bildirimlerini alır.",
-      "orderLinkText": "Ortakların (örneğin bir şube veya atölye) giriş yapmadan sipariş girebildiği özel bağlantı.",
-      "expiresHint": "Bağlantının süresi dolmasın istiyorsanız boş bırakın.",
-      "rotateHint": "Yeni bir bağlantı oluşturur. Eski bağlantı çalışmaz hâle gelir; yanlış kişiye ulaştıysa işe yarar.",
-      "accessText": "Panele kimin giriş yapabileceği ve neleri görebileceği.",
+      "accessText": "Genel yönetim ve showroom tableti hesapları. Showroomda sipariş almak için tablette e-posta ve şifreyle giriş yapmanız yeterlidir.",
       "you": "siz",
       "userEditorText": "Kişiye şifresini belirlemesi için bir e-posta gönderilir.",
       "userEmailHint": "Giriş için kullanılır.",
       "roleHint": {
-        "super_admin": "Ayarlar ve erişimler dahil her şeyi görür ve değiştirir.",
-        "admin": "Siparişleri, çalışanları ve talepleri yönetir; ayarlara erişemez.",
-        "employee": "Yalnızca kendi görevlerini görür."
-      }
+        "super_admin": "Her şeyi görür ve değiştirir: atölyeler, mağaza, ayarlar ve erişimler.",
+        "admin": "Showroomdaki tablet için: sipariş oluşturur ve atölyeye gönderir. Ayarlara erişemez.",
+        "employee": "Atölye çalışanları kendi atölye müdürleri tarafından davet edilir."
+      },
+      "staffNote": "Atölye müdürleri atölye oluşturulurken davet edilir, çalışanlarını da kendileri davet eder; bu yüzden bu hesaplar burada listelenmez."
     },
     "settingsData": {
       "notificationsTitle": "Bildirimleri temizle",
@@ -2067,6 +2055,287 @@
       "clearNotificationsButton": "Bildirimleri temizle",
       "clearNotificationsConfirm": "Tüm bildirimler silinsin mi?",
       "clearNotificationsText": "Siparişler, talepler ve diğer veriler aynen kalır."
+    },
+    "flow": {
+      "errors": {
+        "FAILED": "İşlem tamamlanamadı. Lütfen tekrar deneyin.",
+        "INVALID": "Lütfen girdileri kontrol edin: zorunlu bir alan boş ya da e-posta adresi geçersiz.",
+        "PERMISSION_DENIED": "Hesabınızın bu işlem için yetkisi yok.",
+        "EMAIL_IN_USE": "Bu e-posta adresi başka bir ekip üyesine ait.",
+        "EMAIL_IS_OFFICE_ACCOUNT": "Bu e-posta zaten genel yönetim veya showroom hesabı. Lütfen başka bir adres kullanın.",
+        "CANNOT_CHANGE_SELF": "Kendi hesabınızı buradan değiştiremezsiniz.",
+        "WORKSHOP_NOT_FOUND": "Bu atölye artık mevcut değil.",
+        "WORKSHOP_INACTIVE": "Bu atölye duraklatıldı. Önce yeniden etkinleştirin.",
+        "WORKSHOP_HAS_NO_MANAGER": "Bu atölyenin henüz müdürü yok.",
+        "ORDER_NOT_FOUND": "Bu sipariş bulunamadı.",
+        "TASK_NOTE_REQUIRED": "Lütfen kısaca sorunu yazın; müdürünüzün nedeni bilmesi gerekiyor.",
+        "MESSAGE_EMPTY": "Mesaj boş.",
+        "MESSAGE_TOO_LONG": "Mesaj çok uzun (en fazla 4.000 karakter).",
+        "THREAD_NOT_FOUND": "Bu konuşma artık mevcut değil."
+      },
+      "done": {
+        "workshopCreated": "Atölye oluşturuldu. Müdüre e-postayla davet gönderildi.",
+        "workshopCreatedNoEmail": "Atölye oluşturuldu ancak davet gönderilemedi. E-posta ayarlarını kontrol edip atölye sayfasından yeniden gönderin.",
+        "workshopSaved": "Atölye kaydedildi.",
+        "workshopActivated": "Atölye yeniden etkin.",
+        "workshopPaused": "Atölye duraklatıldı. Yeni sipariş almayacak.",
+        "workshopDeleted": "Atölye silindi. Açık siparişleri “Henüz gönderilmedi” listesine döndü.",
+        "managerChanged": "Yeni atölye müdürü davet edildi.",
+        "managerChangedNoEmail": "Müdür değişti ancak davet gönderilemedi.",
+        "inviteSent": "Davet yeniden gönderildi.",
+        "inviteSentNoEmail": "Davet gönderilemedi. Lütfen e-posta ayarlarını kontrol edin.",
+        "memberInvited": "Davet gönderildi. Şifresini belirlediğinde sipariş alabilir.",
+        "memberInvitedNoEmail": "Ekip üyesi eklendi ancak davet gönderilemedi.",
+        "memberActivated": "Yeniden etkin.",
+        "memberPaused": "Duraklatıldı. Şimdilik giriş yapamaz.",
+        "memberRemoved": "Ekipten çıkarıldı. Açık siparişleri size geri döndü.",
+        "messageSent": "Mesaj gönderildi.",
+        "orderSent": "{workshop} atölyesine gönderildi. Müdüre e-posta ile bildirildi.",
+        "orderSentNoEmail": "{workshop} atölyesine gönderildi. Müdüre e-posta iletilemedi ancak siparişi panelinde görecek.",
+        "orderSentNoManager": "{workshop} atölyesine gönderildi. Dikkat: atölyenin siparişi dağıtacak bir müdürü henüz yok."
+      },
+      "workshops": {
+        "pageHint": "Her atölyenin bir müdürü vardır. Siparişleri atölyeye siz gönderirsiniz, müdür ekibine dağıtır.",
+        "new": "Yeni atölye",
+        "newTitle": "Yeni atölye oluştur",
+        "newHint": "Müdür bir e-posta alır, şifresini belirler ve ardından ekibini kendisi davet eder.",
+        "sectionWorkshop": "Atölye",
+        "sectionManager": "Atölye müdürü",
+        "managerHint": "Bu kişi siparişleri alır ve dağıtır.",
+        "name": "Atölye adı",
+        "namePlaceholder": "örn. İstanbul atölyesi",
+        "location": "Konum",
+        "phone": "Telefon",
+        "notes": "Dahili not",
+        "managerName": "Ad",
+        "managerEmail": "E-posta adresi",
+        "managerEmailHint": "Davet bu adrese gider; müdür daha sonra bununla giriş yapar.",
+        "create": "Oluştur ve davet gönder",
+        "creating": "Oluşturuluyor…",
+        "emptyTitle": "Henüz atölye yok",
+        "emptyText": "İlk atölyeyi oluşturun ve müdürünü belirleyin.",
+        "manager": "Müdür",
+        "managerActive": "Giriş yaptı",
+        "managerInvited": "Davet bekliyor",
+        "noManager": "Müdür yok",
+        "noManagerText": "Bu atölyenin müdürü yok. Siparişlerin dağıtılabilmesi için birini davet edin.",
+        "openOrders": "Açık siparişler",
+        "teamSize": "Ekip",
+        "open": "Aç",
+        "actionsFor": "{name} için işlemler",
+        "pause": "Duraklat",
+        "resume": "Yeniden etkinleştir",
+        "paused": "Duraklatıldı",
+        "running": "Etkin",
+        "deleteTitle": "“{name}” silinsin mi?",
+        "deleteText": "{team, plural, =0 {Atölyenin ekibi yok.} one {Ekip üyesi erişimini kaybeder.} other {# ekip üyesinin tamamı erişimini kaybeder.}} {orders, plural, =0 {} one {Açık siparişi “Henüz gönderilmedi” listesine döner.} other {# açık siparişi “Henüz gönderilmedi” listesine döner.}}",
+        "delete": "Atölyeyi sil",
+        "dangerTitle": "Atölyeyi sil",
+        "dangerHint": "Atölyeyi ekibiyle birlikte kaldırır. Açık siparişler kaybolmaz, genel yönetime döner.",
+        "saving": "Kaydediliyor…",
+        "messageManager": "Müdüre mesaj yaz",
+        "managerCardHint": "Müdür siparişlerinizi alır ve ekibe dağıtır.",
+        "resendInvite": "Daveti yeniden gönder",
+        "changeManager": "Müdürü değiştir",
+        "changeManagerHint": "Yeni müdüre davet gönderilir. Zaten ekipteyse doğrudan terfi ettirilir.",
+        "sendManagerInvite": "Müdürü davet et",
+        "openOrdersTitle": "Devam eden siparişler",
+        "openOrdersHint": "Kim neyin üzerinde çalışıyor ve ne aşamada.",
+        "noOpenOrders": "Şu anda açık sipariş yok.",
+        "notAssignedYet": "Henüz kimseye verilmedi",
+        "waitingForManager": "Dağıtılmayı bekliyor",
+        "teamTitle": "Ekip",
+        "teamHintOffice": "Ekibi atölye müdürü kendisi yönetir.",
+        "noTeam": "Henüz çalışan yok.",
+        "managerBadge": "Müdür",
+        "memberPaused": "Duraklatıldı",
+        "openTasks": "{count, plural, =0 {açık görev yok} one {# açık görev} other {# açık görev}}",
+        "detailsTitle": "Atölye bilgileri",
+        "peopleHint": "Çalışanları atölye müdürleri davet eder. Burada herkesi tek bakışta görür, hesapları duraklatabilir veya silebilirsiniz."
+      },
+      "team": {
+        "title": "Ekibim",
+        "description": "Çalışanlarınızı davet edin. Her kişi bir e-posta alır, şifresini belirler ve ardından verdiğiniz siparişleri görür.",
+        "membersTitle": "{count, plural, =0 {Ekipte henüz kimse yok} one {Ekipte # kişi} other {Ekipte # kişi}}",
+        "empty": "İlk ekip üyenizi adı ve e-postasıyla davet edin.",
+        "you": "Siz · Müdür",
+        "active": "Etkin",
+        "invited": "Davet bekliyor",
+        "paused": "Duraklatıldı",
+        "openTasks": "{count, plural, =0 {müsait} one {# görev} other {# görev}}",
+        "actionsFor": "{name} için işlemler",
+        "message": "Mesaj yaz",
+        "resend": "Daveti yeniden gönder",
+        "pause": "Duraklat",
+        "resume": "Yeniden etkinleştir",
+        "remove": "Ekipten çıkar",
+        "removeTitle": "{name} ekipten çıkarılsın mı?",
+        "removeText": "{count, plural, =0 {Girişi kapatılır.} one {Girişi kapatılır ve açık görevi size döner.} other {Girişi kapatılır ve # açık görevi size döner.}}",
+        "inviteTitle": "Birini davet et",
+        "inviteHint": "Davet e-postayla gelir; kişi daha sonra bu adresle giriş yapar.",
+        "name": "Ad",
+        "email": "E-posta adresi",
+        "phone": "Telefon (isteğe bağlı)",
+        "invite": "Davet gönder",
+        "sending": "Gönderiliyor…",
+        "inviteFootnote": "E-postadaki bağlantı kişiseldir ve kısa süre geçerlidir. Süresi dolarsa daveti yeniden gönderin."
+      },
+      "workshopOrders": {
+        "title": "Atölye siparişleri",
+        "description": "Genel yönetimden atölyenize gelen siparişler. Her birini ekibinizden birine verin; tüm ayrıntılar e-postayla iletilir.",
+        "tabs": {
+          "toAssign": "Dağıtılacak",
+          "inProgress": "Yapılıyor",
+          "finished": "Bitti"
+        },
+        "empty": {
+          "toAssign": "Her şey dağıtıldı. Yeni siparişler burada görünür.",
+          "inProgress": "Şu anda yapılan bir iş yok.",
+          "finished": "Henüz biten iş yok."
+        },
+        "due": "Teslim {date}",
+        "new": "Yeni",
+        "assignTo": "Bu siparişi kim alacak?",
+        "reassignTo": "Başka birine ver",
+        "noTeam": "Önce ekibinizi davet edin (Ekibim)",
+        "taskCount": "{count, plural, =0 {(müsait)} one {(# görev)} other {(# görev)}}",
+        "assign": "Ata",
+        "details": "Ayrıntılar"
+      },
+      "myTasks": {
+        "title": "Görevlerim",
+        "description": "Atölye müdürünüzün size verdiği siparişler. Durumunu bildirmek için bir siparişi açın.",
+        "writeManager": "Müdürüme yaz",
+        "current": "Güncel",
+        "done": "Biten",
+        "emptyCurrent": "Açık görev yok",
+        "emptyCurrentText": "Size bir sipariş verildiğinde burada görünür ve e-posta alırsınız.",
+        "emptyDone": "Henüz biten görev yok.",
+        "due": "Teslim {date}",
+        "newTask": "Yeni – lütfen kabul edin"
+      },
+      "task": {
+        "title": "Sipariş ne durumda?",
+        "hint": "Her değişiklikte atölye müdürünüz bilgilendirilir.",
+        "now": "Şu an:",
+        "due": "Teslim: {date}",
+        "managerNote": "Müdürünüzün notu",
+        "choose": "Yeni durum",
+        "explain": {
+          "accepted": "Bu siparişi üstleniyorum.",
+          "in_progress": "Şu anda üzerinde çalışıyorum.",
+          "problem": "Bir şey eksik ya da belirsiz; lütfen nedenini yazın.",
+          "completed": "Parça tamamlandı.",
+          "shipped": "Parça showroom’a doğru yolda.",
+          "declined": "Bu siparişi alamıyorum; lütfen nedenini yazın."
+        },
+        "reasonLabel": "Neden",
+        "reasonPlaceholder": "örn. yüzük ölçüsü eksik, taş stokta yok…",
+        "noteLabel": "Müdüre not (isteğe bağlı)",
+        "notePlaceholder": "örn. perşembe hazır",
+        "save": "Durumu güncelle",
+        "saving": "Güncelleniyor…"
+      },
+      "orderCard": {
+        "workshopTitle": "Atölye",
+        "workshopHint": "Atölyeyi seçin. Müdürü siparişi tüm ayrıntılarıyla e-postayla alır ve dağıtır.",
+        "managedBy": "Müdür: {name}",
+        "noManager": "Müdür yok",
+        "noWorkshops": "Önce “Atölyeler” bölümünden bir atölye oluşturun.",
+        "chooseWorkshop": "Hangi atölyeye?",
+        "moveTo": "Atölye",
+        "selectPlaceholder": "Atölye seçin",
+        "noteForManager": "Müdüre mesaj (isteğe bağlı)",
+        "notePlaceholder": "örn. müşteri cumartesi teslim alacak",
+        "send": "Atölyeye gönder",
+        "sendAgain": "Yeniden gönder",
+        "moveWarning": "Mevcut atölye siparişi devreder; süren atama sona erer.",
+        "craftsman": "Yapan",
+        "notAssigned": "Henüz dağıtılmadı",
+        "progress": "Durum",
+        "craftsmanNote": "Atölyeden not",
+        "notSent": "Henüz gönderilmedi",
+        "teamTitle": "Bu siparişi kim yapıyor?",
+        "teamHint": "Kişi tüm ayrıntıları içeren bir e-posta alır ve ilerlemesini burada bildirir.",
+        "noteForCraftsman": "Kişiye not (isteğe bağlı)",
+        "craftsmanNotePlaceholder": "örn. lütfen cumaya kadar",
+        "assign": "Ata ve bildir",
+        "updateNote": "Notu kaydet"
+      },
+      "messages": {
+        "title": "Mesajlar",
+        "description": {
+          "admin": "Atölye müdürleriyle doğrudan iletişim hattınız.",
+          "manager": "Genel yönetime ya da ekibinizden birine yazın.",
+          "employee": "Atölye müdürünüze sorular, sorunlar veya kısa bilgiler."
+        },
+        "noThreads": "Henüz konuşma yok",
+        "noThreadsText": {
+          "admin": "Bir atölye oluşturulduğunda müdürüne buradan yazabilirsiniz.",
+          "manager": "Yazışmak için ekibinizi davet edin.",
+          "employee": "Henüz bir atölyeye bağlı değilsiniz."
+        },
+        "office": "Genel yönetim",
+        "officeHint": "Genel yönetime sorular ve notlar için",
+        "teamMember": "Ekibiniz",
+        "yourManager": "Atölye müdürünüz",
+        "threadEmpty": "Henüz mesaj yok. İlkini siz yazın.",
+        "placeholder": "Mesaj yazın…",
+        "send": "Gönder",
+        "aboutOrder": "{order} hakkında",
+        "roles": {
+          "admin": "Genel yönetim",
+          "manager": "Atölye müdürü",
+          "employee": "Atölye"
+        },
+        "orderTitle": "Bu siparişle ilgili mesajlar",
+        "orderHint": "Sorular ve anlaşmalar doğrudan siparişte kalır.",
+        "orderEmpty": "Bu sipariş hakkında henüz bir şey yazılmadı.",
+        "withOffice": "Genel yönetim ↔ müdür",
+        "withPerson": "{name} ile"
+      },
+      "promo": {
+        "title": "Kampanya penceresi",
+        "description": "Ana sayfa açıldığında görünen kısa bir duyuru; örneğin bayramlar veya yeni koleksiyon için.",
+        "enabled": "Sitede göster",
+        "enabledOn": "Kaydettikten sonra ziyaretçiler görür.",
+        "enabledOff": "Kapalı; metinleriniz kayıtlı kalır.",
+        "fieldTitle": "Başlık",
+        "titlePlaceholder": "örn. Yeni Ramazan koleksiyonumuz",
+        "fieldText": "Metin",
+        "textPlaceholder": "Bir iki cümle yeterli.",
+        "fieldButton": "Düğme metni",
+        "buttonPlaceholder": "örn. Koleksiyonu gör",
+        "fieldLink": "Düğme hedefi",
+        "linkHint": "Mağaza için “/shop”, iletişim için “/contact” ya da https:// ile tam adres. Hedef yoksa düğme gösterilmez.",
+        "fieldImage": "Görsel (isteğe bağlı)",
+        "from": "Gösterim başlangıcı",
+        "fromHint": "Boş = hemen",
+        "until": "Gösterim bitişi",
+        "untilHint": "Boş = süresiz",
+        "showOnce": "Her ziyaretçiye yalnızca bir kez göster",
+        "showOnceHint": "Başlığı değiştirirseniz herkes yeniden görür.",
+        "preview": "Önizleme",
+        "previewEmptyTitle": "Başlığınız",
+        "previewDismiss": "Şimdi değil",
+        "previewOff": "Şu an kapalı; ziyaretçiler hiçbir şey görmez.",
+        "save": "Kaydet",
+        "saving": "Kaydediliyor…",
+        "badLink": "Düğme hedefi “/” veya “https://” ile başlamalıdır.",
+        "tooLong": "Metinlerden biri çok uzun.",
+        "titleRequired": "Pencereyi açmadan önce bir başlık girin."
+      },
+      "newOrder": {
+        "dueDate": "Teslim tarihi (isteğe bağlı)",
+        "priority": "Öncelik",
+        "workshop": "Doğrudan atölyeye gönder",
+        "workshopHint": "Atölye müdürü siparişi tüm ayrıntılarıyla hemen alır.",
+        "noWorkshops": "Henüz atölye yok; siparişi daha sonra gönderebilirsiniz.",
+        "later": "Sonra karar ver",
+        "workshopNotes": "Atölyeye not (isteğe bağlı)",
+        "workshopNotesPlaceholder": "örn. Arapça gravür, müşteri cumartesi alacak",
+        "createAndSend": "Siparişi oluştur ve gönder"
+      }
     }
   },
   "Tracking": {
@@ -2154,57 +2423,60 @@
       }
     ]
   },
-  "PublicVisuals": {
-    "title": "Herkese açık görseller",
-    "description": "Hero görseli ve promosyon penceresi ayarları.",
-    "homeHero": "Ana sayfa hero görseli URL’si",
-    "shopHero": "Mağaza hero görseli URL’si",
-    "enabled": "Kampanya penceresini göster",
-    "showOnce": "Her ziyaretçiye yalnızca bir kez göster",
-    "promoTitle": "Başlık",
-    "promoDescription": "Kısa metin",
-    "ctaText": "Düğme metni",
-    "ctaUrl": "Düğme bağlantısı",
-    "imageUrl": "Promosyon görseli URL’si",
-    "videoUrl": "Video bağlantısı (isteğe bağlı)",
-    "start": "Gösterim başlangıcı",
-    "end": "Gösterim bitişi",
-    "style": "Düzen",
-    "save": "Kaydet",
-    "reset": "Hero görsellerini sıfırla",
-    "luxury": "Metinli kart",
-    "image": "Büyük görsel",
-    "announcement": "İnce banner"
-  },
-  "OrderEntry": {
-    "customer": "Müşteri bilgileri",
-    "customerEmail": "E-posta",
-    "customerName": "Müşteri adı",
-    "customerPhone": "Telefon",
-    "description": "Bu özel bağlantı ile atölye siparişini güvenli şekilde doğrudan GoldHelwah paneline gönderebilirsiniz.",
-    "emailInvalid": "Lütfen geçerli bir e-posta adresi girin.",
-    "emailUpdates": "E-posta güncellemeleri gönder",
-    "emailUpdatesHint": "Güncellemeler yalnızca geçerli bir e-posta adresi girildiğinde gönderilir.",
-    "message": "Sipariş notu",
-    "noOptions": "Bu ürüne özel seçenek atanmamış.",
-    "options": "Ürün seçenekleri",
-    "privacy": "Özel ve korumalı bağlantı",
-    "product": "Ürün",
-    "productRequired": "Lütfen önce bir ürün seçin.",
-    "quantity": "Adet",
-    "required": "Lütfen bu alanı doldurun.",
-    "submit": "Siparişi gönder",
-    "submitPending": "Sipariş gönderiliyor…",
-    "success": "Sipariş başarıyla oluşturuldu.",
-    "title": "Atölye siparişi",
-    "trackingCta": "Takibi aç",
-    "defaultMessage": "{product} sipariş etmek istiyorum.",
-    "yes": "Evet",
-    "no": "Hayır",
-    "unavailableTitle": "Atölye siparişi şu anda kullanılamıyor",
-    "unavailableDescription": "Bu bağlantıya şu anda bağlı aktif ürün bulunmuyor."
-  },
   "Common": {
     "loading": "Yükleniyor…"
+  },
+  "Promo": {
+    "close": "Kapat",
+    "dismiss": "Şimdi değil"
+  },
+  "StaffEmail": {
+    "greeting": "Merhaba {name},",
+    "greetingPlain": "Merhaba,",
+    "signature": "Saygılarımızla\nGoldHelwah GmbH",
+    "linkFallback": "Düğme çalışmazsa bu bağlantıyı açın:",
+    "privateLink": "Bu bağlantı kişiseldir. Lütfen paylaşmayın.",
+    "invite": {
+      "subject": "GoldHelwah hesabınız",
+      "introManager": "“{workshop}” atölyesinin müdürü olarak davet edildiniz. Genel yönetimin siparişlerini burada alıp ekibinize dağıtacaksınız.",
+      "introEmployee": "“{workshop}” atölyesinin ekibine davet edildiniz. Size verilen siparişleri burada görecek ve ilerlemenizi bildireceksiniz.",
+      "introStaff": "Sizin için GoldHelwah paneline bir erişim oluşturuldu.",
+      "steps": "Düğmeye tıklayın ve bir şifre belirleyin, bu kadar. Daha sonra bu e-posta adresiyle giriş yaparsınız.",
+      "cta": "Daveti kabul et"
+    },
+    "reset": {
+      "subject": "GoldHelwah için yeni şifre",
+      "intro": "Aşağıdaki düğmeyle yeni bir şifre belirleyin. Bunu siz istemediyseniz bu e-postayı yok sayabilirsiniz.",
+      "cta": "Şifre belirle"
+    },
+    "workshopOrder": {
+      "subject": "Atölyeniz için yeni sipariş {order}",
+      "intro": "Genel yönetim “{workshop}” atölyesine yeni bir sipariş gönderdi.",
+      "next": "Lütfen panelden ekibinizden birine verin.",
+      "cta": "Siparişi aç"
+    },
+    "employeeTask": {
+      "subject": "Size yeni sipariş: {order}",
+      "intro": "{manager} size bir sipariş verdi. Tüm ayrıntılar aşağıda.",
+      "next": "Lütfen panelden kabul edin ve ilerlemenizi orada bildirin.",
+      "cta": "Siparişi görüntüle"
+    },
+    "taskAlert": {
+      "problem": "{employee}, {order} siparişinde bir sorun bildirdi.",
+      "declined": "{employee}, {order} siparişini alamıyor. Lütfen başka birine verin.",
+      "problemSubject": "{order} siparişinde sorun",
+      "declinedSubject": "{order} siparişi reddedildi",
+      "cta": "Siparişi aç"
+    },
+    "rows": {
+      "order": "Sipariş",
+      "product": "Ürün",
+      "quantity": "Adet",
+      "priority": "Öncelik",
+      "dueDate": "Teslim tarihi",
+      "noteFromOffice": "Genel yönetimin notu",
+      "noteFromManager": "Müdürün notu",
+      "reason": "Neden"
+    }
   }
 }

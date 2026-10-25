@@ -35,7 +35,7 @@ export default async function AdminOrdersPage({
   }
 
   if (access.user.role === "employee") {
-    redirect(getRoleDashboardPath(locale, access.user.role));
+    redirect(getRoleDashboardPath(locale, access.user.role, Boolean(access.user.managedWorkshopId)));
   }
 
   const [orders, employees] = await Promise.all([

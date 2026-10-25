@@ -53,7 +53,7 @@ export default async function AdminLoginPage({
   const noticeCopy = getLoginNoticeCopy(resolvedSearchParams.notice, t);
 
   if (access.state === "authenticated" && access.user) {
-    redirect(redirectTo || getRoleDashboardPath(locale, access.user.role));
+    redirect(redirectTo || getRoleDashboardPath(locale, access.user.role, Boolean(access.user.managedWorkshopId)));
   }
 
   const isDenied = access.state === "denied";

@@ -889,6 +889,51 @@ export type Database = {
           },
         ];
       };
+      staff_messages: {
+        Row: {
+          author_kind: "admin" | "manager" | "employee";
+          author_name: string;
+          author_profile_id: string | null;
+          body: string;
+          channel: "team" | "management";
+          created_at: string;
+          employee_id: string | null;
+          id: string;
+          order_id: string | null;
+          workshop_id: string;
+        };
+        Insert: {
+          author_kind: "admin" | "manager" | "employee";
+          author_name: string;
+          author_profile_id?: string | null;
+          body: string;
+          channel: "team" | "management";
+          created_at?: string;
+          employee_id?: string | null;
+          id?: string;
+          order_id?: string | null;
+          workshop_id: string;
+        };
+        Update: {
+          author_kind?: "admin" | "manager" | "employee";
+          author_name?: string;
+          author_profile_id?: string | null;
+          body?: string;
+          channel?: "team" | "management";
+          created_at?: string;
+          employee_id?: string | null;
+          id?: string;
+          order_id?: string | null;
+          workshop_id?: string;
+        };
+        Relationships: [];
+      };
+      staff_message_reads: {
+        Row: { last_read_at: string; profile_id: string; thread_key: string };
+        Insert: { last_read_at?: string; profile_id: string; thread_key: string };
+        Update: { last_read_at?: string; profile_id?: string; thread_key?: string };
+        Relationships: [];
+      };
       site_settings: {
         Row: {
           created_at: string;
@@ -1077,7 +1122,10 @@ export type Database = {
         | "in_progress"
         | "waiting"
         | "completed"
-        | "returned";
+        | "returned"
+        | "declined"
+        | "problem"
+        | "shipped";
       option_type:
         | "text"
         | "textarea"

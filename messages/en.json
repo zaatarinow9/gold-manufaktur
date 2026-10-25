@@ -1,30 +1,30 @@
 {
   "Metadata": {
     "site": {
-      "brand": "GoldHelwah GmbH",
-      "title": "GoldHelwah GmbH",
-      "description": "GoldHelwah GmbH in Saarbrücken: bridal sets, name necklaces, rings and investment gold in 21, 18 and 14 karat. Personal advice and made-to-order pieces.",
+      "brand": "GoldHelwah",
+      "title": "GoldHelwah",
+      "description": "GoldHelwah in Saarbrücken: bridal sets, name necklaces, chains and investment gold in hallmarked 21, 18 and 14 karat – personal advice, made to order.",
       "keywords": [
-        "GoldHelwah GmbH",
-        "gold jewelry",
-        "luxury jewelry",
-        "jewelry catalog",
-        "showroom",
-        "wedding rings"
+        "GoldHelwah",
+        "gold jewellery Saarbrücken",
+        "21 karat gold",
+        "bridal jewellery",
+        "gold name necklace",
+        "investment gold"
       ]
     },
     "pages": {
       "home": {
-        "title": "GoldHelwah – Gold jewellery in Saarbrücken",
-        "description": "Bridal sets, name jewellery, chains and investment gold in 21, 18 and 14 karat. Showroom at Breite Straße 9, Saarbrücken."
+        "title": "GoldHelwah – gold jewellery in Saarbrücken",
+        "description": "Bridal sets, name necklaces, chains and investment gold in 21, 18 and 14 karat – personal advice, made to order."
       },
       "shop": {
         "title": "Collection",
-        "description": "The GoldHelwah collection: jewellery sets, name jewellery, chains, bracelets, rings and gold bars. Send a request online."
+        "description": "The GoldHelwah collection: sets, name pieces, chains, bracelets, rings and bars. See the details and enquire directly."
       },
       "contact": {
         "title": "Contact",
-        "description": "Showroom at Breite Straße 9, Saarbrücken. Phone, WhatsApp, email and request form."
+        "description": "GoldHelwah, Breite Straße 9, Saarbrücken – phone, WhatsApp, email and contact form."
       },
       "impressum": {
         "title": "Legal Notice",
@@ -37,14 +37,14 @@
     }
   },
   "Nav": {
-    "tagline": "Luxury Gold Jewelry",
+    "tagline": "Fine gold jewellery",
     "language": "Change language",
     "currentLanguage": "Current",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "links": {
       "home": "Home",
-      "shop": "Shop",
+      "shop": "Collection",
       "contact": "Contact",
       "impressum": "Legal Notice",
       "privacy": "Privacy",
@@ -55,12 +55,12 @@
     "legalTitle": "Legal"
   },
   "Footer": {
-    "description": "Gold jewellery and investment gold from Saarbrücken. Personal advice, made to order on request.",
+    "description": "Gold jewellery and investment gold from Saarbrücken – personal advice, made to order.",
     "navigationTitle": "Pages",
     "contactTitle": "Contact",
     "socialTitle": "Follow us",
     "emailPlaceholder": "info@goldhelwah.de",
-    "legalNote": "No online sales – requests, advice and handover in person.",
+    "legalNote": "No online sales: advice, ordering and handover happen in person.",
     "rights": "GoldHelwah GmbH. All rights reserved.",
     "socials": {
       "instagram": "Instagram",
@@ -74,12 +74,12 @@
   "Home": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
-      "title": "GoldHelwah in Saarbrücken",
-      "subtitle": "Gold to wear, and to pass on.",
-      "description": "Bridal sets, name necklaces, coin jewellery and investment gold in 21, 18 and 14 karat. Choose in our showroom or online – we advise you in person and make pieces to order.",
-      "primaryCta": "View the collection",
-      "secondaryCta": "Ask for advice",
-      "backgroundAlt": "GoldHelwah GmbH hero composition",
+      "title": "Fine gold jewellery",
+      "subtitle": "Gold, crafted with care. Made for generations.",
+      "description": "Bridal sets, name pieces, gold coins and investment bars – hallmarked in 21, 18 and 14 karat. We advise you personally and craft every piece to your wishes.",
+      "primaryCta": "Explore the collection",
+      "secondaryCta": "Request a consultation",
+      "backgroundAlt": "Gold jewellery by GoldHelwah",
       "stats": [
         {
           "value": "17",
@@ -94,21 +94,21 @@
           "label": "Showroom"
         }
       ],
-      "locationLine": "Showroom: Breite Straße 9, Saarbrücken"
+      "locationLine": "Breite Straße 9, Saarbrücken"
     },
     "categories": {
       "eyebrow": "Selected Categories",
-      "title": "The collection",
-      "description": "From fine everyday chains to bridal sets and gold ounces.",
+      "title": "Collections",
+      "description": "From a fine everyday chain to the bridal set and the investment ounce.",
       "emptyTitle": "No products are currently visible",
       "emptyText": "As soon as new collections are activated in the dashboard, they will appear here automatically.",
-      "allCta": "All categories"
+      "allCta": "All collections"
     },
     "products": {
       "eyebrow": "Selected Products",
-      "title": "From the showroom",
-      "description": "Open a piece to see the details and ask about it directly.",
-      "sectionCta": "Full collection",
+      "title": "Selected pieces",
+      "description": "Open any piece to see its details and request it directly.",
+      "sectionCta": "See the full collection",
       "cardCta": "View details",
       "emptyTitle": "No products are currently visible",
       "emptyText": "Activate products in the dashboard or contact us for a personal selection."
@@ -126,21 +126,21 @@
     "aboutGold": {
       "eyebrow": "About gold",
       "title": "Gold that lasts.",
-      "description": "Gold keeps its value and carries memories across generations. That is why we give every piece time – in choosing it and in making it.",
+      "description": "Gold keeps its value and carries memories from one generation to the next. So we give every piece the care it deserves – in the choosing and in the making.",
       "imageAlt": "Gold jewelry detail from GoldHelwah GmbH",
       "points": [
-        "Hallmarked purity",
+        "Hallmarked fineness",
         "Made to order",
-        "Personal handover"
+        "Handed over in person"
       ],
       "storyLabel": "About GoldHelwah"
     },
     "aboutCompany": {
       "eyebrow": "About us",
-      "title": "GoldHelwah GmbH",
-      "description": "Our showroom is on Breite Straße in Saarbrücken. Here we show our pieces without hurry, advise you ourselves and take on special requests.",
+      "title": "About GoldHelwah",
+      "description": "A house of gold jewellery in Saarbrücken, uniting Oriental goldsmithing with German precision. We take on special commissions and see to every step ourselves.",
       "teamLabel": "Our approach",
-      "story": "From your first question to the handover, you deal with us directly – no detours.",
+      "story": "From the first question to the moment you receive your piece, you deal with us directly – no middlemen.",
       "locationLabel": "On site"
     },
     "trust": {
@@ -148,20 +148,20 @@
       "title": "Clear, personal, and close to the product.",
       "items": [
         {
-          "title": "Advice that takes its time",
-          "description": "For a wedding, a gift or every day: we listen first, then we show."
+          "title": "Unhurried advice",
+          "description": "For a wedding, a gift or every day: we listen first, then suggest what suits you."
         },
         {
           "title": "Real pieces, real photos",
-          "description": "Every photo shows a piece from our own selection."
+          "description": "Every image shows a piece from our own collection – no exaggeration."
         },
         {
           "title": "Made to order",
-          "description": "Names, engravings, lengths and sizes – we turn your idea into gold."
+          "description": "Name, engraving, length and size: we turn your idea into a finished piece."
         },
         {
           "title": "Handed over in person",
-          "description": "We hand your piece to you ourselves in Saarbrücken."
+          "description": "We hand you your piece in person, inspected and with its fineness confirmed."
         }
       ]
     },
@@ -173,8 +173,8 @@
       "secondaryCta": "Call now"
     },
     "hallmarks": {
-      "title": "21, 18 or 14 karat",
-      "description": "The stamp in the gold shows its purity: 875, 750 or 585 parts gold per thousand. We tell you honestly which one suits your piece.",
+      "title": "21, 18 or 14 karat – hallmarked",
+      "description": "The stamp states the purity: 875, 750 or 585 parts per thousand. We tell you plainly which one suits your piece and the way you’ll wear it.",
       "items": [
         {
           "stamp": "875",
@@ -192,21 +192,21 @@
     },
     "customName": {
       "title": "Your name in gold",
-      "description": "In Arabic or Latin script, as a necklace, bracelet or pendant. We choose the lettering, karat and length with you – then make the piece for you.",
-      "primaryCta": "See name jewellery",
+      "description": "In Arabic or Latin script, as a chain, bracelet or pendant. We choose the lettering, karat and length with you, then craft a piece that is yours alone.",
+      "primaryCta": "View name pieces",
       "secondaryCta": "Discuss your idea"
     },
     "visit": {
-      "title": "Visit us, or write to us",
-      "description": "We reply personally."
+      "title": "Visit or get in touch",
+      "description": "We answer every message personally."
     }
   },
   "Shop": {
     "hero": {
       "eyebrow": "GoldHelwah GmbH",
       "title": "Collection",
-      "subtitle": "Open a piece for details. We send price and weight on request.",
-      "primaryCta": "Request consultation",
+      "subtitle": "Open any piece for its details. We’ll give you price and weight on request.",
+      "primaryCta": "Request a consultation",
       "secondaryCta": "Call us",
       "stats": {
         "categories": "Categories",
@@ -228,8 +228,8 @@
       "all": "All",
       "resultsSuffix": "pieces",
       "emptyBadge": "On request",
-      "emptyTitle": "Nothing in this category is online right now.",
-      "emptyText": "We make many pieces to order. Tell us what you are looking for.",
+      "emptyTitle": "Nothing is on display in this category right now.",
+      "emptyText": "Many pieces are made to order. Tell us what you’re looking for.",
       "resultCount": "{count, plural, =0 {No pieces} one {# piece} other {# pieces}}"
     },
     "card": {
@@ -243,18 +243,18 @@
       "galleryLabel": "Gallery",
       "galleryCountSuffix": "images",
       "tagsLabel": "Details",
-      "requestCta": "Send inquiry",
+      "requestCta": "Request this piece",
       "backCta": "Back",
       "callCta": "Call",
       "noteTitle": "What happens next",
-      "note": "Send a request. We will reply with weight, price and making time."
+      "note": "Send your request – we’ll come back to you with weight, price and making time."
     }
   },
   "Contact": {
     "hero": {
       "eyebrow": "Contact",
       "title": "Contact",
-      "subtitle": "A question about a piece, a custom order or a showroom appointment – write to us or call.",
+      "subtitle": "For a question about a piece, a special commission or an appointment, write or call us.",
       "primaryCta": "View collection",
       "secondaryCta": "Read privacy"
     },
@@ -275,7 +275,7 @@
     "form": {
       "eyebrow": "Get in touch",
       "title": "Your message",
-      "description": "One sentence is enough. We will get back to you with all the details.",
+      "description": "A few words are enough – we’ll get back to you with all the details.",
       "highlights": "Contact",
       "fields": {
         "name": "Name",
@@ -309,13 +309,13 @@
     },
     "location": {
       "eyebrow": "Location",
-      "title": "Visit GoldHelwah GmbH in Saarbrücken.",
-      "description": "Address, phone, and directions at a glance.",
+      "title": "Our address in Saarbrücken",
+      "description": "By appointment we’ll show you the collection and advise you at leisure.",
       "addressLabel": "Address",
       "phoneLabel": "Phone",
       "routeCta": "Plan route",
       "callCta": "Call",
-      "mapTitle": "GoldHelwah GmbH location on Google Maps",
+      "mapTitle": "GoldHelwah on Google Maps",
       "emailLabel": "Email",
       "whatsappCta": "WhatsApp"
     }
@@ -517,9 +517,10 @@
       "language": "Dashboard language"
     },
     "roles": {
-      "super_admin": "Super Admin",
-      "admin": "Admin",
-      "employee": "Employee"
+      "super_admin": "Head office",
+      "admin": "Showroom",
+      "employee": "Workshop team",
+      "workshop_manager": "Workshop manager"
     },
     "nav": {
       "overview": "Overview",
@@ -529,7 +530,7 @@
       "options": "Order questions",
       "orders": "Orders",
       "workshops": "Workshops",
-      "employees": "Employees",
+      "employees": "All staff",
       "attendance": "Attendance",
       "reports": "Reports",
       "archive": "Archive",
@@ -537,7 +538,10 @@
       "myTasks": "My tasks",
       "inquiries": "Customer inquiries",
       "ariaLabel": "Main navigation",
-      "countLabel": "{count} open"
+      "countLabel": "{count} open",
+      "messages": "Messages",
+      "team": "My team",
+      "workshopOrders": "Workshop orders"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1360,12 +1364,15 @@
       "publicStageUpdate": "Public stage update"
     },
     "assignmentStatus": {
-      "assigned": "Assigned",
+      "assigned": "Newly assigned",
       "accepted": "Accepted",
       "in_progress": "In progress",
       "waiting": "Waiting",
-      "completed": "Completed",
-      "returned": "Returned"
+      "completed": "Finished",
+      "returned": "Back with manager",
+      "problem": "Problem reported",
+      "shipped": "Sent to showroom",
+      "declined": "Declined"
     },
     "settingsClient": {
       "title": "Settings",
@@ -1378,24 +1385,9 @@
       "smtpTitle": "Email status",
       "smtpConfigured": "SMTP configured",
       "smtpMissing": "SMTP incomplete",
-      "orderEntryTitle": "External order-entry link",
       "orderEntryDescription": "Enable the external link, review the full URL, and copy or email it directly from here.",
       "save": "Save",
-      "rotateLink": "Rotate link",
-      "orderEntryEnabled": "Enable external order-entry link",
-      "expiresAt": "Expires at",
-      "fullLinkLabel": "Full link",
-      "fullLinkHelp": "This always shows the complete URL exactly as it will be shared. If the server still reports localhost, the current browser origin is used instead.",
-      "linkDisabled": "The external order-entry link is currently disabled.",
-      "copyLink": "Copy link",
-      "copySuccess": "The full link was copied.",
-      "copyUnavailable": "No full link is available right now.",
-      "statusEnabled": "Enabled",
       "statusDisabled": "Disabled",
-      "rotatedAt": "Last rotated",
-      "linkRecipient": "Send link to",
-      "linkRecipientHelp": "A professional German email with a button and direct fallback link will be sent.",
-      "sendLink": "Send link by email",
       "userListTitle": "Users and roles",
       "manageUsersHint": "User management requires super-admin access because it uses the Supabase Auth admin API server-side.",
       "userSave": "Save user",
@@ -1415,8 +1407,8 @@
       "userDelete": "Delete",
       "userEdit": "Edit",
       "inviteAgain": "Send new link",
-      "roleOwner": "Owner",
-      "roleAdmin": "Admin",
+      "roleOwner": "Head office (full access)",
+      "roleAdmin": "Showroom tablet",
       "roleEmployee": "Worker",
       "userDeleteConfirm": "Delete the login for {name}?",
       "userDeleteText": "This person will no longer be able to sign in.",
@@ -1884,11 +1876,6 @@
       "invalidEmail": "Please enter a valid email address.",
       "invalidName": "Please enter a valid display name.",
       "noAccess": "No access.",
-      "orderEntryRotated": "The external order-entry link was rotated.",
-      "orderEntrySendDisabled": "Enable the external order-entry link before sending it by email.",
-      "orderEntrySendFailed": "The external order-entry link could not be sent by email.",
-      "orderEntrySendSavedOnly": "The email was prepared, but delivery was skipped because SMTP is not fully configured.",
-      "orderEntrySent": "The external order-entry link was sent by email.",
       "privacyPhrase": "The privacy passphrase is invalid.",
       "saved": "Settings saved.",
       "userCreated": "The user was created. The access link was sent or logged.",
@@ -1896,7 +1883,8 @@
       "userInviteSent": "A new access link was generated.",
       "userPasswordResetSent": "A password reset link was generated.",
       "userUpdated": "The user was updated.",
-      "userVisibilityChanged": "The user status was updated."
+      "userVisibilityChanged": "The user status was updated.",
+      "emailNotSent": "Saved, but the email could not be sent. Please check the email settings."
     },
     "taskCard": {
       "assignmentNote": "Assignment note",
@@ -1988,7 +1976,16 @@
       "newWorkshopOrder": "New workshop order",
       "newWorkshopOrderMessage": "A new order was assigned to your workshop.",
       "newTask": "New task",
-      "newTaskMessage": "A workshop order was assigned to you."
+      "newTaskMessage": "A workshop order was assigned to you.",
+      "workshopOrderReceived": "New order for your workshop",
+      "newMessage": "New message",
+      "taskStatus_accepted": "Order accepted",
+      "taskStatus_in_progress": "Work started",
+      "taskStatus_problem": "Problem with an order",
+      "taskStatus_completed": "Order finished",
+      "taskStatus_shipped": "Order sent to the showroom",
+      "taskStatus_declined": "Order declined",
+      "taskStatus_assigned": "Order assigned"
     },
     "workshopMessages": {
       "CURRENT_WORKSHOP_MANAGER_MOVE_FORBIDDEN": "The current workshop manager can only be moved after a new manager is appointed or the role is removed.",
@@ -2030,36 +2027,27 @@
     "settingsSections": {
       "website": "Website",
       "emails": "Emails",
-      "orderLink": "Order link",
       "access": "Logins",
       "data": "Data & reset",
       "imagesTitle": "Website images",
       "imagesText": "The large image on the home page and next to the shop title. Without your own image, a product photo is used.",
       "homeHeroHint": "Currently: a product photo, chosen automatically.",
       "shopHeroHint": "Currently: no image, title only.",
-      "promoTitle": "Promotion pop-up",
-      "promoText": "A small window that shows visitors an offer when they open the home page – for holidays, for example.",
-      "promoEnabledHint": "When switched off, visitors see nothing; your entries stay saved.",
-      "promoContent": "Content",
-      "promoLook": "Look",
-      "promoWhen": "When",
       "promoImageHint": "Optional. Shown inside the pop-up.",
       "emailsText": "Where the shop sends emails about new orders, inquiries and support messages.",
       "adminEmailHint": "Receives new orders and product inquiries.",
       "supportEmailHint": "Receives customers’ questions about an order.",
       "ownerEmailHint": "Receives important system messages.",
-      "orderLinkText": "A private link that partners – a branch or workshop, for example – can use to enter orders without logging in.",
-      "expiresHint": "Leave empty if the link should not expire.",
-      "rotateHint": "Creates a new link. The old link stops working – useful if it reached the wrong person.",
-      "accessText": "Who can sign in to the dashboard and what they can see.",
+      "accessText": "Accounts for head office and the showroom tablet. To take orders in the showroom, sign in on the tablet with email and password.",
       "you": "you",
       "userEditorText": "The person receives an email to set their password.",
       "userEmailHint": "Used to sign in.",
       "roleHint": {
-        "super_admin": "Sees and changes everything, including settings and logins.",
-        "admin": "Manages orders, employees and inquiries – no settings.",
-        "employee": "Sees only their own tasks."
-      }
+        "super_admin": "Sees and changes everything: workshops, shop, settings and access.",
+        "admin": "For the tablet in the showroom: create orders and send them to a workshop. No settings.",
+        "employee": "Workshop staff are invited by their workshop manager."
+      },
+      "staffNote": "Workshop managers are invited when a workshop is created, and they invite their own staff – so those accounts are not listed here."
     },
     "settingsData": {
       "notificationsTitle": "Clear notifications",
@@ -2067,6 +2055,287 @@
       "clearNotificationsButton": "Clear notifications",
       "clearNotificationsConfirm": "Delete all notifications?",
       "clearNotificationsText": "Orders, inquiries and other data stay as they are."
+    },
+    "flow": {
+      "errors": {
+        "FAILED": "That didn’t work. Please try again.",
+        "INVALID": "Please check your entries – a required field is empty or the email address is invalid.",
+        "PERMISSION_DENIED": "Your account isn’t allowed to do this.",
+        "EMAIL_IN_USE": "This email address already belongs to another team member.",
+        "EMAIL_IS_OFFICE_ACCOUNT": "This email is already a head-office or showroom account. Please use another address.",
+        "CANNOT_CHANGE_SELF": "You can’t change your own account here.",
+        "WORKSHOP_NOT_FOUND": "This workshop no longer exists.",
+        "WORKSHOP_INACTIVE": "This workshop is paused. Resume it first.",
+        "WORKSHOP_HAS_NO_MANAGER": "This workshop has no manager yet.",
+        "ORDER_NOT_FOUND": "This order could not be found.",
+        "TASK_NOTE_REQUIRED": "Please write briefly what’s wrong – your manager needs the reason.",
+        "MESSAGE_EMPTY": "The message is empty.",
+        "MESSAGE_TOO_LONG": "The message is too long (4,000 characters at most).",
+        "THREAD_NOT_FOUND": "This conversation no longer exists."
+      },
+      "done": {
+        "workshopCreated": "Workshop created. The manager has been emailed an invitation.",
+        "workshopCreatedNoEmail": "Workshop created, but the invitation could not be sent. Check the email settings and resend it from the workshop page.",
+        "workshopSaved": "Workshop saved.",
+        "workshopActivated": "Workshop is active again.",
+        "workshopPaused": "Workshop paused. It won’t receive new orders.",
+        "workshopDeleted": "Workshop deleted. Its open orders are back under “Not sent yet”.",
+        "managerChanged": "New workshop manager invited.",
+        "managerChangedNoEmail": "Manager changed, but the invitation could not be sent.",
+        "inviteSent": "Invitation sent again.",
+        "inviteSentNoEmail": "The invitation could not be sent. Please check the email settings.",
+        "memberInvited": "Invitation sent. Once they set a password they can take on orders.",
+        "memberInvitedNoEmail": "Team member added, but the invitation could not be sent.",
+        "memberActivated": "Active again.",
+        "memberPaused": "Paused. They can’t sign in for now.",
+        "memberRemoved": "Removed from the team. Their open orders are back with you.",
+        "messageSent": "Message sent.",
+        "orderSent": "Sent to {workshop}. The manager has been emailed.",
+        "orderSentNoEmail": "Sent to {workshop}. The email to the manager failed, but they’ll see the order in their dashboard.",
+        "orderSentNoManager": "Sent to {workshop}. Note: the workshop has no manager yet to hand out the order."
+      },
+      "workshops": {
+        "pageHint": "Every workshop has a manager. You send orders to the workshop; the manager hands them out to the team.",
+        "new": "New workshop",
+        "newTitle": "Create a workshop",
+        "newHint": "The manager gets an email, sets a password, and then invites their own team.",
+        "sectionWorkshop": "Workshop",
+        "sectionManager": "Workshop manager",
+        "managerHint": "This person receives orders and hands them out.",
+        "name": "Workshop name",
+        "namePlaceholder": "e.g. Istanbul workshop",
+        "location": "Location",
+        "phone": "Phone",
+        "notes": "Internal note",
+        "managerName": "Name",
+        "managerEmail": "Email address",
+        "managerEmailHint": "The invitation goes here; it’s also the manager’s sign-in.",
+        "create": "Create and send invitation",
+        "creating": "Creating…",
+        "emptyTitle": "No workshops yet",
+        "emptyText": "Create the first workshop and name its manager.",
+        "manager": "Manager",
+        "managerActive": "Signed in",
+        "managerInvited": "Invitation pending",
+        "noManager": "No manager",
+        "noManagerText": "This workshop has no manager. Invite someone so orders can be handed out.",
+        "openOrders": "Open orders",
+        "teamSize": "Team",
+        "open": "Open",
+        "actionsFor": "Actions for {name}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "paused": "Paused",
+        "running": "Active",
+        "deleteTitle": "Delete “{name}”?",
+        "deleteText": "{team, plural, =0 {The workshop has no team.} one {The team member loses access.} other {All # team members lose access.}} {orders, plural, =0 {} one {Its open order goes back to “Not sent yet”.} other {Its # open orders go back to “Not sent yet”.}}",
+        "delete": "Delete workshop",
+        "dangerTitle": "Delete workshop",
+        "dangerHint": "Removes the workshop and its team. Open orders aren’t lost – they return to head office.",
+        "saving": "Saving…",
+        "messageManager": "Message the manager",
+        "managerCardHint": "The manager receives your orders and hands them out to the team.",
+        "resendInvite": "Resend invitation",
+        "changeManager": "Change manager",
+        "changeManagerHint": "The new manager gets an invitation. If they’re already on the team, they’re simply promoted.",
+        "sendManagerInvite": "Invite manager",
+        "openOrdersTitle": "Orders in progress",
+        "openOrdersHint": "Who is working on what, and how far along it is.",
+        "noOpenOrders": "No open orders right now.",
+        "notAssignedYet": "Not handed out yet",
+        "waitingForManager": "Waiting to be handed out",
+        "teamTitle": "Team",
+        "teamHintOffice": "The workshop manager looks after the team.",
+        "noTeam": "No staff yet.",
+        "managerBadge": "Manager",
+        "memberPaused": "Paused",
+        "openTasks": "{count, plural, =0 {no open tasks} one {# open task} other {# open tasks}}",
+        "detailsTitle": "Workshop details",
+        "peopleHint": "Staff are invited by their workshop manager. Here you see everyone at a glance and can pause or delete accounts."
+      },
+      "team": {
+        "title": "My team",
+        "description": "Invite your staff. Each person gets an email, sets a password and then sees the orders you give them.",
+        "membersTitle": "{count, plural, =0 {No one on the team yet} one {# person on the team} other {# people on the team}}",
+        "empty": "Invite your first team member with their name and email.",
+        "you": "You · Manager",
+        "active": "Active",
+        "invited": "Invitation pending",
+        "paused": "Paused",
+        "openTasks": "{count, plural, =0 {free} one {# task} other {# tasks}}",
+        "actionsFor": "Actions for {name}",
+        "message": "Send a message",
+        "resend": "Resend invitation",
+        "pause": "Pause",
+        "resume": "Reactivate",
+        "remove": "Remove from team",
+        "removeTitle": "Remove {name} from the team?",
+        "removeText": "{count, plural, =0 {Their sign-in is switched off.} one {Their sign-in is switched off and their open task comes back to you.} other {Their sign-in is switched off and their # open tasks come back to you.}}",
+        "inviteTitle": "Invite someone",
+        "inviteHint": "The invitation arrives by email; they then sign in with that address.",
+        "name": "Name",
+        "email": "Email address",
+        "phone": "Phone (optional)",
+        "invite": "Send invitation",
+        "sending": "Sending…",
+        "inviteFootnote": "The link in the email is personal and only valid for a short time. If it expires, just resend the invitation."
+      },
+      "workshopOrders": {
+        "title": "Workshop orders",
+        "description": "Orders from head office to your workshop. Give each one to someone on your team – they get all the details by email.",
+        "tabs": {
+          "toAssign": "To hand out",
+          "inProgress": "In progress",
+          "finished": "Done"
+        },
+        "empty": {
+          "toAssign": "Everything is handed out. New orders appear here.",
+          "inProgress": "Nothing is in progress right now.",
+          "finished": "Nothing finished yet."
+        },
+        "due": "Due {date}",
+        "new": "New",
+        "assignTo": "Who takes this order?",
+        "reassignTo": "Give to someone else",
+        "noTeam": "Invite your team first (My team)",
+        "taskCount": "{count, plural, =0 {(free)} one {(# task)} other {(# tasks)}}",
+        "assign": "Hand out",
+        "details": "Details"
+      },
+      "myTasks": {
+        "title": "My tasks",
+        "description": "The orders your workshop manager gave you. Open one to report where it stands.",
+        "writeManager": "Message my manager",
+        "current": "Current",
+        "done": "Done",
+        "emptyCurrent": "No open tasks",
+        "emptyCurrentText": "When you’re given an order it appears here and you get an email.",
+        "emptyDone": "Nothing finished yet.",
+        "due": "Due {date}",
+        "newTask": "New – please accept"
+      },
+      "task": {
+        "title": "Where does this order stand?",
+        "hint": "Your workshop manager is notified of every change.",
+        "now": "Now:",
+        "due": "Due: {date}",
+        "managerNote": "Note from your manager",
+        "choose": "New status",
+        "explain": {
+          "accepted": "I’ll take this order.",
+          "in_progress": "I’m working on it now.",
+          "problem": "Something is missing or unclear – please give the reason.",
+          "completed": "The piece is finished.",
+          "shipped": "The piece is on its way to the showroom.",
+          "declined": "I can’t take this order – please give the reason."
+        },
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "e.g. ring size missing, stone not in stock…",
+        "noteLabel": "Note for your manager (optional)",
+        "notePlaceholder": "e.g. ready on Thursday",
+        "save": "Update status",
+        "saving": "Updating…"
+      },
+      "orderCard": {
+        "workshopTitle": "Workshop",
+        "workshopHint": "Choose the workshop. Its manager receives the order with all details by email and hands it out.",
+        "managedBy": "Manager: {name}",
+        "noManager": "No manager",
+        "noWorkshops": "Create a workshop under “Workshops” first.",
+        "chooseWorkshop": "To which workshop?",
+        "moveTo": "Workshop",
+        "selectPlaceholder": "Choose a workshop",
+        "noteForManager": "Message to the manager (optional)",
+        "notePlaceholder": "e.g. customer collects on Saturday",
+        "send": "Send to workshop",
+        "sendAgain": "Send again",
+        "moveWarning": "The current workshop will hand the order over; any current assignment ends.",
+        "craftsman": "Made by",
+        "notAssigned": "Not handed out yet",
+        "progress": "Status",
+        "craftsmanNote": "Note from the workshop",
+        "notSent": "Not sent yet",
+        "teamTitle": "Who makes this order?",
+        "teamHint": "They get an email with all the details and report their progress here.",
+        "noteForCraftsman": "Note for them (optional)",
+        "craftsmanNotePlaceholder": "e.g. please by Friday",
+        "assign": "Hand out and notify",
+        "updateNote": "Save note"
+      },
+      "messages": {
+        "title": "Messages",
+        "description": {
+          "admin": "Your direct line to the workshop managers.",
+          "manager": "Write to head office or to anyone on your team.",
+          "employee": "Questions, problems or quick updates for your workshop manager."
+        },
+        "noThreads": "No conversations yet",
+        "noThreadsText": {
+          "admin": "Once a workshop exists, you can write to its manager here.",
+          "manager": "Invite your team to start writing to them.",
+          "employee": "You’re not part of a workshop yet."
+        },
+        "office": "Head office",
+        "officeHint": "For questions and notes to head office",
+        "teamMember": "Your team",
+        "yourManager": "Your workshop manager",
+        "threadEmpty": "No messages yet. Write the first one.",
+        "placeholder": "Write a message…",
+        "send": "Send",
+        "aboutOrder": "about {order}",
+        "roles": {
+          "admin": "Head office",
+          "manager": "Workshop manager",
+          "employee": "Workshop"
+        },
+        "orderTitle": "Messages about this order",
+        "orderHint": "Questions and agreements stay right with the order.",
+        "orderEmpty": "Nothing has been written about this order yet.",
+        "withOffice": "Head office ↔ manager",
+        "withPerson": "With {name}"
+      },
+      "promo": {
+        "title": "Promotion pop-up",
+        "description": "A short notice shown when the homepage opens – for a holiday or a new collection, say.",
+        "enabled": "Show on the website",
+        "enabledOn": "Visitors see it once you save.",
+        "enabledOff": "Switched off – your text stays saved.",
+        "fieldTitle": "Heading",
+        "titlePlaceholder": "e.g. Our new Ramadan collection",
+        "fieldText": "Text",
+        "textPlaceholder": "One or two sentences are enough.",
+        "fieldButton": "Button text",
+        "buttonPlaceholder": "e.g. View the collection",
+        "fieldLink": "Button goes to",
+        "linkHint": "“/shop” for the shop, “/contact” for contact, or a full https:// address. Without a target no button is shown.",
+        "fieldImage": "Image (optional)",
+        "from": "Show from",
+        "fromHint": "Empty = right away",
+        "until": "Show until",
+        "untilHint": "Empty = no end",
+        "showOnce": "Show each visitor only once",
+        "showOnceHint": "Change the heading and everyone sees it again.",
+        "preview": "Preview",
+        "previewEmptyTitle": "Your heading",
+        "previewDismiss": "Not now",
+        "previewOff": "Currently off – visitors see nothing.",
+        "save": "Save",
+        "saving": "Saving…",
+        "badLink": "The button target must start with “/” or “https://”.",
+        "tooLong": "One of the texts is too long.",
+        "titleRequired": "Please add a heading before switching the pop-up on."
+      },
+      "newOrder": {
+        "dueDate": "Needed by (optional)",
+        "priority": "Priority",
+        "workshop": "Send straight to a workshop",
+        "workshopHint": "The workshop manager receives the order right away with all details.",
+        "noWorkshops": "No workshop yet – you can send the order later.",
+        "later": "Decide later",
+        "workshopNotes": "Note for the workshop (optional)",
+        "workshopNotesPlaceholder": "e.g. engraving in Arabic script, customer collects Saturday",
+        "createAndSend": "Create and send order"
+      }
     }
   },
   "Tracking": {
@@ -2154,57 +2423,60 @@
       }
     ]
   },
-  "PublicVisuals": {
-    "title": "Public visuals",
-    "description": "Hero image overrides and promotional popup settings.",
-    "homeHero": "Homepage hero image URL",
-    "shopHero": "Shop hero image URL",
-    "enabled": "Show the promotion pop-up",
-    "showOnce": "Show only once per visitor",
-    "promoTitle": "Headline",
-    "promoDescription": "Short text",
-    "ctaText": "Button text",
-    "ctaUrl": "Button link",
-    "imageUrl": "Promo image URL",
-    "videoUrl": "Video link (optional)",
-    "start": "Show from",
-    "end": "Show until",
-    "style": "Layout",
-    "save": "Save",
-    "reset": "Reset hero images",
-    "luxury": "Card with text",
-    "image": "Large image",
-    "announcement": "Slim banner"
-  },
-  "OrderEntry": {
-    "customer": "Customer details",
-    "customerEmail": "Email",
-    "customerName": "Customer name",
-    "customerPhone": "Phone",
-    "description": "Use this private link to send a secure workshop order directly into the GoldHelwah dashboard.",
-    "emailInvalid": "Please enter a valid email address.",
-    "emailUpdates": "Send email updates",
-    "emailUpdatesHint": "Updates are only sent when a valid customer email address is provided.",
-    "message": "Order note",
-    "noOptions": "No custom options are assigned to this product.",
-    "options": "Product options",
-    "privacy": "Private protected link",
-    "product": "Product",
-    "productRequired": "Please choose a product first.",
-    "quantity": "Quantity",
-    "required": "Please complete this field.",
-    "submit": "Send order",
-    "submitPending": "Sending order…",
-    "success": "The order was created successfully.",
-    "title": "Workshop order",
-    "trackingCta": "Open tracking",
-    "defaultMessage": "I would like to order {product}.",
-    "yes": "Yes",
-    "no": "No",
-    "unavailableTitle": "Workshop order currently unavailable",
-    "unavailableDescription": "There are currently no active products assigned to this link."
-  },
   "Common": {
     "loading": "Loading…"
+  },
+  "Promo": {
+    "close": "Close",
+    "dismiss": "Not now"
+  },
+  "StaffEmail": {
+    "greeting": "Hello {name},",
+    "greetingPlain": "Hello,",
+    "signature": "Kind regards\nGoldHelwah GmbH",
+    "linkFallback": "If the button doesn’t work, open this link:",
+    "privateLink": "This link is personal. Please don’t share it.",
+    "invite": {
+      "subject": "Your GoldHelwah account",
+      "introManager": "You’ve been invited to manage the workshop “{workshop}”. This is where you receive head office’s orders and hand them out to your team.",
+      "introEmployee": "You’ve been invited to join the team of the workshop “{workshop}”. Here you’ll see the orders given to you and report your progress.",
+      "introStaff": "An account for the GoldHelwah dashboard has been set up for you.",
+      "steps": "Click the button and choose a password – that’s it. From then on, sign in with this email address.",
+      "cta": "Accept invitation"
+    },
+    "reset": {
+      "subject": "New password for GoldHelwah",
+      "intro": "Use the button below to set a new password. If you didn’t ask for this, you can ignore this email.",
+      "cta": "Set password"
+    },
+    "workshopOrder": {
+      "subject": "New order {order} for your workshop",
+      "intro": "Head office has sent a new order to the workshop “{workshop}”.",
+      "next": "Please hand it to someone on your team in the dashboard.",
+      "cta": "Open order"
+    },
+    "employeeTask": {
+      "subject": "New order for you: {order}",
+      "intro": "{manager} has given you an order. Here are all the details.",
+      "next": "Please accept it in the dashboard and report your progress there.",
+      "cta": "View order"
+    },
+    "taskAlert": {
+      "problem": "{employee} reports a problem with order {order}.",
+      "declined": "{employee} can’t take order {order}. Please give it to someone else.",
+      "problemSubject": "Problem with order {order}",
+      "declinedSubject": "Order {order} declined",
+      "cta": "Open order"
+    },
+    "rows": {
+      "order": "Order",
+      "product": "Product",
+      "quantity": "Quantity",
+      "priority": "Priority",
+      "dueDate": "Due",
+      "noteFromOffice": "Note from head office",
+      "noteFromManager": "Note from your manager",
+      "reason": "Reason"
+    }
   }
 }

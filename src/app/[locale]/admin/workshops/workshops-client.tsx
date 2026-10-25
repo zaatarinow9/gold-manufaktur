@@ -1,16 +1,12 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronRight, MapPin, Pencil, Phone, Plus, Power, Trash2 } from "lucide-react";
+import { ChevronRight, MailCheck, MailQuestion, MapPin, Plus, Power, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 
-import {
-  permanentlyDeleteWorkshopAction,
-  saveWorkshopAction,
-  toggleWorkshopActiveAction,
-} from "@/app/[locale]/admin/workshops/actions";
+import { createWorkshopAction, deleteWorkshopAction, setWorkshopActiveAction } from "@/app/[locale]/admin/workshops/actions";
 import { useAdminConfirm } from "@/components/admin/AdminConfirm";
 import { AdminActionMenu } from "@/components/admin/AdminActionMenu";
 import { AdminBadge } from "@/components/admin/AdminBadge";
@@ -19,101 +15,39 @@ import { AdminDrawer, AdminFormSection } from "@/components/admin/AdminDrawer";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { AdminSwitch } from "@/components/admin/AdminSwitch";
-import { AdminTextarea } from "@/components/admin/AdminTextarea";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
-import { nextEditorKey } from "@/lib/admin/editorKey";
 import type { WorkshopRecord } from "@/lib/db/workshops";
 
-type WorkshopFormState = {
-  address: string;
-  code: string;
-  contactName: string;
-  description: string;
-  email: string;
-  id?: string;
-  isActive: boolean;
-  location: string;
-  name: string;
-  notes: string;
-  phone: string;
-};
+type Feedback = { message: string; tone: "success" | "error" } | null;
 
-type AdminWorkshopsClientProps = {
-  canCreate: boolean;
-  locale: AppLocale;
-  workshops: WorkshopRecord[];
-};
+const emptyForm = { location: "", managerEmail: "", managerName: "", name: "", phone: "" };
 
-function createForm(workshop: WorkshopRecord | null): WorkshopFormState {
-  if (!workshop) {
-    return {
-      address: "",
-      code: "",
-      contactName: "",
-      description: "",
-      email: "",
-      isActive: true,
-      location: "",
-      name: "",
-      notes: "",
-      phone: "",
-    };
-  }
-
-  return {
-    address: workshop.address,
-    code: workshop.code,
-    contactName: workshop.contactName,
-    description: workshop.description ?? "",
-    email: workshop.email,
-    id: workshop.id,
-    isActive: workshop.isActive,
-    location: workshop.location,
-    name: workshop.name,
-    notes: workshop.notes,
-    phone: workshop.phone,
-  };
-}
-
-function WorkshopEditor({
-  initialState,
+function NewWorkshopDrawer({
   locale,
   onClose,
-  onDelete,
-  onSaved,
+  onDone,
 }: {
-  initialState: WorkshopFormState;
   locale: AppLocale;
   onClose: () => void;
-  onDelete?: () => Promise<boolean>;
-  onSaved: (message: string) => void;
+  onDone: (feedback: Feedback) => void;
 }) {
-  const t = useTranslations("Admin.workshopsPage");
+  const t = useTranslations("Admin.flow.workshops");
   const tc = useTranslations("Admin");
-  const [form, setForm] = useState(initialState);
-  const [message, setMessage] = useState<string | null>(null);
-  const [isSaving, startSaving] = useTransition();
-  const isNew = !form.id;
-  const set = <Key extends keyof WorkshopFormState>(key: Key, value: WorkshopFormState[Key]) =>
-    setForm((current) => ({ ...current, [key]: value }));
+  const [form, setForm] = useState(emptyForm);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const set = (key: keyof typeof emptyForm, value: string) => setForm((current) => ({ ...current, [key]: value }));
 
   const submit = () => {
-    if (!form.name.trim()) {
-      setMessage(tc("forms.required"));
-      document.getElementById("workshop-name")?.focus();
-      return;
-    }
-
-    startSaving(async () => {
-      const { id, ...payload } = form;
-      const result = id ? await saveWorkshopAction(locale, { ...payload, id }) : await saveWorkshopAction(locale, payload);
+    setError(null);
+    startTransition(async () => {
+      const result = await createWorkshopAction(locale, form);
       if (!result.ok) {
-        setMessage(result.message);
+        setError(result.message);
         return;
       }
-      onSaved(result.message);
+      onDone({ message: result.message, tone: "success" });
     });
   };
 
@@ -121,154 +55,163 @@ function WorkshopEditor({
     <AdminDrawer
       open
       onClose={onClose}
-      title={isNew ? t("titleNew") : t("titleEdit")}
+      title={t("newTitle")}
+      description={t("newHint")}
       footer={
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {message ? (
-            <p role="alert" className="text-sm text-rose-300">{message}</p>
-          ) : onDelete ? (
-            <AdminButton
-              variant="ghost"
-              className="text-rose-300 hover:text-rose-200"
-              onClick={async () => {
-                if (await onDelete()) onClose();
-              }}
-            >
-              <Trash2 />
-              {tc("buttons.delete")}
-            </AdminButton>
-          ) : (
-            <span />
-          )}
-          <div className="ms-auto flex gap-2">
-            <AdminButton variant="ghost" onClick={onClose}>{tc("buttons.cancel")}</AdminButton>
-            <AdminButton variant="primary" onClick={submit} disabled={isSaving}>
-              {isSaving ? tc("productEditor.saving") : isNew ? t("create") : tc("productEditor.save")}
-            </AdminButton>
-          </div>
+        <div className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <AdminButton variant="ghost" onClick={onClose} disabled={pending}>
+            {tc("buttons.cancel")}
+          </AdminButton>
+          <AdminButton
+            variant="primary"
+            onClick={submit}
+            disabled={pending || !form.name.trim() || !form.managerName.trim() || !form.managerEmail.trim()}
+          >
+            {pending ? t("creating") : t("create")}
+          </AdminButton>
         </div>
       }
     >
-      <AdminFormSection title={t("basicsTitle")}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <AdminInput
-            id="workshop-name"
-            label={t("nameLabel")}
-            required
-            requiredLabel={tc("translations.required")}
-            value={form.name}
-            onChange={(event) => set("name", event.target.value)}
-          />
-          <AdminInput
-            label={t("locationLabel")}
-            placeholder={t("locationPlaceholder")}
-            value={form.location}
-            onChange={(event) => set("location", event.target.value)}
-          />
-          <AdminTextarea
-            wrapperClassName="sm:col-span-2"
-            label={tc("workshops.descriptionLabel")}
-            value={form.description}
-            onChange={(event) => set("description", event.target.value)}
-          />
-        </div>
-      </AdminFormSection>
-
-      <AdminFormSection title={t("contactTitle")} hint={t("contactHint")}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <AdminInput label={t("contactNameLabel")} value={form.contactName} onChange={(event) => set("contactName", event.target.value)} />
-          <AdminInput label={t("phoneLabel")} type="tel" dir="ltr" value={form.phone} onChange={(event) => set("phone", event.target.value)} />
-          <AdminInput label={t("emailLabel")} type="email" dir="ltr" value={form.email} onChange={(event) => set("email", event.target.value)} />
-          <AdminInput label={t("addressLabel")} value={form.address} onChange={(event) => set("address", event.target.value)} />
-        </div>
-      </AdminFormSection>
-
-      <AdminFormSection title={t("moreTitle")}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <AdminInput
-            label={t("codeLabel")}
-            helperText={t("codeHelper")}
-            dir="ltr"
-            value={form.code}
-            onChange={(event) => set("code", event.target.value)}
-          />
-          <AdminTextarea
-            label={t("notesLabel")}
-            helperText={t("notesHelper")}
-            value={form.notes}
-            onChange={(event) => set("notes", event.target.value)}
-          />
-        </div>
-        <div className="mt-4">
-          <AdminSwitch
-            checked={form.isActive}
-            onChange={(checked) => set("isActive", checked)}
-            label={t("activeLabel")}
-            description={t("activeHint")}
-          />
-        </div>
-      </AdminFormSection>
+      <form
+        className="space-y-6"
+        onSubmit={(event) => {
+          event.preventDefault();
+          submit();
+        }}
+      >
+        {error ? (
+          <div className="admin-notice" data-tone="error" role="alert">
+            {error}
+          </div>
+        ) : null}
+        <AdminFormSection title={t("sectionWorkshop")}>
+          <div className="grid gap-4">
+            <AdminInput label={t("name")} required value={form.name} onChange={(event) => set("name", event.target.value)} placeholder={t("namePlaceholder")} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <AdminInput label={t("location")} value={form.location} onChange={(event) => set("location", event.target.value)} />
+              <AdminInput label={t("phone")} type="tel" dir="ltr" value={form.phone} onChange={(event) => set("phone", event.target.value)} />
+            </div>
+          </div>
+        </AdminFormSection>
+        <AdminFormSection title={t("sectionManager")} hint={t("managerHint")}>
+          <div className="grid gap-4">
+            <AdminInput label={t("managerName")} required value={form.managerName} onChange={(event) => set("managerName", event.target.value)} />
+            <AdminInput
+              label={t("managerEmail")}
+              required
+              type="email"
+              dir="ltr"
+              autoComplete="off"
+              value={form.managerEmail}
+              onChange={(event) => set("managerEmail", event.target.value)}
+              helperText={t("managerEmailHint")}
+            />
+          </div>
+        </AdminFormSection>
+        <button type="submit" hidden />
+      </form>
     </AdminDrawer>
   );
 }
 
-export function AdminWorkshopsClient({ canCreate, locale, workshops }: AdminWorkshopsClientProps) {
-  const t = useTranslations("Admin.workshopsPage");
+export function ManagerStatus({ workshop }: { workshop: Pick<WorkshopRecord, "manager"> }) {
+  const t = useTranslations("Admin.flow.workshops");
+  if (!workshop.manager) {
+    return <AdminBadge variant="warning">{t("noManager")}</AdminBadge>;
+  }
+  return workshop.manager.hasSignedIn ? (
+    <AdminBadge variant="success">
+      <MailCheck className="h-3.5 w-3.5" />
+      {t("managerActive")}
+    </AdminBadge>
+  ) : (
+    <AdminBadge variant="gold">
+      <MailQuestion className="h-3.5 w-3.5" />
+      {t("managerInvited")}
+    </AdminBadge>
+  );
+}
+
+export function AdminWorkshopsClient({ locale, workshops }: { locale: AppLocale; workshops: WorkshopRecord[] }) {
+  const t = useTranslations("Admin.flow.workshops");
   const tc = useTranslations("Admin");
   const router = useRouter();
   const confirm = useAdminConfirm();
-  const [, startTransition] = useTransition();
-  const [feedback, setFeedback] = useState<{ message: string; tone: "success" | "error" } | null>(null);
-  const [editing, setEditing] = useState<{ key: string; workshop: WorkshopRecord | null } | null>(null);
+  const [pending, startTransition] = useTransition();
+  const [feedback, setFeedback] = useState<Feedback>(null);
+  const [creating, setCreating] = useState(false);
+  // Removed rows disappear at once, even before the server answers.
+  const [hidden, setHidden] = useState<Set<string>>(() => new Set());
+  const visible = workshops.filter((workshop) => !hidden.has(workshop.id));
 
-  const deleteWorkshop = async (workshop: WorkshopRecord) => {
-    const confirmed = await confirm({
+  const remove = async (workshop: WorkshopRecord) => {
+    const ok = await confirm({
       confirmLabel: tc("buttons.delete"),
-      description: t("deleteConfirmText", { count: workshop.employeeCount }),
-      title: t("deleteConfirm", { name: workshop.name }),
+      description: t("deleteText", { orders: workshop.activeOrders, team: workshop.employeeCount }),
+      title: t("deleteTitle", { name: workshop.name }),
     });
-    if (!confirmed) return false;
-    const result = await permanentlyDeleteWorkshopAction(locale, workshop.id);
-    setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
-    if (result.ok) router.refresh();
-    return result.ok;
+    if (!ok) return;
+    setHidden((current) => new Set(current).add(workshop.id));
+    startTransition(async () => {
+      const result = await deleteWorkshopAction(locale, workshop.id);
+      setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+      if (!result.ok) {
+        setHidden((current) => {
+          const next = new Set(current);
+          next.delete(workshop.id);
+          return next;
+        });
+      }
+      router.refresh();
+    });
   };
 
-  const open = (workshop: WorkshopRecord | null) => {
-    setFeedback(null);
-    setEditing({ key: workshop?.id ?? nextEditorKey(), workshop });
-  };
+  const toggle = (workshop: WorkshopRecord) =>
+    startTransition(async () => {
+      const result = await setWorkshopActiveAction(locale, workshop.id, !workshop.isActive);
+      setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
+      router.refresh();
+    });
 
   return (
     <div className="space-y-6">
       <AdminPageHeader
         title={tc("workshops.title")}
-        description={t("description")}
+        description={t("pageHint")}
         actions={
-          canCreate ? (
-            <AdminButton variant="primary" onClick={() => open(null)}>
-              <Plus />
-              {tc("buttons.addWorkshop")}
-            </AdminButton>
-          ) : undefined
+          <AdminButton variant="primary" onClick={() => setCreating(true)}>
+            <Plus />
+            {t("new")}
+          </AdminButton>
         }
       />
 
       {feedback ? (
-        <div className="admin-notice" data-tone={feedback.tone} role="status">{feedback.message}</div>
+        <div className="admin-notice" data-tone={feedback.tone} role="status">
+          {feedback.message}
+        </div>
       ) : null}
 
-      {workshops.length === 0 ? (
-        <AdminEmptyState title={t("emptyTitle")} description={t("emptyText")} />
+      {visible.length === 0 ? (
+        <AdminEmptyState
+          title={t("emptyTitle")}
+          description={t("emptyText")}
+          action={
+            <AdminButton variant="primary" onClick={() => setCreating(true)}>
+              <Plus />
+              {t("new")}
+            </AdminButton>
+          }
+        />
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {workshops.map((workshop) => (
+        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" aria-busy={pending || undefined}>
+          {visible.map((workshop) => (
             <li key={workshop.id} className={clsx("admin-panel flex flex-col p-4", !workshop.isActive && "opacity-70")}>
               <div className="flex items-start gap-3">
                 <Link href={`/admin/workshops/${workshop.id}`} className="min-w-0 flex-1">
                   <p className="flex flex-wrap items-center gap-2 text-lg font-semibold text-foreground">
                     {workshop.name}
-                    {!workshop.isActive ? <AdminBadge>{tc("common.inactive")}</AdminBadge> : null}
+                    {!workshop.isActive ? <AdminBadge>{t("paused")}</AdminBadge> : null}
                   </p>
                   {workshop.location ? (
                     <p className="mt-0.5 flex items-center gap-1.5 text-sm text-muted">
@@ -278,75 +221,54 @@ export function AdminWorkshopsClient({ canCreate, locale, workshops }: AdminWork
                   ) : null}
                 </Link>
                 <AdminActionMenu
-                  label={tc("productsPage.moreActions", { name: workshop.name })}
+                  label={t("actionsFor", { name: workshop.name })}
                   items={[
-                    { icon: Pencil, label: tc("buttons.edit"), onSelect: () => open(workshop) },
-                    {
-                      icon: Power,
-                      label: workshop.isActive ? tc("workshops.detail.deactivate") : tc("workshops.detail.activate"),
-                      onSelect: () =>
-                        startTransition(async () => {
-                          const result = await toggleWorkshopActiveAction(locale, workshop.id, !workshop.isActive);
-                          setFeedback({ message: result.message, tone: result.ok ? "success" : "error" });
-                          if (result.ok) router.refresh();
-                        }),
-                    },
-                    ...(canCreate
-                      ? [{ danger: true, icon: Trash2, label: tc("buttons.delete"), onSelect: () => void deleteWorkshop(workshop) }]
-                      : []),
+                    { icon: Power, label: workshop.isActive ? t("pause") : t("resume"), onSelect: () => toggle(workshop) },
+                    { danger: true, icon: Trash2, label: tc("buttons.delete"), onSelect: () => void remove(workshop) },
                   ]}
                 />
               </div>
 
-              <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div className="mt-4 rounded-[0.7rem] border border-white/[0.06] bg-white/[0.02] px-3 py-2.5">
+                <p className="text-xs text-muted">{t("manager")}</p>
+                <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+                  <p className="min-w-0 truncate text-sm font-medium text-foreground">
+                    {workshop.manager?.name ?? "–"}
+                  </p>
+                  <ManagerStatus workshop={workshop} />
+                </div>
+              </div>
+
+              <dl className="mt-3 grid grid-cols-2 gap-2 text-center">
                 <div className="rounded-[0.6rem] bg-white/[0.03] px-2 py-2">
-                  <dt className="text-xs text-muted">{tc("workshops.cards.activeOrders")}</dt>
+                  <dt className="text-xs text-muted">{t("openOrders")}</dt>
                   <dd className="mt-0.5 text-lg font-semibold tabular-nums text-foreground">{workshop.activeOrders}</dd>
                 </div>
                 <div className="rounded-[0.6rem] bg-white/[0.03] px-2 py-2">
-                  <dt className="text-xs text-muted">{tc("workshops.detail.employeeCount")}</dt>
+                  <dt className="text-xs text-muted">{t("teamSize")}</dt>
                   <dd className="mt-0.5 text-lg font-semibold tabular-nums text-foreground">{workshop.employeeCount}</dd>
-                </div>
-                <div className="rounded-[0.6rem] bg-white/[0.03] px-2 py-2">
-                  <dt className="text-xs text-muted">{tc("workshops.cards.performance")}</dt>
-                  <dd className="mt-0.5 text-lg font-semibold tabular-nums text-foreground">{workshop.onTimeRate}%</dd>
                 </div>
               </dl>
 
-              <div className="mt-4 flex items-center gap-2 text-sm text-muted">
-                {workshop.contactName || workshop.phone ? (
-                  <span className="flex min-w-0 items-center gap-1.5">
-                    <Phone className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">
-                      {workshop.contactName}
-                      {workshop.contactName && workshop.phone ? " · " : ""}
-                      <bdi>{workshop.phone}</bdi>
-                    </span>
-                  </span>
-                ) : null}
-                <Link
-                  href={`/admin/workshops/${workshop.id}`}
-                  className="admin-button admin-button-ghost admin-button-sm ms-auto"
-                >
-                  {tc("workshops.detail.viewDetails")}
-                  <ChevronRight className="rtl:rotate-180" />
-                </Link>
-              </div>
+              <Link
+                href={`/admin/workshops/${workshop.id}`}
+                className="admin-button admin-button-ghost admin-button-sm mt-3 self-end"
+              >
+                {t("open")}
+                <ChevronRight className="rtl:rotate-180" />
+              </Link>
             </li>
           ))}
         </ul>
       )}
 
-      {editing ? (
-        <WorkshopEditor
-          key={editing.key}
+      {creating ? (
+        <NewWorkshopDrawer
           locale={locale}
-          initialState={createForm(editing.workshop)}
-          onClose={() => setEditing(null)}
-          onDelete={canCreate && editing.workshop ? () => deleteWorkshop(editing.workshop!) : undefined}
-          onSaved={(message) => {
-            setEditing(null);
-            setFeedback({ message, tone: "success" });
+          onClose={() => setCreating(false)}
+          onDone={(next) => {
+            setCreating(false);
+            setFeedback(next);
             router.refresh();
           }}
         />
