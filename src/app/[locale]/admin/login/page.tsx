@@ -97,7 +97,7 @@ export default async function AdminLoginPage({
                     {t("header.adminArea")}
                   </span>
                   <div className="space-y-4">
-                    <h1 className="max-w-[11ch] font-display text-[clamp(2.4rem,13vw,5.8rem)] leading-[0.92] tracking-[-0.05em] text-foreground [overflow-wrap:anywhere]">
+                    <h1 className="max-w-[12ch] font-display text-[clamp(2.2rem,9vw,4.2rem)] font-semibold leading-[1.1] tracking-[-0.03em] text-foreground [overflow-wrap:anywhere]">
                       {trimDisplayHeading(t("login.title"))}
                     </h1>
                     <p className="max-w-[38rem] text-base leading-8 text-muted sm:text-lg">

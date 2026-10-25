@@ -40,7 +40,7 @@ export function MobileMenu({ isOpen, panelId, pathname, onClose }: MobileMenuPro
                 onClick={onClose}
                 aria-current={active ? "page" : undefined}
                 className={clsx(
-                  "mobile-menu-link border-b border-[var(--border)] py-4 font-display text-[1.75rem] leading-tight transition-colors",
+                  "mobile-menu-link border-b border-[var(--border)] py-4 font-display text-[1.5rem] font-medium leading-tight transition-colors",
                   active ? "text-gold-soft" : "text-foreground"
                 )}
               >

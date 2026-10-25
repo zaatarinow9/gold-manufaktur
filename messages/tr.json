@@ -145,7 +145,7 @@
     },
     "trust": {
       "eyebrow": "Neden GoldHelwah GmbH",
-      "title": "Net, kişisel ve ürüne yakın.",
+      "title": "Neden GoldHelwah",
       "items": [
         {
           "title": "Acelesiz danışmanlık",
@@ -163,7 +163,8 @@
           "title": "Elden teslim",
           "description": "Parçanızı kontrol edilmiş ve ayarı doğrulanmış olarak elden teslim ediyoruz."
         }
-      ]
+      ],
+      "description": "21, 18 ve 14 ayar gerçek altın, dürüst danışmanlık ve isteğinize göre işlenen parçalar."
     },
     "cta": {
       "badge": "GoldHelwah GmbH Hizmeti",
@@ -171,24 +172,6 @@
       "description": "Seçim, özel istekler ve teslim için size memnuniyetle yardımcı oluruz.",
       "primaryCta": "Shop'u görüntüle",
       "secondaryCta": "Ara"
-    },
-    "hallmarks": {
-      "title": "21, 18 veya 14 ayar, damgalı",
-      "description": "Damga altının saflığını gösterir: binde 875, 750 veya 585. Hangisinin parçanıza ve kullanımınıza uygun olduğunu açıkça söylüyoruz.",
-      "items": [
-        {
-          "stamp": "875",
-          "label": "21 ayar"
-        },
-        {
-          "stamp": "750",
-          "label": "18 ayar"
-        },
-        {
-          "stamp": "585",
-          "label": "14 ayar"
-        }
-      ]
     },
     "customName": {
       "title": "Adınız altında",
