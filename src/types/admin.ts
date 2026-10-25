@@ -1,4 +1,4 @@
-export type AdminRole = "super_admin" | "admin" | "employee";
+export type AdminRole = "super_admin" | "admin" | "employee" | "marketing" | "customer_service";
 
 export type OptionType =
   | "text"
@@ -95,6 +95,8 @@ export type AdminUser = {
   managedWorkshopId?: string;
   workshopRole?: "workshop_manager" | "workshop_employee";
   avatarLabel: string;
+  /** Profile picture chosen by the person, if any. */
+  avatarUrl?: string;
   isActive: boolean;
 };
 

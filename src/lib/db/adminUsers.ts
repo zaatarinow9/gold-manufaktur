@@ -71,7 +71,13 @@ type ManagedProfilesClient = ReturnType<typeof createSupabaseAdminClient> & {
 };
 
 function normalizeRole(value: string | null | undefined): ManagedAdminRole {
-  if (value === "super_admin" || value === "admin" || value === "employee") {
+  if (
+    value === "super_admin" ||
+    value === "admin" ||
+    value === "employee" ||
+    value === "marketing" ||
+    value === "customer_service"
+  ) {
     return value;
   }
 

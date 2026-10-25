@@ -503,7 +503,9 @@
       "super_admin": "Direction",
       "admin": "Showroom",
       "employee": "Équipe d’atelier",
-      "workshop_manager": "Responsable d’atelier"
+      "workshop_manager": "Responsable d’atelier",
+      "marketing": "Marketing & réseaux sociaux",
+      "customer_service": "Service client"
     },
     "nav": {
       "overview": "Aperçu",
@@ -524,7 +526,8 @@
       "countLabel": "{count} en attente",
       "messages": "Messages",
       "team": "Mon équipe",
-      "workshopOrders": "Commandes de l’atelier"
+      "workshopOrders": "Commandes de l’atelier",
+      "profile": "Mon profil"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1395,7 +1398,9 @@
       "roleEmployee": "Employé",
       "userDeleteConfirm": "Supprimer l’accès de {name} ?",
       "userDeleteText": "Cette personne ne pourra plus se connecter.",
-      "userActions": "Actions pour {name}"
+      "userActions": "Actions pour {name}",
+      "roleMarketing": "Marketing & réseaux sociaux",
+      "roleCustomerService": "Service client"
     },
     "navGroups": {
       "orders": "Au quotidien",
@@ -2028,7 +2033,9 @@
       "roleHint": {
         "super_admin": "Voit et modifie tout : ateliers, boutique, réglages et accès.",
         "admin": "Pour la tablette du showroom : créer des commandes et les envoyer à un atelier. Sans réglages.",
-        "employee": "L’équipe d’atelier est invitée par son responsable."
+        "employee": "L’équipe d’atelier est invitée par son responsable.",
+        "marketing": "Gère les produits, catégories et photos, les images du site et la fenêtre promotionnelle. Pas de commandes.",
+        "customer_service": "Répond aux demandes des clients, crée les commandes, les envoie aux ateliers et informe les clients."
       },
       "staffNote": "Les responsables d’atelier sont invités à la création de l’atelier et invitent eux-mêmes leur équipe ; ces comptes n’apparaissent donc pas ici."
     },
@@ -2054,7 +2061,9 @@
         "TASK_NOTE_REQUIRED": "Indiquez brièvement le problème : votre responsable a besoin de la raison.",
         "MESSAGE_EMPTY": "Le message est vide.",
         "MESSAGE_TOO_LONG": "Le message est trop long (4 000 caractères maximum).",
-        "THREAD_NOT_FOUND": "Cette conversation n’existe plus."
+        "THREAD_NOT_FOUND": "Cette conversation n’existe plus.",
+        "PASSWORD_TOO_SHORT": "Le mot de passe doit comporter au moins 8 caractères.",
+        "PASSWORD_SAME": "C’est déjà votre mot de passe actuel."
       },
       "done": {
         "workshopCreated": "Atelier créé. Le responsable a reçu une invitation par e-mail.",
@@ -2075,7 +2084,9 @@
         "messageSent": "Message envoyé.",
         "orderSent": "Envoyée à {workshop}. Le responsable a été prévenu par e-mail.",
         "orderSentNoEmail": "Envoyée à {workshop}. L’e-mail au responsable a échoué, mais il verra la commande dans son tableau de bord.",
-        "orderSentNoManager": "Envoyée à {workshop}. Attention : l’atelier n’a pas encore de responsable pour répartir la commande."
+        "orderSentNoManager": "Envoyée à {workshop}. Attention : l’atelier n’a pas encore de responsable pour répartir la commande.",
+        "profileSaved": "Nom enregistré.",
+        "passwordChanged": "Mot de passe modifié."
       },
       "workshops": {
         "pageHint": "Chaque atelier a un responsable. Vous envoyez les commandes à l’atelier, le responsable les répartit dans son équipe.",
@@ -2306,7 +2317,9 @@
         "saving": "Enregistrement…",
         "badLink": "La destination doit commencer par « / » ou « https:// ».",
         "tooLong": "Un des textes est trop long.",
-        "titleRequired": "Ajoutez un titre avant d’activer la fenêtre."
+        "titleRequired": "Ajoutez un titre avant d’activer la fenêtre.",
+        "fromPlaceholder": "Dès maintenant",
+        "untilPlaceholder": "Sans fin"
       },
       "newOrder": {
         "dueDate": "À livrer pour le (facultatif)",
@@ -2319,6 +2332,39 @@
         "workshopNotesPlaceholder": "ex. gravure en arabe, la cliente passe samedi",
         "createAndSend": "Créer et envoyer la commande"
       }
+    },
+    "datePicker": {
+      "choose": "Choisir une date",
+      "clear": "Effacer la date",
+      "previous": "Mois précédent",
+      "next": "Mois suivant",
+      "today": "Aujourd’hui"
+    },
+    "profile": {
+      "open": "Ouvrir le profil",
+      "title": "Mon profil",
+      "description": "Votre nom, votre photo et votre mot de passe pour le tableau de bord.",
+      "photoTitle": "Photo de profil",
+      "photoHint": "JPG, PNG ou WebP, 2 Mo maximum. Une photo carrée est idéale.",
+      "photoUpload": "Ajouter une photo",
+      "photoChange": "Changer la photo",
+      "photoRemove": "Supprimer",
+      "photoSaved": "Photo de profil enregistrée.",
+      "photoRemoved": "Photo de profil supprimée.",
+      "photoInvalid": "Choisissez une image JPG, PNG ou WebP de 2 Mo maximum.",
+      "photoFailed": "L’image n’a pas pu être enregistrée.",
+      "detailsTitle": "Informations",
+      "name": "Nom affiché",
+      "email": "Adresse e-mail",
+      "emailHint": "Votre identifiant. Seule la direction peut le modifier.",
+      "role": "Rôle",
+      "save": "Enregistrer",
+      "passwordTitle": "Changer le mot de passe",
+      "passwordHint": "8 caractères minimum.",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Répéter le mot de passe",
+      "passwordSave": "Changer le mot de passe",
+      "passwordMismatch": "Les deux mots de passe ne correspondent pas."
     }
   },
   "Tracking": {

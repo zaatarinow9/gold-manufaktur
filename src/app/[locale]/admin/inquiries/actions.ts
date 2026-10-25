@@ -42,7 +42,7 @@ export async function updateInquiryStatusAction(
   status: CustomerInquiryStatus
 ): Promise<AdminActionResult> {
   const copy = (await getInquiryActionCopy(locale));
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "customer_service"]);
 
   if (access.state !== "authenticated") {
     return {
@@ -78,7 +78,7 @@ export async function deleteInquiryAction(
   inquiryId: string
 ): Promise<AdminActionResult> {
   const copy = (await getInquiryActionCopy(locale));
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "customer_service"]);
 
   if (access.state !== "authenticated") {
     return {

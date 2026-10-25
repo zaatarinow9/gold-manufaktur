@@ -27,6 +27,7 @@ import { canViewAdminSection, type AdminSection } from "@/lib/admin/roleAccess";
 import { getBrandLogoAlt } from "@/lib/site";
 import type { AdminUser } from "@/types/admin";
 
+import { AdminAvatar } from "./AdminAvatar";
 import { AdminLogoutButton } from "./AdminLogoutButton";
 
 export type AdminNavKey =
@@ -168,16 +169,21 @@ export function AdminUserCard({ currentUser, onNavigate }: { currentUser: AdminU
   const t = useTranslations("Admin");
 
   return (
-    <div className="flex items-center gap-3 rounded-[0.75rem] border border-white/8 bg-white/[0.03] p-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-semibold text-gold-soft">
-        {currentUser.avatarLabel}
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-foreground">{currentUser.name}</p>
-        <p className="truncate text-xs text-muted">
-          {currentUser.managedWorkshopId ? t("roles.workshop_manager") : t(`roles.${currentUser.role}`)}
-        </p>
-      </div>
+    <div className="flex items-center gap-1 rounded-[0.75rem] border border-white/8 bg-white/[0.03] p-1.5">
+      <Link
+        href="/admin/profile"
+        onClick={onNavigate}
+        title={t("profile.open")}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-[0.6rem] p-1.5 transition hover:bg-white/[0.04]"
+      >
+        <AdminAvatar label={currentUser.avatarLabel} url={currentUser.avatarUrl} />
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-semibold text-foreground">{currentUser.name}</span>
+          <span className="block truncate text-xs text-muted">
+            {currentUser.managedWorkshopId ? t("roles.workshop_manager") : t(`roles.${currentUser.role}`)}
+          </span>
+        </span>
+      </Link>
       <AdminLogoutButton
         className="admin-icon-button admin-icon-button-quiet"
         onClick={onNavigate}

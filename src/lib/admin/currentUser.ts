@@ -23,6 +23,8 @@ let currentAdminUserOverride: AdminUser | null = null;
 const rolePriority: Record<AdminRole, number> = {
   super_admin: 3,
   admin: 2,
+  marketing: 2,
+  customer_service: 2,
   employee: 1,
 };
 

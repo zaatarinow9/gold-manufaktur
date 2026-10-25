@@ -45,13 +45,13 @@ export default async function AdminDashboardPage({ params }: AdminDashboardPageP
   const t = await getTranslations({ locale, namespace: "Admin" });
   const tn = await getTranslations({ locale, namespace: "Admin.notifications" });
   const format = await getFormatter({ locale });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee", "marketing", "customer_service"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return <AdminAccessDenied title={t("common.noAccessTitle")} description={t("common.noAccessText")} />;
   }
 
-  if (access.user.role === "employee") {
+  if (access.user.role !== "super_admin" && access.user.role !== "admin") {
     redirect(getRoleDashboardPath(locale, access.user.role, Boolean(access.user.managedWorkshopId)));
   }
 

@@ -381,7 +381,7 @@ export async function sendOrderToWorkshop(
   locale: AppLocale,
   input: { note?: string; orderId: string; workshopId: string }
 ) {
-  if (viewer.role !== "super_admin" && viewer.role !== "admin") throw new Error("PERMISSION_DENIED");
+  if (!["super_admin", "admin", "customer_service"].includes(viewer.role)) throw new Error("PERMISSION_DENIED");
   const note = input.note?.trim().slice(0, 2000) ?? "";
   const order = await getScopedOrderDetail(viewer, input.orderId);
   if (!order) throw new Error("ORDER_NOT_FOUND");

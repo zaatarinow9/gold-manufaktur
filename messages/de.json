@@ -503,7 +503,9 @@
       "super_admin": "Zentrale",
       "admin": "Showroom",
       "employee": "Werkstatt-Team",
-      "workshop_manager": "Werkstattleitung"
+      "workshop_manager": "Werkstattleitung",
+      "marketing": "Marketing & Social Media",
+      "customer_service": "Kundenservice"
     },
     "nav": {
       "overview": "Übersicht",
@@ -524,7 +526,8 @@
       "countLabel": "{count} offen",
       "messages": "Nachrichten",
       "team": "Mein Team",
-      "workshopOrders": "Werkstattaufträge"
+      "workshopOrders": "Werkstattaufträge",
+      "profile": "Mein Profil"
     },
     "buttons": {
       "openMenu": "Menü",
@@ -1395,7 +1398,9 @@
       "roleEmployee": "Mitarbeiter",
       "userDeleteConfirm": "Zugang von {name} löschen?",
       "userDeleteText": "Die Person kann sich danach nicht mehr anmelden.",
-      "userActions": "Aktionen für {name}"
+      "userActions": "Aktionen für {name}",
+      "roleMarketing": "Marketing & Social Media",
+      "roleCustomerService": "Kundenservice"
     },
     "navGroups": {
       "orders": "Tagesgeschäft",
@@ -2028,7 +2033,9 @@
       "roleHint": {
         "super_admin": "Sieht und ändert alles: Werkstätten, Shop, Einstellungen und Zugänge.",
         "admin": "Für das Tablet im Showroom: Aufträge anlegen und an eine Werkstatt senden. Keine Einstellungen.",
-        "employee": "Werkstatt-Mitarbeitende werden von ihrer Werkstattleitung eingeladen."
+        "employee": "Werkstatt-Mitarbeitende werden von ihrer Werkstattleitung eingeladen.",
+        "marketing": "Pflegt Produkte, Kategorien und Fotos, die Bilder der Website und das Aktionsfenster. Keine Aufträge.",
+        "customer_service": "Beantwortet Kundenanfragen, legt Aufträge an, sendet sie an Werkstätten und informiert Kunden über den Stand."
       },
       "staffNote": "Werkstattleitungen werden beim Anlegen einer Werkstatt eingeladen, ihre Mitarbeitenden laden sie selbst ein. Deshalb erscheinen sie hier nicht."
     },
@@ -2054,7 +2061,9 @@
         "TASK_NOTE_REQUIRED": "Bitte schreiben Sie kurz, was los ist – die Werkstattleitung braucht den Grund.",
         "MESSAGE_EMPTY": "Die Nachricht ist leer.",
         "MESSAGE_TOO_LONG": "Die Nachricht ist zu lang (höchstens 4000 Zeichen).",
-        "THREAD_NOT_FOUND": "Dieses Gespräch gibt es nicht mehr."
+        "THREAD_NOT_FOUND": "Dieses Gespräch gibt es nicht mehr.",
+        "PASSWORD_TOO_SHORT": "Das Passwort braucht mindestens 8 Zeichen.",
+        "PASSWORD_SAME": "Das ist bereits Ihr aktuelles Passwort."
       },
       "done": {
         "workshopCreated": "Werkstatt angelegt. Die Leitung hat per E-Mail eine Einladung erhalten.",
@@ -2075,7 +2084,9 @@
         "messageSent": "Nachricht gesendet.",
         "orderSent": "An {workshop} gesendet. Die Leitung wurde per E-Mail informiert.",
         "orderSentNoEmail": "An {workshop} gesendet. Die E-Mail an die Leitung konnte nicht zugestellt werden – sie sieht den Auftrag aber im Dashboard.",
-        "orderSentNoManager": "An {workshop} gesendet. Achtung: Die Werkstatt hat noch keine Leitung, die den Auftrag verteilen kann."
+        "orderSentNoManager": "An {workshop} gesendet. Achtung: Die Werkstatt hat noch keine Leitung, die den Auftrag verteilen kann.",
+        "profileSaved": "Name gespeichert.",
+        "passwordChanged": "Passwort geändert."
       },
       "workshops": {
         "pageHint": "Jede Werkstatt hat eine Leitung. Sie senden Aufträge an die Werkstatt, die Leitung verteilt sie an ihr Team.",
@@ -2306,7 +2317,9 @@
         "saving": "Wird gespeichert …",
         "badLink": "Das Ziel des Knopfes muss mit „/“ oder „https://“ beginnen.",
         "tooLong": "Ein Text ist zu lang.",
-        "titleRequired": "Bitte geben Sie eine Überschrift ein, bevor Sie das Fenster einschalten."
+        "titleRequired": "Bitte geben Sie eine Überschrift ein, bevor Sie das Fenster einschalten.",
+        "fromPlaceholder": "Ab sofort",
+        "untilPlaceholder": "Ohne Ende"
       },
       "newOrder": {
         "dueDate": "Fertig bis (optional)",
@@ -2319,6 +2332,39 @@
         "workshopNotesPlaceholder": "z. B. Gravur in arabischer Schrift, Kundin holt Samstag ab",
         "createAndSend": "Auftrag anlegen und senden"
       }
+    },
+    "datePicker": {
+      "choose": "Datum wählen",
+      "clear": "Datum entfernen",
+      "previous": "Vorheriger Monat",
+      "next": "Nächster Monat",
+      "today": "Heute"
+    },
+    "profile": {
+      "open": "Profil öffnen",
+      "title": "Mein Profil",
+      "description": "Ihr Name, Ihr Foto und Ihr Passwort für das Dashboard.",
+      "photoTitle": "Profilbild",
+      "photoHint": "JPG, PNG oder WebP, höchstens 2 MB. Am besten ein quadratisches Foto.",
+      "photoUpload": "Foto hochladen",
+      "photoChange": "Foto ändern",
+      "photoRemove": "Entfernen",
+      "photoSaved": "Profilbild gespeichert.",
+      "photoRemoved": "Profilbild entfernt.",
+      "photoInvalid": "Bitte ein JPG-, PNG- oder WebP-Bild bis 2 MB wählen.",
+      "photoFailed": "Das Bild konnte nicht gespeichert werden.",
+      "detailsTitle": "Angaben",
+      "name": "Angezeigter Name",
+      "email": "E-Mail-Adresse",
+      "emailHint": "Ihre Anmeldung. Ändern kann sie nur die Zentrale.",
+      "role": "Rolle",
+      "save": "Speichern",
+      "passwordTitle": "Passwort ändern",
+      "passwordHint": "Mindestens 8 Zeichen.",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort wiederholen",
+      "passwordSave": "Passwort ändern",
+      "passwordMismatch": "Die beiden Passwörter stimmen nicht überein."
     }
   },
   "Tracking": {

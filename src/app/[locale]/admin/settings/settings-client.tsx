@@ -65,6 +65,8 @@ type AdminSettingsClientProps = {
   initialUsers: ManagedAdminUserRecord[];
   locale: AppLocale;
   usersWarning?: string;
+  /** Marketing sees only the website section (images and the pop-up). */
+  websiteOnly?: boolean;
 };
 
 type UserFormState = {
@@ -126,6 +128,7 @@ export function AdminSettingsClient({
   initialUsers,
   locale,
   usersWarning,
+  websiteOnly = false,
 }: AdminSettingsClientProps) {
   const settingsCopy = useTranslations("Admin.settingsClient");
   const orderReset = useTranslations("Admin.orderReset");
@@ -137,7 +140,7 @@ export function AdminSettingsClient({
   const searchParams = useSearchParams();
   const requestedSection = searchParams.get("section") as SettingsSection | null;
   const [section, setSection] = useState<SettingsSection>(
-    requestedSection && settingsSections.includes(requestedSection) ? requestedSection : "website"
+    requestedSection && settingsSections.includes(requestedSection) && !websiteOnly ? requestedSection : "website"
   );
   const [userEditorOpen, setUserEditorOpen] = useState(false);
   const [removedUserIds, setRemovedUserIds] = useState<Set<string>>(() => new Set());
@@ -470,9 +473,20 @@ export function AdminSettingsClient({
     });
   };
 
+  const roleLabel = (role: ManagedAdminRole) =>
+    role === "super_admin"
+      ? settingsCopy("roleOwner")
+      : role === "admin"
+        ? settingsCopy("roleAdmin")
+        : role === "marketing"
+          ? settingsCopy("roleMarketing")
+          : role === "customer_service"
+            ? settingsCopy("roleCustomerService")
+            : settingsCopy("roleEmployee");
+
   const sections: { icon: LucideIcon; id: SettingsSection; label: string }[] = [
     { icon: Globe, id: "website", label: sectionCopy("website") },
-    { icon: Mail, id: "emails", label: sectionCopy("emails") },
+    ...(websiteOnly ? [] : [{ icon: Mail, id: "emails" as const, label: sectionCopy("emails") }]),
     ...(canManageUsers
       ? [
           { icon: Users, id: "access" as const, label: sectionCopy("access") },
@@ -704,9 +718,7 @@ export function AdminSettingsClient({
                         <bdi>{user.email}</bdi>
                       </p>
                     </div>
-                    <AdminBadge variant="info">
-                      {user.role === "super_admin" ? settingsCopy("roleOwner") : user.role === "admin" ? settingsCopy("roleAdmin") : settingsCopy("roleEmployee")}
-                    </AdminBadge>
+                    <AdminBadge variant="info">{roleLabel(user.role)}</AdminBadge>
                     {!user.isActive ? <AdminBadge variant="danger">{userInactiveLabel}</AdminBadge> : null}
                     <AdminActionMenu
                       label={settingsCopy("userActions", { name: user.displayName || user.email })}
@@ -842,8 +854,11 @@ export function AdminSettingsClient({
               value={userFormState.role}
               onChange={(event) => setUserFormState((current) => ({ ...current, role: event.target.value as ManagedAdminRole }))}
             >
-              <option value="super_admin">{settingsCopy("roleOwner")}</option>
-              <option value="admin">{settingsCopy("roleAdmin")}</option>
+              {(["super_admin", "admin", "marketing", "customer_service"] as const).map((role) => (
+                <option key={role} value={role}>
+                  {roleLabel(role)}
+                </option>
+              ))}
             </AdminSelect>
             <AdminSwitch
               checked={userFormState.isActive}

@@ -47,7 +47,7 @@ async function requireSiteImageAccess() {
   if (
     session.state !== "authenticated" ||
     !session.user ||
-    session.user.role !== "super_admin"
+    !["super_admin", "marketing"].includes(session.user.role)
   ) {
     return { error: "FORBIDDEN" as const };
   }

@@ -503,7 +503,9 @@
       "super_admin": "Head office",
       "admin": "Showroom",
       "employee": "Workshop team",
-      "workshop_manager": "Workshop manager"
+      "workshop_manager": "Workshop manager",
+      "marketing": "Marketing & social media",
+      "customer_service": "Customer service"
     },
     "nav": {
       "overview": "Overview",
@@ -524,7 +526,8 @@
       "countLabel": "{count} open",
       "messages": "Messages",
       "team": "My team",
-      "workshopOrders": "Workshop orders"
+      "workshopOrders": "Workshop orders",
+      "profile": "My profile"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1395,7 +1398,9 @@
       "roleEmployee": "Worker",
       "userDeleteConfirm": "Delete the login for {name}?",
       "userDeleteText": "This person will no longer be able to sign in.",
-      "userActions": "Actions for {name}"
+      "userActions": "Actions for {name}",
+      "roleMarketing": "Marketing & social media",
+      "roleCustomerService": "Customer service"
     },
     "navGroups": {
       "orders": "Daily work",
@@ -2028,7 +2033,9 @@
       "roleHint": {
         "super_admin": "Sees and changes everything: workshops, shop, settings and access.",
         "admin": "For the tablet in the showroom: create orders and send them to a workshop. No settings.",
-        "employee": "Workshop staff are invited by their workshop manager."
+        "employee": "Workshop staff are invited by their workshop manager.",
+        "marketing": "Looks after products, categories and photos, the website images and the promotion pop-up. No orders.",
+        "customer_service": "Answers customer enquiries, creates orders, sends them to workshops and keeps customers informed."
       },
       "staffNote": "Workshop managers are invited when a workshop is created, and they invite their own staff – so those accounts are not listed here."
     },
@@ -2054,7 +2061,9 @@
         "TASK_NOTE_REQUIRED": "Please write briefly what’s wrong – your manager needs the reason.",
         "MESSAGE_EMPTY": "The message is empty.",
         "MESSAGE_TOO_LONG": "The message is too long (4,000 characters at most).",
-        "THREAD_NOT_FOUND": "This conversation no longer exists."
+        "THREAD_NOT_FOUND": "This conversation no longer exists.",
+        "PASSWORD_TOO_SHORT": "The password needs at least 8 characters.",
+        "PASSWORD_SAME": "That is already your current password."
       },
       "done": {
         "workshopCreated": "Workshop created. The manager has been emailed an invitation.",
@@ -2075,7 +2084,9 @@
         "messageSent": "Message sent.",
         "orderSent": "Sent to {workshop}. The manager has been emailed.",
         "orderSentNoEmail": "Sent to {workshop}. The email to the manager failed, but they’ll see the order in their dashboard.",
-        "orderSentNoManager": "Sent to {workshop}. Note: the workshop has no manager yet to hand out the order."
+        "orderSentNoManager": "Sent to {workshop}. Note: the workshop has no manager yet to hand out the order.",
+        "profileSaved": "Name saved.",
+        "passwordChanged": "Password changed."
       },
       "workshops": {
         "pageHint": "Every workshop has a manager. You send orders to the workshop; the manager hands them out to the team.",
@@ -2306,7 +2317,9 @@
         "saving": "Saving…",
         "badLink": "The button target must start with “/” or “https://”.",
         "tooLong": "One of the texts is too long.",
-        "titleRequired": "Please add a heading before switching the pop-up on."
+        "titleRequired": "Please add a heading before switching the pop-up on.",
+        "fromPlaceholder": "Right away",
+        "untilPlaceholder": "No end date"
       },
       "newOrder": {
         "dueDate": "Needed by (optional)",
@@ -2319,6 +2332,39 @@
         "workshopNotesPlaceholder": "e.g. engraving in Arabic script, customer collects Saturday",
         "createAndSend": "Create and send order"
       }
+    },
+    "datePicker": {
+      "choose": "Choose a date",
+      "clear": "Clear date",
+      "previous": "Previous month",
+      "next": "Next month",
+      "today": "Today"
+    },
+    "profile": {
+      "open": "Open profile",
+      "title": "My profile",
+      "description": "Your name, photo and password for the dashboard.",
+      "photoTitle": "Profile picture",
+      "photoHint": "JPG, PNG or WebP, up to 2 MB. A square photo works best.",
+      "photoUpload": "Upload photo",
+      "photoChange": "Change photo",
+      "photoRemove": "Remove",
+      "photoSaved": "Profile picture saved.",
+      "photoRemoved": "Profile picture removed.",
+      "photoInvalid": "Please choose a JPG, PNG or WebP image up to 2 MB.",
+      "photoFailed": "The picture could not be saved.",
+      "detailsTitle": "Details",
+      "name": "Display name",
+      "email": "Email address",
+      "emailHint": "Your sign-in. Only head office can change it.",
+      "role": "Role",
+      "save": "Save",
+      "passwordTitle": "Change password",
+      "passwordHint": "At least 8 characters.",
+      "newPassword": "New password",
+      "confirmPassword": "Repeat password",
+      "passwordSave": "Change password",
+      "passwordMismatch": "The two passwords don’t match."
     }
   },
   "Tracking": {

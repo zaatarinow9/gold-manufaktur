@@ -17,7 +17,7 @@ export default async function AdminSettingsPage({
 }: AdminSettingsPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "marketing"]);
 
   if (access.state !== "authenticated") {
     return (
@@ -28,9 +28,10 @@ export default async function AdminSettingsPage({
     );
   }
 
+  const isOwner = access.user?.role === "super_admin";
   const [initialSettings, usersResult] = await Promise.all([
     getAdminSettingsSnapshot(),
-    listManagedAdminUsers()
+    (isOwner ? listManagedAdminUsers() : Promise.resolve([]))
       .then((users) => ({ users, warning: "" }))
       .catch((error) => ({
         users: [],
@@ -40,7 +41,8 @@ export default async function AdminSettingsPage({
 
   return (
     <AdminSettingsClient
-      canManageUsers={access.user?.role === "super_admin"}
+      canManageUsers={isOwner}
+      websiteOnly={!isOwner}
       currentUserId={access.user?.id ?? ""}
       initialSettings={initialSettings}
       initialUsers={usersResult.users}

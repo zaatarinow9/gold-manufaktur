@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { createOrderAction, sendOrderToWorkshopAction } from "@/app/[locale]/admin/orders/actions";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminCard } from "@/components/admin/AdminCard";
+import { AdminDatePicker } from "@/components/admin/AdminDatePicker";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminSelect } from "@/components/admin/AdminSelect";
@@ -897,12 +898,11 @@ export function NewOrderClient({
           >
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
-                <AdminInput
-                  type="date"
+                <AdminDatePicker
                   label={tf("dueDate")}
                   value={dueDate}
                   min={new Date().toISOString().slice(0, 10)}
-                  onChange={(event) => setDueDate(event.target.value)}
+                  onChange={setDueDate}
                 />
                 <AdminSelect label={tf("priority")} value={priority} onChange={(event) => setPriority(event.target.value as typeof priority)}>
                   <option value="normal">{t("priority.normal")}</option>

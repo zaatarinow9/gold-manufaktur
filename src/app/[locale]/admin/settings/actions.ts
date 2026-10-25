@@ -11,6 +11,7 @@ import { z } from "zod";
 import { routing, type AppLocale } from "@/i18n/routing";
 import type { AdminActionResult } from "@/lib/admin/actionResult";
 import { requireAdminAccess } from "@/lib/admin/auth";
+import type { AdminRole } from "@/types/admin";
 import {
   createManagedAdminUser,
   deleteManagedAdminUser,
@@ -48,7 +49,7 @@ const managedUserSchema = z.object({
   displayName: z.string().trim().min(2).max(160),
   email: z.string().trim().email().max(160),
   isActive: z.boolean().default(true),
-  role: z.enum(["super_admin", "admin", "employee"]),
+  role: z.enum(["super_admin", "admin", "employee", "marketing", "customer_service"]),
 });
 
 const promoTextSchema = z.object({
@@ -480,7 +481,7 @@ function revalidateSettingsViews() {
 }
 
 export async function savePublicVisualSettingsAction(locale: AppLocale, input: z.infer<typeof publicVisualSettingsSchema>): Promise<AdminActionResult> {
-  const user = await requireSettingsAccess(locale);
+  const user = await requireSettingsAccess(locale, ["super_admin", "marketing"]);
   if (!user) return { message: (await getSettingsActionCopy(locale)).noAccess, ok: false };
   const blocked = await getDecoyBlockedResult(locale);
   if (blocked) return blocked;
@@ -511,8 +512,8 @@ async function getDecoyBlockedResult(
   };
 }
 
-async function requireSettingsAccess(locale: AppLocale) {
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+async function requireSettingsAccess(locale: AppLocale, roles: AdminRole[] = ["super_admin"]) {
+  const access = await requireAdminAccess(locale, roles);
 
   if (access.state !== "authenticated" || !access.user) {
     return null;

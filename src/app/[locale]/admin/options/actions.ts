@@ -44,7 +44,7 @@ function revalidateOptionViews() {
 
 async function guardOptionAction(locale: AppLocale): Promise<AdminActionResult | null> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "marketing"]);
 
   if (access.state !== "authenticated") {
     return { message: t("common.noAccessText"), ok: false };

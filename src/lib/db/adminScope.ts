@@ -31,7 +31,7 @@ export function canAccessWorkshop(
   viewer: AdminViewer,
   workshopId?: string | null
 ) {
-  if (viewer.role === "super_admin" || viewer.role === "admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin" || viewer.role === "customer_service") {
     return true;
   }
 
@@ -47,7 +47,7 @@ export function canAccessEmployee(
   employeeId?: string | null,
   workshopId?: string | null
 ) {
-  if (viewer.role === "super_admin" || viewer.role === "admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin" || viewer.role === "customer_service") {
     return true;
   }
 
@@ -70,7 +70,7 @@ export function canAccessOrder(
     WithAssignedAdminId &
     WithAssignedWorkerEmail
 ) {
-  if (viewer.role === "super_admin" || viewer.role === "admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin" || viewer.role === "customer_service") {
     return true;
   }
 
@@ -117,7 +117,7 @@ export function scopeOrdersForViewer<
   viewer: AdminViewer,
   orders: T[]
 ) {
-  if (viewer.role === "super_admin" || viewer.role === "admin") {
+  if (viewer.role === "super_admin" || viewer.role === "admin" || viewer.role === "customer_service") {
     return orders;
   }
 

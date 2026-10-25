@@ -603,6 +603,61 @@
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   }
 
+  /* Menus and pickers rendered above everything (see useFloating). */
+  .admin-menu-floating {
+    z-index: 95;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .admin-datepicker {
+    width: 17rem;
+    padding: 0.75rem;
+  }
+
+  .admin-datepicker-day {
+    display: inline-flex;
+    height: 2.1rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    color: var(--admin-text);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+
+  .admin-datepicker-day:hover:not(:disabled) {
+    background: rgba(232, 201, 135, 0.1);
+  }
+
+  .admin-datepicker-day:focus-visible {
+    outline: 2px solid var(--gold-soft);
+    outline-offset: 1px;
+  }
+
+  .admin-datepicker-day[data-today="true"] {
+    box-shadow: inset 0 0 0 1px rgba(232, 201, 135, 0.45);
+  }
+
+  .admin-datepicker-day-outside {
+    color: var(--admin-soft);
+    opacity: 0.55;
+  }
+
+  .admin-datepicker-day-selected,
+  .admin-datepicker-day-selected:hover:not(:disabled) {
+    background: linear-gradient(180deg, #ecd39a, var(--gold) 92%);
+    color: #1a1209;
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  .admin-datepicker-day:disabled {
+    cursor: not-allowed;
+    opacity: 0.25;
+  }
+
   .admin-menu-item {
     display: flex;
     width: 100%;

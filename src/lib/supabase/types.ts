@@ -842,6 +842,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          avatar_url: string | null;
           created_at: string;
           employee_id: string | null;
           email: string | null;
@@ -853,6 +854,7 @@ export type Database = {
           workshop_id: string | null;
         };
         Insert: {
+          avatar_url?: string | null;
           created_at?: string;
           employee_id?: string | null;
           email?: string | null;
@@ -864,6 +866,7 @@ export type Database = {
           workshop_id?: string | null;
         };
         Update: {
+          avatar_url?: string | null;
           created_at?: string;
           employee_id?: string | null;
           email?: string | null;
@@ -1137,7 +1140,7 @@ export type Database = {
         | "image"
         | "file";
       order_priority: "normal" | "urgent" | "express";
-      profile_role: "super_admin" | "admin" | "employee";
+      profile_role: "super_admin" | "admin" | "employee" | "marketing" | "customer_service";
       support_ticket_status: "open" | "in_progress" | "resolved" | "closed";
       tracking_status:
         | "created"
