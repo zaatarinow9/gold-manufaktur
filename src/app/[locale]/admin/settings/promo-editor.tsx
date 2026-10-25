@@ -4,6 +4,7 @@ import { Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { AdminButton } from "@/components/admin/AdminButton";
+import { AdminDatePicker } from "@/components/admin/AdminDatePicker";
 import { AdminInput } from "@/components/admin/AdminInput";
 import { AdminSwitch } from "@/components/admin/AdminSwitch";
 import { AdminTranslationFields } from "@/components/admin/AdminTranslationFields";
@@ -95,19 +96,20 @@ export function PromoEditor({ disabled, imageControl, imageUrl, onChange, onSave
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <AdminInput
-              type="date"
+            <AdminDatePicker
               label={t("from")}
               helperText={t("fromHint")}
+              placeholder={t("fromPlaceholder")}
               value={toLocalInput(promo.startsAt)}
-              onChange={(event) => set("startsAt", fromLocalInput(event.target.value, false))}
+              onChange={(value) => set("startsAt", fromLocalInput(value, false))}
             />
-            <AdminInput
-              type="date"
+            <AdminDatePicker
               label={t("until")}
               helperText={t("untilHint")}
+              placeholder={t("untilPlaceholder")}
+              min={toLocalInput(promo.startsAt) || undefined}
               value={toLocalInput(promo.endsAt)}
-              onChange={(event) => set("endsAt", fromLocalInput(event.target.value, true))}
+              onChange={(value) => set("endsAt", fromLocalInput(value, true))}
             />
           </div>
 

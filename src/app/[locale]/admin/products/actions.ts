@@ -53,7 +53,7 @@ function revalidateProductViews() {
 /** Shared guard: super admins only, and never while the decoy mode is on. */
 async function guardProductAction(locale: AppLocale): Promise<AdminActionResult | null> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "marketing"]);
 
   if (access.state !== "authenticated") {
     return { message: t("common.noAccessText"), ok: false };

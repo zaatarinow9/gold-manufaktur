@@ -58,8 +58,12 @@ function canViewNotification(
     return true;
   }
 
-  if (viewer.role === "admin") {
+  if (viewer.role === "admin" || viewer.role === "customer_service") {
     return true;
+  }
+
+  if (viewer.role === "marketing") {
+    return false;
   }
 
   if (notification.employee_id && viewer.linkedEmployeeId) {

@@ -503,7 +503,9 @@
       "super_admin": "Genel yönetim",
       "admin": "Showroom",
       "employee": "Atölye ekibi",
-      "workshop_manager": "Atölye müdürü"
+      "workshop_manager": "Atölye müdürü",
+      "marketing": "Pazarlama ve sosyal medya",
+      "customer_service": "Müşteri hizmetleri"
     },
     "nav": {
       "overview": "Genel bakış",
@@ -524,7 +526,8 @@
       "countLabel": "{count} bekliyor",
       "messages": "Mesajlar",
       "team": "Ekibim",
-      "workshopOrders": "Atölye siparişleri"
+      "workshopOrders": "Atölye siparişleri",
+      "profile": "Profilim"
     },
     "buttons": {
       "openMenu": "Menu",
@@ -1395,7 +1398,9 @@
       "roleEmployee": "Çalışan",
       "userDeleteConfirm": "{name} erişimi silinsin mi?",
       "userDeleteText": "Bu kişi artık giriş yapamayacak.",
-      "userActions": "{name} için işlemler"
+      "userActions": "{name} için işlemler",
+      "roleMarketing": "Pazarlama ve sosyal medya",
+      "roleCustomerService": "Müşteri hizmetleri"
     },
     "navGroups": {
       "orders": "Günlük işler",
@@ -2028,7 +2033,9 @@
       "roleHint": {
         "super_admin": "Her şeyi görür ve değiştirir: atölyeler, mağaza, ayarlar ve erişimler.",
         "admin": "Showroomdaki tablet için: sipariş oluşturur ve atölyeye gönderir. Ayarlara erişemez.",
-        "employee": "Atölye çalışanları kendi atölye müdürleri tarafından davet edilir."
+        "employee": "Atölye çalışanları kendi atölye müdürleri tarafından davet edilir.",
+        "marketing": "Ürünleri, kategorileri ve fotoğrafları, site görsellerini ve kampanya penceresini yönetir. Siparişlere erişemez.",
+        "customer_service": "Müşteri taleplerini yanıtlar, sipariş oluşturur, atölyelere gönderir ve müşterileri bilgilendirir."
       },
       "staffNote": "Atölye müdürleri atölye oluşturulurken davet edilir, çalışanlarını da kendileri davet eder; bu yüzden bu hesaplar burada listelenmez."
     },
@@ -2054,7 +2061,9 @@
         "TASK_NOTE_REQUIRED": "Lütfen kısaca sorunu yazın; müdürünüzün nedeni bilmesi gerekiyor.",
         "MESSAGE_EMPTY": "Mesaj boş.",
         "MESSAGE_TOO_LONG": "Mesaj çok uzun (en fazla 4.000 karakter).",
-        "THREAD_NOT_FOUND": "Bu konuşma artık mevcut değil."
+        "THREAD_NOT_FOUND": "Bu konuşma artık mevcut değil.",
+        "PASSWORD_TOO_SHORT": "Şifre en az 8 karakter olmalıdır.",
+        "PASSWORD_SAME": "Bu zaten mevcut şifreniz."
       },
       "done": {
         "workshopCreated": "Atölye oluşturuldu. Müdüre e-postayla davet gönderildi.",
@@ -2075,7 +2084,9 @@
         "messageSent": "Mesaj gönderildi.",
         "orderSent": "{workshop} atölyesine gönderildi. Müdüre e-posta ile bildirildi.",
         "orderSentNoEmail": "{workshop} atölyesine gönderildi. Müdüre e-posta iletilemedi ancak siparişi panelinde görecek.",
-        "orderSentNoManager": "{workshop} atölyesine gönderildi. Dikkat: atölyenin siparişi dağıtacak bir müdürü henüz yok."
+        "orderSentNoManager": "{workshop} atölyesine gönderildi. Dikkat: atölyenin siparişi dağıtacak bir müdürü henüz yok.",
+        "profileSaved": "Ad kaydedildi.",
+        "passwordChanged": "Şifre değiştirildi."
       },
       "workshops": {
         "pageHint": "Her atölyenin bir müdürü vardır. Siparişleri atölyeye siz gönderirsiniz, müdür ekibine dağıtır.",
@@ -2306,7 +2317,9 @@
         "saving": "Kaydediliyor…",
         "badLink": "Düğme hedefi “/” veya “https://” ile başlamalıdır.",
         "tooLong": "Metinlerden biri çok uzun.",
-        "titleRequired": "Pencereyi açmadan önce bir başlık girin."
+        "titleRequired": "Pencereyi açmadan önce bir başlık girin.",
+        "fromPlaceholder": "Hemen",
+        "untilPlaceholder": "Süresiz"
       },
       "newOrder": {
         "dueDate": "Teslim tarihi (isteğe bağlı)",
@@ -2319,6 +2332,39 @@
         "workshopNotesPlaceholder": "örn. Arapça gravür, müşteri cumartesi alacak",
         "createAndSend": "Siparişi oluştur ve gönder"
       }
+    },
+    "datePicker": {
+      "choose": "Tarih seçin",
+      "clear": "Tarihi temizle",
+      "previous": "Önceki ay",
+      "next": "Sonraki ay",
+      "today": "Bugün"
+    },
+    "profile": {
+      "open": "Profili aç",
+      "title": "Profilim",
+      "description": "Panel için adınız, fotoğrafınız ve şifreniz.",
+      "photoTitle": "Profil fotoğrafı",
+      "photoHint": "JPG, PNG veya WebP, en fazla 2 MB. Kare fotoğraf en iyisidir.",
+      "photoUpload": "Fotoğraf yükle",
+      "photoChange": "Fotoğrafı değiştir",
+      "photoRemove": "Kaldır",
+      "photoSaved": "Profil fotoğrafı kaydedildi.",
+      "photoRemoved": "Profil fotoğrafı kaldırıldı.",
+      "photoInvalid": "Lütfen en fazla 2 MB JPG, PNG veya WebP görsel seçin.",
+      "photoFailed": "Görsel kaydedilemedi.",
+      "detailsTitle": "Bilgiler",
+      "name": "Görünen ad",
+      "email": "E-posta adresi",
+      "emailHint": "Giriş adresiniz. Yalnızca genel yönetim değiştirebilir.",
+      "role": "Rol",
+      "save": "Kaydet",
+      "passwordTitle": "Şifreyi değiştir",
+      "passwordHint": "En az 8 karakter.",
+      "newPassword": "Yeni şifre",
+      "confirmPassword": "Şifreyi tekrarlayın",
+      "passwordSave": "Şifreyi değiştir",
+      "passwordMismatch": "İki şifre eşleşmiyor."
     }
   },
   "Tracking": {

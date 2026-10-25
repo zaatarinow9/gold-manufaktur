@@ -22,6 +22,7 @@ export default async function AdminOrdersPage({
   const access = await requireAdminAccess(locale, [
     "super_admin",
     "admin",
+    "customer_service",
     "employee",
   ]);
 

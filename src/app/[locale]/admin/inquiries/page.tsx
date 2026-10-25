@@ -16,7 +16,7 @@ export default async function AdminInquiriesPage({
 }: AdminInquiriesPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "customer_service"]);
 
   if (access.state !== "authenticated") {
     return (

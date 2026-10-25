@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   if (
     session.state !== "authenticated" ||
     !session.user ||
-    !["super_admin", "admin"].includes(session.user.role)
+    !["super_admin", "admin", "marketing"].includes(session.user.role)
   ) {
     return NextResponse.json({ error: "FORBIDDEN", success: false }, { status: 403 });
   }

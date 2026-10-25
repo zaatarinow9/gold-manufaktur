@@ -52,6 +52,7 @@ function getAvatarLabel(name: string, email: string) {
 function buildAdminUser(
   authUser: User,
   profile: {
+    avatar_url?: string | null;
     employee_id?: string | null;
     email: string | null;
     full_name: string | null;
@@ -76,6 +77,7 @@ function buildAdminUser(
     phone: authUser.phone ?? "",
     role: isAdminRole(profile.role) ? profile.role : "employee",
     avatarLabel: getAvatarLabel(name, email),
+    avatarUrl: profile.avatar_url ?? undefined,
     isActive: profile.is_active,
     linkedEmployeeId: profile.employee_id ?? undefined,
     workshopId: profile.workshop_id ?? undefined,

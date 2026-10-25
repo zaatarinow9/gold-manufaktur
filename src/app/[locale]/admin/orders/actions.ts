@@ -307,7 +307,7 @@ export async function createOrderAction(
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = (await getOrderWorkflowCopy(locale));
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "customer_service"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {
@@ -352,7 +352,7 @@ export async function updateOrderWorkflowAction(
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
   const copy = (await getOrderWorkflowCopy(locale));
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "customer_service"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {
@@ -401,7 +401,7 @@ export async function assignOrderToEmployeeAction(
   }
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee", "customer_service"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {
@@ -551,7 +551,7 @@ export async function withdrawOrderAssignmentAction(
   orderId: string
 ): Promise<OrderActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "customer_service"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return {
@@ -585,7 +585,7 @@ export async function sendOrderToWorkshopAction(
   locale: AppLocale,
   input: { note: string; orderId: string; workshopId: string }
 ) {
-  return runFlowAction(locale, ["super_admin", "admin"], async (user) => {
+  return runFlowAction(locale, ["super_admin", "admin", "customer_service"], async (user) => {
     const result = await sendOrderToWorkshop(user, locale, input);
     if (!result.hasManager) return { key: "orderSentNoManager", values: { workshop: result.workshopName } };
     return { key: result.emailStatus === "sent" ? "orderSent" : "orderSentNoEmail", values: { workshop: result.workshopName } };

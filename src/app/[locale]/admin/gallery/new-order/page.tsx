@@ -19,7 +19,7 @@ export default async function NewOrderPage({
 }: NewOrderPageProps) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "customer_service"]);
 
   if (access.state !== "authenticated" || !access.user) {
     return (

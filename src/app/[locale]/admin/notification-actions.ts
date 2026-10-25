@@ -16,7 +16,7 @@ async function runNotificationAction(
   successKey: "cleared" | "deleted" | "markedRead"
 ): Promise<NotificationActionResult> {
   const t = await getTranslations({ locale, namespace: "Admin" });
-  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee"]);
+  const access = await requireAdminAccess(locale, ["super_admin", "admin", "employee", "marketing", "customer_service"]);
   if (access.state !== "authenticated" || !access.user) return { message: t("common.noAccessText"), ok: false };
   if (await isAdminDecoyEnabled()) return { message: getAdminDecoyUnavailableMessage(locale), ok: false };
 

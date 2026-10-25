@@ -211,7 +211,7 @@ export default async function AdminOrderDetailPage({
   const privacyCopy = (await getAdminPrivacyUiCopy(locale));
   const access = await requireAdminAccess(
     locale,
-    ["super_admin", "admin", "employee"],
+    ["super_admin", "admin", "employee", "customer_service"],
     `/${locale}/admin/orders/${id}`
   );
 

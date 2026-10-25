@@ -1,7 +1,7 @@
 import type { AppLocale } from "@/i18n/routing";
 import type { AdminRole } from "@/types/admin";
 
-export const adminRoles = ["super_admin", "admin", "employee"] as const;
+export const adminRoles = ["super_admin", "admin", "employee", "marketing", "customer_service"] as const;
 
 export type AdminSection =
   | "archive"
@@ -26,18 +26,18 @@ export type AdminSection =
 const sectionAccess: Record<AdminSection, AdminRole[]> = {
   archive: ["super_admin"],
   attendance: ["super_admin"],
-  categories: ["super_admin"],
+  categories: ["super_admin", "marketing"],
   employees: ["super_admin", "admin"],
-  gallery: ["super_admin", "admin"],
-  inquiries: ["super_admin"],
+  gallery: ["super_admin", "admin", "customer_service"],
+  inquiries: ["super_admin", "customer_service"],
   messages: ["super_admin", "employee"],
   my_tasks: ["employee"],
-  options: ["super_admin"],
-  orders: ["super_admin", "admin"],
+  options: ["super_admin", "marketing"],
+  orders: ["super_admin", "admin", "customer_service"],
   overview: ["super_admin", "admin"],
-  products: ["super_admin"],
+  products: ["super_admin", "marketing"],
   reports: ["super_admin"],
-  settings: ["super_admin"],
+  settings: ["super_admin", "marketing"],
   system_check: ["super_admin"],
   team: ["employee"],
   workshop_orders: ["employee"],
@@ -70,6 +70,14 @@ export function getPostLoginRedirectForRole(locale: AppLocale, role: AdminRole, 
 
   if (role === "admin") {
     return `/${locale}/admin/orders`;
+  }
+
+  if (role === "marketing") {
+    return `/${locale}/admin/products`;
+  }
+
+  if (role === "customer_service") {
+    return `/${locale}/admin/inquiries`;
   }
 
   return `/${locale}/admin`;
